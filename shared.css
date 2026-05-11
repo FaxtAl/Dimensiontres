@@ -13,3 +13,110 @@
 ::-webkit-scrollbar-track { background: #0e0e0e; }
 ::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #484847; }
+
+/* Buscador global con recomendaciones */
+.global-search-host { position: relative; }
+
+.global-search-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 90;
+  display: none;
+  overflow: hidden;
+  background: rgba(14, 14, 14, 0.98);
+  border: 1px solid rgba(143, 245, 255, 0.22);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45), 0 0 22px rgba(0, 240, 255, 0.08);
+  border-radius: 8px;
+}
+
+.global-search-suggestions.active { display: block; }
+
+.global-search-suggestion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: #f5f5f5;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(72, 72, 71, 0.35);
+  text-align: left;
+  cursor: pointer;
+}
+
+.global-search-suggestion:last-child { border-bottom: 0; }
+
+.global-search-suggestion:hover,
+.global-search-suggestion:focus {
+  outline: none;
+  background: rgba(143, 245, 255, 0.08);
+}
+
+.global-search-thumb {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid rgba(143, 245, 255, 0.16);
+  border-radius: 6px;
+}
+
+.global-search-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.global-search-thumb .material-symbols-outlined {
+  color: #8ff5ff;
+  font-size: 21px;
+  opacity: 0.72;
+}
+
+.global-search-copy { min-width: 0; flex: 1; }
+
+.global-search-name {
+  display: block;
+  overflow: hidden;
+  color: #fff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.global-search-meta {
+  margin-top: 3px;
+  display: block;
+  overflow: hidden;
+  color: #8f8f8f;
+  font-family: "Manrope", sans-serif;
+  font-size: 11px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.global-search-price {
+  color: #8ff5ff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.global-search-empty {
+  padding: 12px;
+  color: #8f8f8f;
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+}
