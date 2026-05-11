@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html class="dark" style="background:#0e0e0e" lang="es" style="scroll-behavior:smooth;">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Catálogo | Dimensión Tres</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="catalogo.css?v=sidebar-compact-20260507">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="tailwind.config.js"></script>
+</head>
+<body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom: 1px solid rgba(0,240,255,0.08);">
+  <div class="flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
+    <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">
+      Dimensión Tres
+    </a>
+    <div class="hidden md:flex items-center space-x-6 lg:space-x-8 font-headline tracking-tight uppercase font-bold text-sm lg:text-base">
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html">Inicio</a>
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#categorias">Categorías</a>
+      <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 transition-all" href="catalogo.html">Catálogo</a>
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#servicios">Servicios</a>
+    </div>
+    <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
+      <div class="relative w-full flex items-center">
+        <input id="search-input" type="text" placeholder="Buscar productos..."
+          class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 outline-none transition-all"
+          style="border-radius:6px;"
+          oninput="handleSearchLive(this.value)"/>
+        <button class="absolute right-0 h-full px-3.5 flex items-center justify-center text-outline hover:text-primary transition-colors"
+          style="border-radius:0 6px 6px 0;" aria-label="Buscar">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 md:gap-4">
+      <a href="cuenta.html"><button class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">person</button></a>
+      <div class="relative">
+        <button data-cart-btn class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px] relative" onclick="window.location.href='carrito.html'">shopping_cart</button>
+      </div>
+      <button id="menu-btn" onclick="toggleMenu()"
+        class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
+        aria-label="Abrir menú">
+        <span id="ham-1" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-2" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── DRAWER MOBILE ─────────────────────────────────────────────
+     Se desliza desde la izquierda con backdrop oscuro.
+     ══════════════════════════════════════════════════════════ -->
+<div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
+
+<div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
+
+  <!-- Header del drawer -->
+  <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)]">
+    <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">Dimensión Tres</a>
+    <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
+  </div>
+
+  <!-- Navegación -->
+  <nav class="flex flex-col gap-1 p-5">
+    <a onclick="closeMenu()" href="index.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Inicio</a>
+    <a onclick="closeMenu()" href="catalogo.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#00f0ff] bg-[#1a1919] transition-all rounded-lg">Catálogo</a>
+    <a onclick="closeMenu()" href="index.html#categorias" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Categorías</a>
+    <a onclick="closeMenu()" href="index.html#destacados" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Destacados</a>
+    <a onclick="closeMenu()" href="index.html#servicios" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Servicios</a>
+  </nav>
+
+  <!-- Footer del drawer -->
+  <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-[rgba(72,72,71,0.15)]">
+    <a href="https://wa.me/5493535000000?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
+      <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="pt-16 md:pt-20 min-h-screen">
+
+  <!-- Page Header -->
+  <section class="relative overflow-hidden" style="background: linear-gradient(180deg, #0a0a0a 0%, #0e0e0e 100%); border-bottom: 1px solid rgba(72,72,71,0.15);">
+    <div style="position:absolute; top:-80px; left:-80px; width:400px; height:400px;
+      background: radial-gradient(circle, rgba(0,240,255,0.06) 0%, transparent 70%);
+      pointer-events:none;"></div>
+    <div style="position:absolute; bottom:-60px; right:5%; width:300px; height:300px;
+      background: radial-gradient(circle, rgba(143,245,255,0.04) 0%, transparent 70%);
+      pointer-events:none;"></div>
+
+    <div class="container mx-auto px-5 md:px-8 py-5 md:py-6 max-w-[1920px]">
+      <!-- Breadcrumb dinámico -->
+      <div id="breadcrumb-trail" class="font-headline text-xs uppercase tracking-widest mb-3">
+        <span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Inicio</span>
+        <span class="breadcrumb-sep">/</span>
+        <span id="bc-catalog" class="bc-item text-[#8ff5ff]" onclick="goToRoot()">Catálogo</span>
+        <!-- Los niveles extra se insertan aquí dinámicamente -->
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <div style="width:3px; height:26px; background:linear-gradient(180deg,#8ff5ff,#00deec); border-radius:2px;"></div>
+            <div>
+              <div id="level-label"></div>
+              <h1 id="page-title" class="font-headline text-3xl md:text-4xl font-black uppercase tracking-tight text-on-surface">
+                Todo el Catálogo
+              </h1>
+            </div>
+          </div>
+          <p id="page-subtitle" class="text-on-surface-variant font-body text-sm md:text-base ml-5 md:ml-6">
+            Explorá todas las categorías disponibles en la tienda.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="px-4 py-2 font-headline text-xs uppercase tracking-widest"
+            style="background:rgba(143,245,255,0.06); border:1px solid rgba(143,245,255,0.15); border-radius:6px; color:#8ff5ff;">
+            <span id="visible-count">7</span> <span id="count-label">categorías</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Bar (mobile) — solo en nivel raíz -->
+  <section id="filter-bar-mobile" class="catalog-mobile-bar">
+    <div class="container mx-auto px-5 max-w-[1920px]">
+      <div class="mobile-catalog-actions">
+        <button type="button" class="mobile-catalog-action" onclick="openCatalogPanel('categories')" aria-controls="catalog-category-panel">
+          <span class="material-symbols-outlined">more_vert</span>
+          <span>Categorías</span>
+        </button>
+        <button type="button" class="mobile-catalog-action" onclick="openCatalogPanel('filters')" aria-controls="catalog-filter-panel">
+          <span class="material-symbols-outlined">filter_list</span>
+          <span>Filtros</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div id="catalog-panel-backdrop" class="catalog-panel-backdrop" onclick="closeCatalogPanel()"></div>
+
+  <aside id="catalog-category-panel" class="catalog-mobile-panel" aria-label="Categorías del catálogo">
+    <div class="catalog-panel-header">
+      <div class="catalog-panel-title">
+        <span class="material-symbols-outlined">keyboard_arrow_up</span>
+        <span>Categorías</span>
+      </div>
+      <button type="button" class="catalog-panel-close" onclick="closeCatalogPanel()" aria-label="Cerrar categorías">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div id="mobile-category-tree" class="category-tree mobile-category-tree"></div>
+  </aside>
+
+  <aside id="catalog-filter-panel" class="catalog-mobile-panel catalog-filter-panel" aria-label="Filtros del catálogo">
+    <div class="catalog-panel-header">
+      <div class="catalog-panel-title">
+        <span class="material-symbols-outlined">filter_list</span>
+        <span>Filtros</span>
+      </div>
+      <button type="button" class="catalog-panel-close" onclick="closeCatalogPanel()" aria-label="Cerrar filtros">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="catalog-filter-content">
+      <label class="catalog-filter-label" for="search-filter-mobile">Buscar</label>
+      <div class="catalog-filter-search">
+        <input id="search-filter-mobile" type="text" placeholder="Buscar productos..." oninput="filterBySearch(this.value)"/>
+        <span class="material-symbols-outlined">search</span>
+      </div>
+
+      <div class="catalog-filter-label">Categoría</div>
+      <div class="mobile-filter-options">
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="all" onclick="setFilter('all', this)">Todo</button>
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="hardware" onclick="setFilter('hardware', this)">Hardware</button>
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="consolas" onclick="setFilter('consolas', this)">Consolas</button>
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="perifericos" onclick="setFilter('perifericos', this)">Periféricos</button>
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="audio" onclick="setFilter('audio', this)">Audio</button>
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="accesorios" onclick="setFilter('accesorios', this)">Accesorios</button>
+      </div>
+
+      <label class="catalog-filter-label" for="mobile-sort-select">Ordenar</label>
+      <select id="mobile-sort-select" class="mobile-sort-select" onchange="sortCards(this.value)">
+        <option value="default">Por defecto</option>
+        <option value="az">A - Z</option>
+        <option value="za">Z - A</option>
+      </select>
+    </div>
+  </aside>
+
+  <!-- Category Grid -->
+  <section class="container mx-auto px-5 md:px-8 py-8 md:py-10 max-w-[1920px]">
+
+    <div class="catalog-layout">
+      <aside class="catalog-sidebar" aria-label="Categorias del catalogo">
+        <div class="catalog-sidebar-title">
+          <span class="material-symbols-outlined">keyboard_arrow_up</span>
+          <span>Categorias</span>
+        </div>
+        <div id="category-tree" class="category-tree">
+          <!-- El arbol se renderiza con JS -->
+        </div>
+      </aside>
+
+      <div class="catalog-results">
+        <!-- Desktop search + sort (solo en nivel raiz) -->
+        <div id="desktop-controls" class="hidden md:flex items-center justify-between mb-8 gap-4">
+          <div class="relative flex items-center max-w-xs w-full">
+            <input id="search-catalog" type="text" placeholder="Buscar productos..."
+              class="w-full bg-[#131313] border border-outline-variant/20 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-10 outline-none transition-all"
+              style="border-radius:6px;"
+              oninput="filterBySearch(this.value)"/>
+            <span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">search</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Ordenar:</span>
+            <select class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
+              style="border-radius:6px;"
+              onchange="sortCards(this.value)">
+              <option value="default">Por defecto</option>
+              <option value="az">A - Z</option>
+              <option value="za">Z - A</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Boton volver + label de nivel sub -->
+        <div id="back-to-root" onclick="goToRoot()">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span id="back-label">Volver al catalogo</span>
+        </div>
+
+        <div id="grid-helper" class="catalog-helper">
+          Elegi una categoria para explorar productos disponibles.
+        </div>
+
+        <!-- Wrapper animado del grid -->
+        <div id="grid-wrapper">
+          <div id="categories-grid"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-6 w-full">
+            <!-- Las cards se renderizan con JS -->
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="hidden text-center py-24">
+          <span class="material-symbols-outlined text-[64px] text-[#484847] block mb-4">search_off</span>
+          <p class="font-headline font-bold uppercase tracking-widest text-on-surface-variant">No se encontraron productos</p>
+          <p class="font-body text-sm text-[#484847] mt-2">Proba con otro termino de busqueda.</p>
+          <button onclick="resetFilters()" class="mt-6 px-6 py-2.5 font-headline text-xs uppercase tracking-widest text-primary border border-primary/30 hover:bg-primary/10 transition-all" style="border-radius:6px;">
+            Ver todas
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<footer></footer>
+
+<script src="shared.js"></script>
+<script src="nav.js"></script>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js?v=catalogo-access-20260508-images-1"></script>
+<script src="cart.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   DATOS — Árbol de categorías / sub-categorías
+   ══════════════════════════════════════════════════════ */
+var CATALOG = [
+  {
+    id: 'consolas',
+    name: 'Consolas',
+    category: 'consolas',
+    icon: 'sports_esports',
+    subtitle: 'PlayStation - Xbox - Nintendo - Retro',
+    image: 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=900&q=80',
+    children: [
+      { id: 'ps5', name: 'PlayStation 5', icon: 'sports_esports', subtitle: 'Consolas - Joysticks - Accesorios', image: 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&q=80', children: null },
+      { id: 'ps4', name: 'PlayStation 4', icon: 'sports_esports', subtitle: 'Consolas - Joysticks - Cables', image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&q=80', children: null },
+      { id: 'ps3-ps2', name: 'PS3 / PS2', icon: 'videogame_asset', subtitle: 'Consolas retro - Mandos - Memorias', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80', children: null },
+      { id: 'xbox', name: 'Xbox', icon: 'sports_esports', subtitle: 'Series - One - 360 - Accesorios', image: 'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=800&q=80', children: null },
+      { id: 'nintendo-switch', name: 'Nintendo Switch', icon: 'sports_esports', subtitle: 'Switch - OLED - Portatil', image: 'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=800&q=80', children: null },
+      { id: 'retro-portatiles', name: 'Retro / Portatiles', icon: 'stadia_controller', subtitle: 'Mini consolas - Arcades - Portatiles', image: 'https://images.unsplash.com/photo-1563791877574-e0ecea4a6e88?w=800&q=80', children: null }
+    ]
+  },
+  {
+    id: 'joysticks-accesorios',
+    name: 'Joysticks y Accesorios',
+    category: 'consolas',
+    icon: 'gamepad',
+    subtitle: 'Controles - Bases - Grips - Baterias',
+    image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&q=80',
+    children: [
+      { id: 'joysticks-ps5', name: 'Joysticks PS5', icon: 'sports_esports', subtitle: 'DualSense - Bases - Cables', image: 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&q=80', children: null },
+      { id: 'joysticks-ps4', name: 'Joysticks PS4', icon: 'sports_esports', subtitle: 'DualShock - Cargadores - Grips', image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&q=80', children: null },
+      { id: 'joysticks-ps3-ps2', name: 'Joysticks PS3 / PS2', icon: 'videogame_asset', subtitle: 'Originales - Alternativos - Cables', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80', children: null },
+      { id: 'joysticks-xbox-pc', name: 'Joysticks Xbox / PC', icon: 'gamepad', subtitle: 'Xbox - PC - Bluetooth', image: 'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=800&q=80', children: null },
+      { id: 'bases-cargadoras', name: 'Bases Cargadoras', icon: 'battery_charging_full', subtitle: 'PS4 - PS5 - Xbox', image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80', children: null },
+      { id: 'grips-baterias-repuestos', name: 'Grips, Baterias y Repuestos', icon: 'construction', subtitle: 'Cubre grips - Pines - Baterias', image: 'https://images.unsplash.com/photo-1588508065123-287b28e013da?w=800&q=80', children: null }
+    ]
+  },
+  {
+    id: 'audio',
+    name: 'Audio',
+    category: 'audio',
+    icon: 'headphones',
+    subtitle: 'Auriculares - Headsets - Parlantes',
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80',
+    children: [
+      { id: 'auriculares', name: 'Auriculares', icon: 'headphones', subtitle: 'Cableados - Inalambricos - Celular', image: 'https://images.unsplash.com/photo-1546435770-a3e736af8c12?w=800&q=80', children: null },
+      { id: 'headsets-gamer', name: 'Headsets Gamer', icon: 'headset_mic', subtitle: 'PS4 - Xbox - PC - RGB', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80', children: null },
+      { id: 'parlantes', name: 'Parlantes', icon: 'speaker', subtitle: '2.0 - 2.1 - Bluetooth', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&q=80', children: null },
+      { id: 'microfonos', name: 'Microfonos', icon: 'mic', subtitle: 'USB - Streaming - PC', image: 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&q=80', children: null }
+    ]
+  },
+  {
+    id: 'perifericos-pc',
+    name: 'Perifericos PC',
+    category: 'perifericos',
+    icon: 'mouse',
+    subtitle: 'Mouse - Teclados - Pads - Webcams',
+    image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=900&q=80',
+    children: [
+      { id: 'mouse', name: 'Mouse', icon: 'mouse', subtitle: 'Gaming - Inalambricos - Oficina', image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&q=80', children: null },
+      { id: 'teclados', name: 'Teclados', icon: 'keyboard', subtitle: 'Mecanicos - Membrana - Gamer', image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=800&q=80', children: null },
+      { id: 'mouse-pads', name: 'Mouse Pads', icon: 'crop_square', subtitle: 'Chicos - XL - RGB', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&q=80', children: null },
+      { id: 'webcams-streaming', name: 'Webcams / Streaming', icon: 'videocam', subtitle: 'Webcams - Captura - Soportes', image: 'https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=800&q=80', children: null }
+    ]
+  },
+  {
+    id: 'cables-adaptadores-cargadores',
+    name: 'Cables, Adaptadores y Cargadores',
+    category: 'accesorios',
+    icon: 'cable',
+    subtitle: 'HDMI - USB - Tipo C - Conversores',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    children: [
+      { id: 'hdmi', name: 'HDMI', icon: 'settings_input_hdmi', subtitle: '1.5m - 3m - 5m - 8K', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80', children: null },
+      { id: 'usb-tipo-c', name: 'USB / Tipo C', icon: 'usb', subtitle: 'Carga - Datos - Consolas', image: 'https://images.unsplash.com/photo-1519248200454-8f2590ed22b7?w=800&q=80', children: null },
+      { id: 'cables-consola', name: 'Cables de Consola', icon: 'cable', subtitle: 'AV - Corriente - Joystick', image: 'https://images.unsplash.com/photo-1516245834210-c4c142787335?w=800&q=80', children: null },
+      { id: 'adaptadores-conversores', name: 'Adaptadores y Conversores', icon: 'device_hub', subtitle: 'HDMI a VGA - Bluetooth - Hubs', image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80', children: null },
+      { id: 'cargadores-powerbank', name: 'Cargadores / Power Banks', icon: 'battery_charging_full', subtitle: 'Celular - Joystick - Portatil', image: 'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=800&q=80', children: null },
+      { id: 'gadgets-smart-tv', name: 'Gadgets / Smart TV', icon: 'devices_other', subtitle: 'Chromecast - Google TV - Luces', image: 'https://images.unsplash.com/photo-1558089687-f282ffcbc126?w=800&q=80', children: null }
+    ]
+  },
+  {
+    id: 'almacenamiento',
+    name: 'Almacenamiento',
+    category: 'hardware',
+    icon: 'storage',
+    subtitle: 'SSD - HDD - Pendrives - MicroSD',
+    image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=800&q=80',
+    children: [
+      { id: 'ssd', name: 'SSD', icon: 'storage', subtitle: 'SATA - M.2 - NVMe', image: 'https://images.unsplash.com/photo-1591238372233-b0bfce5f3e53?w=800&q=80', children: null },
+      { id: 'discos-hdd-externos', name: 'Discos HDD / Externos', icon: 'hard_drive', subtitle: 'Notebook - PC - USB', image: 'https://images.unsplash.com/photo-1548922793-f6fa91a2d100?w=800&q=80', children: null },
+      { id: 'pendrives', name: 'Pendrives', icon: 'usb', subtitle: '32GB - 64GB - 128GB', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80', children: null },
+      { id: 'memorias-sd', name: 'MicroSD / SD', icon: 'sd_card', subtitle: 'Celular - Camaras - Switch', image: 'https://images.unsplash.com/photo-1618410320928-25228d811631?w=800&q=80', children: null },
+      { id: 'lectores-cases', name: 'Lectores y Cases', icon: 'folder_copy', subtitle: 'Lectores microSD - Caddies', image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80', children: null }
+    ]
+  },
+  {
+    id: 'pc-componentes-redes',
+    name: 'PC y Componentes',
+    category: 'hardware',
+    icon: 'memory',
+    subtitle: 'Componentes - Monitores - Redes',
+    image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=900&q=80',
+    children: [
+      {
+        id: 'componentes-pc',
+        name: 'Componentes de PC',
+        icon: 'memory',
+        subtitle: 'CPU - Mother - RAM - Video - Fuentes',
+        image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
+        children: [
+          { id: 'procesadores', name: 'Procesadores', icon: 'memory', subtitle: 'Intel - AMD Ryzen', image: 'https://images.unsplash.com/photo-1555617981-dac3772603e5?w=800&q=80', children: null },
+          { id: 'placas-madre', name: 'Placas Madre', icon: 'developer_board', subtitle: 'Intel - AMD - mATX - ATX', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80', children: null },
+          { id: 'memorias-ram', name: 'Memorias RAM', icon: 'sim_card', subtitle: 'DDR3 - DDR4 - DDR5 - Notebook', image: 'https://images.unsplash.com/photo-1562976540-1502c2145851?w=800&q=80', children: null },
+          { id: 'placas-de-video', name: 'Placas de Video', icon: 'developer_board', subtitle: 'NVIDIA - AMD - Gaming', image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=800&q=80', children: null },
+          { id: 'ssd-m2', name: 'SSD / M.2', icon: 'storage', subtitle: 'SATA - NVMe - Upgrade', image: 'https://images.unsplash.com/photo-1591238372233-b0bfce5f3e53?w=800&q=80', children: null },
+          { id: 'discos-hdd', name: 'Discos HDD', icon: 'hard_drive', subtitle: 'PC - Notebook - Externos', image: 'https://images.unsplash.com/photo-1548922793-f6fa91a2d100?w=800&q=80', children: null },
+          { id: 'fuentes', name: 'Fuentes', icon: 'bolt', subtitle: 'ATX - 500W - 600W - Gamer', image: 'https://images.unsplash.com/photo-1598986646512-9330bcc4c0dc?w=800&q=80', children: null },
+          { id: 'gabinetes', name: 'Gabinetes', icon: 'desktop_windows', subtitle: 'Gamer - Vidrio templado', image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80', children: null },
+          { id: 'refrigeracion-coolers', name: 'Refrigeracion / Coolers', icon: 'ac_unit', subtitle: 'Coolers - Ventiladores - RGB', image: 'https://images.unsplash.com/photo-1601737487795-dab272f52420?w=800&q=80', children: null },
+          { id: 'pasta-termica', name: 'Pasta Termica', icon: 'opacity', subtitle: 'Mantenimiento - CPU - Consolas', image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=800&q=80', children: null }
+        ]
+      },
+      { id: 'monitores', name: 'Monitores', icon: 'desktop_windows', subtitle: '19in - 27in - Gaming', image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&q=80', children: null },
+      { id: 'redes-wifi-bluetooth', name: 'Redes, WiFi y Bluetooth', icon: 'wifi', subtitle: 'Routers - Adaptadores - Placas', image: 'https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=800&q=80', children: null }
+    ]
+  }
+];
+
+/* ══════════════════════════════════════════════════════
+   ESTADO
+   ══════════════════════════════════════════════════════ */
+var currentLevel = 'root';       // 'root' | id de categoría padre
+var currentParent = null;        // objeto del nivel actual
+var currentFilter = 'all';
+var currentSearch = '';
+var currentRouteState = { view: 'root', filter: 'all', q: '' };
+var productsRequestId = 0;
+var catalogLoadedFromSupabase = false;
+var productSearchCache = {};
+var productSearchTimer = null;
+var searchSuggestionsTimer = null;
+
+var EXAMPLE_PRODUCTS = [
+  { name: 'PS5 Slim Digital', slug: 'ps5-slim-digital', price: 680000, rootCategory: 'consolas', section: 'consolas', category: 'playstation', icon: 'sports_esports', subtitle: 'PlayStation 5', sourceLabel: 'Consolas', image: '', stock: 1 },
+  { name: 'PS4 Pro 1TB', slug: 'ps4-pro-1tb', price: 210000, rootCategory: 'consolas', section: 'consolas', category: 'playstation', icon: 'sports_esports', subtitle: 'PlayStation 4', sourceLabel: 'Consolas', image: '', stock: 2 },
+  { name: 'Xbox Series X', slug: 'xbox-series-x', price: 720000, rootCategory: 'consolas', section: 'consolas', category: 'xbox', icon: 'sports_esports', subtitle: 'Xbox Series', sourceLabel: 'Consolas', image: '', stock: 1 },
+  { name: 'Nintendo Switch OLED', slug: 'nintendo-switch-oled', price: 420000, rootCategory: 'consolas', section: 'consolas', category: 'nintendo', icon: 'videogame_asset', subtitle: 'Nintendo', sourceLabel: 'Consolas', image: '', stock: 1 },
+  { name: 'PS5 Slim con Lector', slug: 'ps5-slim-con-lector', price: 780000, rootCategory: 'consolas', section: 'consolas', category: 'playstation', icon: 'sports_esports', subtitle: 'PlayStation 5', sourceLabel: 'Consolas', image: '', stock: 1 },
+  { name: 'Xbox Series S', slug: 'xbox-series-s', price: 480000, rootCategory: 'consolas', section: 'consolas', category: 'xbox', icon: 'sports_esports', subtitle: 'Xbox Series', sourceLabel: 'Consolas', image: '', stock: 1 },
+  { name: 'DualSense Blanco', slug: 'dualsense-blanco', price: 68000, rootCategory: 'consolas', section: 'joysticks-accesorios', category: 'ps5', icon: 'sports_esports', subtitle: 'PS5 Original', sourceLabel: 'Joysticks', image: '', stock: 3 },
+  { name: 'Xbox Series Controller', slug: 'xbox-series-controller', price: 65000, rootCategory: 'consolas', section: 'joysticks-accesorios', category: 'xbox', icon: 'gamepad', subtitle: 'Xbox Original', sourceLabel: 'Joysticks', image: '', stock: 2 },
+  { name: 'Base Cargadora PS5', slug: 'base-cargadora-ps5', price: 18000, rootCategory: 'accesorios', section: 'accesorios', category: 'cargador', icon: 'battery_charging_full', subtitle: 'Dual DualSense', sourceLabel: 'Accesorios', image: '', stock: 2 },
+  { name: 'Cable HDMI 2.1 2m', slug: 'cable-hdmi-2-1-2m', price: 8500, rootCategory: 'accesorios', section: 'accesorios', category: 'cable', icon: 'cable', subtitle: 'Alta velocidad', sourceLabel: 'Cables', image: '', stock: 12 },
+  { name: 'Mouse Gamer 6400DPI', slug: 'mouse-gamer-6400dpi', price: 22000, rootCategory: 'perifericos', section: 'perifericos-pc', category: 'mouse', icon: 'mouse', subtitle: 'RGB optico', sourceLabel: 'Mouse', image: '', stock: 8 },
+  { name: 'Teclado Mecanico RGB TKL', slug: 'teclado-mecanico-rgb-tkl', price: 45000, rootCategory: 'perifericos', section: 'perifericos-pc', category: 'teclado', icon: 'keyboard', subtitle: 'Switch Red 80%', sourceLabel: 'Teclados', image: '', stock: 4 },
+  { name: 'Auricular Gamer 7.1', slug: 'auricular-gamer-7-1', price: 32000, rootCategory: 'audio', section: 'audio', category: 'auricular', icon: 'headset', subtitle: 'Surround USB RGB', sourceLabel: 'Audio', image: '', stock: 5 },
+  { name: 'Parlante Bluetooth 20W', slug: 'parlante-bluetooth-20w', price: 32000, rootCategory: 'audio', section: 'audio', category: 'parlante', icon: 'speaker', subtitle: 'Portatil IPX5', sourceLabel: 'Parlantes', image: '', stock: 2 },
+  { name: 'SSD 480GB SATA', slug: 'ssd-480gb-sata', price: 35000, rootCategory: 'hardware', section: 'almacenamiento', category: 'ssd', icon: 'storage', subtitle: '2.5 pulgadas 550MB/s', sourceLabel: 'Almacenamiento', image: '', stock: 6 },
+  { name: 'Pendrive 64GB USB 3.0', slug: 'pendrive-64gb-usb-3-0', price: 9500, rootCategory: 'hardware', section: 'almacenamiento', category: 'pendrive', icon: 'usb', subtitle: 'Lectura 100MB/s', sourceLabel: 'Pendrives', image: '', stock: 10 },
+  { name: 'RTX 3060 12GB', slug: 'rtx-3060-12gb', price: 280000, rootCategory: 'hardware', section: 'pc-componentes', category: 'gpu', icon: 'display_settings', subtitle: 'NVIDIA Ampere', sourceLabel: 'Placas de Video', image: '', stock: 1 },
+  { name: 'Ryzen 5 5600X', slug: 'ryzen-5-5600x', price: 115000, rootCategory: 'hardware', section: 'pc-componentes', category: 'cpu', icon: 'memory', subtitle: 'AMD AM4 6 nucleos', sourceLabel: 'Componentes PC', image: '', stock: 2 },
+  { name: 'RAM DDR4 16GB Kit 3600', slug: 'ram-ddr4-16gb-kit-3600', price: 52000, rootCategory: 'hardware', section: 'pc-componentes', category: 'ram', icon: 'sim_card', subtitle: '2x8GB RGB', sourceLabel: 'Componentes PC', image: '', stock: 3 }
+];
+
+/* ══════════════════════════════════════════════════════
+   RENDER ENGINE
+   ══════════════════════════════════════════════════════ */
+function getItems() {
+  if (currentLevel === 'root') return CATALOG;
+  return currentParent ? (currentParent.children || []) : CATALOG;
+}
+
+function getCategoryLabel(item, hasChildren) {
+  if (currentLevel !== 'root') return 'Subcategoría';
+  var labels = {
+    hardware: 'Hardware',
+    consolas: 'Consolas',
+    perifericos: 'Perifericos',
+    audio: 'Audio',
+    accesorios: 'Accesorios'
+  };
+  return labels[item.category] || (hasChildren ? 'Categoría' : 'Catálogo');
+}
+
+function getCardAction(item, hasChildren) {
+  if (hasChildren) {
+    return (item.children.length || 0) + ' secciones';
+  }
+  return 'Ver productos';
+}
+
+function formatPrice(value) {
+  var amount = Number(value || 0);
+  var hasCents = Math.abs(amount - Math.round(amount)) > 0.009;
+  return (CONFIG.CURRENCY_SYMBOL || '$') + amount.toLocaleString('es-AR', {
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: 2
+  });
+}
+
+function shuffleExamples(items) {
+  return items
+    .map(function(item) { return { item: item, order: Math.random() }; })
+    .sort(function(a, b) { return a.order - b.order; })
+    .map(function(entry) { return entry.item; });
+}
+
+function getExampleProductsForView() {
+  var scope = currentLevel === 'root'
+    ? currentFilter
+    : ((currentParent && currentParent.category) || 'all');
+  var section = currentRouteState.view === 'category' && currentParent ? currentParent.id : '';
+
+  function matchesProductExample(item, useSection) {
+    var matchCategory = scope === 'all' || item.rootCategory === scope;
+    var matchSection = !useSection || !section || item.section === section;
+    var haystack = [
+      item.name,
+      item.subtitle,
+      item.sourceLabel,
+      item.section,
+      item.category,
+      item.rootCategory
+    ].join(' ').toLowerCase();
+    var matchSearch = currentSearch === '' || haystack.indexOf(currentSearch) !== -1;
+    return matchCategory && matchSection && matchSearch;
+  }
+
+  var products = EXAMPLE_PRODUCTS.filter(function(item) {
+    return matchesProductExample(item, true);
+  });
+
+  if (!products.length && section) {
+    products = EXAMPLE_PRODUCTS.filter(function(item) {
+      return matchesProductExample(item, false);
+    });
+  }
+
+  return shuffleExamples(products);
+}
+
+function findSubcategory(id) {
+  function walk(items, ancestors) {
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      if (item.id === id) {
+        return {
+          parent: ancestors[ancestors.length - 1] || item,
+          child: item,
+          ancestors: ancestors
+        };
+      }
+      var found = walk(item.children || [], ancestors.concat(item));
+      if (found) return found;
+    }
+    return null;
+  }
+  return walk(CATALOG, []);
+}
+
+function getSupabaseSlugs(found) {
+  var slugs = [found.child.id];
+  return slugs.filter(function(slug, index, arr) {
+    return slug && arr.indexOf(slug) === index;
+  });
+}
+
+async function loadAccessCatalog() {
+  if (!window.SupabaseStore || !window.SupabaseStore.isReady || !window.SupabaseStore.isReady()) return;
+  if (!window.SupabaseStore.fetchAccessCatalogTree) return;
+
+  var accessCatalog = await window.SupabaseStore.fetchAccessCatalogTree();
+  if (accessCatalog && accessCatalog.length) {
+    CATALOG = accessCatalog;
+    catalogLoadedFromSupabase = true;
+  }
+}
+
+function scrollCatalogTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+}
+
+function findCatalogItem(id) {
+  if (!id) return null;
+  var found = findSubcategory(id);
+  return found ? found.child : null;
+}
+
+function catalogUrl(state) {
+  var params = new URLSearchParams();
+  if (state.view === 'category' && state.id) {
+    params.set('catid', state.id);
+  } else if (state.view === 'products' && state.id) {
+    params.set('sub', state.id);
+  } else {
+    if (state.filter && state.filter !== 'all') params.set('cat', state.filter);
+    if (state.q) params.set('q', state.q);
+  }
+  var query = params.toString();
+  return 'catalogo.html' + (query ? '?' + query : '');
+}
+
+function updateCatalogHistory(state, replace) {
+  currentRouteState = state;
+  if (!window.history || !window.history.pushState) return;
+  var payload = { dtCatalog: true, catalog: state };
+  if (replace) {
+    window.history.replaceState(payload, '', catalogUrl(state));
+  } else {
+    window.history.pushState(payload, '', catalogUrl(state));
+  }
+}
+
+function setBackAction(label, handler) {
+  var backBtn = document.getElementById('back-to-root');
+  var backLabel = document.getElementById('back-label');
+  if (backLabel) backLabel.textContent = label;
+  if (backBtn) {
+    backBtn.onclick = handler;
+    backBtn.classList.add('visible');
+  }
+}
+
+function syncRootControls() {
+  document.querySelectorAll('.filter-pill').forEach(function(p) {
+    var active = p.getAttribute('data-filter') === currentFilter;
+    p.classList.toggle('active', active);
+  });
+  var mobileSelect = document.getElementById('category-mobile-select');
+  if (mobileSelect) mobileSelect.value = currentFilter || 'all';
+  ['search-input', 'search-catalog', 'search-filter-mobile'].forEach(function(id) {
+    var input = document.getElementById(id);
+    if (input) input.value = currentSearch;
+  });
+}
+
+function getActivePathIds() {
+  if (currentRouteState.view === 'products' && currentRouteState.id) {
+    var productFound = findSubcategory(currentRouteState.id);
+    if (productFound) {
+      return productFound.ancestors.map(function(item) { return item.id; }).concat(productFound.child.id);
+    }
+  }
+
+  if (currentParent) {
+    var parentFound = findSubcategory(currentParent.id);
+    if (parentFound) {
+      return parentFound.ancestors.map(function(item) { return item.id; }).concat(currentParent.id);
+    }
+  }
+
+  return [];
+}
+
+function renderCategorySidebar() {
+  var tree = document.getElementById('category-tree');
+  var mobileTree = document.getElementById('mobile-category-tree');
+  var layout = document.querySelector('.catalog-layout');
+  if (!tree && !mobileTree) return;
+
+  var activeIds = getActivePathIds();
+
+  if (mobileTree) {
+    mobileTree.innerHTML = '';
+    CATALOG.forEach(function(item) {
+      appendSidebarItem(mobileTree, item, 0, activeIds);
+    });
+  }
+
+  if (currentRouteState.view === 'root') {
+    if (tree) tree.innerHTML = '';
+    if (layout) layout.classList.remove('has-sidebar');
+    return;
+  }
+
+  if (layout) layout.classList.add('has-sidebar');
+
+  if (!tree) return;
+  tree.innerHTML = '';
+
+  CATALOG.forEach(function(item) {
+    appendSidebarItem(tree, item, 0, activeIds);
+  });
+}
+
+function appendSidebarItem(container, item, depth, activeIds) {
+  var hasChildren = item.children && item.children.length > 0;
+  var isActive = activeIds.indexOf(item.id) !== -1;
+  var shouldShowChildren = hasChildren && isActive;
+  var row = document.createElement('button');
+
+  row.type = 'button';
+  row.className = 'category-tree-row' +
+    (hasChildren ? ' has-children' : ' is-leaf') +
+    (isActive ? ' active' : '') +
+    (shouldShowChildren ? ' open' : '');
+  row.style.setProperty('--depth', depth);
+  row.onclick = function() {
+    if (hasChildren) {
+      drillInto(item);
+    } else {
+      closeCatalogPanel();
+      openSubcategory(item);
+    }
+  };
+
+  var chevron = document.createElement('span');
+  chevron.className = 'category-tree-chevron material-symbols-outlined';
+  chevron.textContent = hasChildren
+    ? (shouldShowChildren ? 'keyboard_arrow_up' : 'keyboard_arrow_down')
+    : 'chevron_right';
+  row.appendChild(chevron);
+
+  var label = document.createElement('span');
+  label.className = 'category-tree-label';
+  label.textContent = item.name;
+  row.appendChild(label);
+
+  container.appendChild(row);
+
+  if (shouldShowChildren) {
+    var group = document.createElement('div');
+    group.className = 'category-tree-children';
+    (item.children || []).forEach(function(child) {
+      appendSidebarItem(group, child, depth + 1, activeIds);
+    });
+    container.appendChild(group);
+  }
+}
+
+function openCatalogPanel(type) {
+  var backdrop = document.getElementById('catalog-panel-backdrop');
+  var categoryPanel = document.getElementById('catalog-category-panel');
+  var filterPanel = document.getElementById('catalog-filter-panel');
+  var panel = type === 'filters' ? filterPanel : categoryPanel;
+
+  closeCatalogPanel(false);
+  renderCategorySidebar();
+  syncRootControls();
+
+  if (backdrop) backdrop.classList.add('active');
+  if (panel) panel.classList.add('active');
+  document.body.classList.add('catalog-panel-open');
+}
+
+function closeCatalogPanel(unlockBody) {
+  var backdrop = document.getElementById('catalog-panel-backdrop');
+  var categoryPanel = document.getElementById('catalog-category-panel');
+  var filterPanel = document.getElementById('catalog-filter-panel');
+
+  if (backdrop) backdrop.classList.remove('active');
+  if (categoryPanel) categoryPanel.classList.remove('active');
+  if (filterPanel) filterPanel.classList.remove('active');
+  if (unlockBody !== false) document.body.classList.remove('catalog-panel-open');
+}
+
+function renderProductCards(products) {
+  var grid = document.getElementById('categories-grid');
+  grid.innerHTML = '';
+  grid.style.display = '';
+
+  products.forEach(function(p, idx) {
+    var card = document.createElement('div');
+    card.className = 'product-card';
+    card.dataset.name = p.name || '';
+    card.dataset.category = p.rootCategory || p.category || '';
+    card.dataset.order = idx;
+    card.style.animationDelay = (idx * 0.035) + 's';
+    card.onclick = function() {
+      window.location.href = 'producto.html?id=' + encodeURIComponent(p.slug);
+    };
+
+    var media = document.createElement('div');
+    media.className = 'product-card-media';
+    if (p.image) {
+      var img = document.createElement('img');
+      img.src = p.image;
+      img.alt = p.name;
+      media.appendChild(img);
+    } else {
+      var icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined';
+      icon.textContent = p.icon || 'inventory_2';
+      media.appendChild(icon);
+    }
+    card.appendChild(media);
+
+    var body = document.createElement('div');
+    body.className = 'product-card-body';
+
+    var source = document.createElement('span');
+    source.className = 'product-card-source';
+    source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
+    body.appendChild(source);
+
+    var title = document.createElement('h3');
+    title.className = 'product-card-title';
+    title.textContent = p.name;
+    body.appendChild(title);
+
+    var subtitle = document.createElement('p');
+    subtitle.className = 'product-card-subtitle';
+    subtitle.textContent = displayCatalogText(p.subtitle || 'Consultar disponibilidad');
+    body.appendChild(subtitle);
+
+    if (p.stock !== undefined && p.stock !== null) {
+      var stock = document.createElement('span');
+      stock.className = 'product-card-stock';
+      var stockValue = Number(p.stock || 0);
+      stock.textContent = stockValue > 0 ? 'Stock ' + stockValue : 'Sin stock';
+      body.appendChild(stock);
+    }
+
+    var foot = document.createElement('div');
+    foot.className = 'product-card-foot';
+    var price = document.createElement('strong');
+    price.textContent = formatPrice(p.price || 0);
+    foot.appendChild(price);
+    var action = document.createElement('span');
+    action.className = 'material-symbols-outlined';
+    action.textContent = 'arrow_forward';
+    foot.appendChild(action);
+    body.appendChild(foot);
+
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+function collectAccessSubcategoryIds(item) {
+  var ids = [];
+  function walk(node) {
+    if (!node) return;
+    if (node.accessSubcategoryId && ids.indexOf(String(node.accessSubcategoryId)) === -1) {
+      ids.push(String(node.accessSubcategoryId));
+    }
+    (node.children || []).forEach(walk);
+  }
+  walk(item);
+  return ids;
+}
+
+async function fetchProductsByAccessSubcategories(ids) {
+  if (!ids.length || !window.SupabaseStore || !window.SupabaseStore.fetchAccessProductsBySubcategory) return [];
+  var requests = ids.map(function(id) {
+    return window.SupabaseStore.fetchAccessProductsBySubcategory(id);
+  });
+  var groups = await Promise.all(requests);
+  var seen = {};
+  return groups.reduce(function(all, group) {
+    return all.concat(group || []);
+  }, []).filter(function(product) {
+    var key = product.slug || product.accessId || product.id || product.name;
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+
+function uniqueProducts(products) {
+  var seen = {};
+  return (products || []).filter(function(product) {
+    var key = product.slug || product.accessId || product.id || product.name;
+    if (!key || seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+
+async function runInChunks(items, size, worker) {
+  var out = [];
+  for (var i = 0; i < items.length; i += size) {
+    var chunk = items.slice(i, i + size);
+    var groups = await Promise.all(chunk.map(worker));
+    groups.forEach(function(group) {
+      out = out.concat(group || []);
+    });
+  }
+  return out;
+}
+
+function collectAccessCategoryIdsForSearch(filter) {
+  var ids = [];
+  CATALOG.forEach(function(item) {
+    if (filter !== 'all' && item.category !== filter) return;
+    (item.accessCategoryIds || []).forEach(function(id) {
+      id = String(id || '').trim();
+      if (id && ids.indexOf(id) === -1) ids.push(id);
+    });
+  });
+  return ids;
+}
+
+function collectAccessSubcategoryIdsForSearch(filter) {
+  var ids = [];
+  CATALOG.forEach(function(item) {
+    if (filter !== 'all' && item.category !== filter) return;
+    collectAccessSubcategoryIds(item).forEach(function(id) {
+      id = String(id || '').trim();
+      if (id && ids.indexOf(id) === -1) ids.push(id);
+    });
+  });
+  return ids;
+}
+
+async function getProductPoolForSearch(filter) {
+  filter = filter || 'all';
+  if (productSearchCache[filter]) return productSearchCache[filter];
+
+  var products = [];
+  if (window.SupabaseStore && window.SupabaseStore.isReady && window.SupabaseStore.isReady()) {
+    var categoryIds = collectAccessCategoryIdsForSearch(filter);
+    if (categoryIds.length && window.SupabaseStore.fetchAccessProductsByCategory) {
+      products = await runInChunks(categoryIds, 4, function(id) {
+        return window.SupabaseStore.fetchAccessProductsByCategory(id);
+      });
+    }
+
+    if (!products.length) {
+      var subcategoryIds = collectAccessSubcategoryIdsForSearch(filter);
+      products = await runInChunks(subcategoryIds, 6, function(id) {
+        return window.SupabaseStore.fetchAccessProductsBySubcategory(id);
+      });
+    }
+  }
+
+  if (!products.length) {
+    products = Object.values(EXAMPLE_PRODUCTS || {}).filter(function(product) {
+      return filter === 'all' || product.rootCategory === filter || product.category === filter;
+    });
+  }
+
+  products = uniqueProducts(products);
+  productSearchCache[filter] = products;
+  return products;
+}
+
+function normalizeSearchValue(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function displayCatalogText(value) {
+  return String(value || '')
+    .replace(/\bAccessorios\b/gi, 'Accesorios')
+    .replace(/\bAccessorio\b/gi, 'Accesorio')
+    .replace(/\bCatalogo\b/gi, 'Catálogo')
+    .replace(/\bCategoria\b/gi, 'Categoría')
+    .replace(/\bSubcategoria\b/gi, 'Subcategoría')
+    .replace(/\bCodigo\b/gi, 'Código');
+}
+
+function productMatchesSearch(product, query) {
+  var haystack = normalizeSearchValue([
+    product.name,
+    product.subtitle,
+    product.description,
+    product.brand,
+    product.model,
+    product.sourceLabel,
+    product.category,
+    product.rootCategory,
+    product.id,
+    product.accessId
+  ].filter(Boolean).join(' '));
+  return haystack.indexOf(query) !== -1;
+}
+
+function scoreSearchSuggestion(product, query) {
+  var name = normalizeSearchValue(product.name);
+  var code = normalizeSearchValue([product.id, product.accessId, product.model].filter(Boolean).join(' '));
+  var label = normalizeSearchValue(product.sourceLabel);
+
+  if (name === query || code === query) return 0;
+  if (name.indexOf(query) === 0) return 1;
+  if (code.indexOf(query) !== -1) return 2;
+  if (label.indexOf(query) !== -1) return 3;
+  if (name.indexOf(query) !== -1) return 4;
+  return 5;
+}
+
+function hideSearchSuggestions(input) {
+  if (!input || !input._suggestionsBox) return;
+  input._suggestionsBox.classList.remove('active');
+}
+
+function hideAllSearchSuggestions() {
+  document.querySelectorAll('.search-suggestions.active').forEach(function(box) {
+    box.classList.remove('active');
+  });
+}
+
+function renderSearchSuggestions(input, products, query) {
+  if (!input || !input._suggestionsBox) return;
+
+  var box = input._suggestionsBox;
+  box.innerHTML = '';
+
+  if (!products.length) {
+    var empty = document.createElement('div');
+    empty.className = 'search-suggestion-empty';
+    empty.textContent = 'Sin productos para "' + query + '"';
+    box.appendChild(empty);
+    box.classList.add('active');
+    return;
+  }
+
+  products.slice(0, 5).forEach(function(product) {
+    var item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'search-suggestion-item';
+
+    var media = document.createElement('span');
+    media.className = 'search-suggestion-media';
+    if (product.image) {
+      var img = document.createElement('img');
+      img.src = product.image;
+      img.alt = product.name || 'Producto';
+      media.appendChild(img);
+    } else {
+      var icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined';
+      icon.textContent = product.icon || 'inventory_2';
+      media.appendChild(icon);
+    }
+
+    var copy = document.createElement('span');
+    copy.className = 'search-suggestion-copy';
+    var name = document.createElement('span');
+    name.className = 'search-suggestion-name';
+    name.textContent = displayCatalogText(product.name || 'Producto');
+    var meta = document.createElement('span');
+    meta.className = 'search-suggestion-meta';
+    meta.textContent = displayCatalogText(product.sourceLabel || product.subtitle || 'Producto');
+    copy.appendChild(name);
+    copy.appendChild(meta);
+
+    var price = document.createElement('span');
+    price.className = 'search-suggestion-price';
+    price.textContent = formatPrice(product.price || 0);
+
+    item.appendChild(media);
+    item.appendChild(copy);
+    item.appendChild(price);
+
+    item.addEventListener('mousedown', function(event) {
+      event.preventDefault();
+    });
+    item.addEventListener('click', function() {
+      window.location.href = 'producto.html?id=' + encodeURIComponent(product.slug);
+    });
+
+    box.appendChild(item);
+  });
+
+  box.classList.add('active');
+}
+
+async function updateSearchSuggestions(input) {
+  if (!input) return;
+  var query = input.value.trim();
+  var normalizedQuery = normalizeSearchValue(query);
+  input._suggestionRequest = (input._suggestionRequest || 0) + 1;
+  var requestId = input._suggestionRequest;
+
+  if (normalizedQuery.length < 2) {
+    hideSearchSuggestions(input);
+    return;
+  }
+
+  var pool = await getProductPoolForSearch(currentFilter || 'all');
+  if (requestId !== input._suggestionRequest) return;
+
+  var results = pool
+    .filter(function(product) { return productMatchesSearch(product, normalizedQuery); })
+    .sort(function(a, b) {
+      var score = scoreSearchSuggestion(a, normalizedQuery) - scoreSearchSuggestion(b, normalizedQuery);
+      if (score !== 0) return score;
+      return String(a.name || '').localeCompare(String(b.name || ''), 'es');
+    });
+
+  renderSearchSuggestions(input, results, query);
+}
+
+function attachSearchSuggestions(input) {
+  if (!input || input._suggestionsReady) return;
+  input._suggestionsReady = true;
+
+  var parent = input.parentElement;
+  if (!parent) return;
+  var box = document.createElement('div');
+  box.className = 'search-suggestions';
+  parent.appendChild(box);
+  input._suggestionsBox = box;
+
+  input.addEventListener('input', function() {
+    clearTimeout(input._suggestionTimer);
+    input._suggestionTimer = setTimeout(function() {
+      updateSearchSuggestions(input);
+    }, 120);
+  });
+
+  input.addEventListener('focus', function() {
+    if (input.value.trim().length >= 2) updateSearchSuggestions(input);
+  });
+
+  input.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') hideSearchSuggestions(input);
+  });
+
+  input.addEventListener('blur', function() {
+    setTimeout(function() { hideSearchSuggestions(input); }, 140);
+  });
+}
+
+function initSearchSuggestions() {
+  ['search-input', 'search-catalog', 'search-filter-mobile'].forEach(function(id) {
+    attachSearchSuggestions(document.getElementById(id));
+  });
+
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.search-suggestions') && !event.target.closest('#search-input') && !event.target.closest('#search-catalog') && !event.target.closest('#search-filter-mobile')) {
+      hideAllSearchSuggestions();
+    }
+  });
+}
+
+async function renderProductSearchResults(query, options) {
+  options = options || {};
+  var requestId = ++productsRequestId;
+  var normalizedQuery = normalizeSearchValue(query);
+  if (!normalizedQuery) {
+    document.getElementById('page-title').textContent = 'Todo el Catálogo';
+    document.getElementById('page-subtitle').textContent = 'Explorá todas las categorías disponibles en la tienda.';
+    updateGridHelper('Elegi una categoria para explorar productos disponibles.');
+    renderGrid(CATALOG, options.animate === true);
+    return;
+  }
+
+  document.getElementById('page-title').textContent = 'Resultados';
+  document.getElementById('page-subtitle').textContent = 'Productos encontrados para "' + query.trim() + '".';
+  updateGridHelper('Tocá un producto para ver el detalle.');
+
+  var grid = document.getElementById('categories-grid');
+  var empty = document.getElementById('empty-state');
+  grid.style.display = 'none';
+  document.getElementById('visible-count').textContent = '...';
+  document.getElementById('count-label').textContent = 'productos';
+  empty.classList.remove('hidden');
+  empty.querySelector('.material-symbols-outlined').textContent = 'hourglass_top';
+  empty.querySelector('p.font-headline').textContent = 'Buscando productos';
+  empty.querySelector('p.font-body').textContent = 'Estamos revisando productos cargados.';
+
+  var pool = await getProductPoolForSearch(currentFilter);
+  if (requestId !== productsRequestId) return;
+
+  var results = pool.filter(function(product) {
+    return productMatchesSearch(product, normalizedQuery);
+  });
+
+  document.getElementById('visible-count').textContent = results.length;
+  if (results.length) {
+    empty.classList.add('hidden');
+    renderProductCards(results);
+  } else {
+    grid.style.display = 'none';
+    empty.classList.remove('hidden');
+    empty.querySelector('.material-symbols-outlined').textContent = 'search_off';
+    empty.querySelector('p.font-headline').textContent = 'No se encontraron productos';
+    empty.querySelector('p.font-body').textContent = 'Probá buscando por nombre, código o marca.';
+  }
+}
+
+function renderExampleProducts() {
+  var products = getExampleProductsForView();
+  resetEmptyState();
+
+  document.getElementById('visible-count').textContent = products.length;
+  document.getElementById('count-label').textContent = 'productos';
+  document.getElementById('empty-state').classList.toggle('hidden', products.length > 0);
+
+  if (products.length) {
+    renderProductCards(products);
+  } else {
+    var grid = document.getElementById('categories-grid');
+    if (grid) {
+      grid.innerHTML = '';
+      grid.style.display = 'none';
+    }
+  }
+}
+
+async function showSubcategoryComingSoon(found, options) {
+  options = options || {};
+  var requestId = ++productsRequestId;
+  currentLevel = 'products';
+  currentParent = found.parent;
+  currentSearch = '';
+  currentRouteState = { view: 'products', id: found.child.id };
+  renderCategorySidebar();
+  if (options.updateHistory !== false) {
+    updateCatalogHistory(currentRouteState, options.replaceHistory === true);
+  }
+
+  document.getElementById('page-title').textContent = found.child.name;
+  document.getElementById('page-subtitle').textContent = 'Productos de ' + found.child.name + '.';
+  updateGridHelper('');
+
+  var ll = document.getElementById('level-label');
+  ll.textContent = 'Subcategoria';
+  ll.classList.add('visible');
+
+  updateBreadcrumb(found.parent);
+  var trail = document.getElementById('breadcrumb-trail');
+  var sep = document.createElement('span');
+  sep.className = 'breadcrumb-sep';
+  sep.textContent = '/';
+  var current = document.createElement('span');
+  current.className = 'bc-item text-[#8ff5ff]';
+  current.textContent = found.child.name;
+  trail.appendChild(sep);
+  trail.appendChild(current);
+
+  var deskCtrl = document.getElementById('desktop-controls');
+  var mobileBar = document.getElementById('filter-bar-mobile');
+  if (deskCtrl) deskCtrl.style.display = 'none';
+  if (mobileBar) mobileBar.style.display = '';
+
+  setBackAction(found.parent && found.parent !== found.child ? 'Volver a ' + found.parent.name : 'Volver al catalogo', goBackOneLevel);
+  document.getElementById('categories-grid').style.display = 'none';
+  document.getElementById('visible-count').textContent = '...';
+  document.getElementById('count-label').textContent = 'productos';
+
+  var empty = document.getElementById('empty-state');
+  empty.classList.remove('hidden');
+  empty.querySelector('.material-symbols-outlined').textContent = 'hourglass_top';
+  empty.querySelector('p.font-headline').textContent = 'Cargando productos';
+  empty.querySelector('p.font-body').textContent = 'Estamos consultando Supabase.';
+  var emptyBtn = empty.querySelector('button');
+  if (emptyBtn) {
+    emptyBtn.textContent = found.parent && found.parent !== found.child ? 'Volver a ' + found.parent.name : 'Volver al catalogo';
+    emptyBtn.onclick = goBackOneLevel;
+  }
+  scrollCatalogTop();
+
+  var products = [];
+  if (window.SupabaseStore && window.SupabaseStore.isReady()) {
+    if (found.child.accessSubcategoryId && window.SupabaseStore.fetchAccessProductsBySubcategory) {
+      products = await window.SupabaseStore.fetchAccessProductsBySubcategory(found.child.accessSubcategoryId);
+    } else {
+      products = await window.SupabaseStore.fetchProductsByCategorySlugs(getSupabaseSlugs(found));
+    }
+  }
+  if (requestId !== productsRequestId) return;
+
+  document.getElementById('visible-count').textContent = products.length;
+  if (products.length) {
+    empty.classList.add('hidden');
+    renderProductCards(products);
+  } else {
+    empty.querySelector('.material-symbols-outlined').textContent = 'inventory_2';
+    empty.querySelector('p.font-headline').textContent = 'Sin productos cargados';
+    empty.querySelector('p.font-body').textContent = window.SupabaseStore && window.SupabaseStore.isReady()
+      ? 'No encontramos productos activos en esta categoria todavia.'
+      : 'Supabase no esta disponible en esta pagina. Revisa la conexion o las policies.';
+  }
+}
+
+async function showCategoryProducts(item, requestId) {
+  document.getElementById('categories-grid').style.display = 'none';
+  document.getElementById('visible-count').textContent = '...';
+  document.getElementById('count-label').textContent = 'productos';
+
+  var empty = document.getElementById('empty-state');
+  empty.classList.remove('hidden');
+  empty.querySelector('.material-symbols-outlined').textContent = 'hourglass_top';
+  empty.querySelector('p.font-headline').textContent = 'Cargando productos';
+  empty.querySelector('p.font-body').textContent = 'Estamos consultando Supabase.';
+
+  var emptyBtn = empty.querySelector('button');
+  if (emptyBtn) {
+    emptyBtn.textContent = 'Volver a Catalogo';
+    emptyBtn.onclick = goBackOneLevel;
+  }
+
+  var products = [];
+  if (window.SupabaseStore && window.SupabaseStore.isReady()) {
+    var subcategoryIds = collectAccessSubcategoryIds(item);
+    if (item.useChildrenForProducts && subcategoryIds.length) {
+      products = await fetchProductsByAccessSubcategories(subcategoryIds);
+    } else if (item.accessCategoryId && window.SupabaseStore.fetchAccessProductsByCategory) {
+      products = await window.SupabaseStore.fetchAccessProductsByCategory(item.accessCategoryId);
+    }
+
+    if (!products.length && subcategoryIds.length && window.SupabaseStore.fetchAccessProductsBySubcategory) {
+      products = await fetchProductsByAccessSubcategories(subcategoryIds);
+    } else if (!products.length && window.SupabaseStore.fetchProductsByCategorySlugs) {
+      products = await window.SupabaseStore.fetchProductsByCategorySlugs([item.id]);
+    }
+  }
+  if (requestId !== productsRequestId) return;
+
+  document.getElementById('visible-count').textContent = products.length;
+  if (products.length) {
+    empty.classList.add('hidden');
+    renderProductCards(products);
+  } else {
+    empty.querySelector('.material-symbols-outlined').textContent = 'inventory_2';
+    empty.querySelector('p.font-headline').textContent = 'Sin productos cargados';
+    empty.querySelector('p.font-body').textContent = window.SupabaseStore && window.SupabaseStore.isReady()
+      ? 'No encontramos productos activos en esta categoria todavia.'
+      : 'Supabase no esta disponible en esta pagina. Revisa la conexion o las policies.';
+  }
+}
+
+function buildCard(item, delay) {
+  var hasChildren = item.children && item.children.length > 0;
+  var card = document.createElement('div');
+  card.className = 'cat-card ' + (currentLevel === 'root' ? 'cat-card-root' : 'cat-card-sub') + (hasChildren ? ' has-children' : ' is-leaf');
+  card.dataset.category = item.category || 'sub';
+  card.dataset.name = item.name;
+  card.dataset.order = String(delay || 0);
+  card.style.animationDelay = delay + 's';
+
+  if (hasChildren) {
+    card.onclick = function() { drillInto(item); };
+  } else {
+    card.onclick = function() { openSubcategory(item); };
+  }
+
+  // Imagen o placeholder
+  var imgArea = document.createElement('div');
+  imgArea.className = 'aspect-square overflow-hidden relative';
+  imgArea.style.background = '#0d0d0d';
+
+  if (item.image) {
+    var img = document.createElement('img');
+    img.src = item.image;
+    img.alt = item.name;
+    img.className = 'cat-img opacity-60';
+    img.onerror = function() { this.style.display = 'none'; };
+    imgArea.appendChild(img);
+  } else {
+    var placeholder = document.createElement('div');
+    placeholder.className = 'cat-placeholder';
+    var pIcon = document.createElement('span');
+    pIcon.className = 'cat-placeholder-icon material-symbols-outlined';
+    pIcon.textContent = item.icon || 'category';
+    var pLabel = document.createElement('span');
+    pLabel.className = 'cat-placeholder-label';
+    pLabel.textContent = hasChildren ? 'Ver categoria' : 'Ver productos';
+    placeholder.appendChild(pIcon);
+    placeholder.appendChild(pLabel);
+    imgArea.appendChild(placeholder);
+  }
+
+  var badge = document.createElement('span');
+  badge.className = 'cat-badge';
+  badge.textContent = getCategoryLabel(item, hasChildren);
+  imgArea.appendChild(badge);
+
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.85))';
+  imgArea.appendChild(overlay);
+
+
+
+  card.appendChild(imgArea);
+
+  // Info
+  var info = document.createElement('div');
+  info.className = 'cat-card-info';
+
+  var row = document.createElement('div');
+  row.className = 'cat-card-title-row';
+
+  var left = document.createElement('div');
+  left.className = 'cat-card-copy';
+
+  var iconEl = document.createElement('span');
+  iconEl.className = 'cat-icon material-symbols-outlined text-[#484847] text-[18px] md:text-[24px] transition-colors duration-300 block mb-1 md:mb-2';
+  iconEl.textContent = item.icon || 'category';
+  left.appendChild(iconEl);
+
+  var h3 = document.createElement('h3');
+  h3.className = 'cat-card-title';
+  h3.textContent = item.name;
+  left.appendChild(h3);
+
+  var sub = document.createElement('p');
+  sub.className = 'cat-card-subtitle';
+  sub.textContent = item.subtitle || '';
+  left.appendChild(sub);
+
+  var arrow = document.createElement('span');
+  arrow.className = 'cat-arrow material-symbols-outlined text-[#8ff5ff] text-[18px] md:text-[24px] mt-0.5 md:mt-1';
+  arrow.textContent = hasChildren ? 'chevron_right' : 'arrow_forward';
+
+  row.appendChild(left);
+  row.appendChild(arrow);
+  info.appendChild(row);
+
+  var action = document.createElement('div');
+  action.className = 'cat-card-action';
+  var actionText = document.createElement('span');
+  actionText.textContent = getCardAction(item, hasChildren);
+  var actionIcon = document.createElement('span');
+  actionIcon.className = 'material-symbols-outlined';
+  actionIcon.textContent = hasChildren ? 'layers' : 'arrow_forward';
+  action.appendChild(actionText);
+  action.appendChild(actionIcon);
+  info.appendChild(action);
+
+  card.appendChild(info);
+
+  var line = document.createElement('div');
+  line.className = 'cat-line';
+  card.appendChild(line);
+
+  return card;
+}
+
+function renderGrid(items, animate) {
+  var grid = document.getElementById('categories-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  resetEmptyState();
+
+  var visible = items.filter(function(item) {
+    var matchFilter = currentFilter === 'all' || item.category === currentFilter || currentLevel !== 'root';
+    var matchSearch = currentSearch === '' || item.name.toLowerCase().includes(currentSearch);
+    return matchFilter && matchSearch;
+  });
+
+  document.getElementById('visible-count').textContent = visible.length;
+  document.getElementById('count-label').textContent = currentLevel === 'root' ? 'categorías' : 'subcategorías';
+  document.getElementById('empty-state').classList.toggle('hidden', visible.length > 0);
+  grid.style.display = visible.length > 0 ? '' : 'none';
+
+  visible.forEach(function(item, idx) {
+    var card = buildCard(item, idx * 0.05);
+    grid.appendChild(card);
+  });
+}
+
+function updateGridHelper(text) {
+  var helper = document.getElementById('grid-helper');
+  if (helper) helper.textContent = text;
+}
+
+function resetEmptyState() {
+  var empty = document.getElementById('empty-state');
+  if (!empty) return;
+  var icon = empty.querySelector('.material-symbols-outlined');
+  var title = empty.querySelector('p.font-headline');
+  var copy = empty.querySelector('p.font-body');
+  var btn = empty.querySelector('button');
+  if (icon) icon.textContent = 'search_off';
+  if (title) title.textContent = currentRouteState.view === 'products' ? 'No se encontraron productos' : 'No se encontraron categorias';
+  if (copy) copy.textContent = 'Probá con otro término de búsqueda.';
+  if (btn) {
+    btn.textContent = 'Ver todas';
+    btn.onclick = resetFilters;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   NAVEGACIÓN
+   ══════════════════════════════════════════════════════ */
+function openSubcategory(item, options) {
+  var found = findSubcategory(item.id);
+  if (found) showSubcategoryComingSoon(found, options);
+}
+
+function drillInto(item, options) {
+  options = options || {};
+  if (!item.children || !item.children.length) return;
+
+  var wrapper = document.getElementById('grid-wrapper');
+  wrapper.classList.add('leaving');
+
+  setTimeout(async function() {
+    var requestId = ++productsRequestId;
+    currentLevel = item.id;
+    currentParent = item;
+    currentSearch = '';
+    currentRouteState = { view: 'category', id: item.id };
+    renderCategorySidebar();
+    if (options.updateHistory !== false) {
+      updateCatalogHistory(currentRouteState, options.replaceHistory === true);
+    }
+
+    // Actualizar header
+    document.getElementById('page-title').textContent = item.name;
+    document.getElementById('page-subtitle').textContent = 'Todos los productos de ' + item.name + '.';
+    updateGridHelper('Toca una subcategoria del menu si queres ver solo ese grupo.');
+
+    // Level label
+    var ll = document.getElementById('level-label');
+    ll.textContent = 'Categoría';
+    ll.classList.add('visible');
+
+    // Breadcrumb
+    updateBreadcrumb(item);
+
+    // Ocultar controles de filtro raíz
+    var deskCtrl = document.getElementById('desktop-controls');
+    var mobileBar = document.getElementById('filter-bar-mobile');
+    if (deskCtrl) deskCtrl.style.display = 'none';
+    if (mobileBar) mobileBar.style.display = '';
+
+    // Mostrar botón volver
+    var found = findSubcategory(item.id);
+    var parent = found && found.parent !== item ? found.parent : null;
+    setBackAction(parent ? 'Volver a ' + parent.name : 'Volver a Catálogo', goBackOneLevel);
+
+    if ((item.accessCategoryId || item.useChildrenForProducts) && window.SupabaseStore) {
+      await showCategoryProducts(item, requestId);
+    } else {
+      renderGrid(item.children, true);
+    }
+    scrollCatalogTop();
+
+    wrapper.classList.remove('leaving');
+    wrapper.classList.add('entering');
+    requestAnimationFrame(function() {
+      wrapper.classList.remove('entering');
+    });
+  }, 220);
+}
+
+function goBackOneLevel() {
+  if (currentRouteState.view === 'products') {
+    var found = findSubcategory(currentRouteState.id);
+    if (found && found.parent && found.parent !== found.child) {
+      drillInto(found.parent, { replaceHistory: true });
+      return;
+    }
+  }
+
+  if (currentRouteState.view === 'category' && currentParent) {
+    var parentFound = findSubcategory(currentParent.id);
+    if (parentFound && parentFound.parent && parentFound.parent !== currentParent) {
+      drillInto(parentFound.parent, { replaceHistory: true });
+      return;
+    }
+  }
+
+  goToRoot({ replaceHistory: true });
+}
+
+function goToRoot(options) {
+  options = options || {};
+  if (currentLevel === 'root') return;
+
+  var wrapper = document.getElementById('grid-wrapper');
+  wrapper.classList.add('leaving');
+
+  setTimeout(function() {
+    productsRequestId++;
+    currentLevel = 'root';
+    currentParent = null;
+    currentSearch = '';
+    currentFilter = 'all';
+    currentRouteState = { view: 'root', filter: 'all', q: '' };
+    renderCategorySidebar();
+    if (options.updateHistory !== false) {
+      updateCatalogHistory(currentRouteState, options.replaceHistory === true);
+    }
+
+    document.getElementById('page-title').textContent = 'Todo el Catálogo';
+    document.getElementById('page-subtitle').textContent = 'Explorá todas las categorías disponibles en la tienda.';
+    updateGridHelper('Elegi una categoria para explorar productos disponibles.');
+
+    var ll = document.getElementById('level-label');
+    ll.textContent = '';
+    ll.classList.remove('visible');
+
+    // Restaurar breadcrumb
+    var trail = document.getElementById('breadcrumb-trail');
+    trail.innerHTML =
+      '<span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Inicio</span>' +
+      '<span class="breadcrumb-sep">/</span>' +
+      '<span id="bc-catalog" class="bc-item text-[#8ff5ff]" onclick="goToRoot()">Catálogo</span>';
+
+    // Mostrar controles raíz
+    var deskCtrl = document.getElementById('desktop-controls');
+    var mobileBar = document.getElementById('filter-bar-mobile');
+    if (deskCtrl) deskCtrl.style.display = '';
+    if (mobileBar) mobileBar.style.display = '';
+
+    // Ocultar botón volver
+    document.getElementById('back-to-root').classList.remove('visible');
+    syncRootControls();
+
+    renderGrid(CATALOG, true);
+    scrollCatalogTop();
+
+    wrapper.classList.remove('leaving');
+    wrapper.classList.add('entering');
+    requestAnimationFrame(function() { wrapper.classList.remove('entering'); });
+  }, 220);
+}
+
+function updateBreadcrumb(item) {
+  var trail = document.getElementById('breadcrumb-trail');
+  trail.innerHTML =
+    '<span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Inicio</span>' +
+    '<span class="breadcrumb-sep">/</span>' +
+    '<span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Catálogo</span>' +
+    '<span class="breadcrumb-sep">/</span>' +
+    '<span class="bc-item text-[#8ff5ff]">' + item.name + '</span>';
+}
+
+/* ══════════════════════════════════════════════════════
+   FILTROS (solo nivel raíz)
+   ══════════════════════════════════════════════════════ */
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+  if (btn && btn.classList) btn.classList.add('active');
+  var mobileSelect = document.getElementById('category-mobile-select');
+  if (mobileSelect) mobileSelect.value = filter;
+
+  if (currentLevel !== 'root') {
+    closeCatalogPanel();
+    showRootRoute(filter || 'all', '', { replaceHistory: true, animate: true });
+    return;
+  }
+
+  currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
+  updateCatalogHistory(currentRouteState, true);
+  if (currentSearch) {
+    renderProductSearchResults(currentSearch);
+  } else {
+    renderGrid(CATALOG);
+  }
+  closeCatalogPanel();
+}
+
+function filterBySearch(query) {
+  currentSearch = query.toLowerCase().trim();
+  if (currentLevel === 'root') {
+    currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
+    updateCatalogHistory(currentRouteState, true);
+    clearTimeout(productSearchTimer);
+    productSearchTimer = setTimeout(function() {
+      renderProductSearchResults(currentSearch);
+    }, currentSearch ? 220 : 0);
+    return;
+  }
+  renderGrid(currentLevel === 'root' ? CATALOG : (currentParent ? currentParent.children : CATALOG));
+}
+
+function handleSearchLive(query) {
+  currentSearch = query.toLowerCase().trim();
+  if (currentLevel === 'root') {
+    currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
+    updateCatalogHistory(currentRouteState, true);
+    clearTimeout(productSearchTimer);
+    productSearchTimer = setTimeout(function() {
+      renderProductSearchResults(currentSearch);
+    }, currentSearch ? 220 : 0);
+    return;
+  }
+  renderGrid(currentParent ? currentParent.children : CATALOG);
+}
+
+function sortCards(order) {
+  var grid = document.getElementById('categories-grid');
+  var cards = Array.from(grid.querySelectorAll('.cat-card, .product-card'));
+  if (order === 'default') {
+    cards.sort(function(a, b) {
+      return Number(a.dataset.order || 0) - Number(b.dataset.order || 0);
+    });
+  } else {
+    cards.sort(function(a, b) {
+      return order === 'az'
+        ? a.dataset.name.localeCompare(b.dataset.name, 'es')
+        : b.dataset.name.localeCompare(a.dataset.name, 'es');
+    });
+  }
+  cards.forEach(function(c) { grid.appendChild(c); });
+}
+
+function resetFilters() {
+  currentFilter = 'all';
+  currentSearch = '';
+  currentRouteState = { view: 'root', filter: 'all', q: '' };
+  updateCatalogHistory(currentRouteState, true);
+  syncRootControls();
+  renderGrid(CATALOG);
+}
+
+function showRootRoute(filter, query, options) {
+  options = options || {};
+  productsRequestId++;
+  currentLevel = 'root';
+  currentParent = null;
+  currentFilter = filter || 'all';
+  currentSearch = query || '';
+  currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
+  renderCategorySidebar();
+  if (options.updateHistory !== false) {
+    updateCatalogHistory(currentRouteState, options.replaceHistory === true);
+  }
+
+  document.getElementById('page-title').textContent = 'Todo el Catálogo';
+  document.getElementById('page-subtitle').textContent = 'Explorá todas las categorías disponibles en la tienda.';
+  updateGridHelper('Elegi una categoria para explorar productos disponibles.');
+
+  var ll = document.getElementById('level-label');
+  ll.textContent = '';
+  ll.classList.remove('visible');
+
+  var trail = document.getElementById('breadcrumb-trail');
+  trail.innerHTML =
+    '<span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Inicio</span>' +
+    '<span class="breadcrumb-sep">/</span>' +
+    '<span id="bc-catalog" class="bc-item text-[#8ff5ff]" onclick="goToRoot()">Catálogo</span>';
+
+  var deskCtrl = document.getElementById('desktop-controls');
+  var mobileBar = document.getElementById('filter-bar-mobile');
+  if (deskCtrl) deskCtrl.style.display = '';
+  if (mobileBar) mobileBar.style.display = '';
+  document.getElementById('back-to-root').classList.remove('visible');
+
+  syncRootControls();
+  if (currentSearch) {
+    renderProductSearchResults(currentSearch, options);
+  } else {
+    renderGrid(CATALOG, options.animate === true);
+  }
+  if (options.scroll !== false) scrollCatalogTop();
+}
+
+function applyCatalogRoute(options) {
+  options = options || {};
+  var params = new URLSearchParams(window.location.search);
+  var subcategory = (params.get('sub') || '').toLowerCase().trim();
+  var categoryId = (params.get('catid') || '').toLowerCase().trim();
+  var category = (params.get('cat') || '').toLowerCase().trim();
+  var query = (params.get('q') || '').toLowerCase().trim();
+
+  if (subcategory) {
+    var found = findSubcategory(subcategory);
+    if (found) {
+      currentRouteState = { view: 'products', id: found.child.id };
+      if (options.updateHistory !== false) updateCatalogHistory(currentRouteState, options.replaceHistory === true);
+      showSubcategoryComingSoon(found, { updateHistory: false });
+      return;
+    }
+  }
+
+  if (categoryId) {
+    var item = findCatalogItem(categoryId);
+    if (item && item.children && item.children.length) {
+      currentRouteState = { view: 'category', id: item.id };
+      if (options.updateHistory !== false) updateCatalogHistory(currentRouteState, options.replaceHistory === true);
+      drillInto(item, { updateHistory: false });
+      return;
+    }
+  }
+
+  var aliases = { accesorios: 'accesorios' };
+  category = aliases[category] || category;
+  showRootRoute(category || 'all', query, options);
+}
+
+/* ══════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async function() {
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual';
+  }
+  await loadAccessCatalog();
+  initSearchSuggestions();
+  applyCatalogRoute({ replaceHistory: true, scroll: true });
+  updateCartBadge();
+});
+
+window.addEventListener('popstate', function() {
+  applyCatalogRoute({ updateHistory: false, scroll: true });
+});
+</script>
+
+</body>
+</html>

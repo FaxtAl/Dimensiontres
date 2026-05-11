@@ -1,0 +1,935 @@
+<!DOCTYPE html><html class="dark" lang="es" style="scroll-behavior:smooth;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dimensión Tres | Hardware, Gaming y Servicio Técnico</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+
+
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="index.css">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="tailwind.config.js"></script>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" data-mode="connect" style="scroll-padding-top:5rem; overflow-x:hidden;">
+<!-- ═══════════════════════════════════════
+     BARRA DE NAVEGACIÓN
+     - Desktop: logo | links | íconos
+     - Mobile:  logo | íconos | hamburguesa
+     ═══════════════════════════════════════ -->
+<nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom: 1px solid rgba(0,240,255,0.08);">
+
+  <!-- Contenedor principal del nav -->
+  <div class="flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
+
+    <!-- Logo -->
+    <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">
+      Dimensión Tres
+    </a>
+
+    <!-- Links de secciones — solo visibles en desktop (md+) -->
+    <div class="hidden md:flex items-center space-x-6 lg:space-x-8 font-headline tracking-tight uppercase font-bold text-sm lg:text-base">
+      <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 transition-all" href="#inicio">Inicio</a>
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#categorias">Categorías</a>
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#destacados">Destacados</a>
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#servicios">Servicios</a>
+    </div>
+
+    <!-- Search bar — visible solo en desktop (md+) -->
+    <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
+      <div class="relative w-full flex items-center">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Buscar productos..."
+          class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none"
+          style="border-radius: 6px;"
+          onkeydown="if(event.key==='Enter') handleSearch()"
+        />
+        <button
+          onclick="handleSearch()"
+          class="absolute right-0 h-full px-3.5 flex items-center justify-center text-outline hover:text-primary transition-colors"
+          style="border-radius: 0 6px 6px 0;"
+          aria-label="Buscar"
+        >
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Íconos derecha (siempre visibles) + botón hamburguesa (solo mobile) -->
+    <div class="flex items-center gap-3 md:gap-4">
+
+      <!-- Ícono cuenta -->
+       <a href="cuenta.html">
+      <button class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">person</button>
+      </a>
+
+      <!-- Ícono carrito con badge -->
+      <div class="relative">
+        <button data-cart-btn class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px] relative" onclick="window.location.href='carrito.html'">shopping_cart</button>
+        <!--<span class="absolute -top-1.5 -right-1.5 bg-secondary text-on-secondary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full"></span>-->
+      </div>
+
+      <!-- Botón hamburguesa — solo visible en mobile -->
+      <button
+        id="menu-btn"
+        onclick="toggleMenu()"
+        class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
+        aria-label="Abrir menú" 
+      >
+        <span id="ham-1" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-2" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+      </button>
+
+    </div>
+  </div>
+
+</nav>
+
+<!-- ── DRAWER MOBILE ─────────────────────────────────────────────
+     Se desliza desde la izquierda con backdrop oscuro.
+     ══════════════════════════════════════════════════════════ -->
+<div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
+
+<div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
+
+  <!-- Header del drawer -->
+  <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)]">
+    <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">Dimensión Tres</a>
+    <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
+  </div>
+
+  <!-- Navegación -->
+  <nav class="flex flex-col gap-1 p-5">
+    <a onclick="closeMenu()" href="index.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#00f0ff] bg-[#1a1919] transition-all rounded-lg">Inicio</a>
+    <a onclick="closeMenu()" href="catalogo.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Catálogo</a>
+    <a onclick="closeMenu()" href="index.html#categorias" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Categorías</a>
+    <a onclick="closeMenu()" href="index.html#destacados" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Destacados</a>
+    <a onclick="closeMenu()" href="index.html#servicios" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Servicios</a>
+  </nav>
+
+  <!-- Footer del drawer -->
+  <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-[rgba(72,72,71,0.15)]">
+    <a href="https://wa.me/5493535000000?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
+      <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- Script del menú mobile — animación hamburguesa → X y despliegue -->
+
+<main class="pt-16 md:pt-20">
+<!-- Hero Section -->
+<section id="inicio" class="relative w-full overflow-hidden flex items-center" style="min-height: 92svh;">
+<div class="absolute inset-0 z-0">
+<img alt="Gaming Setup" class="w-full h-full object-cover opacity-60" data-alt="Cinematic high-end gaming desk setup with triple monitors, custom PC with neon cyan liquid cooling, and mechanical keyboard in a dark room." src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1800&q=85">
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+</div>
+<div class="relative z-10 container mx-auto px-5 md:px-8 py-8 md:py-0">
+<div class="max-w-3xl">
+<span class="inline-block px-3 py-1 bg-primary/10 border-l-2 border-primary text-primary font-headline text-sm tracking-widest uppercase mb-6">TECNOLOGÍA Y SERVICIOS</span>
+<h1 class="font-headline text-4xl sm:text-6xl md:text-8xl font-black text-on-surface leading-none tracking-tighter mb-4 md:mb-6 uppercase italic"><div class="">Dimensión Tres</div></h1>
+<p class="font-body text-base md:text-xl text-on-surface-variant max-w-xl mb-6 md:mb-10 leading-relaxed">
+                        Hardware, periféricos, consolas y servicio técnico para armar, reparar y mejorar tu setup.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button onclick="window.location.href='catalogo.html'" class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary-fixed font-headline font-bold uppercase tracking-widest hover:scale-105 transition-transform rounded-lg">CATÁLOGO</button>
+<button onclick="window.location.href='index.html#servicios'" class="px-8 py-4 bg-surface-container-highest border border-outline-variant/20 text-on-surface font-headline font-bold uppercase tracking-widest hover:bg-surface-container-high transition-colors rounded-lg">
+                            SERVICIOS &nbsp;</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Brand Carousel (Static for UI) -->
+<!-- ═══════════════════════════
+     CARRUSEL DE MARCAS INFINITO
+     Usa CSS @keyframes marquee para
+     desplazamiento sin JavaScript.
+     ════════════════════════════ -->
+<section class="py-5 md:py-5 bg-surface-container-lowest border-y border-outline-variant/5 overflow-hidden">
+  
+
+  <!-- Wrapper con overflow:hidden — el track corre dentro sin romper el layout -->
+  <div class="marquee-wrapper">
+    <!-- El track tiene 4 sets idénticos:
+         suficiente para cubrir cualquier pantalla ancha sin gaps -->
+    <div class="marquee-track">
+      <!-- Set 1 -->
+      <span class="marquee-item">SONY</span>
+      <span class="marquee-item">REDRAGON</span>
+      <span class="marquee-item">RAZER</span>
+      <span class="marquee-item">INTEL</span>
+      <span class="marquee-item">MSI</span>
+      <span class="marquee-item">LOGITECH</span>
+      <span class="marquee-item">ASUS</span>
+      <span class="marquee-item">CORSAIR</span>
+      <span class="marquee-item">HYPERX</span>
+      <!-- Set 2 -->
+      <span class="marquee-item">SONY</span>
+      <span class="marquee-item">REDRAGON</span>
+      <span class="marquee-item">RAZER</span>
+      <span class="marquee-item">INTEL</span>
+      <span class="marquee-item">MSI</span>
+      <span class="marquee-item">LOGITECH</span>
+      <span class="marquee-item">ASUS</span>
+      <span class="marquee-item">CORSAIR</span>
+      <span class="marquee-item">HYPERX</span>
+      <!-- Set 3 -->
+      <span class="marquee-item">SONY</span>
+      <span class="marquee-item">REDRAGON</span>
+      <span class="marquee-item">RAZER</span>
+      <span class="marquee-item">INTEL</span>
+      <span class="marquee-item">MSI</span>
+      <span class="marquee-item">LOGITECH</span>
+      <span class="marquee-item">ASUS</span>
+      <span class="marquee-item">CORSAIR</span>
+      <span class="marquee-item">HYPERX</span>
+      <!-- Set 4 -->
+      <span class="marquee-item">SONY</span>
+      <span class="marquee-item">REDRAGON</span>
+      <span class="marquee-item">RAZER</span>
+      <span class="marquee-item">INTEL</span>
+      <span class="marquee-item">MSI</span>
+      <span class="marquee-item">LOGITECH</span>
+      <span class="marquee-item">ASUS</span>
+      <span class="marquee-item">CORSAIR</span>
+      <span class="marquee-item">HYPERX</span>
+    </div>
+  </div>
+</section>
+<!-- Category Bento Grid -->
+<section id="categorias" class="py-14 md:py-28 container mx-auto px-4 md:px-8">
+<div class="flex justify-between items-end mb-8 md:mb-12">
+<div>
+<h2 class="font-headline text-2xl md:text-4xl font-bold uppercase tracking-tight text-on-surface">Explorá por categoría</h2>
+<div class="h-1 w-24 bg-primary mt-2"></div>
+</div>
+
+</div>
+<div id="home-category-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+<!-- Consolas -->
+<div class="sm:col-span-2 lg:col-span-1 group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=consolas'">
+<img alt="Consolas" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Modern gaming consoles and controllers on a dark shelf." src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=900&q=80">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-4xl">sports_esports</span>
+<h3 class="font-headline text-2xl font-black uppercase tracking-tighter">Consolas</h3>
+<p class="text-on-surface-variant text-sm uppercase tracking-widest mt-1">PlayStation - Xbox - Nintendo</p>
+</div>
+</div>
+<!-- Joysticks -->
+<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=consolas&q=joysticks'">
+<img alt="Joysticks" class="w-full h-full object-cover opacity-45 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=900&q=80">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">gamepad</span>
+<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Joysticks</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Controles y accesorios</p>
+</div>
+</div>
+<!-- Perifericos -->
+<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=perifericos'">
+<img alt="Perifericos" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Mechanical gaming keyboard with blue backlighting." src="https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=900&q=80">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">mouse</span>
+<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Perifericos</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Mouse - Teclados - Pads</p>
+</div>
+</div>
+<!-- Audio -->
+<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=audio'">
+<img alt="Audio" class="w-full h-full object-cover opacity-45 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Gaming headset with subtle lighting." src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">headphones</span>
+<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Audio</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Auriculares - Parlantes</p>
+</div>
+</div>
+<!-- Cables -->
+<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=accesorios'">
+<img alt="Cables y cargadores" class="w-full h-full object-cover opacity-45 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">cable</span>
+<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Cables</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Adaptadores y cargadores</p>
+</div>
+</div>
+<!-- Hardware -->
+<div class="sm:col-span-2 lg:col-span-1 group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=hardware'">
+<img alt="Hardware" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Internal view of a powerful gaming PC." src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=900&q=80">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">memory</span>
+<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Hardware</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">PC - Stock - Redes</p>
+</div>
+</div>
+</div>
+
+  <!-- Botón Ver todo el catálogo -->
+  <div class="flex justify-center mt-8 md:mt-10">
+    <button
+      onclick="handleViewCatalog()"
+      class="flex items-center gap-3 px-8 py-4 bg-primary/10 border border-primary/30 text-primary font-headline font-bold uppercase text-sm tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all duration-300 rounded-lg group"
+    >
+      <span class="material-symbols-outlined text-[20px] group-hover:rotate-12 transition-transform duration-300">grid_view</span>
+      Ver todo el catálogo
+      <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform duration-300">arrow_forward</span>
+    </button>
+  </div>
+
+</section>
+<section id="destacados" class="py-14 md:py-24 bg-[#0b0b0b] border-y border-outline-variant/10">
+<div class="container mx-auto px-4 md:px-8 max-w-[1920px]">
+<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-5 mb-8 md:mb-10">
+<div>
+<h2 class="font-headline text-2xl md:text-4xl font-bold uppercase tracking-tight text-on-surface">Mejorá tu setup</h2>
+<div class="h-1 w-24 bg-primary mt-2"></div>
+<p class="text-on-surface-variant font-body mt-3">Productos seleccionados para jugar, trabajar y actualizar tu equipo.</p>
+</div>
+<a href="catalogo.html" class="flex items-center gap-2 font-headline text-sm uppercase tracking-widest text-[#00f0ff] hover:text-white transition-colors">
+Ver todo
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+
+<style>
+.featured-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+.setup-promo-card {
+  min-height: 280px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(143,245,255,0.12);
+  background: #121212;
+  cursor: pointer;
+}
+.setup-promo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  transition: transform 0.7s, opacity 0.3s;
+}
+.setup-promo-card:hover img {
+  transform: scale(1.06);
+  opacity: 0.68;
+}
+.setup-promo-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(11,11,11,0.92) 0%, rgba(11,11,11,0.45) 55%, rgba(11,11,11,0.12) 100%),
+    linear-gradient(0deg, rgba(0,0,0,0.55), transparent 55%);
+}
+.setup-promo-content {
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 2;
+}
+.setup-kicker {
+  display: inline-flex;
+  color: #c579ff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+.setup-promo-title {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 4.2rem);
+  font-weight: 900;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+.setup-promo-text {
+  color: #adaaaa;
+  max-width: 31rem;
+  margin-top: 0.9rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.setup-promo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #8ff5ff;
+  margin-top: 1.2rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.featured-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.featured-card {
+  background: #131313;
+  border: 1px solid rgba(72,72,71,0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100%;
+}
+.featured-card:hover {
+  border-color: rgba(143,245,255,0.35);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,240,255,0.1);
+}
+.featured-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,240,255,0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1;
+  pointer-events: none;
+}
+.featured-card:hover::before { opacity: 1; }
+.feat-img-wrap {
+  background: radial-gradient(circle at 50% 35%, rgba(143,245,255,0.08), #0d0d0d 58%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4/3;
+}
+.feat-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding: 1rem;
+}
+.feat-icon {
+  color: #8ff5ff;
+  font-size: clamp(3rem, 6vw, 5.2rem);
+  opacity: 0.78;
+  text-shadow: 0 0 24px rgba(0,240,255,0.24);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s;
+}
+.featured-card:hover .feat-card-img { transform: scale(1.07); }
+.featured-card:hover .feat-icon {
+  transform: scale(1.08);
+  opacity: 1;
+}
+.feat-bottom-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #8ff5ff, #00deec);
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.featured-card:hover .feat-bottom-line { width: 100%; }
+.feat-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+.feat-tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: #8ff5ff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.feat-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+}
+.feat-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #8ff5ff;
+  text-align: center;
+}
+.feat-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: #00deec;
+  color: #003f43;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.feat-btn:hover {
+  background: #8ff5ff;
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(0,240,255,0.3);
+}
+.feat-btn:active { transform: scale(0.97); }
+@media (min-width: 768px) {
+  .featured-showcase {
+    grid-template-columns: minmax(360px, 0.92fr) minmax(0, 1.08fr);
+    align-items: stretch;
+  }
+  .setup-promo-card {
+    min-height: 100%;
+  }
+  .featured-products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  #destacados {
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
+  }
+  #destacados > .container {
+    max-width: 1680px;
+  }
+  .featured-showcase {
+    grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.22fr);
+    gap: 1rem;
+  }
+  .setup-promo-card {
+    min-height: 520px;
+    max-height: 620px;
+  }
+  .setup-promo-content {
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
+  }
+  .setup-kicker {
+    font-size: 0.64rem;
+    margin-bottom: 0.55rem;
+  }
+  .setup-promo-title {
+    font-size: clamp(2.15rem, 3vw, 3.25rem);
+  }
+  .setup-promo-text {
+    max-width: 25rem;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin-top: 0.7rem;
+  }
+  .setup-promo-link {
+    margin-top: 0.85rem;
+    font-size: 0.68rem;
+  }
+  .featured-products-grid {
+    gap: 0.9rem;
+    align-content: start;
+  }
+  .feat-img-wrap {
+    aspect-ratio: 16/9;
+    max-height: 150px;
+  }
+  .feat-card-img {
+    padding: 0.75rem;
+  }
+  .feat-icon {
+    font-size: clamp(2.3rem, 3.2vw, 3.6rem);
+  }
+  .feat-body {
+    padding: 0.75rem;
+    gap: 0.32rem;
+  }
+  .feat-tag {
+    font-size: 0.52rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .feat-name {
+    font-size: 0.76rem;
+    line-height: 1.22;
+    min-height: 1.85em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .feat-price {
+    font-size: 0.95rem;
+  }
+  .feat-btn {
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.58rem;
+  }
+}
+@media (min-width: 1280px) {
+  .featured-showcase {
+    gap: 1rem;
+  }
+  .featured-products-grid {
+    gap: 1rem;
+  }
+  .feat-img-wrap {
+    aspect-ratio: 16/9;
+    max-height: 160px;
+  }
+  .feat-card-img {
+    padding: 0.8rem;
+  }
+  .feat-body {
+    padding: 0.8rem;
+  }
+}
+</style>
+
+<div class="featured-showcase">
+  <div id="home-promo-card" class="setup-promo-card" onclick="window.location.href='catalogo.html?cat=hardware'">
+    <img src="https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=1200&q=85" alt="Hardware para PC">
+    <div class="setup-promo-content">
+      <span class="setup-kicker">Mejorá tu hardware</span>
+      <h3 class="setup-promo-title">Hardware</h3>
+      <p class="setup-promo-text">Actualizá tu PC con componentes, almacenamiento y accesorios pensados para rendir mejor.</p>
+      <span class="setup-promo-link">Ver categoría <span class="material-symbols-outlined text-[18px]">arrow_forward</span></span>
+    </div>
+  </div>
+
+<div id="home-featured-grid" class="featured-products-grid">
+
+  <!-- Card 1 -->
+  <div class="featured-card group">
+    <div class="feat-img-wrap">
+      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVumLLeAXBrjKpb053SbgK1ganLFdB9WQb9AvBdr4HnCS1Dl5oW5OcG7S-R78nx_5U7AJy2I9VscAIWv5QJNkNsAiuZ0Ne27-YZIv2SY6d7HxAqCRJuI1nTeMWKniv9_-ZXo-y6RLPfDgX35lXWX7E4szCBA6ATFwTNUMAko-1gqdp5Z-5MizdDZKJHuEF4VMAYxsUTwf2GeRrvgSFkd126_bGOgoCxg9gR_bmzSTswxYgcMLirzmNO2PNIw9PkGr8-SkA6dkPl0Cd" alt="DualSense Edge">
+      <div class="feat-bottom-line"></div>
+    </div>
+    <div class="feat-body">
+      <p class="feat-tag">Consolas</p>
+      <p class="feat-name">DualSense Edge Controller</p>
+      <p class="feat-price">$ 199.990</p>
+      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-PS5-DS', name:'DualSense Edge Controller', price:199990, ref:'DT-77420', category:'Consolas', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="featured-card group">
+    <div class="feat-img-wrap">
+      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ3BOFyer3zVYnGjRxVo8fS0WezEHu4KP1bJoWi8R2BheDHE8B-RAVvuuqXpvtOaDNTnotkQdMQqaT6zmm_QrMyHZpvP4jePE3n4th3nGd8v5FnguhdwN1_SJmLG336dd_DLaa2r67h7uqZTqm8SGxAUZWncbMUXWmXcYgL2psHV2wTsRALuzM3ORnnD6PJzwa8bIAT8QDOgba1y2iRJmU7kzO71vVx1xhBJkkrNEjHZT74EYwibNZS1CUbCeAdwPUYW4WoZpr2ItL" alt="Redragon Kumara K552">
+      <div class="feat-bottom-line"></div>
+    </div>
+    <div class="feat-body">
+      <p class="feat-tag">Periféricos</p>
+      <p class="feat-name">Redragon Kumara K552</p>
+      <p class="feat-price">$ 49.990</p>
+      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-RD-K552', name:'Redragon Kumara K552', price:49990, ref:'DT-K552', category:'Periféricos', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="featured-card group">
+    <div class="feat-img-wrap">
+      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ3BOFyer3zVYnGjRxVo8fS0WezEHu4KP1bJoWi8R2BheDHE8B-RAVvuuqXpvtOaDNTnotkQdMQqaT6zmm_QrMyHZpvP4jePE3n4th3nGd8v5FnguhdwN1_SJmLG336dd_DLaa2r67h7uqZTqm8SGxAUZWncbMUXWmXcYgL2psHV2wTsRALuzM3ORnnD6PJzwa8bIAT8QDOgba1y2iRJmU7kzO71vVx1xhBJkkrNEjHZT74EYwibNZS1CUbCeAdwPUYW4WoZpr2ItL" alt="Logitech G502 X">
+      <div class="feat-bottom-line"></div>
+    </div>
+    <div class="feat-body">
+      <p class="feat-tag">Periféricos</p>
+      <p class="feat-name">Logitech G502 X Plus</p>
+      <p class="feat-price">$ 79.990</p>
+      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-LG-G502', name:'Logitech G502 X Plus', price:79990, ref:'DT-G502X', category:'Periféricos', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="featured-card group">
+    <div class="feat-img-wrap">
+      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB3PpsOjowVlTiBoe9ouGqFWkzllQoohykdp6r8iu8dCnPUw6Jo73qYGZ75s1G3ARNm0wtiL57JYJ31IA8wU98gf7KpJJPsAVeuETktDwM__dNi7yGAXwrjXVC60TfbeP-H1hlYnpceYhAHQRTNCGotj90t4t4pk06_WFOId3lGga72eBbVG94dVhvpcoklUG_qQIitKdMELRu3DgN7jg_rIvPiOW8qHJ5seZsozm8EKatRm9BztZzOW7Ds9RpXawAJlxzG2Zu2_lp" alt="HyperX Cloud II">
+      <div class="feat-bottom-line"></div>
+    </div>
+    <div class="feat-body">
+      <p class="feat-tag">Audio</p>
+      <p class="feat-name">HyperX Cloud II</p>
+      <p class="feat-price">$ 59.990</p>
+      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-HX-C2', name:'HyperX Cloud II', price:59990, ref:'DT-HXC2', category:'Audio', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
+    </div>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="featured-card group">
+    <div class="feat-img-wrap">
+      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw46vWt6b7aEC1UqprLqz0wiwFqW_ccIxdd7Hp-kWBWbwoayvCvn3j-howkQKGnzymZXZ5KKbGE7K37ss5e-h6w6lo5gCCpW038lfjNQULE0EyzB33ws5pArIRYwkRCLMcI48yVHBFlRqNwc5gXFQ6a1-0uCZx0Ey6uP84FDdOhgYH272IBYRom4lRtfmA8j-1buRigpbH8YsN7HnZ_qbO8v2P4w482a3O4vWof9AVPTKpE78SMTtwv9Z-ClARSq9XspgOPYprXvgm" alt="Monitor 24">
+      <div class="feat-bottom-line"></div>
+    </div>
+    <div class="feat-body">
+      <p class="feat-tag">Monitores</p>
+      <p class="feat-name">Monitor 24" 144Hz</p>
+      <p class="feat-price">$ 189.990</p>
+      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-MON-24', name:'Monitor 24 144Hz', price:189990, ref:'DT-MON24', category:'Monitores', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
+    </div>
+  </div>
+
+  <!-- Card 6 -->
+  <div class="featured-card group">
+    <div class="feat-img-wrap">
+      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT61781KfBkLigbB03oaT3NPl-9Of9hR04nbNiVj8SZ5-GkD3k8ge0oDxnU496AjWPD6WHofG0yUE1InF1gv-6fP0mWyqjmQs7G1um2Fb50oGNKoOV7JwxxnpEztkpZPkv4-1n9UAqrz-4IlTf11uI4f7e3oKfWoBJLhqKql8vuKDEgpgrIR7PamB44PGFbEs0TKW0wn7JMxl4YKn4vjV3CEVdgnT1hpzcCSdq56IyrhGceg1sR2sz3Idg35RTANFO0UXBbDKKUjtJ" alt="SSD 1TB">
+      <div class="feat-bottom-line"></div>
+    </div>
+    <div class="feat-body">
+      <p class="feat-tag">Almacenamiento</p>
+      <p class="feat-name">SSD 1TB NVMe</p>
+      <p class="feat-price">$ 45.990</p>
+      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-SSD-1T', name:'SSD 1TB NVMe', price:45990, ref:'DT-SSD1T', category:'Almacenamiento', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+</div>
+</section>
+<section id="servicios" class="py-14 md:py-24 border-t border-outline-variant/10">
+  <div class="container mx-auto px-5 md:px-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-14">
+      <div>
+        <span class="font-headline text-primary text-xs uppercase tracking-[0.22em] font-bold">Servicio técnico</span>
+        <h2 class="font-headline text-3xl md:text-5xl font-black uppercase tracking-tight text-on-surface mt-3">Soluciones para tu equipo</h2>
+        <div class="h-1 w-24 bg-primary mt-3"></div>
+        <p class="text-on-surface-variant font-body mt-4 max-w-2xl">Reparamos, configuramos e instalamos lo que necesitás para que tu consola, PC o setup vuelva listo para usar.</p>
+      </div>
+      <a href="https://wa.me/5493535000000?text=Hola!%20Quiero%20consultar%20por%20un%20servicio"
+         target="_blank"
+         rel="noopener"
+         class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
+        <span class="material-symbols-outlined text-[18px]">chat</span>
+        Consultar
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
+      <article class="group relative overflow-hidden bg-[#151515] border border-white/5 p-6 md:p-7 min-h-[320px] hover:border-primary/40 transition-all duration-300">
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-transparent"></div>
+        <div class="flex items-start justify-between mb-8">
+          <div class="w-12 h-12 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary rounded-lg">
+            <span class="material-symbols-outlined text-[28px]">sports_esports</span>
+          </div>
+          <span class="font-headline text-xs text-[#484847] font-bold tracking-widest">01</span>
+        </div>
+        <h3 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface mb-2">Consolas</h3>
+        <p class="text-on-surface-variant font-body text-sm mb-6">Reparamos y mantenemos PlayStation, Xbox y Nintendo.</p>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Limpieza integral y cambio de pasta térmica</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Actualización y reparación de software</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Cambio de puerto HDMI</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Reparación de fuente de alimentación</li>
+        </ul>
+      </article>
+
+      <article class="group relative overflow-hidden bg-[#151515] border border-white/5 p-6 md:p-7 min-h-[320px] hover:border-primary/40 transition-all duration-300">
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-transparent"></div>
+        <div class="flex items-start justify-between mb-8">
+          <div class="w-12 h-12 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary rounded-lg">
+            <span class="material-symbols-outlined text-[28px]">gamepad</span>
+          </div>
+          <span class="font-headline text-xs text-[#484847] font-bold tracking-widest">02</span>
+        </div>
+        <h3 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface mb-2">Controles</h3>
+        <p class="text-on-surface-variant font-body text-sm mb-6">Solucionamos fallas en joysticks, mandos y periféricos.</p>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Reparación de drift en analógicos</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Cambio de pines de carga</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Mantenimiento de botones y gomas</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Cambio de batería</li>
+        </ul>
+      </article>
+
+      <article class="group relative overflow-hidden bg-[#151515] border border-white/5 p-6 md:p-7 min-h-[320px] hover:border-primary/40 transition-all duration-300">
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-transparent"></div>
+        <div class="flex items-start justify-between mb-8">
+          <div class="w-12 h-12 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary rounded-lg">
+            <span class="material-symbols-outlined text-[28px]">computer</span>
+          </div>
+          <span class="font-headline text-xs text-[#484847] font-bold tracking-widest">03</span>
+        </div>
+        <h3 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface mb-2">PC y notebook</h3>
+        <p class="text-on-surface-variant font-body text-sm mb-6">Mantenimiento, optimización y mejoras para equipos de escritorio y portátiles.</p>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Optimización de sistema operativo</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Mantenimiento preventivo</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Upgrade de hardware</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Reparación de pantallas</li>
+        </ul>
+      </article>
+
+      <article class="group relative overflow-hidden bg-[#151515] border border-white/5 p-6 md:p-7 min-h-[320px] hover:border-primary/40 transition-all duration-300">
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-transparent"></div>
+        <div class="flex items-start justify-between mb-8">
+          <div class="w-12 h-12 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary rounded-lg">
+            <span class="material-symbols-outlined text-[28px]">cloud_download</span>
+          </div>
+          <span class="font-headline text-xs text-[#484847] font-bold tracking-widest">04</span>
+        </div>
+        <h3 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface mb-2">Software y configuracion</h3>
+        <p class="text-on-surface-variant font-body text-sm mb-6">Configuracion inicial, mantenimiento de sistema y soporte tecnico para equipos.</p>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Instalacion y configuracion de Windows</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Drivers, programas y optimizacion</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Backup y puesta a punto</li>
+          <li class="flex items-start gap-3 text-on-surface-variant font-body text-sm"><span class="material-symbols-outlined text-primary text-[16px] mt-0.5">check</span>Actualizaciones y configuracion inicial</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="mt-6 bg-[#080808] border border-primary/20 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary rounded-lg shrink-0">
+          <span class="material-symbols-outlined text-[26px]">support_agent</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tight text-on-surface">¿Otro dispositivo o consulta?</h3>
+          <p class="text-on-surface-variant font-body text-sm mt-2 max-w-2xl">Mandanos el modelo, una foto o el problema que tiene. Revisamos el caso y te pasamos presupuesto sin compromiso.</p>
+        </div>
+      </div>
+      <a href="https://wa.me/5493535000000?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico"
+         target="_blank"
+         rel="noopener"
+         class="inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-headline font-bold uppercase text-xs tracking-widest hover:scale-[1.02] transition-transform rounded-lg shrink-0">
+        <span class="material-symbols-outlined text-[18px]">chat</span>
+        Consultar por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Horarios + Mapa + Contacto -->
+<section id="contacto" class="py-14 md:py-24 border-t border-outline-variant/10">
+  <div class="container mx-auto px-5 md:px-8 max-w-5xl">
+
+    <!-- Título de sección -->
+    <div class="mb-10 md:mb-14">
+      <h2 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tight text-on-surface mb-2">Encontranos</h2>
+      <div class="h-1 w-20 bg-primary"></div>
+    </div>
+
+    <!-- Grid principal: 3 columnas en desktop, 1 en mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
+
+      <!-- Columna 1: Estado + Horarios -->
+      <div class="flex flex-col gap-6">
+
+        <!-- Badge dinámico ABIERTO / CERRADO -->
+        <div id="store-status" class="inline-flex items-center gap-2 px-4 py-2 border font-headline font-bold text-sm uppercase tracking-widest w-fit"></div>
+
+        <div>
+          <p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant mb-4">Horarios de atención</p>
+
+          <!-- Franja mañana -->
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant/20">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">wb_sunny</span>
+              <span class="font-headline font-bold uppercase tracking-wide text-sm text-on-surface">Mañana</span>
+            </div>
+            <span class="font-body text-on-surface-variant text-sm">9:00 — 13:00</span>
+          </div>
+
+          <!-- Franja tarde -->
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant/20">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">partly_cloudy_day</span>
+              <span class="font-headline font-bold uppercase tracking-wide text-sm text-on-surface">Tarde</span>
+            </div>
+            <span class="font-body text-on-surface-variant text-sm">16:30 — 20:30</span>
+          </div>
+        </div>
+        
+
+        <!-- Dirección -->
+        <!-- Cambiá la dirección por la real del local -->
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-primary mt-0.5" style="font-size:1.2rem;">location_on</span>
+          <div>
+            <p class="font-headline font-bold text-on-surface uppercase tracking-wide text-sm">Dimensión Tres</p>
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed">Bartolomé Mitre 212, Centro, X5901BDF Villa María, Córdoba</p>
+          </div>
+        </div>
+
+        <a href="mailto:contacto@dimensiontres.com?subject=Consulta%20Dimensi%C3%B3n%20Tres" class="mt-auto inline-flex items-center gap-2 border border-primary text-primary font-headline font-bold uppercase text-xs tracking-widest px-5 py-3 hover:bg-primary hover:text-on-primary-fixed transition-all w-fit">
+          <span class="material-symbols-outlined" style="font-size:1rem;">mail</span>
+          Enviar consulta
+        </a>
+
+      </div>
+
+      <!-- Columna 2 y 3: Mapa (ocupa 2 columnas en desktop) -->
+      <!-- Para actualizar el mapa:
+           1. Ir a Google Maps y buscar la dirección del local
+           2. Clic en "Compartir" > "Insertar un mapa"
+           3. Copiar el src del iframe y reemplazar el src de abajo -->
+      <div class="md:col-span-2 overflow-hidden border border-outline-variant/20" style="min-height: 320px;">
+        <iframe
+          src="https://www.google.com/maps?q=Dimensi%C3%B3n%203%2C%20Bartolom%C3%A9%20Mitre%20212%2C%20Villa%20Mar%C3%ADa%2C%20C%C3%B3rdoba&z=17&output=embed"
+          width="100%"
+          height="100%"
+          style="border:0; filter: invert(90%) hue-rotate(180deg); min-height: 320px; display:block;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación Dimensión Tres"
+        ></iframe>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Script: lógica de horarios con hora de Argentina (UTC-3) -->
+
+
+</main>
+<!-- Footer -->
+<footer></footer>
+
+
+
+</main>
+
+
+
+
+  <script src="shared.js"></script>
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js?v=catalogo-access-20260508-images-1"></script>
+  <script src="nav.js"></script>
+  <script src="cart.js"></script>
+  <script src="index.js?v=home-catalogo-access-20260507-4"></script>
+
+</body>
+</html>
