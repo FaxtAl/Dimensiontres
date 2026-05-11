@@ -223,20 +223,23 @@ function buildRow(item) {
 
 /* ─── UPDATE TOTALS (función propia, separada de buildRow) ── */
 function updateTotals() {
-  var sub   = CartStore.getSubtotal();
-  var disc  = sub * discountPct;
-  var base  = sub - disc;
-  var tax   = base * TAX;
-  var total = base + tax;
+  var totals = calculateCartTotals();
+  var productsTotal = totals.subtotal + (totals.subtotal * TAX);
+  var discountTotal = totals.discount + (totals.discount * TAX);
 
   var elSub   = document.getElementById('sum-sub');
-  var elTax   = document.getElementById('sum-tax');
+  var elDiscountRow = document.getElementById('discount-row');
+  var elDiscount = document.getElementById('sum-discount');
   var elTotal = document.getElementById('sum-total');
 
-  if (elSub)   elSub.textContent   = formatMoney(sub);
-  if (elTax)   elTax.textContent   = formatMoney(tax);
+  if (elSub)   elSub.textContent   = formatMoney(productsTotal);
+  if (elDiscountRow && elDiscount) {
+    elDiscountRow.classList.toggle('hidden', discountTotal <= 0);
+    elDiscountRow.classList.toggle('flex', discountTotal > 0);
+    elDiscount.textContent = '-' + formatMoney(discountTotal);
+  }
   if (elTotal) {
-    elTotal.textContent = formatMoney(total);
+    elTotal.textContent = formatMoney(totals.total);
     elTotal.classList.remove('total-flash');
     void elTotal.offsetWidth;
     elTotal.classList.add('total-flash');
@@ -329,7 +332,6 @@ function checkoutWhatsApp() {
   });
   lines.push('');
   if (discountPct > 0) lines.push('Descuento: -' + formatMoney(disc));
-  lines.push('IVA (21%): ' + formatMoney(tax));
   lines.push('*TOTAL: ' + formatMoney(total) + '*');
 
   var text = '¡Hola! Quiero hacer un pedido en Dimensión Tres:\n\n' + lines.join('\n');
@@ -337,7 +339,11 @@ function checkoutWhatsApp() {
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 
-async function checkoutSavedOrder(button) {
+function checkoutUnavailable(methodName) {
+  alert(methodName + ' todavia no esta conectado. Primero necesitamos las credenciales reales para activarlo.');
+}
+
+async function checkoutSavedOrder(button, method) {
   var items = CartStore.getAll();
   if (!items.length) return;
   if (typeof ensureUserLoggedIn === 'function' && !ensureUserLoggedIn('checkout')) return;
@@ -363,7 +369,7 @@ async function checkoutSavedOrder(button) {
       iva: totals.iva,
       total: totals.total
     },
-    method: 'whatsapp',
+    method: method || 'whatsapp',
     notes: discountPct > 0 ? 'Pedido con descuento aplicado desde carrito web.' : 'Pedido creado desde carrito web.'
   });
 
@@ -385,7 +391,6 @@ async function checkoutSavedOrder(button) {
   lines.push('');
   if (orderRef) lines.push('Pedido: ' + orderRef);
   if (discountPct > 0) lines.push('Descuento: -' + formatMoney(totals.discount));
-  lines.push('IVA (21%): ' + formatMoney(totals.iva));
   lines.push('*TOTAL: ' + formatMoney(totals.total) + '*');
 
   var text = 'Hola! Quiero hacer un pedido en Dimension Tres:\n\n' + lines.join('\n');

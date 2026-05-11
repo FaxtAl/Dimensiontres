@@ -56,3 +56,72 @@
   outline: none;
   box-shadow: 0 0 0 1px #00f0ff;
 }
+
+.payment-methods {
+  display: grid;
+  gap: 10px;
+}
+
+.payment-methods-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #8ff5ff;
+  margin-bottom: 2px;
+}
+
+.payment-method {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border: 1px solid rgba(143,245,255,.16);
+  background: rgba(19,19,19,.86);
+  color: #f5f3f0;
+  text-align: left;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.payment-method:hover {
+  transform: translateY(-1px);
+  border-color: rgba(143,245,255,.45);
+  background: rgba(143,245,255,.06);
+}
+
+.payment-method.is-active {
+  background: linear-gradient(135deg,#8ff5ff 0%,#00eefc 100%);
+  color: #003f43;
+  border-color: transparent;
+  box-shadow: 0 0 18px rgba(0,240,255,.28);
+}
+
+.payment-method .material-symbols-outlined {
+  font-size: 22px;
+  flex: 0 0 auto;
+}
+
+.payment-method strong,
+.payment-method small {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+  text-transform: uppercase;
+}
+
+.payment-method strong {
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.payment-method small {
+  margin-top: 2px;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: currentColor;
+  opacity: .68;
+}
