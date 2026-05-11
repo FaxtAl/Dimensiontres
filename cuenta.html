@@ -1424,7 +1424,7 @@
 <script src="nav.js"></script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script>
+<script src="supabase-client.js?v=pedidos-cuenta-20260511"></script>
 <script src="search-global.js"></script>
 <script src="cart.js"></script>
 <script>
@@ -1820,7 +1820,7 @@ function renderOrders() {
     <div class="order-item" onclick="toggleOrderDetail(this)">
       <div class="order-header">
         <div class="order-left">
-          <span class="order-id">Factura #${escapeHtml(order.id)}</span>
+          <span class="order-id">${escapeHtml(order.typeLabel || 'Factura')} #${escapeHtml(order.id)}</span>
           <span class="order-badge ${statusClass[order.status] || 'delivered'}">${escapeHtml(order.statusLabel || statusLabel[order.status] || 'Compra')}</span>
           <span class="order-date">${escapeHtml(formatAccountDate(order.date))}</span>
         </div>
@@ -1837,11 +1837,14 @@ function renderOrders() {
           ${(order.items || []).length ? order.items.map(item => `
             <div class="order-product-item">
               <div class="order-product-img">
-                <span class="material-symbols-outlined" style="font-size:24px;color:var(--text-dim)">inventory_2</span>
+                ${item.image
+                  ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">`
+                  : '<span class="material-symbols-outlined" style="font-size:24px;color:var(--text-dim)">inventory_2</span>'}
               </div>
               <div class="order-product-info">
                 <p class="order-product-name">${escapeHtml(item.name)}</p>
                 <p class="order-product-meta">Cantidad: ${escapeHtml(item.qty || 0)}${item.code ? ' · Código: ' + escapeHtml(item.code) : ''}</p>
+                ${order.paymentMethod ? `<p class="order-product-meta">Pago: ${escapeHtml(order.paymentMethod)}</p>` : ''}
               </div>
               <div class="order-product-price">${formatAccountMoney(item.subtotal || (item.price * item.qty))}</div>
             </div>

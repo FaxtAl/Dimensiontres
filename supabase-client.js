@@ -517,6 +517,69 @@
     return value === true || normalized === 'true' || normalized === 'si' || normalized === '1' || normalized === '-1';
   }
 
+  function webOrderStatus(row) {
+    var status = String(row && row.estado || '').toLowerCase();
+    if (status === 'entregado') return { status: 'delivered', label: 'Entregado' };
+    if (status === 'pagado') return { status: 'shipped', label: 'Pagado' };
+    if (status === 'confirmado') return { status: 'shipped', label: 'Confirmado' };
+    if (status === 'cancelado') return { status: 'cancelled', label: 'Cancelado' };
+    if (status === 'fallido') return { status: 'cancelled', label: 'Fallido' };
+    return { status: 'pending', label: 'Pendiente' };
+  }
+
+  function orderDateValue(order) {
+    var date = new Date(String(order && order.date || '').replace(' ', 'T'));
+    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+  }
+
+  async function fetchWebOrders(limit) {
+    var sb = getClient();
+    if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
+
+    var result = await sb
+      .from('pedidos')
+      .select('id,external_reference,created_at,estado,metodo_pago,subtotal,iva,total,pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
+      .order('created_at', { ascending: false })
+      .limit(limit || 40);
+
+    if (result.error) return { orders: [], error: result.error };
+
+    return {
+      orders: (result.data || []).map(function(row) {
+        var state = webOrderStatus(row);
+        var items = row.pedido_items || [];
+        return {
+          id: row.external_reference || row.id,
+          rawId: row.id,
+          typeLabel: 'Pedido',
+          date: row.created_at || '',
+          status: state.status,
+          statusLabel: state.label,
+          paymentMethod: row.metodo_pago || '',
+          total: parseMoney(row.total),
+          subtotal: parseMoney(row.subtotal),
+          tax: parseMoney(row.iva),
+          source: 'web',
+          items: items.map(function(item) {
+            var qty = Number(item.cantidad || 0);
+            var subtotal = parseMoney(item.subtotal);
+            return {
+              id: item.id,
+              productId: item.id_productos || '',
+              name: item.nombre || 'Producto',
+              code: item.codigo || '',
+              qty: qty,
+              price: parseMoney(item.precio_unitario),
+              subtotal: subtotal,
+              image: item.imagen_url || ''
+            };
+          })
+        };
+      }),
+      error: null
+    };
+  }
+
   async function fetchAccountOrders(limit) {
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
@@ -531,7 +594,7 @@
 
     var rows = invoices.data || [];
     var invoiceIds = rows.map(function(row) { return row.id_factura; }).filter(Boolean);
-    if (!invoiceIds.length) return { orders: [], error: null };
+    if (!invoiceIds.length) return fetchWebOrders(limit || 40);
 
     var detailsResult = await sb
       .from('detallefactura')
@@ -579,6 +642,7 @@
       orders: rows.map(function(row) {
         return {
           id: row.id_factura,
+          typeLabel: 'Factura',
           date: row.fecha || '',
           status: 'delivered',
           statusLabel: 'Compra',
@@ -589,7 +653,9 @@
           seller: row.vendedor || '',
           items: detailsByInvoice[row.id_factura] || []
         };
-      }),
+      }).concat((await fetchWebOrders(limit || 40)).orders || []).sort(function(a, b) {
+        return orderDateValue(b) - orderDateValue(a);
+      }).slice(0, limit || 40),
       error: null
     };
   }
