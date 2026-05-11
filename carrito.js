@@ -32,6 +32,22 @@ function promoIsValid(promo) {
   return !isNaN(expires.getTime()) && expires >= new Date();
 }
 
+function calculateCartTotals() {
+  var sub = CartStore.getSubtotal();
+  var disc = sub * discountPct;
+  var base = sub - disc;
+  var tax = base * TAX;
+  var total = base + tax;
+
+  return {
+    subtotal: sub,
+    discount: disc,
+    base: base,
+    iva: tax,
+    total: total
+  };
+}
+
 /* ─── RENDER ─────────────────────────────── */
 function render() {
   var grid  = document.getElementById('cart-grid');
@@ -318,6 +334,63 @@ function checkoutWhatsApp() {
 
   var text = '¡Hola! Quiero hacer un pedido en Dimensión Tres:\n\n' + lines.join('\n');
   var phone = CONFIG.CONTACT_PHONE || '5493535000000';
+  window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+}
+
+async function checkoutSavedOrder(button) {
+  var items = CartStore.getAll();
+  if (!items.length) return;
+  if (typeof ensureUserLoggedIn === 'function' && !ensureUserLoggedIn('checkout')) return;
+  if (!window.SupabaseStore || !window.SupabaseStore.createWebOrder) {
+    alert('No se pudo conectar con Supabase para guardar el pedido.');
+    return;
+  }
+
+  var totals = calculateCartTotals();
+  var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  var originalHtml = button ? button.innerHTML : '';
+
+  if (button) {
+    button.disabled = true;
+    button.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">sync</span> Guardando pedido...';
+  }
+
+  var saved = await window.SupabaseStore.createWebOrder({
+    items: items,
+    account: currentUser || {},
+    totals: {
+      subtotal: totals.subtotal,
+      iva: totals.iva,
+      total: totals.total
+    },
+    method: 'whatsapp',
+    notes: discountPct > 0 ? 'Pedido con descuento aplicado desde carrito web.' : 'Pedido creado desde carrito web.'
+  });
+
+  if (button) {
+    button.disabled = false;
+    button.innerHTML = originalHtml;
+  }
+
+  if (saved.error) {
+    alert(saved.error.message || 'No se pudo guardar el pedido.');
+    return;
+  }
+
+  var orderRef = saved.order && saved.order.external_reference ? saved.order.external_reference : '';
+  var lines = items.map(function(i) {
+    return '- ' + i.name + ' x' + i.qty + ' - ' + formatMoney(i.price * i.qty);
+  });
+
+  lines.push('');
+  if (orderRef) lines.push('Pedido: ' + orderRef);
+  if (discountPct > 0) lines.push('Descuento: -' + formatMoney(totals.discount));
+  lines.push('IVA (21%): ' + formatMoney(totals.iva));
+  lines.push('*TOTAL: ' + formatMoney(totals.total) + '*');
+
+  var text = 'Hola! Quiero hacer un pedido en Dimension Tres:\n\n' + lines.join('\n');
+  var phone = CONFIG.CONTACT_PHONE || '5493535000000';
+  localStorage.setItem('dt_last_order_reference', orderRef || '');
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 

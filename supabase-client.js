@@ -1059,6 +1059,111 @@
     return result.data ? mapProduct(result.data) : null;
   }
 
+  function parseCartProductId(item) {
+    var directId = item && (item.accessId || item.id_productos || item.productId);
+    if (directId !== null && directId !== undefined && directId !== '') return String(directId);
+
+    var id = String((item && item.id) || '').trim();
+    var accessMatch = id.match(/^access-(.+)$/);
+    return accessMatch ? accessMatch[1] : id;
+  }
+
+  function mapOrderItem(item) {
+    var price = Number((item && item.price) || 0);
+    var qty = Number((item && item.qty) || 1);
+    if (!Number.isFinite(price) || price < 0) price = 0;
+    if (!Number.isFinite(qty) || qty < 1) qty = 1;
+    qty = Math.round(qty);
+
+    return {
+      id_productos: parseCartProductId(item) || null,
+      codigo: (item && (item.code || item.codigo || item.ref)) || null,
+      nombre: (item && item.name) || 'Producto',
+      descripcion: (item && (item.description || item.subtitle)) || null,
+      categoria: (item && item.category) || null,
+      subcategoria: (item && item.sourceLabel) || null,
+      imagen_url: (item && item.image) || null,
+      precio_unitario: price,
+      cantidad: qty,
+      subtotal: price * qty
+    };
+  }
+
+  async function createWebOrder(data) {
+    var sb = getClient();
+    if (!sb) return { order: null, error: { message: 'Supabase no esta disponible.' } };
+
+    var items = (data && data.items) || [];
+    if (!items.length) return { order: null, error: { message: 'El carrito esta vacio.' } };
+
+    var sessionResult = await sb.auth.getSession();
+    if (sessionResult.error) return { order: null, error: sessionResult.error };
+    var session = sessionResult.data && sessionResult.data.session;
+    if (!session || !session.user) {
+      return { order: null, error: { message: 'Inicia sesion para guardar el pedido.' } };
+    }
+
+    var account = (data && data.account) || {};
+    var totals = (data && data.totals) || {};
+    var itemRows = items.map(mapOrderItem);
+    var fallbackSubtotal = itemRows.reduce(function(sum, item) { return sum + Number(item.subtotal || 0); }, 0);
+    var subtotal = Number(totals.subtotal);
+    var iva = Number(totals.iva);
+    var total = Number(totals.total);
+    if (!Number.isFinite(subtotal)) subtotal = fallbackSubtotal;
+    if (!Number.isFinite(iva)) iva = 0;
+    if (!Number.isFinite(total)) total = subtotal + iva;
+
+    var orderPayload = {
+      user_id: session.user.id,
+      cliente_id: account.clienteId || null,
+      dni: normalizeDni(account.dni) || null,
+      nombre: account.firstName || account.name || '',
+      apellido: account.lastName || '',
+      email: account.email || session.user.email || '',
+      telefono: account.phone || '',
+      direccion: account.address || '',
+      estado: 'pendiente',
+      metodo_pago: (data && data.method) || 'whatsapp',
+      subtotal: subtotal,
+      iva: iva,
+      total: total,
+      moneda: cfg.CURRENCY || 'ARS',
+      notas: (data && data.notes) || null
+    };
+
+    var orderResult = await sb
+      .from('pedidos')
+      .insert(orderPayload)
+      .select('id,external_reference,estado,metodo_pago,subtotal,iva,total,created_at')
+      .single();
+
+    if (orderResult.error) return { order: null, error: orderResult.error };
+
+    var rows = itemRows.map(function(item) {
+      return Object.assign({}, item, { pedido_id: orderResult.data.id });
+    });
+
+    var itemsResult = await sb
+      .from('pedido_items')
+      .insert(rows)
+      .select('id,pedido_id,id_productos,nombre,cantidad,subtotal');
+
+    if (itemsResult.error) {
+      return {
+        order: orderResult.data,
+        error: {
+          message: 'El pedido se creo, pero no se pudieron guardar los productos: ' + itemsResult.error.message
+        }
+      };
+    }
+
+    return {
+      order: Object.assign({}, orderResult.data, { items: itemsResult.data || [] }),
+      error: null
+    };
+  }
+
   window.SupabaseStore = {
     isReady: isReady,
     fetchCustomerByDni: fetchCustomerByDni,
@@ -1080,6 +1185,7 @@
     fetchAccessProductsByCategory: fetchAccessProductsByCategory,
     fetchAccessProductsBySubcategory: fetchAccessProductsBySubcategory,
     fetchAccessProductById: fetchAccessProductById,
-    fetchProductBySlug: fetchProductBySlug
+    fetchProductBySlug: fetchProductBySlug,
+    createWebOrder: createWebOrder
   };
 })();
