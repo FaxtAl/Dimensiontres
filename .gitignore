@@ -1,0 +1,23 @@
+node_modules/
+
+# Local environment and secrets
+.env
+.env.*
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Local generated/test artifacts
+producto-right-check.png
+reporte_facil.txt
+
+# Raw Access exports can contain DNI, phone numbers, invoices and repair data.
+# Keep these local unless the repository is confirmed private.
+limpia.accdb
+clientes_revisar.csv
+clientes_supabase.csv
+access_raw_export/
+compras_reparaciones_access/
+productos_extra_access/
