@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mi Cuenta | Dimensión Tres</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css">
+<style>
+  :root {
+    --cyan: #8ff5ff;
+    --cyan-dark: #00deec;
+    --purple: #b90afc;
+    --bg: #0e0e0e;
+    --surface: #131313;
+    --surface-high: #1a1919;
+    --border: rgba(72,72,71,0.25);
+    --text: #e8e6e3;
+    --text-muted: #adaaaa;
+    --text-dim: #484847;
+    --success: #00f0b4;
+    --warning: #ffc600;
+    --error: #ff716c;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; }
+  .font-headline { font-family: 'Space Grotesk', sans-serif; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+
+  .animate-fade-up { animation: fadeUp .5s cubic-bezier(.25,.46,.45,.94) forwards; }
+  .animate-fade-in { animation: fadeIn .4s ease forwards; }
+  .animate-slide-in { animation: slideIn .4s ease forwards; }
+  .animate-scale-in { animation: scaleIn .4s cubic-bezier(.25,.46,.45,.94) forwards; }
+
+  /* ── Split Layout ── */
+  .split-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+  @media (min-width: 900px) {
+    .split-container { grid-template-columns: 1fr 1fr; }
+  }
+
+  .split-left {
+    display: none;
+    background: linear-gradient(135deg, #0a0a0a 0%, #0e0e0e 50%, #0d0d0d 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .split-left { display: flex; }
+  }
+
+  .split-left::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(143,245,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .split-left::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(185,10,252,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand-content {
+    position: relative;
+    z-index: 1;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .brand-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--cyan);
+    font-style: italic;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .brand-tagline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+
+  .brand-tagline span { color: var(--cyan); }
+
+  .brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .brand-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .brand-feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(143,245,255,0.08);
+    border: 1px solid rgba(143,245,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── Right Panel (Form) ── */
+  .split-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    padding-top: 5rem;
+    min-height: 100vh;
+  }
+
+  /* Mobile: compensate for fixed nav height */
+  @media (min-width: 900px) {
+    .split-right {
+      padding-top: 2rem;
+    }
+  }
+
+  .form-wrapper {
+    width: 100%;
+    max-width: 440px;
+    animation: fadeUp .5s ease forwards;
+  }
+
+  /* ── Tab Switcher ── */
+  .auth-tabs {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 2rem;
+  }
+
+  .auth-tab {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .25s ease;
+  }
+
+  .auth-tab.active {
+    background: var(--cyan-dark);
+    color: #003f43;
+  }
+
+  .auth-tab:not(.active):hover { color: var(--text); }
+
+  /* ── Form Card ── */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    animation: scaleIn .4s ease forwards;
+  }
+
+  .form-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 1.75rem;
+  }
+
+  /* ── Google Button ── */
+  .google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.5rem;
+    background: #fff;
+    color: #1f1f1f;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all .2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    margin-bottom: 1.5rem;
+  }
+
+  .google-btn:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+  }
+
+  .google-btn:active { transform: translateY(0); }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider-text {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  /* ── Input Group ── */
+  .input-group { margin-bottom: 1rem; }
+
+  .input-label {
+    display: block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-field {
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(143,245,255,0.18);
+    color: #0d0d0d;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    outline: none;
+    caret-color: #0d0d0d;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .input-field:focus {
+    border-color: rgba(143,245,255,0.4);
+    box-shadow: 0 0 0 3px rgba(143,245,255,0.06);
+  }
+
+  .input-field::placeholder { color: #6a6a6a; }
+
+  .input-field:read-only {
+    background: #e9e9e9;
+    color: #222;
+  }
+
+  .input-field:-webkit-autofill,
+  .input-field:-webkit-autofill:hover,
+  .input-field:-webkit-autofill:focus {
+    -webkit-text-fill-color: #0d0d0d;
+    box-shadow: 0 0 0 1000px #fff inset, 0 0 0 3px rgba(143,245,255,0.06);
+    caret-color: #0d0d0d;
+  }
+
+  .input-error-msg {
+    font-size: 0.72rem;
+    color: var(--error);
+    margin-top: 0.35rem;
+    display: none;
+  }
+
+  .input-field.has-error { border-color: var(--error); }
+  .input-field.has-error + .input-error-msg { display: block; }
+
+  /* ── Submit Button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 0.95rem;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dark) 100%);
+    color: #003f43;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all .2s ease;
+    box-shadow: 0 0 20px rgba(0,240,255,0.2);
+    margin-top: 0.5rem;
+  }
+
+  .submit-btn:hover {
+    box-shadow: 0 0 30px rgba(0,240,255,0.4);
+    transform: translateY(-1px);
+  }
+
+  .submit-btn:active { transform: scale(0.98); }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── Forgot / Extra Links ── */
+  .form-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.25rem;
+  }
+
+  .form-link {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color .2s;
+    background: none;
+    border: none;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .form-link:hover { color: var(--cyan); }
+
+  /* ── Status Message ── */
+  .status-msg {
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: none;
+    animation: slideDown .3s ease forwards;
+  }
+
+  .status-msg.error {
+    display: block;
+    background: rgba(255,113,108,0.1);
+    border: 1px solid rgba(255,113,108,0.25);
+    color: var(--error);
+  }
+
+  .status-msg.success {
+    display: block;
+    background: rgba(0,240,180,0.1);
+    border: 1px solid rgba(0,240,180,0.25);
+    color: var(--success);
+  }
+
+  /* ══════════════════════════════════════
+     DASHBOARD (logueado)
+     ══════════════════════════════════════ */
+
+  #dashboard {
+    display: none;
+    min-height: 100vh;
+    padding-top: 5rem;
+  }
+
+  #dashboard.visible { display: block; animation: fadeIn .4s ease forwards; }
+
+  .dash-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+  }
+
+  /* ── Header ── */
+  .dash-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    animation: fadeUp .5s ease forwards;
+  }
+
+  @media (min-width: 640px) {
+    .dash-header { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+
+  .dash-title-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .dash-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .dash-title-accent { color: var(--cyan); }
+
+  .dash-breadcrumb {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .dash-breadcrumb span { color: var(--cyan); }
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .logout-btn:hover {
+    color: var(--error);
+    border-color: rgba(255,113,108,0.4);
+    background: rgba(255,113,108,0.05);
+  }
+
+  /* ── User Card ── */
+  .user-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    animation: fadeUp .5s .1s ease both;
+  }
+
+  .user-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .user-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(143,245,255,0.3);
+    object-fit: cover;
+    background: var(--surface-high);
+  }
+
+  .user-avatar-fb {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(143,245,255,0.3);
+    background: var(--surface-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .online-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--success);
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+
+  .user-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-email {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.2rem;
+  }
+
+  .user-provider {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+  }
+
+  /* ── Section Tabs ── */
+  .section-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    animation: fadeUp .5s .15s ease both;
+  }
+
+  .section-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+
+  .section-tab:hover { color: var(--text); }
+
+  .section-tab.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+  }
+
+  .section-tab .material-symbols-outlined { font-size: 18px; }
+
+  /* ── Section Panels ── */
+  .section-panel { display: none; animation: fadeUp .35s ease forwards; }
+  .section-panel.active { display: block; }
+
+  /* ── Stats Grid ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color .2s;
+  }
+
+  .stat-card:hover { border-color: rgba(143,245,255,0.2); }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(143,245,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+
+  /* ── Order List ── */
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .order-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .2s, transform .2s;
+  }
+
+  .order-item:hover {
+    border-color: rgba(143,245,255,0.25);
+    transform: translateY(-2px);
+  }
+
+  .order-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .order-header { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+
+  .order-left { display: flex; align-items: center; gap: 1rem; }
+
+  .order-id {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  .order-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .order-badge.delivered {
+    background: rgba(0,240,180,0.1);
+    color: var(--success);
+    border: 1px solid rgba(0,240,180,0.2);
+  }
+
+  .order-badge.shipped {
+    background: rgba(143,245,255,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(143,245,255,0.2);
+  }
+
+  .order-badge.pending {
+    background: rgba(255,198,0,0.1);
+    color: var(--warning);
+    border: 1px solid rgba(255,198,0,0.2);
+  }
+
+  .order-badge.cancelled {
+    background: rgba(255,113,108,0.1);
+    color: var(--error);
+    border: 1px solid rgba(255,113,108,0.2);
+  }
+
+  .order-date {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .order-right { display: flex; align-items: center; gap: 1.5rem; }
+
+  .order-items-preview {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .order-items-preview { display: block; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  }
+
+  .order-total {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--cyan);
+  }
+
+  .order-details {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .order-item.expanded .order-details { display: block; }
+
+  .order-products-list {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .order-product-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .order-product-img {
+    width: 48px;
+    height: 48px;
+    background: var(--surface-high);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .order-product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .order-product-info { flex: 1; }
+
+  .order-product-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  .order-product-meta {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 0.15rem;
+  }
+
+  .order-product-price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--cyan);
+    text-align: right;
+  }
+
+  .expand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    transition: transform .2s;
+  }
+
+  .order-item.expanded .expand-icon { transform: rotate(180deg); }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--surface);
+    border: 1px dashed rgba(72,72,71,0.4);
+    border-radius: 10px;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-desc {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dark) 100%);
+    color: #003f43;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: all .2s;
+    box-shadow: 0 0 20px rgba(0,240,255,0.2);
+  }
+
+  .empty-action:hover { box-shadow: 0 0 30px rgba(0,240,255,0.4); transform: translateY(-1px); }
+
+  /* ── Profile Form ── */
+  .profile-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .profile-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(143,245,255,0.02);
+  }
+
+  .profile-form-grid {
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .profile-form-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .profile-form-grid .full-width { grid-column: 1 / -1; }
+
+  .profile-save-row {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .save-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dark) 100%);
+    color: #003f43;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 0 15px rgba(0,240,255,0.2);
+  }
+
+  .save-btn:hover { box-shadow: 0 0 25px rgba(0,240,255,0.4); transform: translateY(-1px); }
+
+  .save-msg {
+    font-size: 0.75rem;
+    color: var(--success);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+
+  .save-msg.visible { opacity: 1; }
+  .save-msg.error { color: var(--error); }
+
+  /* ── Password Section ── */
+  .password-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-divider-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-divider-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .change-pass-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.25rem;
+    background: var(--surface-high);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all .2s;
+    margin-top: 1rem;
+  }
+
+  .change-pass-btn:hover {
+    color: var(--cyan);
+    border-color: rgba(143,245,255,0.3);
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #484847; }
+
+  /* ── Noise ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.5;
+  }
+
+  /* ── Material Symbols ── */
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+</style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="tailwind.config.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SPLIT LAYOUT (no logueado)
+     ══════════════════════════════════════ -->
+<div id="auth-view" class="split-container">
+
+  <!-- Left Brand Panel -->
+  <div class="split-left">
+    <div class="brand-content">
+      <div class="brand-logo">Dimensión Tres</div>
+      <h1 class="brand-tagline">Tu cuenta,<br/><span>tu arsenal.</span></h1>
+      <div class="brand-features">
+        <div class="brand-feature">
+          <div class="brand-feature-icon">
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">history</span>
+          </div>
+          <span>Historial de pedidos completo</span>
+        </div>
+        <div class="brand-feature">
+          <div class="brand-feature-icon">
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">local_shipping</span>
+          </div>
+          <span>Seguimiento de envíos</span>
+        </div>
+        <div class="brand-feature">
+          <div class="brand-feature-icon">
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">percent</span>
+          </div>
+          <span>Acceso a ofertas exclusivas</span>
+        </div>
+        <div class="brand-feature">
+          <div class="brand-feature-icon">
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">headset_mic</span>
+          </div>
+          <span>Soporte técnico prioritario</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Form Panel -->
+  <div class="split-right">
+    <div class="form-wrapper">
+
+      <!-- Tab Switcher -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Ingresar</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Activar DNI</button>
+        <button class="auth-tab" id="tab-create" onclick="switchAuthTab('create')">Crear cuenta</button>
+      </div>
+
+      <!-- ── LOGIN FORM ── -->
+      <div id="panel-login" class="form-card">
+        <h2 class="form-title">Iniciar sesión</h2>
+        <p class="form-subtitle">Si ya tenés cuenta, ingresá con DNI o email y contraseña.</p>
+
+        <div id="login-status" class="status-msg"></div>
+
+        <div class="input-group">
+          <label class="input-label">DNI o email</label>
+          <input class="input-field" type="text" id="login-dni" placeholder="Ej: 30111222 o tu@email.com" autocomplete="username"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Contraseña</label>
+          <input class="input-field" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+
+        <button class="submit-btn" onclick="handleDniLogin()">Ingresar</button>
+
+        <div class="divider" style="margin-top:1.5rem;">
+          <span class="divider-line"></span>
+          <span class="divider-text">o</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <button class="google-btn" onclick="signInWithGoogle('login-status')">
+          <svg width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            <path fill="none" d="M0 0h48v48H0z"/>
+          </svg>
+          Iniciar con Google
+        </button>
+
+        <div class="form-links">
+          <button class="form-link" onclick="switchAuthTab('register')">Activar mi DNI</button>
+          <button class="form-link" style="color:var(--warning)">¿Olvidaste tu contraseña?</button>
+        </div>
+      </div>
+
+      <!-- ── REGISTER FORM ── -->
+      <div id="panel-register" class="form-card" style="display:none;">
+        <h2 class="form-title">Activar DNI</h2>
+        <p class="form-subtitle">Ingresá tu DNI para ver si está en la base de datos y crear una contraseña nueva.</p>
+
+        <div id="register-status" class="status-msg"></div>
+
+        <div class="input-group">
+          <label class="input-label">DNI</label>
+          <input class="input-field" type="text" id="reg-dni" placeholder="Ej: 30111222" inputmode="numeric" autocomplete="username"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Contraseña</label>
+          <input class="input-field" type="password" id="reg-pass" placeholder="Mínimo 8 caracteres" autocomplete="new-password"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Confirmar contraseña</label>
+          <input class="input-field" type="password" id="reg-pass-confirm" placeholder="Repetí tu contraseña" autocomplete="new-password"/>
+        </div>
+
+        <button class="submit-btn" onclick="handleDniRegister()">Crear contraseña</button>
+
+        <div class="form-links">
+          <button class="form-link" onclick="switchAuthTab('login')">Ya tengo contraseña</button>
+          <span style="font-size:0.7rem;color:var(--text-dim)">Primero validamos tu DNI</span>
+        </div>
+      </div>
+
+      <!-- ── CREATE FORM ── -->
+      <div id="panel-create" class="form-card" style="display:none;">
+        <h2 class="form-title">Crear cuenta</h2>
+        <p class="form-subtitle">Creá una cuenta normal con email y contraseña, o usá Google.</p>
+
+        <div id="create-status" class="status-msg"></div>
+
+        <div class="input-group">
+          <label class="input-label">Nombre completo</label>
+          <input class="input-field" type="text" id="create-name" placeholder="Tu nombre" autocomplete="name"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Email</label>
+          <input class="input-field" type="email" id="create-email" placeholder="tu@email.com" autocomplete="email"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Contraseña</label>
+          <input class="input-field" type="password" id="create-pass" placeholder="Mínimo 8 caracteres" autocomplete="new-password"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Confirmar contraseña</label>
+          <input class="input-field" type="password" id="create-pass-confirm" placeholder="Repetí tu contraseña" autocomplete="new-password"/>
+        </div>
+
+        <button class="submit-btn" onclick="handleNormalRegister()">Crear cuenta normal</button>
+
+        <div class="divider" style="margin-top:1.5rem;">
+          <span class="divider-line"></span>
+          <span class="divider-text">o</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <button class="google-btn" onclick="signInWithGoogle('create-status')">
+          <svg width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            <path fill="none" d="M0 0h48v48H0z"/>
+          </svg>
+          Continuar con Google
+        </button>
+
+        <div class="form-links">
+          <button class="form-link" onclick="switchAuthTab('login')">Iniciar sesión</button>
+          <button class="form-link" onclick="switchAuthTab('register')">Activar DNI</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DASHBOARD (logueado)
+     ══════════════════════════════════════ -->
+<div id="dashboard">
+
+  <!-- Header -->
+  <div class="dash-container">
+    <div class="dash-header">
+      <div class="dash-title-wrap">
+        <h1 class="dash-title">Mi <span class="dash-title-accent">Cuenta</span></h1>
+        <p class="dash-breadcrumb">Inicio / <span>Mi Cuenta</span></p>
+      </div>
+      <button class="logout-btn" onclick="signOut()">
+        <span class="material-symbols-outlined" style="font-size:16px">logout</span>
+        Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- User Card -->
+    <div class="user-card">
+      <div class="user-avatar-wrap">
+        <img id="user-avatar" class="user-avatar" style="display:none" onerror="this.style.display='none'; document.getElementById('user-avatar-fb').style.display='flex';"/>
+        <div id="user-avatar-fb" class="user-avatar-fb" style="display:none;">
+          <span class="material-symbols-outlined" style="font-size:1.8rem;color:var(--text-muted)">person</span>
+        </div>
+        <div class="online-dot"></div>
+      </div>
+      <div class="user-info">
+        <p class="user-name" id="user-name-display">—</p>
+        <p class="user-email" id="user-email-display">—</p>
+        <div class="user-provider" id="user-provider">
+          <span class="material-symbols-outlined" style="font-size:12px">mail</span>
+          <span id="provider-text">Email</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Tabs -->
+    <div class="section-tabs">
+      <button class="section-tab active" onclick="switchSection('pedidos', this)">
+        <span class="material-symbols-outlined">receipt_long</span>
+        Mis Pedidos
+      </button>
+      <button class="section-tab" onclick="switchSection('reparaciones', this)">
+        <span class="material-symbols-outlined">construction</span>
+        Reparaciones
+      </button>
+      <button class="section-tab" onclick="switchSection('datos', this)">
+        <span class="material-symbols-outlined">manage_accounts</span>
+        Mis Datos
+      </button>
+    </div>
+
+    <!-- ── SECTION: PEDIDOS ── -->
+    <div id="section-pedidos" class="section-panel">
+      <div class="orders-list" id="orders-list">
+        <!-- Llenado por JS -->
+      </div>
+      <div id="orders-empty" class="empty-state" style="display:none;">
+        <span class="material-symbols-outlined empty-icon">receipt_long</span>
+        <h3 class="empty-title">Aún sin pedidos</h3>
+        <p class="empty-desc">Cuando hagas tu primera compra va a aparecer acá.</p>
+        <a href="catalogo.html" class="empty-action">
+          <span class="material-symbols-outlined" style="font-size:16px">storefront</span>
+          Ver Catálogo
+        </a>
+      </div>
+    </div>
+
+    <!-- ── SECTION: REPARACIONES ── -->
+    <div id="section-reparaciones" class="section-panel">
+      <div class="orders-list" id="repairs-list">
+        <!-- Llenado por JS -->
+      </div>
+      <div id="repairs-empty" class="empty-state" style="display:none;">
+        <span class="material-symbols-outlined empty-icon">construction</span>
+        <h3 class="empty-title">Aún sin reparaciones</h3>
+        <p class="empty-desc">Cuando ingreses un equipo al servicio técnico va a aparecer acá.</p>
+      </div>
+    </div>
+
+    <!-- ── SECTION: DATOS ── -->
+    <div id="section-datos" class="section-panel">
+      <div class="profile-form">
+        <div class="profile-section-title">Datos personales</div>
+        <div class="profile-form-grid">
+          <div>
+            <label class="input-label">Nombre</label>
+            <input class="input-field" type="text" id="pf-name" placeholder="Tu nombre"/>
+          </div>
+          <div>
+            <label class="input-label">Apellido</label>
+            <input class="input-field" type="text" id="pf-lastname" placeholder="Tu apellido"/>
+          </div>
+          <div>
+            <label class="input-label">DNI</label>
+            <input class="input-field" type="text" id="pf-dni" placeholder="Tu DNI" inputmode="numeric"/>
+          </div>
+          <div>
+            <label class="input-label">Email</label>
+            <input class="input-field" type="email" id="pf-email" placeholder="tu@email.com"/>
+          </div>
+          <div>
+            <label class="input-label">Teléfono</label>
+            <input class="input-field" type="tel" id="pf-phone" placeholder="+54 9 ..."/>
+          </div>
+          <div class="full-width">
+            <label class="input-label">Dirección de envío</label>
+            <input class="input-field" type="text" id="pf-address" placeholder="Calle, número, ciudad"/>
+          </div>
+        </div>
+        <div class="profile-save-row">
+          <button class="save-btn" onclick="saveProfile()">
+            <span class="material-symbols-outlined" style="font-size:16px">save</span>
+            Guardar Cambios
+          </button>
+          <span id="save-msg" class="save-msg">✓ Cambios guardados</span>
+        </div>
+      </div>
+
+      <div class="profile-form" style="margin-top:1.5rem;">
+        <div class="profile-section-title">Seguridad</div>
+        <div class="profile-form-grid">
+          <div class="full-width">
+            <label class="input-label">Nueva contraseña</label>
+            <input class="input-field" type="password" id="pf-new-pass" placeholder="Dejá vacío para no cambiar"/>
+          </div>
+          <div class="full-width">
+            <label class="input-label">Confirmar nueva contraseña</label>
+            <input class="input-field" type="password" id="pf-new-pass-confirm" placeholder="Repetí la nueva contraseña"/>
+          </div>
+        </div>
+        <div class="profile-save-row">
+          <button class="change-pass-btn" onclick="changePassword()">
+            <span class="material-symbols-outlined" style="font-size:14px">lock</span>
+            Cambiar contraseña
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     NAV (completo, igual que index.html)
+     ══════════════════════════════════════ -->
+<nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom:1px solid rgba(0,240,255,0.08);">
+  <div class="flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
+    <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">Dimensión Tres</a>
+    <div class="hidden md:flex items-center space-x-6 lg:space-x-8 font-headline tracking-tight uppercase font-bold text-sm lg:text-base">
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html">Inicio</a>
+      <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="catalogo.html">Catálogo</a>
+      <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 transition-all" href="cuenta.html">Mi Cuenta</a>
+    </div>
+    <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
+      <div class="relative w-full flex items-center">
+        <input id="search-input" type="text" placeholder="Buscar productos..." class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none" style="border-radius:6px;"/>
+        <button class="absolute right-0 h-full px-3.5 flex items-center justify-center text-outline hover:text-primary transition-colors" style="border-radius:0 6px 6px 0;" aria-label="Buscar">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 md:gap-4">
+      <a href="cuenta.html"><button class="material-symbols-outlined text-[#00f0ff] hover:text-[#00f0ff] transition-all text-[22px]">person</button></a>
+      <div class="relative">
+        <button data-cart-btn class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px] relative" onclick="window.location.href='carrito.html'">shopping_cart</button>
+      </div>
+      <button id="menu-btn" onclick="toggleMenu()" class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all" aria-label="Abrir menú">
+        <span id="ham-1" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-2" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── DRAWER MOBILE ─────────────────────────────────────────────
+     Se desliza desde la izquierda con backdrop oscuro.
+     ══════════════════════════════════════════════════════════ -->
+<div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
+
+<div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
+
+  <!-- Header del drawer -->
+  <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)]">
+    <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">Dimensión Tres</a>
+    <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
+  </div>
+
+  <!-- Navegación -->
+  <nav class="flex flex-col gap-1 p-5">
+    <a onclick="closeMenu()" href="index.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Inicio</a>
+    <a onclick="closeMenu()" href="catalogo.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Catálogo</a>
+    <a onclick="closeMenu()" href="index.html#categorias" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Categorías</a>
+    <a onclick="closeMenu()" href="index.html#destacados" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Destacados</a>
+    <a onclick="closeMenu()" href="index.html#servicios" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Servicios</a>
+  </nav>
+
+  <!-- Footer del drawer -->
+  <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-[rgba(72,72,71,0.15)]">
+    <a href="https://wa.me/5493535000000?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
+      <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
+    </a>
+  </div>
+</div>
+
+<footer></footer>
+
+<script src="shared.js"></script>
+<script src="nav.js"></script>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="cart.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════
+//  CUENTA - Rediseño completo | Dimensión Tres
+// ══════════════════════════════════════════════════════════════
+
+let currentUser = null;
+let profileComplete = false;
+let googleStatusTarget = 'create-status';
+
+// ── Historial desde Supabase ──
+let accountOrders = [];
+let accountRepairs = [];
+let ordersLoaded = false;
+let repairsLoaded = false;
+
+// ── Auth Tab Switching ──
+function switchAuthTab(tab) {
+  const loginTab = document.getElementById('tab-login');
+  const registerTab = document.getElementById('tab-register');
+  const createTab = document.getElementById('tab-create');
+  const loginPanel = document.getElementById('panel-login');
+  const registerPanel = document.getElementById('panel-register');
+  const createPanel = document.getElementById('panel-create');
+
+  if (tab === 'login') {
+    loginTab.classList.add('active');
+    registerTab.classList.remove('active');
+    createTab.classList.remove('active');
+    loginPanel.style.display = '';
+    registerPanel.style.display = 'none';
+    createPanel.style.display = 'none';
+  } else if (tab === 'register') {
+    loginTab.classList.remove('active');
+    registerTab.classList.add('active');
+    createTab.classList.remove('active');
+    loginPanel.style.display = 'none';
+    registerPanel.style.display = '';
+    createPanel.style.display = 'none';
+  } else {
+    loginTab.classList.remove('active');
+    registerTab.classList.remove('active');
+    createTab.classList.add('active');
+    loginPanel.style.display = 'none';
+    registerPanel.style.display = 'none';
+    createPanel.style.display = '';
+  }
+
+  clearStatusMsgs();
+}
+
+function clearStatusMsgs() {
+  ['login-status', 'register-status', 'create-status'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'status-msg';
+    el.textContent = '';
+  });
+}
+
+function showStatus(el, msg, type) {
+  el.textContent = msg;
+  el.className = 'status-msg ' + type;
+}
+
+// ── Section Switching ──
+
+// ── Login / Register por DNI ──
+function cleanDni(value) {
+  return String(value || '').replace(/\D/g, '');
+}
+
+async function handleDniLogin() {
+  const account = document.getElementById('login-dni').value.trim();
+  const dni = cleanDni(account);
+  const isEmail = account.includes('@');
+  const pass = document.getElementById('login-pass').value;
+  const status = document.getElementById('login-status');
+
+  if (!account || !pass) {
+    showStatus(status, 'Completá todos los campos.', 'error');
+    return;
+  }
+  if (!isEmail && dni.length < 7) {
+    showStatus(status, 'DNI inválido.', 'error');
+    return;
+  }
+  if (pass.length < 6) {
+    showStatus(status, 'Contraseña muy corta.', 'error');
+    return;
+  }
+  if (!window.SupabaseStore || !window.SupabaseStore.loginCustomerByDni || !window.SupabaseStore.loginEmailAccount) {
+    showStatus(status, 'Supabase no está disponible.', 'error');
+    return;
+  }
+
+  showStatus(status, 'Validando cuenta...', 'success');
+  const result = isEmail
+    ? await window.SupabaseStore.loginEmailAccount(account, pass)
+    : await window.SupabaseStore.loginCustomerByDni(dni, pass);
+  if (result.error) {
+    const msg = isEmail && String(result.error.message || '').toLowerCase().includes('invalid')
+      ? 'No encontramos esa cuenta. Creá una cuenta normal o registrate con Google.'
+      : (result.error.message || 'No pudimos ingresar con esos datos.');
+    showStatus(status, msg, 'error');
+    return;
+  }
+
+  loginUser(result.user);
+}
+
+async function handleDniRegister() {
+  const dni = cleanDni(document.getElementById('reg-dni').value);
+  const pass = document.getElementById('reg-pass').value;
+  const passConfirm = document.getElementById('reg-pass-confirm').value;
+  const status = document.getElementById('register-status');
+
+  if (!dni || !pass || !passConfirm) {
+    showStatus(status, 'Completá todos los campos.', 'error');
+    return;
+  }
+  if (dni.length < 7) {
+    showStatus(status, 'DNI inválido.', 'error');
+    return;
+  }
+  if (pass.length < 8) {
+    showStatus(status, 'La contraseña debe tener al menos 8 caracteres.', 'error');
+    return;
+  }
+  if (pass !== passConfirm) {
+    showStatus(status, 'Las contraseñas no coinciden.', 'error');
+    return;
+  }
+  if (!window.SupabaseStore || !window.SupabaseStore.registerCustomerByDni) {
+    showStatus(status, 'Supabase no está disponible.', 'error');
+    return;
+  }
+
+  showStatus(status, 'Buscando DNI en el sistema...', 'success');
+  const result = await window.SupabaseStore.registerCustomerByDni(dni, pass);
+  if (result.error) {
+    showStatus(status, result.error.message || 'No pudimos crear la contraseña.', 'error');
+    return;
+  }
+  if (result.needsVerification) {
+    showStatus(status, 'Contraseña creada. Verificá el correo de esa cuenta y después ingresá con tu DNI.', 'success');
+    return;
+  }
+
+  loginUser(result.user);
+}
+
+async function handleNormalRegister() {
+  const name = document.getElementById('create-name').value.trim();
+  const email = document.getElementById('create-email').value.trim().toLowerCase();
+  const pass = document.getElementById('create-pass').value;
+  const passConfirm = document.getElementById('create-pass-confirm').value;
+  const status = document.getElementById('create-status');
+
+  if (!name || !email || !pass || !passConfirm) {
+    showStatus(status, 'Completá todos los campos.', 'error');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showStatus(status, 'Ingresá un email válido.', 'error');
+    return;
+  }
+  if (pass.length < 8) {
+    showStatus(status, 'La contraseña debe tener al menos 8 caracteres.', 'error');
+    return;
+  }
+  if (pass !== passConfirm) {
+    showStatus(status, 'Las contraseñas no coinciden.', 'error');
+    return;
+  }
+  if (!window.SupabaseStore || !window.SupabaseStore.registerEmailAccount) {
+    showStatus(status, 'Supabase no está disponible.', 'error');
+    return;
+  }
+
+  showStatus(status, 'Creando cuenta...', 'success');
+  const result = await window.SupabaseStore.registerEmailAccount({
+    name: name,
+    email: email,
+    password: pass
+  });
+  if (result.error) {
+    showStatus(status, result.error.message || 'No pudimos crear la cuenta.', 'error');
+    return;
+  }
+  if (result.needsVerification) {
+    showStatus(status, 'Cuenta creada. Confirmá tu email desde el correo y después iniciá sesión para completar tus datos.', 'success');
+    return;
+  }
+
+  loginUser(result.user);
+}
+
+// ── Google OAuth ──
+async function signInWithGoogle(statusId) {
+  googleStatusTarget = statusId || 'create-status';
+  const s = document.getElementById(googleStatusTarget);
+
+  if (!window.SupabaseStore || !window.SupabaseStore.signInWithGoogle) {
+    showStatus(s, 'Supabase no está disponible.', 'error');
+    return;
+  }
+
+  showStatus(s, 'Abriendo Google...', 'success');
+  const redirectTo = window.location.origin + window.location.pathname;
+  const result = await window.SupabaseStore.signInWithGoogle(redirectTo);
+  if (result.error) {
+    showStatus(s, result.error.message || 'No se pudo abrir Google.', 'error');
+    return;
+  }
+}
+
+// ── Login User ──
+function loginUser(user) {
+  currentUser = user;
+  localStorage.setItem('d3_user', JSON.stringify(user));
+  renderDashboard(user);
+}
+
+// ── Logout ──
+async function signOut() {
+  currentUser = null;
+  localStorage.removeItem('d3_user');
+  if (window.SupabaseStore && window.SupabaseStore.signOutAccount) {
+    await window.SupabaseStore.signOutAccount();
+  }
+  showAuthView();
+}
+
+// ── Render Dashboard ──
+function renderDashboard(user) {
+  // Hide auth view, show dashboard
+  document.getElementById('auth-view').style.display = 'none';
+  document.getElementById('dashboard').classList.add('visible');
+
+  // User card
+  const nameEl = document.getElementById('user-name-display');
+  const emailEl = document.getElementById('user-email-display');
+  const avatarEl = document.getElementById('user-avatar');
+  const avatarFb = document.getElementById('user-avatar-fb');
+  const providerEl = document.getElementById('provider-text');
+
+  nameEl.textContent = user.name;
+  emailEl.textContent = user.email || ('DNI ' + (user.dni || ''));
+
+  if (user.provider === 'google' && user.avatar) {
+    avatarEl.src = user.avatar;
+    avatarEl.style.display = 'block';
+    avatarFb.style.display = 'none';
+    providerEl.textContent = 'Google';
+  } else {
+    avatarEl.style.display = 'none';
+    avatarFb.style.display = 'flex';
+    providerEl.textContent = user.provider === 'dni' ? 'DNI' : 'Email';
+  }
+
+  // Profile form
+  const parts = user.name.split(' ');
+  document.getElementById('pf-name').value = user.firstName || parts[0] || '';
+  document.getElementById('pf-lastname').value = user.lastName || parts.slice(1).join(' ') || '';
+  const dniInput = document.getElementById('pf-dni');
+  dniInput.value = user.dni || '';
+  dniInput.readOnly = user.provider === 'dni' && !!user.dni;
+  document.getElementById('pf-email').value = user.email || '';
+
+  // Load saved profile data
+  const saved = JSON.parse(localStorage.getItem('d3_profile_' + user.id) || '{}');
+  if (saved.firstName && !document.getElementById('pf-name').value) document.getElementById('pf-name').value = saved.firstName;
+  if (saved.lastName && !document.getElementById('pf-lastname').value) document.getElementById('pf-lastname').value = saved.lastName;
+  if (saved.email && !document.getElementById('pf-email').value) document.getElementById('pf-email').value = saved.email;
+  document.getElementById('pf-phone').value = user.phone || saved.phone || '';
+  document.getElementById('pf-address').value = user.address || saved.address || '';
+
+  // Check if profile is complete (email, phone and address required)
+  profileComplete = !!(
+    document.getElementById('pf-email').value &&
+    document.getElementById('pf-phone').value &&
+    document.getElementById('pf-address').value
+  );
+
+  // If profile incomplete, show datos tab and show warning
+  if (!profileComplete) {
+    const datosTab = document.querySelector('.section-tab[onclick*="datos"]');
+    const pedidosTab = document.querySelector('.section-tab[onclick*="pedidos"]');
+    if (datosTab) switchSection('datos', datosTab);
+
+    // Add warning banner
+    let warning = document.getElementById('profile-warning');
+    if (!warning) {
+      warning = document.createElement('div');
+      warning.id = 'profile-warning';
+      warning.style.cssText = 'background:rgba(255,198,0,0.1);border:1px solid rgba(255,198,0,0.3);color:var(--warning);padding:1rem 1.25rem;border-radius:8px;margin-bottom:1.5rem;font-size:0.82rem;display:flex;align-items:center;gap:0.5rem;';
+      warning.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">warning</span><span>Completá email, teléfono y dirección para continuar.</span>';
+      const tabsEl = document.querySelector('.section-tabs');
+      if (tabsEl) tabsEl.parentNode.insertBefore(warning, tabsEl.nextSibling);
+    }
+  } else {
+    // Show pedidos tab if profile complete
+    const pedidosTab = document.querySelector('.section-tab[onclick*="pedidos"]');
+    if (pedidosTab) switchSection('pedidos', pedidosTab);
+  }
+
+  // Render orders only
+  renderOrders();
+  renderRepairs();
+  loadAccountHistory();
+}
+
+function renderStats() {
+  // REMOVED - stats no longer shown
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, match => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[match]));
+}
+
+function formatAccountDate(value) {
+  if (!value) return 'Sin fecha';
+  const date = new Date(String(value).replace(' ', 'T'));
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function formatAccountMoney(value) {
+  const amount = Number(value || 0);
+  const hasCents = Math.abs(amount - Math.round(amount)) > 0.009;
+  return '$' + amount.toLocaleString('es-AR', {
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: 2
+  });
+}
+
+async function loadAccountHistory() {
+  if (!window.SupabaseStore) {
+    ordersLoaded = true;
+    repairsLoaded = true;
+    renderOrders();
+    renderRepairs();
+    return;
+  }
+
+  if (window.SupabaseStore.fetchAccountOrders) {
+    const result = await window.SupabaseStore.fetchAccountOrders(40);
+    if (!result.error) accountOrders = result.orders || [];
+    ordersLoaded = true;
+    renderOrders();
+  }
+
+  if (window.SupabaseStore.fetchAccountRepairs) {
+    const result = await window.SupabaseStore.fetchAccountRepairs(40);
+    if (!result.error) accountRepairs = result.repairs || [];
+    repairsLoaded = true;
+    renderRepairs();
+  }
+}
+
+function renderOrders() {
+  const list = document.getElementById('orders-list');
+  const empty = document.getElementById('orders-empty');
+
+  if (!ordersLoaded) {
+    list.style.display = '';
+    empty.style.display = 'none';
+    list.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined empty-icon">sync</span><h3 class="empty-title">Cargando historial</h3><p class="empty-desc">Buscando tus compras anteriores.</p></div>';
+    return;
+  }
+
+  if (!accountOrders.length) {
+    list.style.display = 'none';
+    empty.style.display = '';
+    return;
+  }
+
+  list.style.display = '';
+  empty.style.display = 'none';
+
+  const statusLabel = { delivered: 'Entregado', shipped: 'En camino', pending: 'Pendiente', cancelled: 'Cancelado' };
+  const statusClass = { delivered: 'delivered', shipped: 'shipped', pending: 'pending', cancelled: 'cancelled' };
+
+  list.innerHTML = accountOrders.map(order => `
+    <div class="order-item" onclick="toggleOrderDetail(this)">
+      <div class="order-header">
+        <div class="order-left">
+          <span class="order-id">Factura #${escapeHtml(order.id)}</span>
+          <span class="order-badge ${statusClass[order.status] || 'delivered'}">${escapeHtml(order.statusLabel || statusLabel[order.status] || 'Compra')}</span>
+          <span class="order-date">${escapeHtml(formatAccountDate(order.date))}</span>
+        </div>
+        <div class="order-right">
+          <span class="order-items-preview">${escapeHtml((order.items || []).map(i => i.name).join(', ') || 'Sin detalle cargado')}</span>
+          <span class="order-total">${formatAccountMoney(order.total)}</span>
+          <div class="expand-icon">
+            <span class="material-symbols-outlined" style="font-size:20px">expand_more</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-details">
+        <div class="order-products-list">
+          ${(order.items || []).length ? order.items.map(item => `
+            <div class="order-product-item">
+              <div class="order-product-img">
+                <span class="material-symbols-outlined" style="font-size:24px;color:var(--text-dim)">inventory_2</span>
+              </div>
+              <div class="order-product-info">
+                <p class="order-product-name">${escapeHtml(item.name)}</p>
+                <p class="order-product-meta">Cantidad: ${escapeHtml(item.qty || 0)}${item.code ? ' · Código: ' + escapeHtml(item.code) : ''}</p>
+              </div>
+              <div class="order-product-price">${formatAccountMoney(item.subtotal || (item.price * item.qty))}</div>
+            </div>
+          `).join('') : '<p class="order-product-meta">Esta factura no tiene detalle cargado.</p>'}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRepairs() {
+  const list = document.getElementById('repairs-list');
+  const empty = document.getElementById('repairs-empty');
+  if (!list || !empty) return;
+
+  if (!repairsLoaded) {
+    list.style.display = '';
+    empty.style.display = 'none';
+    list.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined empty-icon">sync</span><h3 class="empty-title">Cargando reparaciones</h3><p class="empty-desc">Buscando tus equipos ingresados.</p></div>';
+    return;
+  }
+
+  if (!accountRepairs.length) {
+    list.style.display = 'none';
+    empty.style.display = '';
+    return;
+  }
+
+  list.style.display = '';
+  empty.style.display = 'none';
+  const statusClass = { delivered: 'delivered', shipped: 'shipped', pending: 'pending', cancelled: 'cancelled' };
+
+  list.innerHTML = accountRepairs.map(repair => `
+    <div class="order-item" onclick="toggleOrderDetail(this)">
+      <div class="order-header">
+        <div class="order-left">
+          <span class="order-id">Orden #${escapeHtml(repair.id)}</span>
+          ${repair.statusLabel ? `<span class="order-badge ${statusClass[repair.status] || 'pending'}">${escapeHtml(repair.statusLabel)}</span>` : ''}
+          <span class="order-date">${escapeHtml(formatAccountDate(repair.date))}</span>
+        </div>
+        <div class="order-right">
+          <span class="order-items-preview">${escapeHtml(repair.consoleName || repair.issue || '')}</span>
+          <span class="order-total">${escapeHtml(repair.statusLabel || '')}</span>
+          <div class="expand-icon">
+            <span class="material-symbols-outlined" style="font-size:20px">expand_more</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-details">
+        <div class="order-products-list">
+          <div class="order-product-item">
+            <div class="order-product-img">
+              <span class="material-symbols-outlined" style="font-size:24px;color:var(--text-dim)">construction</span>
+            </div>
+            <div class="order-product-info">
+              ${repair.consoleName ? `<p class="order-product-name">${escapeHtml(repair.consoleName)}</p>` : ''}
+              ${repair.issue ? `<p class="order-product-meta">Falla: ${escapeHtml(repair.issue)}</p>` : ''}
+              <p class="order-product-meta">${repair.serial ? 'Serie: ' + escapeHtml(repair.serial) : ''}${repair.sticker ? ' · Pegatina: ' + escapeHtml(repair.sticker) : ''}</p>
+            </div>
+            <div class="order-product-price">${escapeHtml(repair.state || repair.statusLabel || '')}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleOrderDetail(el) {
+  el.classList.toggle('expanded');
+}
+
+// ── Save Profile ──
+async function saveProfile() {
+  if (!currentUser) return;
+
+  const firstName = document.getElementById('pf-name').value.trim();
+  const lastName = document.getElementById('pf-lastname').value.trim();
+  const dni = cleanDni(document.getElementById('pf-dni').value);
+  const email = document.getElementById('pf-email').value.trim();
+  const phone = document.getElementById('pf-phone').value.trim();
+  const address = document.getElementById('pf-address').value.trim();
+
+  const data = {
+    firstName: firstName,
+    lastName: lastName,
+    dni: dni,
+    email: email,
+    phone: phone,
+    address: address,
+    provider: currentUser.provider,
+    clienteId: currentUser.clienteId || null,
+  };
+
+  const msg = document.getElementById('save-msg');
+  msg.classList.remove('visible', 'error');
+  msg.textContent = 'Guardando...';
+  msg.classList.add('visible');
+
+  let saveError = null;
+  let savedAccountUser = null;
+  if (window.SupabaseStore && window.SupabaseStore.updateAccountProfile) {
+    const accountResult = await window.SupabaseStore.updateAccountProfile(data);
+    if (accountResult.error) {
+      saveError = accountResult.error;
+    } else {
+      savedAccountUser = accountResult.user || null;
+    }
+  } else {
+    saveError = { message: 'Supabase no está disponible.' };
+  }
+
+  if (saveError) {
+    msg.textContent = saveError.message || 'No se pudo guardar en la base de datos.';
+    msg.classList.add('error');
+    setTimeout(() => msg.classList.remove('visible'), 5000);
+    return;
+  }
+
+  localStorage.setItem('d3_profile_' + currentUser.id, JSON.stringify(data));
+  currentUser = Object.assign({}, currentUser, savedAccountUser || {}, {
+    firstName: firstName,
+    lastName: lastName,
+    name: [firstName, lastName].filter(Boolean).join(' ') || currentUser.name,
+    dni: dni || currentUser.dni || '',
+    email: email,
+    phone: phone,
+    address: address,
+    clienteId: data.clienteId || currentUser.clienteId || null
+  });
+  localStorage.setItem('d3_user', JSON.stringify(currentUser));
+
+  // Check if profile is now complete
+  if (email && phone && address) {
+    profileComplete = true;
+    const warning = document.getElementById('profile-warning');
+    if (warning) warning.style.display = 'none';
+  }
+
+  msg.textContent = '✓ Cambios guardados en Supabase';
+  msg.classList.remove('error');
+  msg.classList.add('visible');
+  setTimeout(() => msg.classList.remove('visible'), 3000);
+}
+
+// ── Section Switch with profile check ──
+function switchSection(name, btn) {
+  // If trying to access pedidos and profile incomplete, show warning and redirect
+  if ((name === 'pedidos' || name === 'reparaciones') && !profileComplete && !accountOrders.length && !accountRepairs.length) {
+    const warning = document.getElementById('profile-warning');
+    if (warning) {
+      warning.style.display = '';
+      warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    // Force switch to datos
+    const datosTab = document.querySelector('.section-tab[onclick*="datos"]');
+    if (datosTab) switchSection('datos', datosTab);
+    return;
+  }
+
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+
+  const panel = document.getElementById('section-' + name);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+async function changePassword() {
+  const newPass = document.getElementById('pf-new-pass').value;
+  const newPassConfirm = document.getElementById('pf-new-pass-confirm').value;
+
+  if (!newPass && !newPassConfirm) return;
+
+  if (newPass.length < 8) {
+    alert('La contraseña debe tener al menos 8 caracteres.');
+    return;
+  }
+  if (newPass !== newPassConfirm) {
+    alert('Las contraseñas no coinciden.');
+    return;
+  }
+
+  if (!window.SupabaseStore || !window.SupabaseStore.changeAccountPassword) {
+    alert('Supabase no está disponible.');
+    return;
+  }
+
+  const result = await window.SupabaseStore.changeAccountPassword(newPass);
+  if (result.error) {
+    alert(result.error.message || 'No se pudo cambiar la contraseña.');
+    return;
+  }
+
+  document.getElementById('pf-new-pass').value = '';
+  document.getElementById('pf-new-pass-confirm').value = '';
+  alert('Contraseña actualizada.');
+}
+
+// ── Show Auth View ──
+function showAuthView() {
+  document.getElementById('auth-view').style.display = '';
+  document.getElementById('dashboard').classList.remove('visible');
+  switchAuthTab('login');
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', async function() {
+  updateCartBadge();
+
+  if (window.SupabaseStore && window.SupabaseStore.getCurrentAccount) {
+    const result = await window.SupabaseStore.getCurrentAccount();
+    if (result.user) {
+      loginUser(result.user);
+      return;
+    }
+  }
+
+  const saved = localStorage.getItem('d3_user');
+  if (saved) {
+    try {
+      const user = JSON.parse(saved);
+      if (user && user.id) {
+        currentUser = user;
+        renderDashboard(user);
+        return;
+      }
+    } catch (e) {}
+  }
+
+  // No user logged in — show auth view
+  showAuthView();
+});
+</script>
+</body>
+</html>
