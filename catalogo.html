@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
-<link rel="stylesheet" href="catalogo.css?v=sidebar-compact-20260507">
+<link rel="stylesheet" href="catalogo.css?v=catalogo-root-human-20260512">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="tailwind.config.js"></script>
 </head>
@@ -461,9 +461,23 @@ function getCategoryLabel(item, hasChildren) {
 
 function getCardAction(item, hasChildren) {
   if (hasChildren) {
-    return (item.children.length || 0) + ' secciones';
+    return currentLevel === 'root' ? 'Explorar' : 'Abrir secciones';
   }
   return 'Ver productos';
+}
+
+function getCardStats(item, hasChildren) {
+  var stats = [];
+  var productCount = Number(item.productCount || 0);
+  var childCount = hasChildren ? (item.children.length || 0) : 0;
+
+  if (productCount > 0) {
+    stats.push(productCount + (productCount === 1 ? ' producto' : ' productos'));
+  }
+  if (childCount > 0) {
+    stats.push(childCount + (childCount === 1 ? ' seccion' : ' secciones'));
+  }
+  return stats;
 }
 
 function formatPrice(value) {
@@ -1372,6 +1386,18 @@ function buildCard(item, delay) {
   sub.textContent = item.subtitle || '';
   left.appendChild(sub);
 
+  var stats = getCardStats(item, hasChildren);
+  if (stats.length) {
+    var statsWrap = document.createElement('div');
+    statsWrap.className = 'cat-card-stats';
+    stats.forEach(function(stat) {
+      var chip = document.createElement('span');
+      chip.textContent = stat;
+      statsWrap.appendChild(chip);
+    });
+    left.appendChild(statsWrap);
+  }
+
   var arrow = document.createElement('span');
   arrow.className = 'cat-arrow material-symbols-outlined text-[#8ff5ff] text-[18px] md:text-[24px] mt-0.5 md:mt-1';
   arrow.textContent = hasChildren ? 'chevron_right' : 'arrow_forward';
@@ -1419,6 +1445,9 @@ function renderGrid(items, animate) {
 
   visible.forEach(function(item, idx) {
     var card = buildCard(item, idx * 0.05);
+    if (currentLevel === 'root' && idx < 2) {
+      card.classList.add('cat-card-featured');
+    }
     grid.appendChild(card);
   });
 }
