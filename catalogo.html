@@ -798,7 +798,7 @@ function renderProductCards(products) {
       var stock = document.createElement('span');
       stock.className = 'product-card-stock';
       var stockValue = Number(p.stock || 0);
-      stock.textContent = stockValue > 0 ? 'Stock ' + stockValue : 'Sin stock';
+      stock.textContent = stockValue > 0 ? 'Stock ' + stockValue : 'Consultar';
       body.appendChild(stock);
     }
 

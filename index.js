@@ -360,7 +360,10 @@ function createFeaturedProductCard(product) {
       price: product.price,
       ref: product.model || '',
       category: product.sourceLabel || product.category || '',
-      image: product.image || ''
+      image: product.image || '',
+      stock: product.stock,
+      accessId: product.accessId || product.id || '',
+      sourceLabel: product.sourceLabel || ''
     });
   });
   body.appendChild(btn);

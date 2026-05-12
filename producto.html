@@ -682,13 +682,12 @@ function renderStock(p) {
   var label = 'Consultar';
   var color = '#8ff5ff';
   if (typeof p.stock === 'number') {
-    if (p.stock > 5) label = 'Disponible';
+    if (p.stock > 5) label = p.stock + ' disponibles';
     else if (p.stock > 0) {
       label = 'Últimas ' + p.stock + ' unidades';
       color = '#ffc600';
     } else {
-      label = 'Sin stock';
-      color = '#ff716c';
+      label = 'Consultar';
     }
   } else if (p.stockLabel) {
     label = p.stockLabel;
@@ -699,9 +698,9 @@ function renderStock(p) {
 
 function getStockLabel(p) {
   if (typeof p.stock === 'number') {
-    if (p.stock > 5) return 'Disponible';
+    if (p.stock > 5) return p.stock + ' disponibles';
     if (p.stock > 0) return 'Últimas ' + p.stock;
-    return 'Sin stock';
+    return 'Consultar';
   }
   return p.stockLabel || 'Consultar';
 }
@@ -981,7 +980,7 @@ function renderRelatedCard(p, i) {
     addButton.textContent = 'add_shopping_cart';
     addButton.addEventListener('click', function(event) {
       event.stopPropagation();
-      addToCart(p.name, p.price, p.image || '');
+      addToCart(p.name, p.price, p.image || '', p);
     });
     addButton.addEventListener('mouseenter', function() { addButton.style.color = color; });
     addButton.addEventListener('mouseleave', function() { addButton.style.color = '#484847'; });
@@ -1021,7 +1020,12 @@ async function renderRelated(current) {
 }
 
 function changeQty(delta) {
-  qty = Math.max(1, Math.min(qty + delta, 12));
+  var maxQty = PRODUCT && typeof PRODUCT.stock === 'number' && PRODUCT.stock > 0 ? PRODUCT.stock : 12;
+  var nextQty = Math.max(1, Math.min(qty + delta, maxQty));
+  if (delta > 0 && nextQty === qty && maxQty < 12 && typeof cartToastMessage === 'function') {
+    cartToastMessage('No hay suficiente stock. Disponible: ' + maxQty + '.', 'error');
+  }
+  qty = nextQty;
   var el = document.getElementById('qty-display');
   if (el) el.textContent = qty;
 }
@@ -1030,8 +1034,25 @@ function handleAddToCart(btn) {
   if (!PRODUCT || btn.disabled) return;
   if (!ensureUserLoggedIn('add-to-cart')) return;
   btn.disabled = true;
-  var prod = { id: PRODUCT.slug, name: PRODUCT.name, price: PRODUCT.price, image: PRODUCT.image || '' };
-  for (var i = 0; i < qty; i++) CartStore.add(prod);
+  var prod = {
+    id: PRODUCT.slug,
+    accessId: PRODUCT.accessId || PRODUCT.id || '',
+    name: PRODUCT.name,
+    price: PRODUCT.price,
+    image: PRODUCT.image || '',
+    stock: PRODUCT.stock,
+    ref: getProductCodeText(PRODUCT),
+    category: PRODUCT.sourceLabel || PRODUCT.category || '',
+    sourceLabel: PRODUCT.sourceLabel || '',
+    description: PRODUCT.description || PRODUCT.subtitle || ''
+  };
+  var result = CartStore.add(prod, qty);
+  if (!result.ok && result.reason === 'stock') {
+    btn.disabled = false;
+    if (typeof cartStockToast === 'function') cartStockToast(PRODUCT.name, result.available);
+    else alert('No hay suficiente stock. Disponible: ' + result.available + '.');
+    return;
+  }
   updateCartBadge();
   cartToast(PRODUCT.name);
   btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:17px;">check</span> Agregado';
@@ -1047,10 +1068,26 @@ function handleAddToCart(btn) {
   }, 1800);
 }
 
-function addToCart(name, price, image) {
+function addToCart(name, price, image, product) {
   if (!ensureUserLoggedIn('add-to-cart')) return;
-  var id = slugify(name);
-  CartStore.add({ id: id, name: name, price: price, image: image || '' });
+  var id = product && product.slug ? product.slug : slugify(name);
+  var item = {
+    id: id,
+    accessId: product && (product.accessId || product.id) || '',
+    name: name,
+    price: price,
+    image: image || '',
+    stock: product ? product.stock : null,
+    ref: product ? getProductCodeText(product) : '',
+    category: product ? (product.sourceLabel || product.category || '') : '',
+    sourceLabel: product ? (product.sourceLabel || '') : ''
+  };
+  var result = CartStore.add(item);
+  if (!result.ok && result.reason === 'stock') {
+    if (typeof cartStockToast === 'function') cartStockToast(name, result.available);
+    else alert('No hay suficiente stock. Disponible: ' + result.available + '.');
+    return;
+  }
   updateCartBadge();
   cartToast(name);
 }

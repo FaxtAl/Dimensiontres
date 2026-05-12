@@ -48,6 +48,22 @@ function calculateCartTotals() {
   };
 }
 
+function getCartStockLabel(item) {
+  if (typeof CartStore !== 'undefined' && typeof CartStore.getStockLabel === 'function') {
+    return CartStore.getStockLabel(item);
+  }
+  var stock = item && item.stock !== undefined && item.stock !== null ? Number(item.stock) : null;
+  return stock !== null && stock > 0 ? 'Stock ' + stock : 'Consultar';
+}
+
+function showCartNotice(message) {
+  if (typeof cartToastMessage === 'function') {
+    cartToastMessage(message, 'error');
+    return;
+  }
+  alert(message);
+}
+
 /* ─── RENDER ─────────────────────────────── */
 function render() {
   var grid  = document.getElementById('cart-grid');
@@ -121,6 +137,12 @@ function buildRow(item) {
     metaP.textContent = meta;
     infoDiv.appendChild(metaP);
   }
+
+  var stockP = document.createElement('p');
+  stockP.className = 'text-xs font-label mt-1';
+  stockP.style.color = '#8ff5ff';
+  stockP.textContent = getCartStockLabel(item);
+  infoDiv.appendChild(stockP);
 
   var priceP = document.createElement('p');
   priceP.className = 'text-primary font-headline font-bold text-sm mt-1 md:hidden';
@@ -248,7 +270,12 @@ function updateTotals() {
 
 /* ─── CAMBIAR CANTIDAD ───────────────────── */
 function changeQty(id, delta) {
-  CartStore.updateQty(id, delta);
+  var result = CartStore.updateQty(id, delta);
+  if (result && !result.ok && result.reason === 'stock') {
+    showCartNotice('No hay suficiente stock. Disponible: ' + result.available + '.');
+    return;
+  }
+
   var item = CartStore.getAll().find(function(i) { return i.id === id; });
   if (!item) { animRemove(id); return; }
 
