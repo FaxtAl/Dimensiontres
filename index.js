@@ -235,7 +235,8 @@ function pickHomeCategories(tree) {
     'Accesorios Consolas',
     'Hardware',
     'Perifericos PC',
-    'Auriculares'
+    'Auriculares',
+    'Cables'
   ];
   return wanted
     .map(function(name) {
@@ -254,10 +255,11 @@ function renderHomeCategories(tree) {
   grid.innerHTML = '';
   categories.forEach(function(item, index) {
     var meta = homeCategoryMeta(item.name);
-    var card = document.createElement('div');
+    var card = document.createElement('a');
     card.className = (index === 0 || index === categories.length - 1 ? 'sm:col-span-2 lg:col-span-1 ' : '') +
-      'group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]';
-    card.onclick = function() { window.location.href = homeCatalogHref(item); };
+      'group block relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]';
+    card.href = homeCatalogHref(item);
+    card.setAttribute('aria-label', 'Ver categoria ' + meta.title);
 
     var img = document.createElement('img');
     img.alt = meta.title;

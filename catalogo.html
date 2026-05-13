@@ -459,6 +459,35 @@ function getCategoryLabel(item, hasChildren) {
   return labels[item.category] || (hasChildren ? 'Categoría' : 'Catálogo');
 }
 
+function getCatalogVisualMeta(item) {
+  var text = normalizeSearchValue([item.name, item.subtitle].filter(Boolean).join(' '));
+  if (text.indexOf('consola') !== -1 && text.indexOf('accesorio') === -1 && text.indexOf('joystick') === -1) {
+    return { icon: 'sports_esports', image: 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=900&q=80' };
+  }
+  if (text.indexOf('accesorios consolas') !== -1 || text.indexOf('joystick') !== -1 || text.indexOf('ps3') !== -1 || text.indexOf('ps4') !== -1 || text.indexOf('ps5') !== -1) {
+    return { icon: 'gamepad', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=900&q=80' };
+  }
+  if (text.indexOf('hardware') !== -1 || text.indexOf('procesador') !== -1 || text.indexOf('mother') !== -1 || text.indexOf('fuente') !== -1) {
+    return { icon: 'memory', image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=900&q=80' };
+  }
+  if (text.indexOf('periferico') !== -1 || text.indexOf('mouse') !== -1 || text.indexOf('teclado') !== -1 || text.indexOf('monitor') !== -1) {
+    return { icon: 'mouse', image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=900&q=80' };
+  }
+  if (text.indexOf('auricular') !== -1 || text.indexOf('audio') !== -1 || text.indexOf('parlante') !== -1) {
+    return { icon: 'headphones', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80' };
+  }
+  if (text.indexOf('cable') !== -1 || text.indexOf('adaptador') !== -1 || text.indexOf('cargador') !== -1) {
+    return { icon: 'cable', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80' };
+  }
+  if (text.indexOf('memoria') !== -1 || text.indexOf('disco') !== -1 || text.indexOf('ssd') !== -1 || text.indexOf('almacenamiento') !== -1) {
+    return { icon: 'storage', image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=900&q=80' };
+  }
+  if (text.indexOf('silla') !== -1) {
+    return { icon: 'chair', image: 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=900&q=80' };
+  }
+  return { icon: item.icon || 'inventory_2', image: '' };
+}
+
 function getCardAction(item, hasChildren) {
   if (hasChildren) {
     return currentLevel === 'root' ? 'Explorar' : 'Abrir secciones';
@@ -1309,6 +1338,9 @@ async function showCategoryProducts(item, requestId) {
 
 function buildCard(item, delay) {
   var hasChildren = item.children && item.children.length > 0;
+  var visual = getCatalogVisualMeta(item);
+  var displayImage = item.image || visual.image;
+  var displayIcon = visual.icon || item.icon || 'category';
   var card = document.createElement('div');
   card.className = 'cat-card ' + (currentLevel === 'root' ? 'cat-card-root' : 'cat-card-sub') + (hasChildren ? ' has-children' : ' is-leaf');
   card.dataset.category = item.category || 'sub';
@@ -1327,9 +1359,9 @@ function buildCard(item, delay) {
   imgArea.className = 'aspect-square overflow-hidden relative';
   imgArea.style.background = '#0d0d0d';
 
-  if (item.image) {
+  if (displayImage) {
     var img = document.createElement('img');
-    img.src = item.image;
+    img.src = displayImage;
     img.alt = item.name;
     img.className = 'cat-img opacity-60';
     img.onerror = function() { this.style.display = 'none'; };
@@ -1339,7 +1371,7 @@ function buildCard(item, delay) {
     placeholder.className = 'cat-placeholder';
     var pIcon = document.createElement('span');
     pIcon.className = 'cat-placeholder-icon material-symbols-outlined';
-    pIcon.textContent = item.icon || 'category';
+    pIcon.textContent = displayIcon;
     var pLabel = document.createElement('span');
     pLabel.className = 'cat-placeholder-label';
     pLabel.textContent = hasChildren ? 'Ver categoria' : 'Ver productos';
@@ -1373,7 +1405,7 @@ function buildCard(item, delay) {
 
   var iconEl = document.createElement('span');
   iconEl.className = 'cat-icon material-symbols-outlined text-[#484847] text-[18px] md:text-[24px] transition-colors duration-300 block mb-1 md:mb-2';
-  iconEl.textContent = item.icon || 'category';
+  iconEl.textContent = displayIcon;
   left.appendChild(iconEl);
 
   var h3 = document.createElement('h3');

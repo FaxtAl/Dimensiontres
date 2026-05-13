@@ -262,16 +262,71 @@ body::after {
     font-size: 0.48rem;
   }
 
+  #categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .cat-card {
+    border-color: rgba(143,245,255,0.22);
+    border-radius: 10px;
+  }
+
   .cat-card .aspect-square {
-    min-height: 132px;
+    aspect-ratio: 1 / 1;
+    min-height: 0;
   }
 
   .cat-card-info {
-    min-height: 122px;
+    min-height: auto;
+    padding: 0.75rem;
+    gap: 0.45rem;
+  }
+
+  .cat-placeholder {
+    gap: 0.35rem;
+  }
+
+  .cat-placeholder-icon {
+    font-size: 32px;
+  }
+
+  .cat-placeholder-label,
+  .cat-card-action {
+    display: none;
+  }
+
+  .cat-icon {
+    display: none !important;
+  }
+
+  .cat-card-title {
+    font-size: 0.8rem;
+    line-height: 1.08;
   }
 
   .cat-card-subtitle {
-    font-size: 0.62rem;
+    display: none;
+  }
+
+  .cat-card-stats {
+    margin-top: 0.45rem;
+  }
+
+  .cat-card-stats span {
+    min-height: 20px;
+    padding: 0 0.48rem;
+    font-size: 0.5rem;
+  }
+
+  .cat-card-stats span + span {
+    display: none;
+  }
+
+  .cat-arrow {
+    opacity: 1;
+    transform: none;
+    font-size: 18px !important;
   }
 }
 
@@ -1139,5 +1194,67 @@ body::after {
 @media (min-width: 1280px) {
   .catalog-layout:not(.has-sidebar) #categories-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .catalog-results,
+  #grid-wrapper,
+  #categories-grid {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .mobile-catalog-action,
+  .cat-card,
+  .cat-card-copy,
+  .cat-card-title {
+    min-width: 0;
+  }
+
+  .mobile-catalog-actions {
+    width: min(100%, 348px);
+  }
+
+  .catalog-layout:not(.has-sidebar) #categories-grid,
+  .catalog-layout.has-sidebar #categories-grid {
+    width: min(100%, 348px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .catalog-layout:not(.has-sidebar) .cat-card .aspect-square,
+  .catalog-layout.has-sidebar .cat-card .aspect-square {
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+  }
+
+  .catalog-layout:not(.has-sidebar) .cat-card-info,
+  .catalog-layout.has-sidebar .cat-card-info {
+    min-height: auto;
+    padding: 0.75rem;
+  }
+
+  .catalog-layout:not(.has-sidebar) .cat-card-title,
+  .catalog-layout.has-sidebar .cat-card-title {
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+  }
+
+  .catalog-layout:not(.has-sidebar) .cat-card-subtitle,
+  .catalog-layout.has-sidebar .cat-card-subtitle,
+  .catalog-layout:not(.has-sidebar) .cat-card-action,
+  .catalog-layout.has-sidebar .cat-card-action {
+    display: none;
+  }
+
+  .catalog-layout:not(.has-sidebar) .cat-card-stats span + span,
+  .catalog-layout.has-sidebar .cat-card-stats span + span {
+    display: none;
   }
 }
