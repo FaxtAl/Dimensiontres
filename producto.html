@@ -1100,14 +1100,15 @@ document.addEventListener('DOMContentLoaded', async function() {
   var id = params.get('id');
 
   var supabaseProduct = null;
-  if (id && window.SupabaseStore && window.SupabaseStore.isReady()) {
+  var localProduct = id && PRODUCTS_DB[id] ? PRODUCTS_DB[id] : null;
+  if (id && !localProduct && window.SupabaseStore && window.SupabaseStore.isReady()) {
     supabaseProduct = await window.SupabaseStore.fetchProductBySlug(id);
   }
 
   if (supabaseProduct) {
     renderProduct(supabaseProduct);
-  } else if (id && PRODUCTS_DB[id]) {
-    renderProduct(PRODUCTS_DB[id]);
+  } else if (localProduct) {
+    renderProduct(localProduct);
   } else {
     document.getElementById('not-found').style.display = 'flex';
     document.getElementById('product-content').style.display = 'none';
