@@ -12,6 +12,11 @@ Thumbs.db
 # Local generated/test artifacts
 producto-right-check.png
 reporte_facil.txt
+dimensiontres-web-correcta.zip
+catalogo-mobile-check.png
+deploy-dimensiontres/
+deploy-web-correcta/
+dimensiontres-web-correcta/
 
 # Raw Access exports can contain DNI, phone numbers, invoices and repair data.
 # Keep these local unless the repository is confirmed private.
@@ -21,3 +26,8 @@ clientes_supabase.csv
 access_raw_export/
 compras_reparaciones_access/
 productos_extra_access/
+
+# Hosting/API secrets
+api/ml-config.php
+api/ml-tokens.json
+api/ml-state.json
