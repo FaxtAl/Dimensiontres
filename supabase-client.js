@@ -970,14 +970,32 @@
     return category;
   }
 
+  function removeLeadingAccessCode(text, code) {
+    var value = String(text || '').trim();
+    code = String(code || '').trim();
+    if (!value || !code) return value;
+
+    var normalizedValue = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    var normalizedCode = code.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    var codeIndex = normalizedValue.indexOf(normalizedCode);
+
+    if (normalizedValue.indexOf('codigo ' + normalizedCode) === 0 && codeIndex !== -1) {
+      return value.slice(codeIndex + code.length).replace(/^[\s.\-:]+/, '').trim();
+    }
+    if (normalizedValue.indexOf(normalizedCode) === 0) {
+      return value.slice(code.length).replace(/^[\s.\-:]+/, '').trim();
+    }
+    return value;
+  }
+
   function mapAccessProduct(row) {
     var id = String(row.id_productos || '').trim();
     var name = row.producto || row.descripcion || ('Producto #' + id);
     var category = accessDisplayCategoryForRow(row);
     var subcategory = accessDisplaySubcategoryForRow(row);
-    var code = row.codigo ? 'Codigo ' + row.codigo : '';
-    var description = row.descripcion && row.descripcion !== name ? row.descripcion : '';
-    var subtitle = [code, description].filter(Boolean).join(' - ') || subcategory;
+    var code = row.codigo ? String(row.codigo).trim() : '';
+    var description = row.descripcion && row.descripcion !== name ? removeLeadingAccessCode(row.descripcion, code) : '';
+    var subtitle = description || subcategory;
     var group = accessGroupForCategory(category);
 
     return {
@@ -997,6 +1015,8 @@
       sourceLabel: subcategory,
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent('subcat-' + (row.id_subcategoria2 || '')),
       slug: 'access-' + id,
+      codigo: code,
+      code: code,
       description: description || subcategory,
       stock: row.totalproductos !== null && row.totalproductos !== undefined ? parseMoney(row.totalproductos) : null,
       brand: row.marca || '',

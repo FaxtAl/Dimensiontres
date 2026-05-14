@@ -530,7 +530,7 @@ body::after {
 <script src="nav.js"></script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js?v=catalogo-access-20260508-images-2"></script>
+<script src="supabase-client.js?v=web-data-20260514"></script>
 <script src="cart.js"></script>
 
 <script>
@@ -719,18 +719,32 @@ function getConditionLabel(p) {
 }
 
 function getProductCodeText(p) {
-  var value = cleanText(p.model || p.subtitle || p.category || 'Consultar');
+  var value = cleanText(p.codigo || p.code || p.model || p.subtitle || p.category || 'Consultar');
   var match = value.match(/(?:c[oó]digo\s*)?([0-9]{5,})/i);
   if (match) return match[1];
   return value.replace(/^c[oó]digo\s*/i, '') || 'Consultar';
 }
 
 function getProductDescriptionText(p) {
-  var value = cleanText(p.subtitle || p.description || '');
-  return value
+  var code = getProductCodeText(p);
+  var value = cleanText(p.description || p.subtitle || '');
+  value = value
     .replace(/^c[oó]digo\s*[0-9]{5,}\s*[-–]\s*/i, '')
     .replace(/^[-–]\s*/, '')
     .trim();
+
+  if (!value || value === code) return '';
+
+  var normalizedValue = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  var normalizedCode = String(code || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  if (normalizedValue === normalizedCode || normalizedValue === 'codigo ' + normalizedCode) return '';
+
+  var codeIndex = normalizedValue.indexOf(normalizedCode);
+  if (normalizedValue.indexOf('codigo ' + normalizedCode) === 0 && codeIndex !== -1) {
+    value = value.slice(codeIndex + String(code).length).replace(/^[\s.\-:]+/, '').trim();
+  }
+
+  return value;
 }
 
 function renderProductMeta(p) {
@@ -817,7 +831,7 @@ function renderProduct(p) {
   document.getElementById('prod-title').innerHTML = words.join(' ') + ' <span style="color:#8ff5ff;">' + last + '</span>';
   var shortDescription = getProductDescriptionText(p);
   document.getElementById('prod-subtitle-tag').textContent =
-    'Código ' + getProductCodeText(p) + (shortDescription ? ' · ' + shortDescription : '');
+    shortDescription || 'Producto disponible para consultar.';
 
   // Price
   document.getElementById('prod-price').textContent = formatPrice(p.price);
@@ -1001,7 +1015,7 @@ function renderRelatedCard(p, i) {
 
 async function renderRelated(current) {
   var relLink = document.getElementById('related-all-link');
-  relLink.href = getCatalogHref(current);
+  relLink.href = 'catalogo.html';
 
   var grid = document.getElementById('related-grid');
   grid.innerHTML = '<div style="grid-column:1/-1;color:#605f5e;font-family:\'Space Grotesk\',sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;">Cargando productos relacionados...</div>';

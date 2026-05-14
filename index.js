@@ -373,6 +373,40 @@ function createFeaturedProductCard(product) {
   return card;
 }
 
+function wireStaticSetupLinks() {
+  var grid = document.getElementById('home-featured-grid');
+  if (!grid) return;
+
+  var links = [
+    { href: 'catalogo.html?q=joystick', label: 'Ver joysticks' },
+    { href: 'catalogo.html?q=teclado', label: 'Ver teclados' },
+    { href: 'catalogo.html?q=mouse', label: 'Ver mouses' },
+    { href: 'catalogo.html?q=auricular', label: 'Ver audio' },
+    { href: 'catalogo.html?q=monitor', label: 'Ver monitores' },
+    { href: 'catalogo.html?q=ssd', label: 'Ver almacenamiento' }
+  ];
+
+  Array.from(grid.querySelectorAll('.featured-card')).forEach(function(card, index) {
+    if (card.dataset.productCard) return;
+    var target = links[index] || { href: 'catalogo.html', label: 'Ver catalogo' };
+    card.setAttribute('role', 'link');
+    card.setAttribute('tabindex', '0');
+    card.onclick = function() { window.location.href = target.href; };
+    card.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') window.location.href = target.href;
+    });
+
+    var button = card.querySelector('.feat-btn');
+    if (button) {
+      button.textContent = target.label;
+      button.onclick = function(event) {
+        event.stopPropagation();
+        window.location.href = target.href;
+      };
+    }
+  });
+}
+
 async function loadHomeFeaturedProducts(tree) {
   if (!window.SupabaseStore) return [];
   var categories = pickHomeCategories(tree);
@@ -458,5 +492,6 @@ document.addEventListener('DOMContentLoaded', function() {
   updateCartBadge();
   checkStoreStatus();
   setInterval(checkStoreStatus, 60000);
+  wireStaticSetupLinks();
   loadHomeCatalogSections();
 });

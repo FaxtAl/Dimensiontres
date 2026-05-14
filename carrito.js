@@ -64,6 +64,27 @@ function showCartNotice(message) {
   alert(message);
 }
 
+function cleanCartText(value) {
+  return String(value || '')
+    .replace(/\bCodigo\b/gi, 'Código')
+    .replace(/\bPerifericos\b/gi, 'Periféricos')
+    .replace(/\bCatalogo\b/gi, 'Catálogo')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getCartItemMeta(item) {
+  var category = cleanCartText(item.sourceLabel || item.category || '');
+  var codeText = cleanCartText(item.codigo || item.code || item.ref || '');
+  var codeMatch = codeText.match(/[0-9]{5,}/);
+  var parts = [];
+
+  if (category) parts.push(category);
+  if (codeMatch) parts.push('Código ' + codeMatch[0]);
+
+  return parts.join(' · ');
+}
+
 /* ─── RENDER ─────────────────────────────── */
 function render() {
   var grid  = document.getElementById('cart-grid');
@@ -99,24 +120,21 @@ function render() {
 function buildRow(item) {
   var lineTotal = item.price * item.qty;
   var tr = document.createElement('tr');
-  tr.className  = 'group transition-colors hover:bg-surface-container-high/50';
+  tr.className  = 'cart-row group transition-colors hover:bg-surface-container-high/50';
   tr.dataset.id = item.id;
 
-  var meta = '';
-  if (item.ref)                   meta += 'Ref: ' + item.ref;
-  if (item.ref && item.category)  meta += ' | ';
-  if (item.category)              meta += item.category;
+  var meta = getCartItemMeta(item);
 
   /* ── Celda principal ── */
   var mainCell = document.createElement('td');
-  mainCell.className = 'px-4 md:px-6 py-6';
+  mainCell.className = 'cart-main-cell px-4 md:px-6 py-6';
 
   var flexDiv = document.createElement('div');
-  flexDiv.className = 'flex items-center gap-4';
+  flexDiv.className = 'cart-item-layout flex items-center gap-4';
 
   // Imagen
   var imgDiv = document.createElement('div');
-  imgDiv.className = 'w-16 h-16 md:w-24 md:h-24 bg-surface-container-lowest flex-shrink-0 flex items-center justify-center p-2';
+  imgDiv.className = 'cart-image-box w-16 h-16 md:w-24 md:h-24 bg-surface-container-lowest flex-shrink-0 flex items-center justify-center p-2';
   var img = document.createElement('img');
   img.className = 'w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500';
   img.src = item.image || '';
@@ -126,14 +144,15 @@ function buildRow(item) {
 
   // Info
   var infoDiv = document.createElement('div');
+  infoDiv.className = 'cart-item-info';
   var h3 = document.createElement('h3');
-  h3.className = 'font-headline font-bold text-base md:text-lg leading-tight uppercase';
-  h3.textContent = item.name;
+  h3.className = 'cart-item-title font-headline font-bold text-base md:text-lg leading-tight uppercase';
+  h3.textContent = cleanCartText(item.name);
   infoDiv.appendChild(h3);
 
   if (meta) {
     var metaP = document.createElement('p');
-    metaP.className = 'text-xs text-on-surface-variant font-label mt-1';
+    metaP.className = 'cart-item-meta text-xs text-on-surface-variant font-label mt-1';
     metaP.textContent = meta;
     infoDiv.appendChild(metaP);
   }
@@ -185,7 +204,7 @@ function buildRow(item) {
 
   /* ── Celda cantidad desktop ── */
   var qtyCell = document.createElement('td');
-  qtyCell.className = 'px-6 py-6 hidden md:table-cell';
+  qtyCell.className = 'cart-qty-cell px-6 py-6 hidden md:table-cell';
   var qtyFlex = document.createElement('div');
   qtyFlex.className = 'flex items-center justify-center gap-3';
 
@@ -218,7 +237,7 @@ function buildRow(item) {
 
   /* ── Celda precio desktop ── */
   var priceCell = document.createElement('td');
-  priceCell.className = 'px-6 py-6 text-right hidden md:table-cell';
+  priceCell.className = 'cart-price-cell px-6 py-6 text-right hidden md:table-cell';
   var priceSpan = document.createElement('span');
   priceSpan.id = 'price-' + item.id;
   priceSpan.className = 'font-headline font-bold text-xl text-primary';
@@ -228,7 +247,7 @@ function buildRow(item) {
 
   /* ── Celda eliminar ── */
   var deleteCell = document.createElement('td');
-  deleteCell.className = 'px-4 md:px-6 py-6 text-right';
+  deleteCell.className = 'cart-delete-cell px-4 md:px-6 py-6 text-right';
   var deleteBtn = document.createElement('button');
   deleteBtn.className = 'text-on-surface-variant hover:text-error transition-colors';
   deleteBtn.title = 'Eliminar';
