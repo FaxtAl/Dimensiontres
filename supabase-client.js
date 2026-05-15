@@ -780,7 +780,7 @@
     if (text.indexOf('consola') !== -1) return 'consolas';
     if (text.indexOf('periferico') !== -1) return 'perifericos';
     if (text.indexOf('auricular') !== -1 || text.indexOf('parlante') !== -1) return 'audio';
-    if (text.indexOf('hardware') !== -1 || text.indexOf('memoria') !== -1 || text.indexOf('pc') !== -1 || text.indexOf('silla') !== -1) return 'hardware';
+    if (text.indexOf('hardware') !== -1 || text.indexOf('memoria') !== -1 || text.indexOf('pc') !== -1 || text.indexOf('silla') !== -1 || text.indexOf('carry') !== -1 || text.indexOf('disck') !== -1 || text.indexOf('disk') !== -1) return 'hardware';
     return 'accesorios';
   }
 
@@ -789,7 +789,7 @@
     if (text.indexOf('auricular') !== -1 || text.indexOf('headset') !== -1) return 'headset_mic';
     if (text.indexOf('parlante') !== -1) return 'speaker';
     if (text.indexOf('ram') !== -1 || text.indexOf('procesador') !== -1 || text.indexOf('mother') !== -1) return 'memory';
-    if (text.indexOf('memoria') !== -1 || text.indexOf('disco') !== -1 || text.indexOf('pendrive') !== -1) return 'storage';
+    if (text.indexOf('memoria') !== -1 || text.indexOf('disco') !== -1 || text.indexOf('carry') !== -1 || text.indexOf('disck') !== -1 || text.indexOf('disk') !== -1 || text.indexOf('pendrive') !== -1) return 'storage';
     if (text.indexOf('cable') !== -1) return 'cable';
     if (text.indexOf('adaptador') !== -1) return 'device_hub';
     if (text.indexOf('joystick') !== -1) return 'gamepad';
@@ -861,9 +861,12 @@
         'Placa Madre',
         'Disco SSD',
         'Disco Rigido',
+        'Carry Disco 2.55',
+        'Carry Disco 3.55',
         'Fuentes',
         'Gabinetes',
         'Red',
+        'Pasta Termica',
         'Otros'
       ];
     } else if (cat.indexOf('perifericos pc') !== -1) {
@@ -907,7 +910,7 @@
 
   function isPcStorageSubcategory(subcategory) {
     var text = normalizeCatalogText(subcategory);
-    return text === 'disco ssd' || text === 'disco rigido';
+    return text === 'disco ssd' || text === 'disco rigido' || text === 'carry disco 2.55' || text === 'carry disco 3.55';
   }
 
   function isPcPeripheralSubcategory(subcategory) {
@@ -930,7 +933,8 @@
       'procesador',
       'placa madre',
       'fuentes',
-      'gabinetes'
+      'gabinetes',
+      'pasta termica'
     ].indexOf(text) !== -1;
   }
 
@@ -952,6 +956,10 @@
     var subcategory = row.subcategoria || '';
 
     if (categoryText === 'memorias' && isPcStorageSubcategory(subcategory)) {
+      return 'Hardware';
+    }
+
+    if (categoryText === 'carry disck' || categoryText === 'carry disk') {
       return 'Hardware';
     }
 

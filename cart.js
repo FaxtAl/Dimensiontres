@@ -58,6 +58,9 @@ const CartStore = (() => {
       return { ok: true, added: amount, available: stock, item: ex || item };
     },
     remove(id) { save(get().filter(i => i.id !== id)); },
+    replaceAll(items) {
+      save(Array.isArray(items) ? items : []);
+    },
     updateQty(id, d) {
       const items = get();
       const i = items.find(x => x.id === id);
@@ -128,8 +131,8 @@ function flyToCart(sourceEl, imgSrc) {
   if (!dest) return;
   const s = sourceEl.getBoundingClientRect(), d = dest.getBoundingClientRect();
   const ghost = document.createElement('div');
-  ghost.style.cssText = `position:fixed;width:52px;height:52px;overflow:hidden;background:#1a1919;border:1px solid rgba(143,245,255,.3);box-shadow:0 0 18px rgba(143,245,255,.2);z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center;left:${s.left+s.width/2-26}px;top:${s.top+s.height/2-26}px`;
-  if (imgSrc) { const img = document.createElement('img'); img.src = imgSrc; img.style.cssText='width:80%;height:80%;object-fit:contain'; ghost.appendChild(img); }
+  ghost.style.cssText = `position:fixed;width:52px;height:52px;overflow:hidden;background:#f8f8f5;border:1px solid rgba(143,245,255,.3);box-shadow:0 0 18px rgba(143,245,255,.2);z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center;left:${s.left+s.width/2-26}px;top:${s.top+s.height/2-26}px;border-radius:10px`;
+  if (imgSrc) { const img = document.createElement('img'); img.src = imgSrc; img.style.cssText='width:84%;height:84%;object-fit:contain'; ghost.appendChild(img); }
   document.body.appendChild(ghost);
   requestAnimationFrame(() => {
     ghost.style.transition = 'transform .15s ease-out';
