@@ -105,7 +105,7 @@ body::after {
 }
 .related-card-img {
   width:100%;height:100%;object-fit:contain;padding:16px;
-  background:linear-gradient(180deg,#f8f8f5,#ecece8);
+  background:var(--dt-product-image-bg);
   transition:transform .24s ease;
 }
 .related-card-placeholder {
@@ -163,8 +163,8 @@ body::after {
 .product-image-stage {
   position:relative;z-index:2;width:min(94%,900px);height:min(92%,620px);
   display:flex;align-items:center;justify-content:center;overflow:hidden;
-  background:linear-gradient(180deg,#fbfbf8 0%,#eeeeea 100%);
-  border:1px solid rgba(255,255,255,.86);border-radius:16px;
+  background:var(--dt-product-image-bg);
+  border:1px solid var(--dt-product-image-border);border-radius:16px;
   box-shadow:0 22px 60px rgba(0,0,0,.34), 0 0 0 1px rgba(0,0,0,.06) inset;
   transition:transform .55s cubic-bezier(.25,.46,.45,.94), filter .25s ease, box-shadow .25s ease;
 }

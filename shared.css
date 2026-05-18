@@ -4,6 +4,11 @@
    ───────────────────────────────────────────────────────── */
 
 /* ── Material Symbols ── */
+:root {
+  --dt-product-image-bg: #ffffff;
+  --dt-product-image-border: rgba(255, 255, 255, 0.92);
+}
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
@@ -63,7 +68,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(180deg, #fbfbf8 0%, #eeeeea 100%);
+  background: var(--dt-product-image-bg);
   border: 1px solid rgba(143, 245, 255, 0.16);
   border-radius: 6px;
 }

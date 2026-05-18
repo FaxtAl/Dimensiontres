@@ -642,7 +642,7 @@ body::after {
   height: 100%;
   object-fit: contain;
   padding: 4px;
-  background: linear-gradient(180deg,#f8f8f5,#ecece8);
+  background: var(--dt-product-image-bg);
 }
 
 .search-suggestion-media .material-symbols-outlined {
@@ -985,7 +985,7 @@ body::after {
 }
 
 .product-card-media.has-image {
-  background: linear-gradient(180deg, #fbfbf8 0%, #eeeeea 100%);
+  background: var(--dt-product-image-bg);
   color: #1a1919;
 }
 
