@@ -104,6 +104,12 @@
   background: rgba(143,245,255,.06);
 }
 
+.payment-method:disabled {
+  cursor: progress;
+  opacity: .74;
+  transform: none;
+}
+
 .payment-method.is-active {
   background: linear-gradient(135deg,#8ff5ff 0%,#00eefc 100%);
   color: #003f43;

@@ -31,3 +31,4 @@ productos_extra_access/
 api/ml-config.php
 api/ml-tokens.json
 api/ml-state.json
+api/payment-config.php

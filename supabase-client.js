@@ -1183,6 +1183,17 @@
     };
   }
 
+  async function getAccessToken() {
+    var sb = getClient();
+    if (!sb) return '';
+
+    var sessionResult = await sb.auth.getSession();
+    if (sessionResult.error) return '';
+
+    var session = sessionResult.data && sessionResult.data.session;
+    return session && session.access_token ? session.access_token : '';
+  }
+
   async function createWebOrder(data) {
     var sb = getClient();
     if (!sb) return { order: null, error: { message: 'Supabase no esta disponible.' } };
@@ -1280,6 +1291,7 @@
     fetchAccessProductsBySubcategory: fetchAccessProductsBySubcategory,
     fetchAccessProductById: fetchAccessProductById,
     fetchProductBySlug: fetchProductBySlug,
+    getAccessToken: getAccessToken,
     createWebOrder: createWebOrder
   };
 })();

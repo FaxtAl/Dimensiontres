@@ -429,27 +429,19 @@ function checkoutWhatsApp() {
 }
 
 function checkoutUnavailable(methodName) {
-  alert(methodName + ' todavia no esta conectado. Primero necesitamos las credenciales reales para activarlo.');
+  alert(methodName + ' queda para el siguiente paso. Para 3 o 6 cuotas lo conectamos con Getnet.');
 }
 
-async function checkoutSavedOrder(button, method) {
+async function createSavedOrder(method, notes) {
   var items = CartStore.getAll();
-  if (!items.length) return;
-  if (typeof ensureUserLoggedIn === 'function' && !ensureUserLoggedIn('checkout')) return;
+  if (!items.length) return { cancelled: true };
+  if (typeof ensureUserLoggedIn === 'function' && !ensureUserLoggedIn('checkout')) return { cancelled: true };
   if (!window.SupabaseStore || !window.SupabaseStore.createWebOrder) {
-    alert('No se pudo conectar con Supabase para guardar el pedido.');
-    return;
+    return { error: { message: 'No se pudo conectar con Supabase para guardar el pedido.' } };
   }
 
   var totals = calculateCartTotals();
   var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-  var originalHtml = button ? button.innerHTML : '';
-
-  if (button) {
-    button.disabled = true;
-    button.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">sync</span> Guardando pedido...';
-  }
-
   var saved = await window.SupabaseStore.createWebOrder({
     items: items,
     account: currentUser || {},
@@ -459,13 +451,41 @@ async function checkoutSavedOrder(button, method) {
       total: totals.total
     },
     method: method || 'whatsapp',
-    notes: discountPct > 0 ? 'Pedido con descuento aplicado desde carrito web.' : 'Pedido creado desde carrito web.'
+    notes: notes || (discountPct > 0 ? 'Pedido con descuento aplicado desde carrito web.' : 'Pedido creado desde carrito web.')
   });
 
-  if (button) {
-    button.disabled = false;
-    button.innerHTML = originalHtml;
+  return { saved: saved, totals: totals, items: items };
+}
+
+function setCheckoutButtonLoading(button, loadingText) {
+  if (!button) return '';
+  var originalHtml = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">sync</span> ' + loadingText;
+  return originalHtml;
+}
+
+function restoreCheckoutButton(button, originalHtml) {
+  if (!button) return;
+  button.disabled = false;
+  button.innerHTML = originalHtml;
+}
+
+async function checkoutSavedOrder(button, method) {
+  var originalHtml = setCheckoutButtonLoading(button, 'Guardando pedido...');
+
+  var result = await createSavedOrder(method || 'whatsapp');
+  restoreCheckoutButton(button, originalHtml);
+
+  if (!result || result.cancelled) return;
+  if (result.error || !result.saved) {
+    alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
+    return;
   }
+
+  var saved = result.saved;
+  var items = result.items;
+  var totals = result.totals;
 
   if (saved.error) {
     alert(saved.error.message || 'No se pudo guardar el pedido.');
@@ -486,6 +506,60 @@ async function checkoutSavedOrder(button, method) {
   var phone = CONFIG.CONTACT_PHONE || '5493535000000';
   localStorage.setItem('dt_last_order_reference', orderRef || '');
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+}
+
+async function checkoutMercadoPago(button) {
+  var originalHtml = setCheckoutButtonLoading(button, 'Preparando pago...');
+
+  try {
+    var result = await createSavedOrder('mercadopago', 'Pedido creado para pagar en 1 cuota con Mercado Pago.');
+    if (!result || result.cancelled) return;
+    if (result.error || !result.saved) {
+      alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
+      return;
+    }
+    if (result.saved.error) {
+      alert(result.saved.error.message || 'No se pudo guardar el pedido.');
+      return;
+    }
+
+    if (!window.SupabaseStore || !window.SupabaseStore.getAccessToken) {
+      alert('No se pudo validar tu sesion para Mercado Pago.');
+      return;
+    }
+
+    var token = await window.SupabaseStore.getAccessToken();
+    if (!token) {
+      alert('Inicia sesion de nuevo para pagar.');
+      return;
+    }
+
+    var order = result.saved.order;
+    var response = await fetch('api/mp-create-preference.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        order_id: order.id,
+        installments: 1
+      })
+    });
+
+    var data = await response.json().catch(function() { return null; });
+    if (!response.ok || !data || !data.ok) {
+      throw new Error((data && data.error) || 'No se pudo crear el pago en Mercado Pago.');
+    }
+
+    localStorage.setItem('dt_last_order_reference', data.order_ref || order.external_reference || '');
+    window.location.href = data.checkout_url;
+  } catch (error) {
+    console.error('Error Mercado Pago:', error);
+    alert(error.message || 'No se pudo iniciar Mercado Pago.');
+  } finally {
+    restoreCheckoutButton(button, originalHtml);
+  }
 }
 
 /* ─── INIT ───────────────────────────────── */
