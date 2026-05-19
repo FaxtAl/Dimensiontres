@@ -536,9 +536,15 @@
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
 
+    var sessionResult = await sb.auth.getSession();
+    if (sessionResult.error) return { orders: [], error: sessionResult.error };
+    var session = sessionResult.data && sessionResult.data.session;
+    if (!session || !session.user) return { orders: [], error: null };
+
     var result = await sb
       .from('pedidos')
       .select('id,external_reference,created_at,estado,metodo_pago,subtotal,iva,total,pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
+      .eq('user_id', session.user.id)
       .order('created_at', { ascending: false })
       .limit(limit || 40);
 
@@ -584,11 +590,21 @@
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
 
-    var invoices = await sb
+    var accountResult = await getCurrentAccount();
+    if (accountResult.error) return { orders: [], error: accountResult.error };
+    var account = accountResult.user || null;
+    var clienteId = account && account.clienteId ? account.clienteId : null;
+
+    if (!clienteId) return fetchWebOrders(limit || 40);
+
+    var invoicesQuery = sb
       .from('facturas')
       .select('id_factura,id_cliente,fecha,vendedor,subtotal,descunto,pagotarjeta,total')
+      .eq('id_cliente', clienteId)
       .order('fecha', { ascending: false })
       .limit(limit || 40);
+
+    var invoices = await invoicesQuery;
 
     if (invoices.error) return { orders: [], error: invoices.error };
 

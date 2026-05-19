@@ -432,16 +432,37 @@ function checkoutUnavailable(methodName) {
   alert(methodName + ' queda para el siguiente paso. Para 3 o 6 cuotas lo conectamos con Getnet.');
 }
 
+async function resolveCheckoutUser() {
+  var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  if (currentUser && currentUser.id) return currentUser;
+
+  if (window.SupabaseStore && window.SupabaseStore.getCurrentAccount) {
+    try {
+      var account = await window.SupabaseStore.getCurrentAccount();
+      if (account && account.user && account.user.id) {
+        localStorage.setItem('d3_user', JSON.stringify(account.user));
+        return account.user;
+      }
+    } catch (error) {
+      console.warn('No se pudo restaurar la sesion de compra:', error);
+    }
+  }
+
+  window.location.href = 'cuenta.html?from=checkout&return=' + encodeURIComponent('carrito.html');
+  return null;
+}
+
 async function createSavedOrder(method, notes) {
   var items = CartStore.getAll();
   if (!items.length) return { cancelled: true };
-  if (typeof ensureUserLoggedIn === 'function' && !ensureUserLoggedIn('checkout')) return { cancelled: true };
   if (!window.SupabaseStore || !window.SupabaseStore.createWebOrder) {
     return { error: { message: 'No se pudo conectar con Supabase para guardar el pedido.' } };
   }
 
+  var currentUser = await resolveCheckoutUser();
+  if (!currentUser) return { cancelled: true };
+
   var totals = calculateCartTotals();
-  var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
   var saved = await window.SupabaseStore.createWebOrder({
     items: items,
     account: currentUser || {},
@@ -544,7 +565,8 @@ async function checkoutMercadoPago(button) {
       },
       body: JSON.stringify({
         order_id: order.id,
-        installments: 1
+        installments: 1,
+        access_token: token
       })
     });
 
