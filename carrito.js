@@ -3,8 +3,9 @@
  * Requiere: config.js, cart.js (cargados antes en el HTML)
  */
 
-// CONFIG viene de config.js cargado como script normal antes que este archivo
-var TAX         = CONFIG.TAX_RATE;
+// CONFIG viene de config.js cargado como script normal antes que este archivo.
+// Los precios que llegan desde Access ya incluyen IVA, asi que el carrito no suma impuesto extra.
+var TAX         = 0;
 var discountPct = 0; // porcentaje de descuento aplicado (0–1)
 
 function formatMoney(value) {
@@ -36,8 +37,8 @@ function calculateCartTotals() {
   var sub = CartStore.getSubtotal();
   var disc = sub * discountPct;
   var base = sub - disc;
-  var tax = base * TAX;
-  var total = base + tax;
+  var tax = 0;
+  var total = base;
 
   return {
     subtotal: sub,
@@ -308,8 +309,8 @@ function buildRow(item) {
 /* ─── UPDATE TOTALS (función propia, separada de buildRow) ── */
 function updateTotals() {
   var totals = calculateCartTotals();
-  var productsTotal = totals.subtotal + (totals.subtotal * TAX);
-  var discountTotal = totals.discount + (totals.discount * TAX);
+  var productsTotal = totals.subtotal;
+  var discountTotal = totals.discount;
 
   var elSub   = document.getElementById('sum-sub');
   var elDiscountRow = document.getElementById('discount-row');
@@ -413,8 +414,7 @@ function checkoutWhatsApp() {
   var sub   = CartStore.getSubtotal();
   var disc  = sub * discountPct;
   var base  = sub - disc;
-  var tax   = base * TAX;
-  var total = base + tax;
+  var total = base;
 
   var lines = items.map(function(i) {
     return '• ' + i.name + ' x' + i.qty + ' — ' + formatMoney(i.price * i.qty);
