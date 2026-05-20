@@ -434,7 +434,6 @@ function checkoutUnavailable(methodName) {
 
 async function resolveCheckoutUser() {
   var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-  if (currentUser && currentUser.id) return currentUser;
 
   if (window.SupabaseStore && window.SupabaseStore.getCurrentAccount) {
     try {
@@ -447,6 +446,8 @@ async function resolveCheckoutUser() {
       console.warn('No se pudo restaurar la sesion de compra:', error);
     }
   }
+
+  if (currentUser && currentUser.id) return currentUser;
 
   window.location.href = 'cuenta.html?from=checkout&return=' + encodeURIComponent('carrito.html');
   return null;

@@ -532,6 +532,52 @@
     return Number.isNaN(date.getTime()) ? 0 : date.getTime();
   }
 
+  function orderItemSignature(item) {
+    var productId = String((item && (item.productId || item.id_productos)) || '').trim();
+    var code = String((item && (item.code || item.codigo)) || '').trim();
+    var name = String((item && (item.name || item.nombre)) || '').trim().toLowerCase();
+    var qty = Number((item && (item.qty || item.cantidad)) || 0);
+    var price = Number((item && (item.price || item.precio_unitario)) || 0);
+    if (!Number.isFinite(qty)) qty = 0;
+    if (!Number.isFinite(price)) price = 0;
+    return [productId, code, name, Math.round(qty), price.toFixed(2)].join('|');
+  }
+
+  function orderSignature(items, total) {
+    var itemKey = (items || []).map(orderItemSignature).sort().join('||');
+    var amount = Number(total || 0);
+    if (!Number.isFinite(amount)) amount = 0;
+    return amount.toFixed(2) + '::' + itemKey;
+  }
+
+  function dedupeWebOrders(orders) {
+    var completedKeys = {};
+    (orders || []).forEach(function(order) {
+      if (!order || (order.status !== 'delivered' && order.status !== 'shipped')) return;
+      completedKeys[orderSignature(order.items || [], order.total)] = true;
+    });
+
+    var pendingKeys = {};
+    return (orders || []).filter(function(order) {
+      if (!order || order.status !== 'pending') return true;
+      var key = orderSignature(order.items || [], order.total);
+      if (completedKeys[key] || pendingKeys[key]) return false;
+      pendingKeys[key] = true;
+      return true;
+    });
+  }
+
+  function mergeAccountData(base, extra) {
+    var out = Object.assign({}, base || {});
+    Object.keys(extra || {}).forEach(function(key) {
+      var value = extra[key];
+      if (value !== undefined && value !== null && String(value).trim() !== '') {
+        out[key] = value;
+      }
+    });
+    return out;
+  }
+
   async function fetchWebOrders(limit) {
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
@@ -543,45 +589,55 @@
 
     var result = await sb
       .from('pedidos')
-      .select('id,external_reference,created_at,estado,metodo_pago,subtotal,iva,total,pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
+      .select('id,external_reference,created_at,estado,metodo_pago,cliente_id,dni,nombre,apellido,email,telefono,direccion,subtotal,iva,total,pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
       .eq('user_id', session.user.id)
       .order('created_at', { ascending: false })
       .limit(limit || 40);
 
     if (result.error) return { orders: [], error: result.error };
 
+    var orders = (result.data || []).map(function(row) {
+      var state = webOrderStatus(row);
+      var items = row.pedido_items || [];
+      var buyerName = [row.nombre || '', row.apellido || ''].filter(Boolean).join(' ').trim();
+      if (!buyerName) buyerName = row.email || '';
+      return {
+        id: row.external_reference || row.id,
+        rawId: row.id,
+        typeLabel: 'Pedido',
+        date: row.created_at || '',
+        status: state.status,
+        statusLabel: state.label,
+        paymentMethod: row.metodo_pago || '',
+        buyerName: buyerName,
+        buyerEmail: row.email || '',
+        buyerDni: row.dni || '',
+        buyerPhone: row.telefono || '',
+        buyerAddress: row.direccion || '',
+        clienteId: row.cliente_id || null,
+        total: parseMoney(row.total),
+        subtotal: parseMoney(row.subtotal),
+        tax: parseMoney(row.iva),
+        source: 'web',
+        items: items.map(function(item) {
+          var qty = Number(item.cantidad || 0);
+          var subtotal = parseMoney(item.subtotal);
+          return {
+            id: item.id,
+            productId: item.id_productos || '',
+            name: item.nombre || 'Producto',
+            code: item.codigo || '',
+            qty: qty,
+            price: parseMoney(item.precio_unitario),
+            subtotal: subtotal,
+            image: item.imagen_url || ''
+          };
+        })
+      };
+    });
+
     return {
-      orders: (result.data || []).map(function(row) {
-        var state = webOrderStatus(row);
-        var items = row.pedido_items || [];
-        return {
-          id: row.external_reference || row.id,
-          rawId: row.id,
-          typeLabel: 'Pedido',
-          date: row.created_at || '',
-          status: state.status,
-          statusLabel: state.label,
-          paymentMethod: row.metodo_pago || '',
-          total: parseMoney(row.total),
-          subtotal: parseMoney(row.subtotal),
-          tax: parseMoney(row.iva),
-          source: 'web',
-          items: items.map(function(item) {
-            var qty = Number(item.cantidad || 0);
-            var subtotal = parseMoney(item.subtotal);
-            return {
-              id: item.id,
-              productId: item.id_productos || '',
-              name: item.nombre || 'Producto',
-              code: item.codigo || '',
-              qty: qty,
-              price: parseMoney(item.precio_unitario),
-              subtotal: subtotal,
-              image: item.imagen_url || ''
-            };
-          })
-        };
-      }),
+      orders: dedupeWebOrders(orders),
       error: null
     };
   }
@@ -667,6 +723,12 @@
           discount: parseMoney(row.descunto),
           cardPayment: isTruthy(row.pagotarjeta),
           seller: row.vendedor || '',
+          buyerName: account.name || '',
+          buyerEmail: account.email || '',
+          buyerDni: account.dni || '',
+          buyerPhone: account.phone || '',
+          buyerAddress: account.address || '',
+          clienteId: clienteId,
           items: detailsByInvoice[row.id_factura] || []
         };
       }).concat((await fetchWebOrders(limit || 40)).orders || []).sort(function(a, b) {
@@ -1210,6 +1272,49 @@
     return session && session.access_token ? session.access_token : '';
   }
 
+  async function findMatchingPendingOrder(sb, userId, method, itemRows, total) {
+    var result = await sb
+      .from('pedidos')
+      .select('id,external_reference,estado,metodo_pago,subtotal,iva,total,created_at,pedido_items(id,id_productos,codigo,nombre,precio_unitario,cantidad,subtotal)')
+      .eq('user_id', userId)
+      .eq('estado', 'pendiente')
+      .eq('metodo_pago', method || 'whatsapp')
+      .order('created_at', { ascending: false })
+      .limit(12);
+
+    if (result.error) return null;
+
+    var targetSignature = orderSignature(itemRows.map(function(item) {
+      return {
+        productId: item.id_productos || '',
+        code: item.codigo || '',
+        name: item.nombre || '',
+        qty: item.cantidad || 0,
+        price: item.precio_unitario || 0
+      };
+    }), total);
+
+    var rows = result.data || [];
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var items = (row.pedido_items || []).map(function(item) {
+        return {
+          productId: item.id_productos || '',
+          code: item.codigo || '',
+          name: item.nombre || '',
+          qty: Number(item.cantidad || 0),
+          price: parseMoney(item.precio_unitario),
+          subtotal: parseMoney(item.subtotal)
+        };
+      });
+      if (orderSignature(items, row.total) === targetSignature) {
+        return Object.assign({}, row, { items: row.pedido_items || [], reused: true });
+      }
+    }
+
+    return null;
+  }
+
   async function createWebOrder(data) {
     var sb = getClient();
     if (!sb) return { order: null, error: { message: 'Supabase no esta disponible.' } };
@@ -1225,6 +1330,13 @@
     }
 
     var account = (data && data.account) || {};
+    try {
+      var freshAccount = await getCurrentAccount();
+      if (freshAccount && freshAccount.user) account = mergeAccountData(account, freshAccount.user);
+    } catch (error) {
+      console.warn('No se pudo completar la cuenta antes de crear pedido:', error);
+    }
+
     var totals = (data && data.totals) || {};
     var itemRows = items.map(mapOrderItem);
     var fallbackSubtotal = itemRows.reduce(function(sum, item) { return sum + Number(item.subtotal || 0); }, 0);
@@ -1234,6 +1346,23 @@
     if (!Number.isFinite(subtotal)) subtotal = fallbackSubtotal;
     if (!Number.isFinite(iva)) iva = 0;
     if (!Number.isFinite(total)) total = subtotal + iva;
+
+    var method = (data && data.method) || 'whatsapp';
+    var buyerNotes = [
+      account.name ? 'Cliente: ' + account.name : '',
+      account.email || session.user.email ? 'Email: ' + (account.email || session.user.email) : '',
+      normalizeDni(account.dni) ? 'DNI: ' + normalizeDni(account.dni) : ''
+    ].filter(Boolean).join(' | ');
+    var notes = [(data && data.notes) || '', buyerNotes].filter(Boolean).join(' - ');
+
+    var existingPending = await findMatchingPendingOrder(sb, session.user.id, method, itemRows, total);
+    if (existingPending) {
+      return {
+        order: existingPending,
+        reused: true,
+        error: null
+      };
+    }
 
     var orderPayload = {
       user_id: session.user.id,
@@ -1245,12 +1374,12 @@
       telefono: account.phone || '',
       direccion: account.address || '',
       estado: 'pendiente',
-      metodo_pago: (data && data.method) || 'whatsapp',
+      metodo_pago: method,
       subtotal: subtotal,
       iva: iva,
       total: total,
       moneda: cfg.CURRENCY || 'ARS',
-      notas: (data && data.notes) || null
+      notas: notes || null
     };
 
     var orderResult = await sb
