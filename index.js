@@ -162,7 +162,7 @@ function homeCategoryMeta(name) {
       title: 'Consolas',
       subtitle: 'PS4 - Retro - Consolas',
       icon: 'sports_esports',
-      image: 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=900&q=80'
+      image: '/img/Consolas.jpg'
     };
   }
   if (text.indexOf('accesorios consolas') !== -1) {
@@ -170,7 +170,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorios Consolas',
       subtitle: 'PS5 - PS4 - PS3 - PS2',
       icon: 'gamepad',
-      image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=900&q=80'
+      image: '/img/Consolas_Accesorios.jpg'
     };
   }
   if (text.indexOf('hardware') !== -1) {
@@ -178,7 +178,7 @@ function homeCategoryMeta(name) {
       title: 'Hardware',
       subtitle: 'Procesadores - Mother - Fuentes',
       icon: 'memory',
-      image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=900&q=80'
+      image: '/img/hadware.jpg'
     };
   }
   if (text.indexOf('accesorio pc') !== -1) {
@@ -186,7 +186,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorio PC',
       subtitle: 'Discos - Redes - Otros',
       icon: 'storage',
-      image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=900&q=80'
+      image: '/img/hadware.jpg'
     };
   }
   if (text.indexOf('perifericos pc') !== -1) {
@@ -194,7 +194,7 @@ function homeCategoryMeta(name) {
       title: 'Perifericos PC',
       subtitle: 'Mouse - Teclados - Monitores',
       icon: 'mouse',
-      image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=900&q=80'
+      image: '/img/perifericos.jpg'
     };
   }
   if (text.indexOf('memoria') !== -1) {
@@ -202,7 +202,7 @@ function homeCategoryMeta(name) {
       title: 'Memorias',
       subtitle: 'SSD - Discos - Pendrives',
       icon: 'storage',
-      image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=900&q=80'
+      image: '/img/hadware.jpg'
     };
   }
   if (text.indexOf('auricular') !== -1) {
@@ -218,14 +218,14 @@ function homeCategoryMeta(name) {
       title: 'Cables',
       subtitle: 'HDMI - USB - Red - Corriente',
       icon: 'cable',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80'
+      image: '/img/accesorios.jpg'
     };
   }
   return {
     title: name,
     subtitle: 'Ver productos disponibles',
     icon: 'inventory_2',
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=80'
+    image: '/img/Water%20cooler%20corner.jpg'
   };
 }
 
