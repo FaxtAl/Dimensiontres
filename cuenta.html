@@ -737,6 +737,12 @@
     border: 1px solid rgba(255,113,108,0.2);
   }
 
+  .order-badge.refunded {
+    background: rgba(143,245,255,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(143,245,255,0.22);
+  }
+
   .order-date {
     font-size: 0.72rem;
     color: var(--text-dim);
@@ -858,6 +864,17 @@
     background: rgba(143,245,255,0.14);
     border-color: rgba(143,245,255,0.65);
     transform: translateY(-1px);
+  }
+
+  .order-receipt-btn.danger {
+    background: rgba(255,113,108,0.08);
+    border-color: rgba(255,113,108,0.28);
+    color: var(--error);
+  }
+
+  .order-receipt-btn.danger:hover {
+    background: rgba(255,113,108,0.14);
+    border-color: rgba(255,113,108,0.5);
   }
 
   .expand-icon {
@@ -1928,6 +1945,51 @@ function downloadOrderReceipt(orderKey, event) {
   URL.revokeObjectURL(url);
 }
 
+async function getAccountApiToken() {
+  if (!window.SupabaseStore || !window.SupabaseStore.getAccessToken) return '';
+  return await window.SupabaseStore.getAccessToken();
+}
+
+async function deletePendingOrder(orderKey, event) {
+  if (event) event.stopPropagation();
+  const order = findAccountOrder(orderKey);
+  if (!order || order.status !== 'pending' || order.source !== 'web') return;
+
+  if (!confirm('¿Eliminar este pedido pendiente?')) return;
+
+  const token = await getAccountApiToken();
+  if (!token) {
+    alert('Iniciá sesión para eliminar el pedido.');
+    return;
+  }
+
+  try {
+    const response = await fetch('api/order-delete.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        'X-Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        order_id: order.rawId || order.id,
+        access_token: token
+      })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || 'No se pudo eliminar el pedido.');
+    }
+
+    accountOrders = accountOrders.filter(item =>
+      String(item.rawId || item.id) !== String(order.rawId || order.id)
+    );
+    renderOrders();
+  } catch (error) {
+    alert(error.message || 'No se pudo eliminar el pedido.');
+  }
+}
+
 async function loadAccountHistory() {
   if (!window.SupabaseStore) {
     ordersLoaded = true;
@@ -1972,8 +2034,8 @@ function renderOrders() {
   list.style.display = '';
   empty.style.display = 'none';
 
-  const statusLabel = { delivered: 'Entregado', shipped: 'En camino', pending: 'Pendiente', cancelled: 'Cancelado' };
-  const statusClass = { delivered: 'delivered', shipped: 'shipped', pending: 'pending', cancelled: 'cancelled' };
+  const statusLabel = { delivered: 'Entregado', shipped: 'En camino', pending: 'Pendiente', cancelled: 'Cancelado', refunded: 'Devuelto' };
+  const statusClass = { delivered: 'delivered', shipped: 'shipped', pending: 'pending', cancelled: 'cancelled', refunded: 'refunded' };
 
   list.innerHTML = accountOrders.map(order => `
     <div class="order-item" onclick="toggleOrderDetail(this)">
@@ -2014,6 +2076,12 @@ function renderOrders() {
             <span class="material-symbols-outlined" style="font-size:18px">download</span>
             Descargar comprobante
           </button>
+          ${order.status === 'pending' && order.source === 'web' ? `
+            <button type="button" class="order-receipt-btn danger" onclick='deletePendingOrder(${JSON.stringify(String(order.rawId || order.id))}, event)'>
+              <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+              Eliminar pendiente
+            </button>
+          ` : ''}
         </div>
       </div>
     </div>

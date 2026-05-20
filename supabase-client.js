@@ -518,6 +518,12 @@
   }
 
   function webOrderStatus(row) {
+    var payments = Array.isArray(row && row.pagos) ? row.pagos : [];
+    var hasRefund = payments.some(function(payment) {
+      return String(payment && payment.estado || '').toLowerCase() === 'devuelto';
+    });
+    if (hasRefund) return { status: 'refunded', label: 'Devuelto' };
+
     var status = String(row && row.estado || '').toLowerCase();
     if (status === 'entregado') return { status: 'delivered', label: 'Entregado' };
     if (status === 'pagado') return { status: 'shipped', label: 'Pagado' };
@@ -589,7 +595,7 @@
 
     var result = await sb
       .from('pedidos')
-      .select('id,external_reference,created_at,estado,metodo_pago,cliente_id,dni,nombre,apellido,email,telefono,direccion,subtotal,iva,total,pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
+      .select('id,external_reference,created_at,estado,metodo_pago,cliente_id,dni,nombre,apellido,email,telefono,direccion,subtotal,iva,total,pagos(id,proveedor,estado,external_payment_id,external_preference_id,created_at),pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
       .eq('user_id', session.user.id)
       .order('created_at', { ascending: false })
       .limit(limit || 40);
@@ -619,6 +625,7 @@
         subtotal: parseMoney(row.subtotal),
         tax: parseMoney(row.iva),
         source: 'web',
+        payments: row.pagos || [],
         items: items.map(function(item) {
           var qty = Number(item.cantidad || 0);
           var subtotal = parseMoney(item.subtotal);
