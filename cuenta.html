@@ -874,6 +874,14 @@
     transform: translateY(-1px);
   }
 
+  .order-actions:has(> .order-receipt-btn:not(.danger):only-child) {
+    display: none;
+  }
+
+  .order-actions > .order-receipt-btn:not(.danger) {
+    display: none;
+  }
+
   .order-receipt-btn.danger {
     background: rgba(255,113,108,0.08);
     border-color: rgba(255,113,108,0.28);
@@ -2243,43 +2251,139 @@ async function getAccountApiToken() {
   return await window.SupabaseStore.getAccessToken();
 }
 
+async function deletePendingOrderRemote(order, token) {
+  const orderId = order && (order.rawId || order.id);
+  let lastError = null;
+
+  if (!orderId) {
+    return { ok: false, error: new Error('Falta el pedido para eliminar.') };
+  }
+
+  if (token) {
+    try {
+      const response = await fetch('api/order-delete.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+          'X-Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          access_token: token
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data.ok) return { ok: true, via: 'api' };
+      lastError = new Error(data.error || 'No se pudo eliminar el pedido.');
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (window.SupabaseStore && window.SupabaseStore.deletePendingWebOrder) {
+    const direct = await window.SupabaseStore.deletePendingWebOrder(orderId);
+    if (direct && direct.ok) return { ok: true, via: 'supabase' };
+    if (direct && direct.error) {
+      lastError = new Error(direct.error.message || 'No se pudo eliminar el pedido.');
+    }
+  }
+
+  return { ok: false, error: lastError || new Error('No se pudo eliminar el pedido.') };
+}
+
 async function deletePendingOrder(orderKey, event) {
   if (event) event.stopPropagation();
   const order = findAccountOrder(orderKey);
   if (!order || order.status !== 'pending' || order.source !== 'web') return;
 
-  if (!confirm('¿Eliminar este pedido pendiente?')) return;
+  if (!confirm('Eliminar este pedido pendiente?')) return;
 
   const token = await getAccountApiToken();
-  if (!token) {
-    alert('Iniciá sesión para eliminar el pedido.');
+  const removed = await deletePendingOrderRemote(order, token);
+  if (!removed.ok) {
+    alert((removed.error && removed.error.message) || 'No se pudo eliminar el pedido.');
     return;
   }
 
-  try {
-    const response = await fetch('api/order-delete.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-        'X-Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        order_id: order.rawId || order.id,
-        access_token: token
-      })
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.ok) {
-      throw new Error(data.error || 'No se pudo eliminar el pedido.');
-    }
+  accountOrders = accountOrders.filter(item =>
+    String(item.rawId || item.id) !== String(order.rawId || order.id)
+  );
+  renderOrders();
+}
 
-    accountOrders = accountOrders.filter(item =>
-      String(item.rawId || item.id) !== String(order.rawId || order.id)
-    );
-    renderOrders();
-  } catch (error) {
-    alert(error.message || 'No se pudo eliminar el pedido.');
+function addAccountOrderKey(keys, value, qty) {
+  const clean = String(value || '').trim().toLowerCase();
+  if (!clean) return;
+  keys.add(clean + '::' + String(qty || 1));
+}
+
+function getAccountCartStore() {
+  if (typeof CartStore !== 'undefined' && CartStore && CartStore.getAll) return CartStore;
+  if (window.CartStore && window.CartStore.getAll) return window.CartStore;
+  return null;
+}
+
+function cartOrderKeys() {
+  const keys = new Set();
+  const store = getAccountCartStore();
+  if (!store) return keys;
+
+  (store.getAll() || []).forEach(item => {
+    const qty = Math.max(1, Math.round(Number(item.qty || item.cantidad || 1)));
+    const accessId = item.accessId || item.id_productos || item.productId || '';
+    const id = String(item.id || '').replace(/^access-/, '');
+    addAccountOrderKey(keys, accessId, qty);
+    addAccountOrderKey(keys, id, qty);
+    addAccountOrderKey(keys, item.code || item.codigo || item.ref, qty);
+    addAccountOrderKey(keys, item.name || item.nombre || item.title, qty);
+  });
+
+  return keys;
+}
+
+function orderStillMatchesCart(order, cartKeys) {
+  const items = order && order.items ? order.items : [];
+  if (!cartKeys.size || !items.length) return false;
+
+  return items.every(item => {
+    const qty = Math.max(1, Math.round(Number(item.qty || item.cantidad || 1)));
+    const possible = [
+      item.productId || item.id_productos || '',
+      item.id || '',
+      item.code || item.codigo || '',
+      item.name || item.nombre || ''
+    ];
+
+    return possible.some(value => {
+      const clean = String(value || '').trim().toLowerCase();
+      return clean && cartKeys.has(clean + '::' + String(qty));
+    });
+  });
+}
+
+async function cleanupPendingOrdersNotInCart() {
+  if (!accountOrders.length || !getAccountCartStore()) return;
+
+  const keys = cartOrderKeys();
+  const staleOrders = accountOrders.filter(order =>
+    order.status === 'pending' &&
+    order.source === 'web' &&
+    !orderStillMatchesCart(order, keys)
+  );
+
+  if (!staleOrders.length) return;
+
+  const token = await getAccountApiToken();
+  const removedIds = new Set();
+
+  for (const order of staleOrders) {
+    const removed = await deletePendingOrderRemote(order, token);
+    if (removed.ok) removedIds.add(String(order.rawId || order.id));
+  }
+
+  if (removedIds.size) {
+    accountOrders = accountOrders.filter(order => !removedIds.has(String(order.rawId || order.id)));
   }
 }
 
@@ -2294,7 +2398,10 @@ async function loadAccountHistory() {
 
   if (window.SupabaseStore.fetchAccountOrders) {
     const result = await window.SupabaseStore.fetchAccountOrders(40);
-    if (!result.error) accountOrders = result.orders || [];
+    if (!result.error) {
+      accountOrders = result.orders || [];
+      await cleanupPendingOrdersNotInCart();
+    }
     ordersLoaded = true;
     renderOrders();
   }

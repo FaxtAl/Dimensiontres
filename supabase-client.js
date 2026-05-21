@@ -1440,6 +1440,51 @@
     };
   }
 
+  async function deletePendingWebOrder(orderId) {
+    var sb = getClient();
+    var cleanId = String(orderId || '').trim();
+    if (!sb) return { ok: false, error: { message: 'Supabase no esta disponible.' } };
+    if (!cleanId) return { ok: false, error: { message: 'Falta el pedido para eliminar.' } };
+
+    var sessionResult = await sb.auth.getSession();
+    if (sessionResult.error) return { ok: false, error: sessionResult.error };
+
+    var session = sessionResult.data && sessionResult.data.session;
+    if (!session || !session.user) {
+      return { ok: false, error: { message: 'Inicia sesion para eliminar el pedido.' } };
+    }
+
+    var paymentsDelete = await sb
+      .from('pagos')
+      .delete()
+      .eq('pedido_id', cleanId);
+
+    if (paymentsDelete.error) return { ok: false, error: paymentsDelete.error };
+
+    var itemsDelete = await sb
+      .from('pedido_items')
+      .delete()
+      .eq('pedido_id', cleanId);
+
+    if (itemsDelete.error) return { ok: false, error: itemsDelete.error };
+
+    var result = await sb
+      .from('pedidos')
+      .delete()
+      .eq('id', cleanId)
+      .eq('user_id', session.user.id)
+      .eq('estado', 'pendiente')
+      .select('id');
+
+    if (result.error) return { ok: false, error: result.error };
+
+    return {
+      ok: true,
+      deleted: (result.data || []).length,
+      error: null
+    };
+  }
+
   window.SupabaseStore = {
     isReady: isReady,
     fetchCustomerByDni: fetchCustomerByDni,
@@ -1463,6 +1508,7 @@
     fetchAccessProductById: fetchAccessProductById,
     fetchProductBySlug: fetchProductBySlug,
     getAccessToken: getAccessToken,
-    createWebOrder: createWebOrder
+    createWebOrder: createWebOrder,
+    deletePendingWebOrder: deletePendingWebOrder
   };
 })();
