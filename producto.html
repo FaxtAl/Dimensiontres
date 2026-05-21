@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Producto | Dimensión Tres</title>
+<title>Producto | DimensionTres</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link rel="stylesheet" href="shared.css?v=product-images-20260515">
@@ -331,7 +331,7 @@ body::after {
 <!-- NAV -->
 <nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom:1px solid rgba(0,240,255,0.08);">
   <div class="flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
-    <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase shrink-0" style="font-family:'Space Grotesk',sans-serif;">Dimensión Tres</a>
+    <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase shrink-0" style="font-family:'Space Grotesk',sans-serif;">DimensionTres</a>
     <div class="hidden md:flex items-center space-x-6 lg:space-x-8 uppercase font-bold text-sm lg:text-base" style="font-family:'Space Grotesk',sans-serif;letter-spacing:.05em;">
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html">Inicio</a>
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#categorias">Categorías</a>
@@ -365,7 +365,7 @@ body::after {
 
   <!-- Header del drawer -->
   <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)]">
-    <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">Dimensión Tres</a>
+    <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">DimensionTres</a>
     <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
   </div>
 
@@ -706,9 +706,9 @@ function getStockLabel(p) {
 }
 
 function inferBrand(name) {
-  var first = cleanText(name).split(' ')[0] || 'Dimensión Tres';
+  var first = cleanText(name).split(' ')[0] || 'DimensionTres';
   var generic = ['Cable','Base','Cargador','Adaptador','Hub','Tira','Kit','Soporte','Memoria','Disco','Parlante','Sistema','Reparación','Cambio','Flash','Formateo','Instalación','Limpieza','Upgrade','Diagnóstico'];
-  return generic.includes(first) ? 'Dimensión Tres' : first;
+  return generic.includes(first) ? 'DimensionTres' : first;
 }
 
 function getConditionLabel(p) {
@@ -769,7 +769,7 @@ function renderProductMeta(p) {
 
 function renderProduct(p) {
   PRODUCT = p;
-  document.title = cleanText(p.name) + ' | Dimensión Tres';
+  document.title = cleanText(p.name) + ' | DimensionTres';
 
   // Breadcrumb
   var bcSub = document.getElementById('bc-sub');

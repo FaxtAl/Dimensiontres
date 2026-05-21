@@ -122,7 +122,7 @@
   footer.innerHTML =
     '<div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 px-5 md:px-8 py-12 md:py-14 w-full max-w-[1920px] mx-auto font-headline text-sm uppercase tracking-widest">' +
       '<div class="space-y-5">' +
-        '<div class="text-[#00f0ff] font-bold text-xl tracking-tighter italic">DIMENSIÓN TRES</div>' +
+        '<div class="text-[#00f0ff] font-bold text-xl tracking-tighter italic">DIMENSIONTRES</div>' +
         '<p class="text-[#adaaaa] normal-case tracking-normal max-w-xs leading-relaxed font-body">Hardware, gaming y servicio técnico en Villa María.</p>' +
         '<div class="flex gap-4">' +
           '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#contacto" title="Ubicación"><span class="material-symbols-outlined">public</span></a>' +
@@ -163,7 +163,7 @@
       '</div>' +
     '</div>' +
     '<div class="px-5 md:px-8 py-5 border-t border-[#1a1919] flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-[#484847] font-headline">' +
-      '<p>© 2026 DIMENSIÓN TRES. HARDWARE, GAMING Y SERVICIO TÉCNICO.</p>' +
+      '<p>© 2026 DIMENSIONTRES. HARDWARE, GAMING Y SERVICIO TÉCNICO.</p>' +
       '<div class="flex gap-8">' +
         '<a class="hover:text-white transition-colors" href="cuenta.html">PRIVACIDAD</a>' +
         '<a class="hover:text-white transition-colors" href="index.html#servicios">SOPORTE</a>' +
@@ -176,7 +176,7 @@
 
   function buildLink() {
     var phone = (window.CONFIG && window.CONFIG.CONTACT_PHONE) || '5493535000000';
-    var text = 'Hola! Quiero hacer una consulta en Dimension Tres';
+    var text = 'Hola! Quiero hacer una consulta en DimensionTres';
     var link = document.createElement('a');
     link.className = 'dt-whatsapp-float';
     link.href = 'https://wa.me/' + encodeURIComponent(phone) + '?text=' + encodeURIComponent(text);

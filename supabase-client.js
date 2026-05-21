@@ -196,7 +196,7 @@
 
     return {
       id: authUser && authUser.id ? authUser.id : 'email-' + (fallback.email || ''),
-      dni: meta.dni || '',
+      dni: normalizeDni(meta.dni || fallback.dni || ''),
       name: [firstName, lastName].filter(Boolean).join(' ').trim() || name,
       firstName: firstName,
       lastName: lastName,
@@ -214,14 +214,33 @@
     var name = String(data.name || '').trim();
     var email = normalizeEmail(data.email);
     var password = data.password || '';
+    var cleanDni = normalizeDni(data.dni);
     if (!sb) return { user: null, error: { message: 'Supabase no esta disponible.' } };
     if (!name || !email || !password) return { user: null, error: { message: 'Completá todos los campos.' } };
+
+    if (cleanDni && cleanDni.length < 7) return { user: null, error: { message: 'DNI invalido.' } };
+
+    if (cleanDni) {
+      var lookup = await fetchCustomerByDni(cleanDni);
+      if (lookup.error) {
+        return { user: null, error: { message: 'No pudimos validar ese DNI. Proba de nuevo.' } };
+      }
+      if (lookup.customer) {
+        return {
+          user: null,
+          activateDni: true,
+          error: {
+            message: 'Tu DNI ya esta cargado en el sistema. Anda a Activar DNI para crear tu contrasena y usar tus datos del local.'
+          }
+        };
+      }
+    }
 
     var result = await sb.auth.signUp({
       email: email,
       password: password,
       options: {
-        data: { name: name }
+        data: { name: name, dni: cleanDni || '' }
       }
     });
 
@@ -231,7 +250,7 @@
     }
 
     return {
-      user: buildEmailAccountUser(result.data.user, { name: name, email: email }),
+      user: buildEmailAccountUser(result.data.user, { name: name, email: email, dni: cleanDni }),
       needsVerification: !(result.data && result.data.session),
       error: null
     };
