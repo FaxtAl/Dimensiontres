@@ -210,7 +210,7 @@ function homeCategoryMeta(name) {
       title: 'Auriculares',
       subtitle: 'Gamer - Vincha - In ear',
       icon: 'headphones',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80'
+      image: '/img/auriculares.jpg'
     };
   }
   if (text.indexOf('cable') !== -1) {

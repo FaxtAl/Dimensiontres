@@ -317,12 +317,12 @@ var CATALOG = [
     category: 'audio',
     icon: 'headphones',
     subtitle: 'Auriculares - Headsets - Parlantes',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80',
+    image: '/img/auriculares.jpg',
     children: [
-      { id: 'auriculares', name: 'Auriculares', icon: 'headphones', subtitle: 'Cableados - Inalambricos - Celular', image: 'https://images.unsplash.com/photo-1546435770-a3e736af8c12?w=800&q=80', children: null },
-      { id: 'headsets-gamer', name: 'Headsets Gamer', icon: 'headset_mic', subtitle: 'PS4 - Xbox - PC - RGB', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80', children: null },
-      { id: 'parlantes', name: 'Parlantes', icon: 'speaker', subtitle: '2.0 - 2.1 - Bluetooth', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&q=80', children: null },
-      { id: 'microfonos', name: 'Microfonos', icon: 'mic', subtitle: 'USB - Streaming - PC', image: 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&q=80', children: null }
+      { id: 'auriculares', name: 'Auriculares', icon: 'headphones', subtitle: 'Cableados - Inalambricos - Celular', image: '/img/auriculares.jpg', children: null },
+      { id: 'headsets-gamer', name: 'Headsets Gamer', icon: 'headset_mic', subtitle: 'PS4 - Xbox - PC - RGB', image: '/img/auriculares.jpg', children: null },
+      { id: 'parlantes', name: 'Parlantes', icon: 'speaker', subtitle: '2.0 - 2.1 - Bluetooth', image: '/img/auriculares.jpg', children: null },
+      { id: 'microfonos', name: 'Microfonos', icon: 'mic', subtitle: 'USB - Streaming - PC', image: '/img/auriculares.jpg', children: null }
     ]
   },
   {
@@ -474,7 +474,7 @@ function getCatalogVisualMeta(item) {
     return { icon: 'mouse', image: '/img/perifericos.jpg' };
   }
   if (text.indexOf('auricular') !== -1 || text.indexOf('audio') !== -1 || text.indexOf('parlante') !== -1) {
-    return { icon: 'headphones', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80' };
+    return { icon: 'headphones', image: '/img/auriculares.jpg' };
   }
   if (text.indexOf('cable') !== -1 || text.indexOf('adaptador') !== -1 || text.indexOf('cargador') !== -1) {
     return { icon: 'cable', image: '/img/accesorios.jpg' };
