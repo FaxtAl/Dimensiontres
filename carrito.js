@@ -432,6 +432,97 @@ function checkoutUnavailable(methodName) {
   alert(methodName + ' queda para el siguiente paso. Para 3 o 6 cuotas lo conectamos con Getnet.');
 }
 
+function chooseGetnetInstallments() {
+  var selected = prompt('Elegí cuotas para Getnet: 3 o 6', '3');
+  if (selected === null) return null;
+  selected = String(selected).trim();
+  if (selected !== '3' && selected !== '6') {
+    alert('Por ahora Getnet está preparado solo para 3 o 6 cuotas.');
+    return null;
+  }
+  return Number(selected);
+}
+
+function getInstallmentAmount(total, installments) {
+  return Math.ceil((Number(total || 0) / installments) * 100) / 100;
+}
+
+async function checkoutGetnet(button) {
+  var installments = chooseGetnetInstallments();
+  if (!installments) return;
+
+  var totals = calculateCartTotals();
+  var installmentAmount = getInstallmentAmount(totals.total, installments);
+  var ok = confirm(
+    'Getnet en ' + installments + ' cuotas\n\n' +
+    'Total: ' + formatMoney(totals.total) + '\n' +
+    'Cada cuota: ' + formatMoney(installmentAmount) + '\n\n' +
+    'Se va a guardar el pedido como pendiente por Getnet.'
+  );
+  if (!ok) return;
+
+  var originalHtml = setCheckoutButtonLoading(button, 'Guardando cuotas...');
+
+  try {
+    var result = await createSavedOrder(
+      'getnet',
+      'Pedido creado para Getnet en ' + installments + ' cuotas de ' + formatMoney(installmentAmount) + '.'
+    );
+    if (!result || result.cancelled) return;
+    if (result.error || !result.saved) {
+      alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
+      return;
+    }
+    if (result.saved.error) {
+      alert(result.saved.error.message || 'No se pudo guardar el pedido.');
+      return;
+    }
+
+    var token = window.SupabaseStore && window.SupabaseStore.getAccessToken
+      ? await window.SupabaseStore.getAccessToken()
+      : '';
+    var order = result.saved.order;
+
+    var response = await fetch('api/getnet-create-intent.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        'X-Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        order_id: order.id,
+        installments: installments,
+        access_token: token
+      })
+    });
+
+    var raw = await response.text();
+    var data = null;
+    try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
+    if (!response.ok || !data || !data.ok) {
+      throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
+    }
+
+    var orderRef = data.order_ref || order.external_reference || '';
+    var text = [
+      'Hola! Quiero pagar con Getnet.',
+      '',
+      orderRef ? 'Pedido: ' + orderRef : '',
+      'Cuotas: ' + installments,
+      'Total: ' + formatMoney(totals.total),
+      'Cada cuota: ' + formatMoney(installmentAmount)
+    ].filter(Boolean).join('\n');
+    localStorage.setItem('dt_last_order_reference', orderRef || '');
+    window.open('https://wa.me/' + (CONFIG.CONTACT_PHONE || '5493535000000') + '?text=' + encodeURIComponent(text), '_blank');
+  } catch (error) {
+    console.error('Error Getnet:', error);
+    alert(error.message || 'No se pudo preparar Getnet.');
+  } finally {
+    restoreCheckoutButton(button, originalHtml);
+  }
+}
+
 async function resolveCheckoutUser() {
   var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
 
@@ -571,9 +662,11 @@ async function checkoutMercadoPago(button) {
       })
     });
 
-    var data = await response.json().catch(function() { return null; });
+    var raw = await response.text();
+    var data = null;
+    try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
     if (!response.ok || !data || !data.ok) {
-      throw new Error((data && data.error) || 'No se pudo crear el pago en Mercado Pago.');
+      throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
     }
 
     localStorage.setItem('dt_last_order_reference', data.order_ref || order.external_reference || '');
