@@ -432,30 +432,64 @@ function checkoutUnavailable(methodName) {
   alert(methodName + ' queda para el siguiente paso. Para 3 o 6 cuotas lo conectamos con Getnet.');
 }
 
-function chooseGetnetInstallments() {
-  var selected = prompt('Elegí cuotas para Getnet: 3 o 6', '3');
+async function fetchGetnetOptions(total) {
+  var response = await fetch('api/getnet-installments.php?amount=' + encodeURIComponent(total), {
+    headers: { 'Accept': 'application/json' }
+  });
+  var raw = await response.text();
+  var data = null;
+  try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
+  if (!response.ok || !data || !data.ok) {
+    throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
+  }
+  return data.options || [];
+}
+
+function chooseGetnetInstallments(options) {
+  var lines = ['Elegí cuotas para Getnet: 3 o 6', ''];
+  options.forEach(function(option) {
+    lines.push(
+      option.installments + ' cuotas: ' +
+      formatMoney(option.installment_amount) + ' c/u - final ' +
+      formatMoney(option.total) +
+      (option.rate_percent > 0 ? ' (' + option.rate_percent + '%)' : '')
+    );
+  });
+
+  var selected = prompt(lines.join('\n'), '3');
   if (selected === null) return null;
   selected = String(selected).trim();
-  if (selected !== '3' && selected !== '6') {
+  var option = options.find(function(item) { return String(item.installments) === selected; });
+  if (!option) {
     alert('Por ahora Getnet está preparado solo para 3 o 6 cuotas.');
     return null;
   }
-  return Number(selected);
-}
-
-function getInstallmentAmount(total, installments) {
-  return Math.ceil((Number(total || 0) / installments) * 100) / 100;
+  return option;
 }
 
 async function checkoutGetnet(button) {
-  var installments = chooseGetnetInstallments();
-  if (!installments) return;
-
   var totals = calculateCartTotals();
-  var installmentAmount = getInstallmentAmount(totals.total, installments);
+  var options = [];
+  try {
+    options = await fetchGetnetOptions(totals.total);
+  } catch (error) {
+    console.warn('No se pudieron leer cuotas Getnet:', error);
+    options = [
+      { installments: 3, rate_percent: 0, base_total: totals.total, surcharge: 0, total: totals.total, installment_amount: Math.ceil((totals.total / 3) * 100) / 100 },
+      { installments: 6, rate_percent: 0, base_total: totals.total, surcharge: 0, total: totals.total, installment_amount: Math.ceil((totals.total / 6) * 100) / 100 }
+    ];
+  }
+
+  var selectedOption = chooseGetnetInstallments(options);
+  if (!selectedOption) return;
+
+  var installments = selectedOption.installments;
+  var installmentAmount = selectedOption.installment_amount;
   var ok = confirm(
     'Getnet en ' + installments + ' cuotas\n\n' +
-    'Total: ' + formatMoney(totals.total) + '\n' +
+    'Subtotal: ' + formatMoney(selectedOption.base_total || totals.total) + '\n' +
+    (selectedOption.surcharge > 0 ? 'Recargo: ' + formatMoney(selectedOption.surcharge) + '\n' : '') +
+    'Total final: ' + formatMoney(selectedOption.total || totals.total) + '\n' +
     'Cada cuota: ' + formatMoney(installmentAmount) + '\n\n' +
     'Se va a guardar el pedido como pendiente por Getnet.'
   );
@@ -510,7 +544,7 @@ async function checkoutGetnet(button) {
       '',
       orderRef ? 'Pedido: ' + orderRef : '',
       'Cuotas: ' + installments,
-      'Total: ' + formatMoney(totals.total),
+      'Total final: ' + formatMoney(data.total || selectedOption.total || totals.total),
       'Cada cuota: ' + formatMoney(installmentAmount)
     ].filter(Boolean).join('\n');
     localStorage.setItem('dt_last_order_reference', orderRef || '');

@@ -531,6 +531,15 @@
     return Number.isFinite(amount) ? amount : 0;
   }
 
+  function formatStoreMoney(value) {
+    var amount = Number(value || 0);
+    var hasCents = Math.abs(amount - Math.round(amount)) > 0.009;
+    return (cfg.CURRENCY_SYMBOL || '$') + amount.toLocaleString('es-AR', {
+      minimumFractionDigits: hasCents ? 2 : 0,
+      maximumFractionDigits: 2
+    });
+  }
+
   function isTruthy(value) {
     var normalized = String(value || '').trim().toLowerCase();
     return value === true || normalized === 'true' || normalized === 'si' || normalized === '1' || normalized === '-1';
@@ -592,6 +601,24 @@
     });
   }
 
+  function paymentDisplayLabel(row) {
+    var method = String(row && row.metodo_pago || '').toLowerCase();
+    var payments = Array.isArray(row && row.pagos) ? row.pagos : [];
+    var getnetPayment = payments.find(function(payment) {
+      return String(payment && payment.proveedor || '').toLowerCase() === 'getnet';
+    });
+    var raw = getnetPayment && getnetPayment.raw && typeof getnetPayment.raw === 'object' ? getnetPayment.raw : null;
+
+    if (method === 'getnet' && raw && raw.installments) {
+      var label = 'Getnet ' + raw.installments + ' cuotas';
+      if (raw.installment_amount) label += ' de ' + formatStoreMoney(raw.installment_amount);
+      return label;
+    }
+    if (method === 'mercadopago') return 'Mercado Pago';
+    if (method === 'whatsapp') return 'WhatsApp';
+    return row && row.metodo_pago ? row.metodo_pago : '';
+  }
+
   function mergeAccountData(base, extra) {
     var out = Object.assign({}, base || {});
     Object.keys(extra || {}).forEach(function(key) {
@@ -614,7 +641,7 @@
 
     var result = await sb
       .from('pedidos')
-      .select('id,external_reference,created_at,estado,metodo_pago,cliente_id,dni,nombre,apellido,email,telefono,direccion,subtotal,iva,total,pagos(id,proveedor,estado,external_payment_id,external_preference_id,created_at),pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
+      .select('id,external_reference,created_at,estado,metodo_pago,cliente_id,dni,nombre,apellido,email,telefono,direccion,subtotal,iva,total,pagos(id,proveedor,estado,monto,external_payment_id,external_preference_id,raw,created_at),pedido_items(id,id_productos,codigo,nombre,descripcion,categoria,subcategoria,imagen_url,precio_unitario,cantidad,subtotal)')
       .eq('user_id', session.user.id)
       .order('created_at', { ascending: false })
       .limit(limit || 40);
@@ -633,7 +660,7 @@
         date: row.created_at || '',
         status: state.status,
         statusLabel: state.label,
-        paymentMethod: row.metodo_pago || '',
+        paymentMethod: paymentDisplayLabel(row),
         buyerName: buyerName,
         buyerEmail: row.email || '',
         buyerDni: row.dni || '',
