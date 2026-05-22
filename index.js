@@ -162,7 +162,7 @@ function homeCategoryMeta(name) {
       title: 'Consolas',
       subtitle: 'PS4 - Retro - Consolas',
       icon: 'sports_esports',
-      image: '/img/Consolas.jpg'
+      image: 'img/Consolas.jpg'
     };
   }
   if (text.indexOf('accesorios consolas') !== -1) {
@@ -170,7 +170,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorios Consolas',
       subtitle: 'PS5 - PS4 - PS3 - PS2',
       icon: 'gamepad',
-      image: '/img/Consolas_Accesorios.jpg'
+      image: 'img/Consolas_Accesorios.jpg'
     };
   }
   if (text.indexOf('hardware') !== -1) {
@@ -178,7 +178,7 @@ function homeCategoryMeta(name) {
       title: 'Hardware',
       subtitle: 'Procesadores - Mother - Fuentes',
       icon: 'memory',
-      image: '/img/hadware.jpg'
+      image: 'img/hadware.jpg'
     };
   }
   if (text.indexOf('accesorio pc') !== -1) {
@@ -186,7 +186,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorio PC',
       subtitle: 'Discos - Redes - Otros',
       icon: 'storage',
-      image: '/img/hadware.jpg'
+      image: 'img/hadware.jpg'
     };
   }
   if (text.indexOf('perifericos pc') !== -1) {
@@ -194,7 +194,7 @@ function homeCategoryMeta(name) {
       title: 'Perifericos PC',
       subtitle: 'Mouse - Teclados - Monitores',
       icon: 'mouse',
-      image: '/img/perifericos.jpg'
+      image: 'img/perifericos.jpg'
     };
   }
   if (text.indexOf('memoria') !== -1) {
@@ -202,7 +202,7 @@ function homeCategoryMeta(name) {
       title: 'Memorias',
       subtitle: 'SSD - Discos - Pendrives',
       icon: 'storage',
-      image: '/img/hadware.jpg'
+      image: 'img/hadware.jpg'
     };
   }
   if (text.indexOf('auricular') !== -1) {
@@ -210,7 +210,39 @@ function homeCategoryMeta(name) {
       title: 'Auriculares',
       subtitle: 'Gamer - Vincha - In ear',
       icon: 'headphones',
-      image: '/img/auriculares.jpg'
+      image: 'img/auriculares.jpg'
+    };
+  }
+  if (text.indexOf('parlante') !== -1) {
+    return {
+      title: 'Parlantes',
+      subtitle: 'Bluetooth - PC - Portatil',
+      icon: 'speaker',
+      image: 'img/parlantes.jpg'
+    };
+  }
+  if (text.indexOf('silla') !== -1) {
+    return {
+      title: 'Silla Gamer',
+      subtitle: 'Comodidad para setup',
+      icon: 'chair',
+      image: 'img/silla-gamer.jpg'
+    };
+  }
+  if (text.indexOf('accesorio celular') !== -1 || text.indexOf('celular') !== -1) {
+    return {
+      title: 'Accesorio Celular',
+      subtitle: 'Cables - Cargadores - Powerbank',
+      icon: 'inventory_2',
+      image: 'img/accesorio-celular.jpg'
+    };
+  }
+  if (text.indexOf('adaptador') !== -1) {
+    return {
+      title: 'Adaptadores',
+      subtitle: 'Conversores - Hubs - Carga',
+      icon: 'device_hub',
+      image: 'img/adaptadores.jpg'
     };
   }
   if (text.indexOf('cable') !== -1) {
@@ -218,14 +250,14 @@ function homeCategoryMeta(name) {
       title: 'Cables',
       subtitle: 'HDMI - USB - Red - Corriente',
       icon: 'cable',
-      image: '/img/accesorios.jpg'
+      image: 'img/cables.jpg'
     };
   }
   return {
     title: name,
     subtitle: 'Ver productos disponibles',
     icon: 'inventory_2',
-    image: '/img/Water%20cooler%20corner.jpg'
+    image: 'img/Water%20cooler%20corner.jpg'
   };
 }
 
