@@ -491,11 +491,11 @@ async function checkoutGetnet(button) {
     (selectedOption.surcharge > 0 ? 'Recargo: ' + formatMoney(selectedOption.surcharge) + '\n' : '') +
     'Total final: ' + formatMoney(selectedOption.total || totals.total) + '\n' +
     'Cada cuota: ' + formatMoney(installmentAmount) + '\n\n' +
-    'Se va a guardar el pedido como pendiente por Getnet.'
+    'Te llevamos al checkout seguro de Getnet.'
   );
   if (!ok) return;
 
-  var originalHtml = setCheckoutButtonLoading(button, 'Guardando cuotas...');
+  var originalHtml = setCheckoutButtonLoading(button, 'Preparando Getnet...');
 
   try {
     var result = await createSavedOrder(
@@ -517,7 +517,7 @@ async function checkoutGetnet(button) {
       : '';
     var order = result.saved.order;
 
-    var response = await fetch('api/getnet-create-intent.php', {
+    var response = await fetch('api/getnet-create-checkout.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -538,17 +538,8 @@ async function checkoutGetnet(button) {
       throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
     }
 
-    var orderRef = data.order_ref || order.external_reference || '';
-    var text = [
-      'Hola! Quiero pagar con Getnet.',
-      '',
-      orderRef ? 'Pedido: ' + orderRef : '',
-      'Cuotas: ' + installments,
-      'Total final: ' + formatMoney(data.total || selectedOption.total || totals.total),
-      'Cada cuota: ' + formatMoney(installmentAmount)
-    ].filter(Boolean).join('\n');
-    localStorage.setItem('dt_last_order_reference', orderRef || '');
-    window.open('https://wa.me/' + (CONFIG.CONTACT_PHONE || '5493535000000') + '?text=' + encodeURIComponent(text), '_blank');
+    localStorage.setItem('dt_last_order_reference', data.order_ref || order.external_reference || '');
+    window.location.href = data.checkout_url;
   } catch (error) {
     console.error('Error Getnet:', error);
     alert(error.message || 'No se pudo preparar Getnet.');
