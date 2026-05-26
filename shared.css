@@ -156,11 +156,161 @@
   fill: currentColor;
 }
 
+.dt-modal-open {
+  overflow: hidden;
+}
+
+.dt-contact-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.dt-contact-modal.is-open {
+  display: flex;
+}
+
+.dt-contact-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.dt-contact-modal__panel {
+  position: relative;
+  width: min(560px, 100%);
+  border: 1px solid rgba(143, 245, 255, 0.24);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(22, 24, 24, 0.98), rgba(8, 9, 9, 0.98));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.44), 0 0 60px rgba(0, 240, 255, 0.08);
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.dt-contact-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: #adaaaa;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.dt-contact-modal__close:hover {
+  color: #8ff5ff;
+  border-color: rgba(143, 245, 255, 0.35);
+}
+
+.dt-contact-modal__eyebrow {
+  margin: 0 0 8px;
+  color: #8ff5ff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.dt-contact-modal__title {
+  margin: 0;
+  color: #fff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 900;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.dt-contact-modal__copy {
+  margin: 14px 0 22px;
+  max-width: 46ch;
+  color: #bdbaba;
+  font-family: "Manrope", sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.dt-contact-modal__form {
+  display: grid;
+  gap: 14px;
+}
+
+.dt-contact-modal__form label {
+  display: grid;
+  gap: 7px;
+  color: #a9a9a9;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.dt-contact-modal__form input,
+.dt-contact-modal__form textarea {
+  width: 100%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  outline: none;
+  padding: 14px 15px;
+  font-family: "Manrope", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+  resize: vertical;
+}
+
+.dt-contact-modal__form input:focus,
+.dt-contact-modal__form textarea:focus {
+  border-color: rgba(143, 245, 255, 0.78);
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+}
+
+.dt-contact-modal__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 52px;
+  margin-top: 4px;
+  color: #071111;
+  background: linear-gradient(135deg, #8ff5ff, #00deec);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 640px) {
   .dt-whatsapp-float {
     right: 16px;
     bottom: 16px;
     width: 50px;
     height: 50px;
+  }
+
+  .dt-contact-modal {
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .dt-contact-modal__panel {
+    border-radius: 16px;
   }
 }

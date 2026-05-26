@@ -889,7 +889,7 @@
       return [];
     }
 
-    return (result.data || []).map(mapProduct);
+    return filterVisibleCatalogRows(result.data).map(mapProduct);
   }
 
   function normalizeCatalogText(value) {
@@ -904,6 +904,48 @@
     return normalizeCatalogText(value)
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '') || 'catalogo';
+  }
+
+  function compactCatalogText(value) {
+    return normalizeCatalogText(value)
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  var HIDDEN_CATALOG_PRODUCT_TERMS = [
+    'Consola de juego',
+    'Actualizacion Kinect',
+    'Aoweixun HUB USB',
+    'Aoweixun',
+    'Benfei USB HUD',
+    'Benfei',
+    'Cargar Mercado Pago',
+    'Estacionamiento por hora',
+    'Nota de credito',
+    'Sena Dolares',
+    'Seña Dolares'
+  ].map(compactCatalogText);
+
+  function isHiddenCatalogProductRow(row) {
+    if (!row) return false;
+    var haystack = compactCatalogText([
+      row.producto,
+      row.nombre,
+      row.descripcion,
+      row.codigo
+    ].filter(Boolean).join(' '));
+
+    if (!haystack) return false;
+    return HIDDEN_CATALOG_PRODUCT_TERMS.some(function(term) {
+      return term && haystack.indexOf(term) !== -1;
+    });
+  }
+
+  function filterVisibleCatalogRows(rows) {
+    return (rows || []).filter(function(row) {
+      return !isHiddenCatalogProductRow(row);
+    });
   }
 
   function accessGroupForCategory(category) {
@@ -1233,7 +1275,7 @@
       return [];
     }
 
-    return (result.data || []).map(mapAccessProduct);
+    return filterVisibleCatalogRows(result.data).map(mapAccessProduct);
   }
 
   async function fetchAccessProductsByCategory(categoryId) {
@@ -1246,7 +1288,7 @@
       return [];
     }
 
-    return (result.data || []).map(mapAccessProduct);
+    return filterVisibleCatalogRows(result.data).map(mapAccessProduct);
   }
 
   async function fetchAccessProductById(productId) {
@@ -1260,6 +1302,7 @@
     }
 
     var row = Array.isArray(result.data) ? result.data[0] : result.data;
+    if (isHiddenCatalogProductRow(row)) return null;
     return row ? mapAccessProduct(row) : null;
   }
 
@@ -1281,6 +1324,7 @@
       console.warn('Supabase producto error:', result.error.message);
       return null;
     }
+    if (isHiddenCatalogProductRow(result.data)) return null;
     return result.data ? mapProduct(result.data) : null;
   }
 

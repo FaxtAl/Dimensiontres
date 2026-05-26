@@ -1,7 +1,7 @@
 // config.js - Configuración centralizada para Dimensión Tres
 var CONFIG = {
   // Contacto
-  CONTACT_PHONE: "5493535000000",
+  CONTACT_PHONE: "5493534019085",
   STORE_LOCATION: "Villa María, Córdoba, Argentina",
 
   // Impuestos y moneda

@@ -113,6 +113,90 @@
   }
 })();
 
+(function initContactEmailModal() {
+  var CONTACT_EMAIL = 'DIMENSION-TRES@hotmail.com';
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function closeContactEmailModal() {
+    var modal = byId('dt-contact-email-modal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    document.body.classList.remove('dt-modal-open');
+  }
+
+  function ensureContactEmailModal() {
+    var existing = byId('dt-contact-email-modal');
+    if (existing) return existing;
+
+    var modal = document.createElement('div');
+    modal.id = 'dt-contact-email-modal';
+    modal.className = 'dt-contact-modal';
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML =
+      '<div class="dt-contact-modal__backdrop" data-dt-contact-close></div>' +
+      '<section class="dt-contact-modal__panel" role="dialog" aria-modal="true" aria-labelledby="dt-contact-title">' +
+        '<button class="dt-contact-modal__close" type="button" data-dt-contact-close aria-label="Cerrar">' +
+          '<span class="material-symbols-outlined">close</span>' +
+        '</button>' +
+        '<p class="dt-contact-modal__eyebrow">Contacto</p>' +
+        '<h2 id="dt-contact-title" class="dt-contact-modal__title">Enviar consulta</h2>' +
+        '<p class="dt-contact-modal__copy">Completá tus datos y se abre tu Gmail o app de correo con el mensaje listo para enviar.</p>' +
+        '<form class="dt-contact-modal__form">' +
+          '<label>Nombre<input id="dt-contact-name" type="text" autocomplete="name" required placeholder="Tu nombre"></label>' +
+          '<label>Email<input id="dt-contact-email" type="email" autocomplete="email" required placeholder="tuemail@gmail.com"></label>' +
+          '<label>Mensaje<textarea id="dt-contact-message" rows="5" required placeholder="Escribí tu consulta"></textarea></label>' +
+          '<button class="dt-contact-modal__submit" type="submit"><span class="material-symbols-outlined">mail</span> Abrir Gmail</button>' +
+        '</form>' +
+      '</section>';
+
+    modal.addEventListener('click', function(event) {
+      if (event.target.closest('[data-dt-contact-close]')) closeContactEmailModal();
+    });
+
+    modal.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var name = byId('dt-contact-name').value.trim();
+      var email = byId('dt-contact-email').value.trim();
+      var message = byId('dt-contact-message').value.trim();
+      var subject = 'Consulta desde DimensionTres';
+      var body = [
+        'Nombre: ' + name,
+        'Email: ' + email,
+        '',
+        'Mensaje:',
+        message
+      ].join('\n');
+
+      window.location.href = 'mailto:' + CONTACT_EMAIL +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body);
+      closeContactEmailModal();
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') closeContactEmailModal();
+    });
+
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  window.openContactEmailModal = function() {
+    var modal = ensureContactEmailModal();
+    modal.classList.add('is-open');
+    document.body.classList.add('dt-modal-open');
+    setTimeout(function() {
+      var input = byId('dt-contact-name');
+      if (input) input.focus();
+    }, 80);
+  };
+
+  window.closeContactEmailModal = closeContactEmailModal;
+})();
+
 /* ─── FOOTER UNIFICADO ───────────────────────────────────────── */
 (function injectFooter() {
   var footer = document.querySelector('footer');
@@ -126,8 +210,8 @@
         '<p class="text-[#adaaaa] normal-case tracking-normal max-w-xs leading-relaxed font-body">Hardware, gaming y servicio técnico en Villa María.</p>' +
         '<div class="flex gap-4">' +
           '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#contacto" title="Ubicación"><span class="material-symbols-outlined">public</span></a>' +
-          '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="https://wa.me/5493535000000?text=Hola!%20Quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" title="WhatsApp"><span class="material-symbols-outlined">forum</span></a>' +
-          '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="mailto:contacto@dimensiontres.com" title="Email"><span class="material-symbols-outlined">mail</span></a>' +
+          '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="https://wa.me/5493534019085?text=Hola!%20Quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" title="WhatsApp"><span class="material-symbols-outlined">forum</span></a>' +
+          '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#" onclick="openContactEmailModal(); return false;" title="Email"><span class="material-symbols-outlined">mail</span></a>' +
         '</div>' +
       '</div>' +
       '<div>' +
@@ -151,8 +235,8 @@
       '<div>' +
         '<h4 class="text-white font-bold mb-5">Contacto</h4>' +
         '<div class="flex flex-col gap-3">' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2" href="https://wa.me/5493535000000?text=Hola!%20Quiero%20hacer%20una%20consulta" target="_blank" rel="noopener"><span class="material-symbols-outlined text-[18px]">chat</span> WhatsApp</a>' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2" href="mailto:contacto@dimensiontres.com"><span class="material-symbols-outlined text-[18px]">mail</span> Email</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2" href="https://wa.me/5493534019085?text=Hola!%20Quiero%20hacer%20una%20consulta" target="_blank" rel="noopener"><span class="material-symbols-outlined text-[18px]">chat</span> WhatsApp</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2" href="#" onclick="openContactEmailModal(); return false;"><span class="material-symbols-outlined text-[18px]">mail</span> Email</a>' +
           '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2" href="index.html#contacto"><span class="material-symbols-outlined text-[18px]">location_on</span> Villa María</a>' +
         '</div>' +
         '<div class="flex flex-col gap-3 mt-6">' +
@@ -175,7 +259,7 @@
   if (document.querySelector('.dt-whatsapp-float')) return;
 
   function buildLink() {
-    var phone = (window.CONFIG && window.CONFIG.CONTACT_PHONE) || '5493535000000';
+    var phone = (window.CONFIG && window.CONFIG.CONTACT_PHONE) || '5493534019085';
     var text = 'Hola! Quiero hacer una consulta en DimensionTres';
     var link = document.createElement('a');
     link.className = 'dt-whatsapp-float';

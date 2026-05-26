@@ -424,7 +424,7 @@ function checkoutWhatsApp() {
   lines.push('*TOTAL: ' + formatMoney(total) + '*');
 
   var text = '¡Hola! Quiero hacer un pedido en DimensionTres:\n\n' + lines.join('\n');
-  var phone = CONFIG.CONTACT_PHONE || '5493535000000';
+  var phone = CONFIG.CONTACT_PHONE || '5493534019085';
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 
@@ -641,7 +641,7 @@ async function checkoutSavedOrder(button, method) {
   lines.push('*TOTAL: ' + formatMoney(totals.total) + '*');
 
   var text = 'Hola! Quiero hacer un pedido en DimensionTres:\n\n' + lines.join('\n');
-  var phone = CONFIG.CONTACT_PHONE || '5493535000000';
+  var phone = CONFIG.CONTACT_PHONE || '5493534019085';
   localStorage.setItem('dt_last_order_reference', orderRef || '');
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
