@@ -334,6 +334,10 @@ function updateTotals() {
 /* ─── CAMBIAR CANTIDAD ───────────────────── */
 function changeQty(id, delta) {
   var result = CartStore.updateQty(id, delta);
+  if (result && !result.ok && result.reason === 'pedido') {
+    showCartNotice('Este producto es a pedido. Consultanos para reservarlo.');
+    return;
+  }
   if (result && !result.ok && result.reason === 'stock') {
     showCartNotice('No hay suficiente stock. Disponible: ' + result.available + '.');
     return;
@@ -379,6 +383,16 @@ function animRemove(id) {
 
 function removeItem(id) { CartStore.remove(id); animRemove(id); }
 function clearCartUI()  { CartStore.clear(); render(); updateCartBadge(); }
+
+function cartHasByOrderItems(items) {
+  return (items || []).some(function(item) {
+    return typeof isByOrderProduct === 'function' && isByOrderProduct(item);
+  });
+}
+
+function warnByOrderCheckout() {
+  showCartNotice('Tenes productos a pedido. Sacalos del carrito y consultanos por WhatsApp para reservarlos.');
+}
 
 /* ─── CÓDIGO PROMO ───────────────────────── */
 function applyPromo() {
@@ -572,6 +586,10 @@ async function resolveCheckoutUser() {
 async function createSavedOrder(method, notes) {
   var items = CartStore.getAll();
   if (!items.length) return { cancelled: true };
+  if (cartHasByOrderItems(items)) {
+    warnByOrderCheckout();
+    return { cancelled: true };
+  }
   if (!window.SupabaseStore || !window.SupabaseStore.createWebOrder) {
     return { error: { message: 'No se pudo conectar con Supabase para guardar el pedido.' } };
   }

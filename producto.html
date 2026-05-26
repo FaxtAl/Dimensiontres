@@ -675,12 +675,20 @@ function getCatalogHref(p) {
   return 'catalogo.html?cat=hardware';
 }
 
+function productIsByOrder(p) {
+  return typeof isByOrderProduct === 'function' && isByOrderProduct(p);
+}
+
 function renderStock(p) {
   var stockEl = document.getElementById('stock-status');
   if (!stockEl) return;
 
   var label = 'Consultar';
   var color = '#8ff5ff';
+  if (productIsByOrder(p)) {
+    stockEl.innerHTML = 'Stock: <strong style="color:#ffd96a;">A pedido</strong>';
+    return;
+  }
   if (typeof p.stock === 'number') {
     if (p.stock > 5) label = p.stock + ' disponibles';
     else if (p.stock > 0) {
@@ -697,6 +705,7 @@ function renderStock(p) {
 }
 
 function getStockLabel(p) {
+  if (productIsByOrder(p)) return 'A pedido';
   if (typeof p.stock === 'number') {
     if (p.stock > 5) return p.stock + ' disponibles';
     if (p.stock > 0) return 'Últimas ' + p.stock;
@@ -756,6 +765,10 @@ function renderProductMeta(p) {
     ['Estado', getConditionLabel(p)]
   ];
 
+  if (productIsByOrder(p)) {
+    meta.push(['Venta', 'A pedido']);
+  }
+
   grid.innerHTML = '';
   meta.forEach(function(item) {
     var div = document.createElement('div');
@@ -770,6 +783,7 @@ function renderProductMeta(p) {
 function renderProduct(p) {
   PRODUCT = p;
   document.title = cleanText(p.name) + ' | DimensionTres';
+  var byOrder = productIsByOrder(p);
 
   // Breadcrumb
   var bcSub = document.getElementById('bc-sub');
@@ -817,8 +831,12 @@ function renderProduct(p) {
 
   // Badges
   var badgesEl = document.getElementById('prod-badges');
-  if (p.badge) {
+  if (byOrder) {
+    badgesEl.innerHTML = '<span class="badge-new" style="color:#ffd96a;border-color:rgba(255,198,0,.28);background:rgba(255,198,0,.08);">A pedido</span>';
+  } else if (p.badge) {
     badgesEl.innerHTML = '<span class="badge-new">' + p.badge + '</span>';
+  } else {
+    badgesEl.innerHTML = '';
   }
 
   // Category
@@ -847,6 +865,7 @@ function renderProduct(p) {
     document.getElementById('add-btn-mobile').style.display = 'none';
     document.getElementById('add-btn-desktop').style.display = 'none';
   }
+  setPurchaseButtonsMode(p);
 
   // Specs
   var specs = getSpecs(p.category);
@@ -880,6 +899,30 @@ function renderProduct(p) {
   document.getElementById('product-content').style.display = '';
   document.getElementById('not-found').style.display = 'none';
   updateCartBadge();
+}
+
+function setPurchaseButtonsMode(p) {
+  var byOrder = productIsByOrder(p);
+  var desktopBtn = document.getElementById('add-btn-desktop');
+  var mobileBtn = document.getElementById('add-btn-mobile');
+  var qtyButtons = document.querySelectorAll('.qty-btn');
+
+  qtyButtons.forEach(function(btn) {
+    btn.disabled = byOrder;
+    btn.style.opacity = byOrder ? '0.45' : '';
+    btn.style.cursor = byOrder ? 'not-allowed' : '';
+  });
+
+  if (desktopBtn) {
+    desktopBtn.innerHTML = byOrder
+      ? '<span class="material-symbols-outlined" style="font-size:18px;">pending_actions</span> A pedido'
+      : '<span class="material-symbols-outlined" style="font-size:18px;">add_shopping_cart</span> Agregar al Carrito';
+  }
+  if (mobileBtn) {
+    mobileBtn.innerHTML = byOrder
+      ? '<span class="material-symbols-outlined" style="font-size:17px;">pending_actions</span> A pedido'
+      : '<span class="material-symbols-outlined" style="font-size:17px;">add_shopping_cart</span> Agregar';
+  }
 }
 
 function addUniqueRelatedProduct(list, seen, current, product) {
@@ -991,7 +1034,8 @@ function renderRelatedCard(p, i) {
 
     var addButton = document.createElement('button');
     addButton.className = 'material-symbols-outlined related-card-add';
-    addButton.textContent = 'add_shopping_cart';
+    addButton.textContent = productIsByOrder(p) ? 'pending_actions' : 'add_shopping_cart';
+    addButton.title = productIsByOrder(p) ? 'Producto a pedido' : 'Agregar al carrito';
     addButton.addEventListener('click', function(event) {
       event.stopPropagation();
       addToCart(p.name, p.price, p.image || '', p);
@@ -1034,6 +1078,10 @@ async function renderRelated(current) {
 }
 
 function changeQty(delta) {
+  if (PRODUCT && productIsByOrder(PRODUCT)) {
+    if (typeof cartByOrderToast === 'function') cartByOrderToast(PRODUCT.name);
+    return;
+  }
   var maxQty = PRODUCT && typeof PRODUCT.stock === 'number' && PRODUCT.stock > 0 ? PRODUCT.stock : 12;
   var nextQty = Math.max(1, Math.min(qty + delta, maxQty));
   if (delta > 0 && nextQty === qty && maxQty < 12 && typeof cartToastMessage === 'function') {
@@ -1047,6 +1095,11 @@ function changeQty(delta) {
 function handleAddToCart(btn) {
   if (!PRODUCT || btn.disabled) return;
   if (!ensureUserLoggedIn('add-to-cart')) return;
+  if (productIsByOrder(PRODUCT)) {
+    if (typeof cartByOrderToast === 'function') cartByOrderToast(PRODUCT.name);
+    else alert('Producto a pedido. Consultanos para reservarlo.');
+    return;
+  }
   btn.disabled = true;
   var prod = {
     id: PRODUCT.slug,
@@ -1061,6 +1114,12 @@ function handleAddToCart(btn) {
     description: PRODUCT.description || PRODUCT.subtitle || ''
   };
   var result = CartStore.add(prod, qty);
+  if (!result.ok && result.reason === 'pedido') {
+    btn.disabled = false;
+    if (typeof cartByOrderToast === 'function') cartByOrderToast(PRODUCT.name);
+    else alert('Producto a pedido. Consultanos para reservarlo.');
+    return;
+  }
   if (!result.ok && result.reason === 'stock') {
     btn.disabled = false;
     if (typeof cartStockToast === 'function') cartStockToast(PRODUCT.name, result.available);
@@ -1084,6 +1143,11 @@ function handleAddToCart(btn) {
 
 function addToCart(name, price, image, product) {
   if (!ensureUserLoggedIn('add-to-cart')) return;
+  if (productIsByOrder(product)) {
+    if (typeof cartByOrderToast === 'function') cartByOrderToast(name);
+    else alert('Producto a pedido. Consultanos para reservarlo.');
+    return;
+  }
   var id = product && product.slug ? product.slug : slugify(name);
   var item = {
     id: id,
@@ -1097,6 +1161,11 @@ function addToCart(name, price, image, product) {
     sourceLabel: product ? (product.sourceLabel || '') : ''
   };
   var result = CartStore.add(item);
+  if (!result.ok && result.reason === 'pedido') {
+    if (typeof cartByOrderToast === 'function') cartByOrderToast(name);
+    else alert('Producto a pedido. Consultanos para reservarlo.');
+    return;
+  }
   if (!result.ok && result.reason === 'stock') {
     if (typeof cartStockToast === 'function') cartStockToast(name, result.available);
     else alert('No hay suficiente stock. Disponible: ' + result.available + '.');

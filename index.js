@@ -384,7 +384,8 @@ function createFeaturedProductCard(product) {
   var btn = document.createElement('button');
   btn.className = 'feat-btn';
   btn.type = 'button';
-  btn.textContent = 'Agregar al carrito';
+  var byOrder = typeof isByOrderProduct === 'function' && isByOrderProduct(product);
+  btn.textContent = byOrder ? 'A pedido' : 'Agregar al carrito';
   btn.addEventListener('click', function(event) {
     event.stopPropagation();
     if (typeof addToCartUI !== 'function') return;
@@ -397,7 +398,8 @@ function createFeaturedProductCard(product) {
       image: product.image || '',
       stock: product.stock,
       accessId: product.accessId || product.id || '',
-      sourceLabel: product.sourceLabel || ''
+      sourceLabel: product.sourceLabel || '',
+      byOrder: byOrder
     });
   });
   body.appendChild(btn);

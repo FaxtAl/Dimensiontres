@@ -19,9 +19,78 @@ function getCartItemStock(item) {
   return normalizeCartStock(value);
 }
 
+function normalizeProductRuleText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function isByOrderProduct(item) {
+  if (!item) return false;
+  if (item.byOrder === true || item.aPedido === true || item.pedido === true) return true;
+
+  var text = normalizeProductRuleText([
+    item.name,
+    item.nombre,
+    item.title,
+    item.subtitle,
+    item.description,
+    item.category,
+    item.categoria,
+    item.subcategory,
+    item.subcategoria,
+    item.sourceLabel,
+    item.sourceFile,
+    item.model,
+    item.code,
+    item.codigo
+  ].filter(Boolean).join(' '));
+
+  if (!text) return false;
+  if (/\barcades?\b/.test(text) || /\bmaquina arcade\b/.test(text)) return false;
+  if (text.indexOf('soporte monitor') !== -1 || text.indexOf('soporte dual monitor') !== -1) return false;
+
+  return [
+    'procesador',
+    'intel core',
+    'core i3',
+    'core i5',
+    'core i7',
+    'core i9',
+    'ryzen',
+    'monitor',
+    'mother',
+    'motherboard',
+    'placa madre',
+    'placa de video',
+    'tarjeta de video',
+    'rtx',
+    'gtx',
+    'radeon',
+    'rx 6',
+    'rx 7',
+    'notebook',
+    'pc armado',
+    'gabinete',
+    'fuente 550',
+    'fuente 650',
+    'fuente 750',
+    'fuente 850',
+    'cooler liquido',
+    'aio'
+  ].some(function(term) {
+    return text.indexOf(term) !== -1;
+  });
+}
+
+window.DimensionTresProductRules = window.DimensionTresProductRules || {};
+window.DimensionTresProductRules.isByOrderProduct = isByOrderProduct;
+window.isByOrderProduct = isByOrderProduct;
+
 function mergeCartItemData(target, source) {
   if (!target || !source) return;
-  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'sourceLabel', 'description', 'subtitle'].forEach(function(key) {
+  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'sourceLabel', 'description', 'subtitle', 'byOrder'].forEach(function(key) {
     if (source[key] !== undefined && source[key] !== null && source[key] !== '') target[key] = source[key];
   });
   var stock = getCartItemStock(source);
@@ -36,6 +105,9 @@ const CartStore = (() => {
     getAll:     get,
     add(item, qty)  {
       const amount = Math.max(1, Math.floor(Number(qty || 1)));
+      if (isByOrderProduct(item)) {
+        return { ok: false, reason: 'pedido', item: item };
+      }
       const items = get();
       const ex = items.find(i => i.id === item.id);
       const stock = getCartItemStock(item);
@@ -70,6 +142,10 @@ const CartStore = (() => {
       const currentQty = Number(i.qty || 0);
       const nextQty = Math.max(0, currentQty + d);
 
+      if (d > 0 && isByOrderProduct(i)) {
+        return { ok: false, reason: 'pedido', item: i };
+      }
+
       if (d > 0 && stock !== null && stock > 0 && nextQty > stock) {
         return { ok: false, reason: 'stock', available: stock, current: currentQty, item: i };
       }
@@ -88,9 +164,11 @@ const CartStore = (() => {
     getSubtotal()  { return get().reduce((a, i) => a + i.price * i.qty, 0); },
     getItemStock: getCartItemStock,
     getStockLabel(item) {
+      if (isByOrderProduct(item)) return 'A pedido';
       var stock = getCartItemStock(item);
       return stock !== null && stock > 0 ? 'Stock ' + stock : 'Consultar';
-    }
+    },
+    isByOrderProduct: isByOrderProduct
   };
 })();
 
@@ -209,6 +287,10 @@ function cartStockToast(name, available) {
   cartToastMessage('No hay suficiente stock de ' + name + '. Disponible: ' + available + '.', 'error');
 }
 
+function cartByOrderToast(name) {
+  cartToastMessage((name ? name + ': ' : '') + 'Producto a pedido. Consultanos por WhatsApp para reservarlo.', 'error');
+}
+
 /**
  * addToCart — wrapper llamado desde los sub-catálogos.
  * Firma: addToCart(name, price, img, event)
@@ -234,6 +316,10 @@ function addToCart(name, price, img, event) {
   } else {
     // Fallback sin animación de botón
     const result = CartStore.add(product);
+    if (!result.ok && result.reason === 'pedido') {
+      cartByOrderToast(product.name);
+      return;
+    }
     if (!result.ok && result.reason === 'stock') {
       cartStockToast(product.name, result.available);
       return;
@@ -248,6 +334,11 @@ function addToCartUI(btn, product) {
   if (btn.disabled) return;
   btn.disabled = true;
   const result = CartStore.add(product);
+  if (!result.ok && result.reason === 'pedido') {
+    btn.disabled = false;
+    cartByOrderToast(product.name);
+    return;
+  }
   if (!result.ok && result.reason === 'stock') {
     btn.disabled = false;
     cartStockToast(product.name, result.available);

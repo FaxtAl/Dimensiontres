@@ -789,8 +789,9 @@ function renderProductCards(products) {
   grid.style.display = '';
 
   products.forEach(function(p, idx) {
+    var byOrder = typeof isByOrderProduct === 'function' && isByOrderProduct(p);
     var card = document.createElement('div');
-    card.className = 'product-card';
+    card.className = 'product-card' + (byOrder ? ' is-by-order' : '');
     card.dataset.name = p.name || '';
     card.dataset.category = p.rootCategory || p.category || '';
     card.dataset.order = idx;
@@ -819,7 +820,7 @@ function renderProductCards(products) {
 
     var source = document.createElement('span');
     source.className = 'product-card-source';
-    source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
+    source.textContent = byOrder ? 'A pedido' : displayCatalogText(p.sourceLabel || 'Catalogo');
     body.appendChild(source);
 
     var title = document.createElement('h3');
@@ -832,11 +833,11 @@ function renderProductCards(products) {
     subtitle.textContent = displayCatalogText(p.subtitle || 'Consultar disponibilidad');
     body.appendChild(subtitle);
 
-    if (p.stock !== undefined && p.stock !== null) {
+    if (byOrder || (p.stock !== undefined && p.stock !== null)) {
       var stock = document.createElement('span');
-      stock.className = 'product-card-stock';
+      stock.className = 'product-card-stock' + (byOrder ? ' is-by-order' : '');
       var stockValue = Number(p.stock || 0);
-      stock.textContent = stockValue > 0 ? 'Stock ' + stockValue : 'Consultar';
+      stock.textContent = byOrder ? 'A pedido' : (stockValue > 0 ? 'Stock ' + stockValue : 'Consultar');
       body.appendChild(stock);
     }
 

@@ -973,6 +973,10 @@ body::after {
   transform: translateY(-3px);
 }
 
+.product-card.is-by-order {
+  border-color: rgba(143,245,255,0.28);
+}
+
 .product-card-media {
   height: 180px;
   display: flex;
@@ -1055,6 +1059,12 @@ body::after {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8ff5ff;
+}
+
+.product-card-stock.is-by-order {
+  border-color: rgba(255,198,0,0.24);
+  background: rgba(255,198,0,0.08);
+  color: #ffd96a;
 }
 
 .product-card-foot {
