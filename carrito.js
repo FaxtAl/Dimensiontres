@@ -135,6 +135,10 @@ function render() {
   var empty = document.getElementById('cart-empty');
   if (!grid || !empty) return;
 
+  if (CartStore.removeByOrderItems && CartStore.removeByOrderItems() > 0) {
+    showCartNotice('Sacamos del carrito los productos a pedido. Consultanos por WhatsApp para reservarlos.');
+  }
+
   var items = CartStore.getAll();
 
   if (items.length === 0) {

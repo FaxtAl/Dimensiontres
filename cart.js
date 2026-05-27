@@ -201,6 +201,15 @@ const CartStore = (() => {
       return { ok: true, available: stock, item: i };
     },
     clear()        { save([]); },
+    removeByOrderItems() {
+      const items = get();
+      const kept = items.filter(i => !isByOrderProduct(i));
+      if (kept.length !== items.length) {
+        save(kept);
+        return items.length - kept.length;
+      }
+      return 0;
+    },
     getCount()     { return get().reduce((a, i) => a + i.qty, 0); },
     getSubtotal()  { return get().reduce((a, i) => a + i.price * i.qty, 0); },
     getItemStock: getCartItemStock,

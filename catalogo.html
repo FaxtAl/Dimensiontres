@@ -271,8 +271,8 @@
 <script src="nav.js"></script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js?v=getnet-20260522"></script>
-<script src="cart.js?v=product-images-20260515"></script>
+<script src="supabase-client.js?v=pedido-20260527"></script>
+<script src="cart.js?v=pedido-20260527"></script>
 
 <script>
 /* ══════════════════════════════════════════════════════
@@ -791,13 +791,62 @@ function closeCatalogPanel(unlockBody) {
   if (unlockBody !== false) document.body.classList.remove('catalog-panel-open');
 }
 
+function catalogIsByOrderProduct(product) {
+  if (!product) return false;
+  if (typeof isByOrderProduct === 'function' && isByOrderProduct(product)) return true;
+
+  var keys = ['byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si', 'sinStock', 'sinstock'];
+  for (var i = 0; i < keys.length; i++) {
+    var value = product[keys[i]];
+    if (value === true || value === 1 || value === -1) return true;
+    var textValue = String(value || '').trim().toLowerCase();
+    if (['true', 'si', 's', '1', '-1', 'pedido', 'a pedido', 'checked'].indexOf(textValue) !== -1) return true;
+  }
+
+  var text = [
+    product.name,
+    product.nombre,
+    product.subtitle,
+    product.description,
+    product.category,
+    product.sourceLabel,
+    product.code,
+    product.codigo
+  ].filter(Boolean).join(' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  if (/\barcades?\b/.test(text) || text.indexOf('maquina arcade') !== -1) return false;
+  if (text.indexOf('soporte monitor') !== -1 || text.indexOf('soporte dual monitor') !== -1) return false;
+
+  return [
+    'monitor',
+    'procesador',
+    'intel core',
+    'core i3',
+    'core i5',
+    'core i7',
+    'core i9',
+    'ryzen',
+    'mother',
+    'motherboard',
+    'placa madre',
+    'placa de video',
+    'tarjeta de video',
+    'rtx',
+    'gtx',
+    'radeon',
+    'notebook',
+    'pc armado',
+    'gabinete'
+  ].some(function(term) { return text.indexOf(term) !== -1; });
+}
+
 function renderProductCards(products) {
   var grid = document.getElementById('categories-grid');
   grid.innerHTML = '';
   grid.style.display = '';
 
   products.forEach(function(p, idx) {
-    var byOrder = typeof isByOrderProduct === 'function' && isByOrderProduct(p);
+    var byOrder = catalogIsByOrderProduct(p);
     var card = document.createElement('div');
     card.className = 'product-card' + (byOrder ? ' is-by-order' : '');
     card.dataset.name = p.name || '';
