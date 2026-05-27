@@ -26,9 +26,50 @@ function normalizeProductRuleText(value) {
     .toLowerCase();
 }
 
+function normalizeProductRuleBoolean(value) {
+  if (value === true) return true;
+  if (value === false) return false;
+  if (value === 1 || value === -1) return true;
+  if (value === 0) return false;
+
+  var text = normalizeProductRuleText(value).trim();
+  if (!text) return null;
+  if (['true', 'si', 's', 'yes', 'y', '1', '-1', 'pedido', 'a pedido', 'checked'].indexOf(text) !== -1) return true;
+  if (['false', 'no', 'n', '0', 'disponible', 'stock', 'consultar', 'unchecked'].indexOf(text) !== -1) return false;
+  return null;
+}
+
+function readByOrderFlag(item) {
+  var keys = [
+    'byOrder',
+    'aPedido',
+    'pedido',
+    'producto_sinstock',
+    'Producto_sinstock',
+    'prodcuto_sinstock',
+    'Prodcuto_sinstock',
+    'producto_si',
+    'Producto_si',
+    'sinStock',
+    'sinstock',
+    'sin_stock',
+    'isByOrder'
+  ];
+
+  for (var i = 0; i < keys.length; i++) {
+    if (Object.prototype.hasOwnProperty.call(item, keys[i])) {
+      var parsed = normalizeProductRuleBoolean(item[keys[i]]);
+      if (parsed !== null) return parsed;
+    }
+  }
+
+  return null;
+}
+
 function isByOrderProduct(item) {
   if (!item) return false;
-  if (item.byOrder === true || item.aPedido === true || item.pedido === true) return true;
+  var explicitFlag = readByOrderFlag(item);
+  if (explicitFlag !== null) return explicitFlag;
 
   var text = normalizeProductRuleText([
     item.name,
@@ -90,7 +131,7 @@ window.isByOrderProduct = isByOrderProduct;
 
 function mergeCartItemData(target, source) {
   if (!target || !source) return;
-  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'sourceLabel', 'description', 'subtitle', 'byOrder'].forEach(function(key) {
+  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'sourceLabel', 'description', 'subtitle', 'byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si'].forEach(function(key) {
     if (source[key] !== undefined && source[key] !== null && source[key] !== '') target[key] = source[key];
   });
   var stock = getCartItemStock(source);

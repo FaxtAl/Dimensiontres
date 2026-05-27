@@ -1049,6 +1049,11 @@ body::after {
 
 .product-card-stock {
   width: fit-content;
+  min-width: 74px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid rgba(143,245,255,0.18);
   border-radius: 4px;
   background: rgba(143,245,255,0.06);

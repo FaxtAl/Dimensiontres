@@ -848,6 +848,7 @@
 
   function mapProduct(row) {
     var stock = row.stock !== null && row.stock !== undefined ? Number(row.stock) : null;
+    var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock) || isTruthy(row.producto_si);
 
     return {
       id: row.slug,
@@ -864,7 +865,9 @@
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent(row.categoria_slug || ''),
       slug: row.slug,
       description: row.descripcion || '',
-      stock: stock
+      stock: stock,
+      byOrder: byOrder,
+      producto_sinstock: byOrder
     };
   }
 
@@ -879,7 +882,7 @@
 
     var result = await sb
       .from('productos')
-      .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo')
+      .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo,producto_sinstock')
       .eq('activo', true)
       .in('categoria_slug', categorySlugs)
       .order('nombre', { ascending: true });
@@ -1178,6 +1181,7 @@
     var description = row.descripcion && row.descripcion !== name ? removeLeadingAccessCode(row.descripcion, code) : '';
     var subtitle = description || subcategory;
     var group = accessGroupForCategory(category);
+    var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock) || isTruthy(row.producto_si);
 
     return {
       id: id,
@@ -1201,7 +1205,9 @@
       description: description || subcategory,
       stock: row.totalproductos !== null && row.totalproductos !== undefined ? parseMoney(row.totalproductos) : null,
       brand: row.marca || '',
-      model: code || subcategory
+      model: code || subcategory,
+      byOrder: byOrder,
+      producto_sinstock: byOrder
     };
   }
 
@@ -1315,7 +1321,7 @@
 
     var result = await sb
       .from('productos')
-      .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo')
+      .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo,producto_sinstock')
       .eq('activo', true)
       .eq('slug', slug)
       .maybeSingle();

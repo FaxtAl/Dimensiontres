@@ -289,6 +289,30 @@ body::after {
   gap:1rem;
   margin-bottom:1rem;
 }
+.product-stock-status {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  min-height:36px;
+  min-width:132px;
+  padding:.4rem .65rem;
+  border:1px solid rgba(143,245,255,.12);
+  border-radius:9px;
+  background:rgba(143,245,255,.045);
+  font-family:'Manrope',sans-serif;
+  font-size:.78rem;
+  color:#7f7d7c;
+  white-space:nowrap;
+}
+.product-stock-status strong {
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:900;
+}
+.product-stock-status.is-by-order {
+  border-color:rgba(255,198,0,.22);
+  background:rgba(255,198,0,.07);
+}
 .purchase-note-list {
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -472,7 +496,7 @@ body::after {
                 <button class="qty-btn" onclick="changeQty(1)">+</button>
               </div>
             </div>
-            <span id="stock-status" style="font-family:'Manrope',sans-serif;font-size:.78rem;color:#605f5e;">Stock: <strong style="color:#8ff5ff;">Consultar</strong></span>
+            <span id="stock-status" class="product-stock-status">Stock: <strong style="color:#8ff5ff;">Consultar</strong></span>
           </div>
           <button id="add-btn-desktop" onclick="handleAddToCart(this)" class="btn-primary py-5 flex items-center justify-center gap-2">
             <span class="material-symbols-outlined" style="font-size:18px;">add_shopping_cart</span>
@@ -685,7 +709,9 @@ function renderStock(p) {
 
   var label = 'Consultar';
   var color = '#8ff5ff';
+  stockEl.classList.remove('is-by-order');
   if (productIsByOrder(p)) {
+    stockEl.classList.add('is-by-order');
     stockEl.innerHTML = 'Stock: <strong style="color:#ffd96a;">A pedido</strong>';
     return;
   }
