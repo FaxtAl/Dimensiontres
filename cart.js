@@ -59,7 +59,7 @@ function readByOrderFlag(item) {
   for (var i = 0; i < keys.length; i++) {
     if (Object.prototype.hasOwnProperty.call(item, keys[i])) {
       var parsed = normalizeProductRuleBoolean(item[keys[i]]);
-      if (parsed !== null) return parsed;
+      if (parsed === true) return true;
     }
   }
 

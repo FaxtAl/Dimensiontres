@@ -287,12 +287,15 @@ var CATALOG = [
     subtitle: 'PlayStation - Xbox - Nintendo - Retro',
     image: 'img/Consolas.jpg',
     children: [
-      { id: 'ps5', name: 'PlayStation 5', icon: 'sports_esports', subtitle: 'Consolas - Joysticks - Accesorios', image: 'img/Consolas.jpg', children: null },
-      { id: 'ps4', name: 'PlayStation 4', icon: 'sports_esports', subtitle: 'Consolas - Joysticks - Cables', image: 'img/Consolas.jpg', children: null },
-      { id: 'ps3-ps2', name: 'PS3 / PS2', icon: 'videogame_asset', subtitle: 'Consolas retro - Mandos - Memorias', image: 'img/Consolas.jpg', children: null },
+      { id: 'consolas-ps5', name: 'Consola PS5', icon: 'sports_esports', subtitle: 'PlayStation 5 - Digital - Lector', image: 'img/Consolas.jpg', children: null },
+      { id: 'consolas-ps4', name: 'Consola PS4', icon: 'sports_esports', subtitle: 'PlayStation 4 - Slim - Pro', image: 'img/Consolas.jpg', children: null },
+      { id: 'consolas-ps3', name: 'Consola PS3', icon: 'videogame_asset', subtitle: 'Slim - Super Slim - Juegos', image: 'img/Consolas.jpg', children: null },
+      { id: 'consolas-ps2', name: 'Consola PS2', icon: 'videogame_asset', subtitle: 'PlayStation 2 - Retro', image: 'img/Consolas.jpg', children: null },
       { id: 'xbox', name: 'Xbox', icon: 'sports_esports', subtitle: 'Series - One - 360 - Accesorios', image: 'img/Consolas.jpg', children: null },
       { id: 'nintendo-switch', name: 'Nintendo Switch', icon: 'sports_esports', subtitle: 'Switch - OLED - Portatil', image: 'img/Consolas.jpg', children: null },
-      { id: 'retro-portatiles', name: 'Retro / Portatiles', icon: 'stadia_controller', subtitle: 'Mini consolas - Arcades - Portatiles', image: 'img/Consolas.jpg', children: null }
+      { id: 'consolas-retro', name: 'Consolas Retro', icon: 'stadia_controller', subtitle: 'Family - Sega - Mini consolas', image: 'img/Consolas.jpg', children: null },
+      { id: 'consolas-portatiles', name: 'Consolas Portatiles', icon: 'stadia_controller', subtitle: 'Retro portatil - X6 - Game Stick', image: 'img/Consolas.jpg', children: null },
+      { id: 'arcades', name: 'Arcades', icon: 'sports_esports', subtitle: 'Arcade simple - Doble - Multiconsola', image: 'img/Consolas.jpg', children: null }
     ]
   },
   {
@@ -305,8 +308,13 @@ var CATALOG = [
     children: [
       { id: 'joysticks-ps5', name: 'Joysticks PS5', icon: 'sports_esports', subtitle: 'DualSense - Bases - Cables', image: 'img/Consolas_Accesorios.jpg', children: null },
       { id: 'joysticks-ps4', name: 'Joysticks PS4', icon: 'sports_esports', subtitle: 'DualShock - Cargadores - Grips', image: 'img/Consolas_Accesorios.jpg', children: null },
-      { id: 'joysticks-ps3-ps2', name: 'Joysticks PS3 / PS2', icon: 'videogame_asset', subtitle: 'Originales - Alternativos - Cables', image: 'img/Consolas_Accesorios.jpg', children: null },
+      { id: 'joysticks-ps3', name: 'Joysticks PS3', icon: 'videogame_asset', subtitle: 'Originales - Alternativos - Cables', image: 'img/Consolas_Accesorios.jpg', children: null },
+      { id: 'joysticks-ps2', name: 'Joysticks PS2', icon: 'videogame_asset', subtitle: 'Originales - Alternativos - Adaptadores', image: 'img/Consolas_Accesorios.jpg', children: null },
       { id: 'joysticks-xbox-pc', name: 'Joysticks Xbox / PC', icon: 'gamepad', subtitle: 'Xbox - PC - Bluetooth', image: 'img/Consolas_Accesorios.jpg', children: null },
+      { id: 'accesorios-ps5', name: 'Accesorios PS5', icon: 'extension', subtitle: 'Bases - Cables - Protectores', image: 'img/Consolas_Accesorios.jpg', children: null },
+      { id: 'accesorios-ps4', name: 'Accesorios PS4', icon: 'extension', subtitle: 'Bases - Cables - Repuestos', image: 'img/Consolas_Accesorios.jpg', children: null },
+      { id: 'accesorios-ps3', name: 'Accesorios PS3', icon: 'extension', subtitle: 'Cables - Fundas - Repuestos', image: 'img/Consolas_Accesorios.jpg', children: null },
+      { id: 'accesorios-ps2', name: 'Accesorios PS2', icon: 'extension', subtitle: 'Cables - Memorias - Adaptadores', image: 'img/Consolas_Accesorios.jpg', children: null },
       { id: 'bases-cargadoras', name: 'Bases Cargadoras', icon: 'battery_charging_full', subtitle: 'PS4 - PS5 - Xbox', image: 'img/Consolas_Accesorios.jpg', children: null },
       { id: 'grips-baterias-repuestos', name: 'Grips, Baterias y Repuestos', icon: 'construction', subtitle: 'Cubre grips - Pines - Baterias', image: 'img/Consolas_Accesorios.jpg', children: null }
     ]
@@ -361,13 +369,13 @@ var CATALOG = [
     category: 'hardware',
     icon: 'storage',
     subtitle: 'SSD - HDD - Pendrives - MicroSD',
-    image: 'img/hadware.jpg',
+    image: 'img/memorias.webp',
     children: [
-      { id: 'ssd', name: 'SSD', icon: 'storage', subtitle: 'SATA - M.2 - NVMe', image: 'https://images.unsplash.com/photo-1591238372233-b0bfce5f3e53?w=800&q=80', children: null },
-      { id: 'discos-hdd-externos', name: 'Discos HDD / Externos', icon: 'hard_drive', subtitle: 'Notebook - PC - USB', image: 'https://images.unsplash.com/photo-1548922793-f6fa91a2d100?w=800&q=80', children: null },
-      { id: 'pendrives', name: 'Pendrives', icon: 'usb', subtitle: '32GB - 64GB - 128GB', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80', children: null },
-      { id: 'memorias-sd', name: 'MicroSD / SD', icon: 'sd_card', subtitle: 'Celular - Camaras - Switch', image: 'https://images.unsplash.com/photo-1618410320928-25228d811631?w=800&q=80', children: null },
-      { id: 'lectores-cases', name: 'Lectores y Cases', icon: 'folder_copy', subtitle: 'Lectores microSD - Caddies', image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80', children: null }
+      { id: 'ssd', name: 'SSD', icon: 'storage', subtitle: 'SATA - M.2 - NVMe', image: 'img/memorias.webp', children: null },
+      { id: 'discos-hdd-externos', name: 'Discos HDD / Externos', icon: 'hard_drive', subtitle: 'Notebook - PC - USB', image: 'img/memorias.webp', children: null },
+      { id: 'pendrives', name: 'Pendrives', icon: 'usb', subtitle: '32GB - 64GB - 128GB', image: 'img/memorias.webp', children: null },
+      { id: 'memorias-sd', name: 'MicroSD / SD', icon: 'sd_card', subtitle: 'Celular - Camaras - Switch', image: 'img/memorias.webp', children: null },
+      { id: 'lectores-cases', name: 'Lectores y Cases', icon: 'folder_copy', subtitle: 'Lectores microSD - Caddies', image: 'img/memorias.webp', children: null }
     ]
   },
   {
@@ -492,7 +500,7 @@ function getCatalogVisualMeta(item) {
     return { icon: 'cable', image: 'img/cables.jpg' };
   }
   if (text.indexOf('memoria') !== -1 || text.indexOf('disco') !== -1 || text.indexOf('ssd') !== -1 || text.indexOf('almacenamiento') !== -1) {
-    return { icon: 'storage', image: 'img/hadware.jpg' };
+    return { icon: 'storage', image: 'img/memorias.webp' };
   }
   return { icon: item.icon || 'inventory_2', image: '' };
 }
@@ -820,7 +828,7 @@ function renderProductCards(products) {
 
     var source = document.createElement('span');
     source.className = 'product-card-source';
-    source.textContent = byOrder ? 'A pedido' : displayCatalogText(p.sourceLabel || 'Catalogo');
+    source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
     body.appendChild(source);
 
     var title = document.createElement('h3');

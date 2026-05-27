@@ -1067,9 +1067,11 @@ body::after {
 }
 
 .product-card-stock.is-by-order {
-  border-color: rgba(255,198,0,0.24);
-  background: rgba(255,198,0,0.08);
-  color: #ffd96a;
+  min-width: 86px;
+  border-color: rgba(255,198,0,0.42);
+  background: linear-gradient(135deg, rgba(255,198,0,0.18), rgba(255,198,0,0.06));
+  color: #ffe38a;
+  box-shadow: 0 0 18px rgba(255,198,0,0.08);
 }
 
 .product-card-foot {
