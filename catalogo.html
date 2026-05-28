@@ -271,8 +271,8 @@
 <script src="nav.js"></script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js?v=pedido-20260527"></script>
-<script src="cart.js?v=pedido-20260527"></script>
+<script src="supabase-client.js?v=pedido-sync-20260528"></script>
+<script src="cart.js?v=pedido-sync-20260528"></script>
 
 <script>
 /* ══════════════════════════════════════════════════════
@@ -793,51 +793,17 @@ function closeCatalogPanel(unlockBody) {
 
 function catalogIsByOrderProduct(product) {
   if (!product) return false;
-  if (typeof isByOrderProduct === 'function' && isByOrderProduct(product)) return true;
+  if (typeof isByOrderProduct === 'function') return isByOrderProduct(product);
 
-  var keys = ['byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si', 'sinStock', 'sinstock'];
+  var keys = ['byOrder', 'aPedido', 'producto_sinstock', 'prodcuto_sinstock', 'isByOrder'];
   for (var i = 0; i < keys.length; i++) {
     var value = product[keys[i]];
     if (value === true || value === 1 || value === -1) return true;
     var textValue = String(value || '').trim().toLowerCase();
     if (['true', 'si', 's', '1', '-1', 'pedido', 'a pedido', 'checked'].indexOf(textValue) !== -1) return true;
+    if (['false', 'no', 'n', '0', 'disponible', 'stock', 'unchecked'].indexOf(textValue) !== -1) return false;
   }
-
-  var text = [
-    product.name,
-    product.nombre,
-    product.subtitle,
-    product.description,
-    product.category,
-    product.sourceLabel,
-    product.code,
-    product.codigo
-  ].filter(Boolean).join(' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
-  if (/\barcades?\b/.test(text) || text.indexOf('maquina arcade') !== -1) return false;
-  if (text.indexOf('soporte monitor') !== -1 || text.indexOf('soporte dual monitor') !== -1) return false;
-
-  return [
-    'monitor',
-    'procesador',
-    'intel core',
-    'core i3',
-    'core i5',
-    'core i7',
-    'core i9',
-    'ryzen',
-    'mother',
-    'motherboard',
-    'placa madre',
-    'placa de video',
-    'tarjeta de video',
-    'rtx',
-    'gtx',
-    'radeon',
-    'notebook',
-    'pc armado',
-    'gabinete'
-  ].some(function(term) { return text.indexOf(term) !== -1; });
+  return false;
 }
 
 function renderProductCards(products) {

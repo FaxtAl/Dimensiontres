@@ -848,7 +848,7 @@
 
   function mapProduct(row) {
     var stock = row.stock !== null && row.stock !== undefined ? Number(row.stock) : null;
-    var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock) || isTruthy(row.producto_si);
+    var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock);
 
     return {
       id: row.slug,
@@ -1189,7 +1189,7 @@
     var description = row.descripcion && row.descripcion !== name ? removeLeadingAccessCode(row.descripcion, code) : '';
     var subtitle = description || subcategory;
     var group = accessGroupForCategory(category);
-    var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock) || isTruthy(row.producto_si);
+    var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock);
 
     return {
       id: id,

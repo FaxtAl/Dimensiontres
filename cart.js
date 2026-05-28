@@ -43,23 +43,17 @@ function readByOrderFlag(item) {
   var keys = [
     'byOrder',
     'aPedido',
-    'pedido',
     'producto_sinstock',
     'Producto_sinstock',
     'prodcuto_sinstock',
     'Prodcuto_sinstock',
-    'producto_si',
-    'Producto_si',
-    'sinStock',
-    'sinstock',
-    'sin_stock',
     'isByOrder'
   ];
 
   for (var i = 0; i < keys.length; i++) {
     if (Object.prototype.hasOwnProperty.call(item, keys[i])) {
       var parsed = normalizeProductRuleBoolean(item[keys[i]]);
-      if (parsed === true) return true;
+      if (parsed !== null) return parsed;
     }
   }
 
@@ -69,60 +63,7 @@ function readByOrderFlag(item) {
 function isByOrderProduct(item) {
   if (!item) return false;
   var explicitFlag = readByOrderFlag(item);
-  if (explicitFlag !== null) return explicitFlag;
-
-  var text = normalizeProductRuleText([
-    item.name,
-    item.nombre,
-    item.title,
-    item.subtitle,
-    item.description,
-    item.category,
-    item.categoria,
-    item.subcategory,
-    item.subcategoria,
-    item.sourceLabel,
-    item.sourceFile,
-    item.model,
-    item.code,
-    item.codigo
-  ].filter(Boolean).join(' '));
-
-  if (!text) return false;
-  if (/\barcades?\b/.test(text) || /\bmaquina arcade\b/.test(text)) return false;
-  if (text.indexOf('soporte monitor') !== -1 || text.indexOf('soporte dual monitor') !== -1) return false;
-
-  return [
-    'procesador',
-    'intel core',
-    'core i3',
-    'core i5',
-    'core i7',
-    'core i9',
-    'ryzen',
-    'monitor',
-    'mother',
-    'motherboard',
-    'placa madre',
-    'placa de video',
-    'tarjeta de video',
-    'rtx',
-    'gtx',
-    'radeon',
-    'rx 6',
-    'rx 7',
-    'notebook',
-    'pc armado',
-    'gabinete',
-    'fuente 550',
-    'fuente 650',
-    'fuente 750',
-    'fuente 850',
-    'cooler liquido',
-    'aio'
-  ].some(function(term) {
-    return text.indexOf(term) !== -1;
-  });
+  return explicitFlag === true;
 }
 
 window.DimensionTresProductRules = window.DimensionTresProductRules || {};
