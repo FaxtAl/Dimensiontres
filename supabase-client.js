@@ -927,6 +927,8 @@
     'Estacionamiento por hora',
     'Nota de credito',
     'Sena Dolares',
+    'Joystick ps3 Sony no originales',
+    '701179990048',
     'Seña Dolares'
   ].map(compactCatalogText);
 
