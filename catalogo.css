@@ -557,8 +557,7 @@ body::after {
 }
 
 .catalog-filter-search input,
-.mobile-sort-select,
-.price-filter-select {
+.mobile-sort-select {
   width: 100%;
   min-height: 38px;
   border: 1px solid rgba(143,245,255,0.18);
@@ -575,8 +574,7 @@ body::after {
 }
 
 .catalog-filter-search input:focus,
-.mobile-sort-select:focus,
-.price-filter-select:focus {
+.mobile-sort-select:focus {
   border-color: rgba(143,245,255,0.5);
   box-shadow: 0 0 0 3px rgba(143,245,255,0.08);
 }
@@ -724,32 +722,13 @@ body::after {
   color: #fff;
 }
 
-.mobile-sort-select,
-.price-filter-select {
+.mobile-sort-select {
   appearance: none;
   padding: 0.55rem 2rem 0.55rem 0.75rem;
   background-image: linear-gradient(45deg, transparent 50%, #8ff5ff 50%), linear-gradient(135deg, #8ff5ff 50%, transparent 50%);
   background-position: calc(100% - 16px) 16px, calc(100% - 10px) 16px;
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
-}
-
-.catalog-control-cluster {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.catalog-control-field {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.catalog-price-select {
-  width: 190px;
 }
 
 /* ── Search glow on focus ── */

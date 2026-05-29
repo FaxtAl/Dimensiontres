@@ -192,17 +192,7 @@
         <option value="default">Por defecto</option>
         <option value="az">A - Z</option>
         <option value="za">Z - A</option>
-        <option value="price-low">Menor precio</option>
-        <option value="price-high">Mayor precio</option>
-      </select>
-
-      <label class="catalog-filter-label" for="mobile-price-filter-select">Precio</label>
-      <select id="mobile-price-filter-select" class="price-filter-select" onchange="setPriceFilter(this.value)">
-        <option value="all">Todos los precios</option>
-        <option value="under-10000">Hasta $10.000</option>
-        <option value="10000-50000">$10.000 a $50.000</option>
-        <option value="50000-150000">$50.000 a $150.000</option>
-        <option value="over-150000">Mas de $150.000</option>
+        <option value="price-low">Mejor precio</option>
       </select>
     </div>
   </aside>
@@ -231,20 +221,7 @@
               oninput="filterBySearch(this.value)"/>
             <span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">search</span>
           </div>
-          <div class="catalog-control-cluster">
-            <div class="catalog-control-field">
-            <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Precio:</span>
-            <select id="price-filter-select" class="custom-select price-filter-select catalog-price-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
-              style="border-radius:6px;"
-              onchange="setPriceFilter(this.value)">
-              <option value="all">Todos</option>
-              <option value="under-10000">Hasta $10.000</option>
-              <option value="10000-50000">$10.000 a $50.000</option>
-              <option value="50000-150000">$50.000 a $150.000</option>
-              <option value="over-150000">Mas de $150.000</option>
-            </select>
-            </div>
-            <div class="catalog-control-field">
+          <div class="flex items-center gap-3">
             <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Ordenar:</span>
             <select class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
               style="border-radius:6px;"
@@ -252,10 +229,8 @@
               <option value="default">Por defecto</option>
               <option value="az">A - Z</option>
               <option value="za">Z - A</option>
-              <option value="price-low">Menor precio</option>
-              <option value="price-high">Mayor precio</option>
+              <option value="price-low">Mejor precio</option>
             </select>
-            </div>
           </div>
         </div>
 
@@ -444,12 +419,10 @@ var CATALOG = [
 var currentLevel = 'root';       // 'root' | id de categoría padre
 var currentParent = null;        // objeto del nivel actual
 var currentFilter = 'all';
-var currentPriceFilter = 'all';
 var currentSearch = '';
 var currentRouteState = { view: 'root', filter: 'all', q: '' };
 var productsRequestId = 0;
 var catalogLoadedFromSupabase = false;
-var currentProductList = [];
 var productSearchCache = {};
 var productSearchTimer = null;
 var searchSuggestionsTimer = null;
@@ -698,7 +671,6 @@ function syncRootControls() {
     var input = document.getElementById(id);
     if (input) input.value = currentSearch;
   });
-  syncPriceControls();
 }
 
 function getActivePathIds() {
@@ -841,61 +813,29 @@ function getProductPrice(product) {
   return Number.isFinite(price) ? price : 0;
 }
 
-function filterProductsByPrice(products) {
-  if (currentPriceFilter === 'all') return products || [];
-  return (products || []).filter(function(product) {
-    var price = getProductPrice(product);
-    if (currentPriceFilter === 'under-10000') return price <= 10000;
-    if (currentPriceFilter === '10000-50000') return price > 10000 && price <= 50000;
-    if (currentPriceFilter === '50000-150000') return price > 50000 && price <= 150000;
-    if (currentPriceFilter === 'over-150000') return price > 150000;
-    return true;
-  });
-}
-
-function syncPriceControls() {
-  ['price-filter-select', 'mobile-price-filter-select'].forEach(function(id) {
-    var select = document.getElementById(id);
-    if (select) select.value = currentPriceFilter || 'all';
-  });
-}
-
-function setPriceFilter(value) {
-  currentPriceFilter = value || 'all';
-  syncPriceControls();
-  if (currentSearch && currentLevel === 'root') {
-    renderProductSearchResults(currentSearch);
-    return;
-  }
-  if (currentProductList.length) {
-    renderProductCards(currentProductList);
-  }
-}
-
 function renderProductCards(products) {
   var grid = document.getElementById('categories-grid');
+  products = products || [];
   grid.innerHTML = '';
   grid.style.display = '';
   resetEmptyState();
-  currentProductList = (products || []).slice();
-  var visibleProducts = filterProductsByPrice(currentProductList);
   var empty = document.getElementById('empty-state');
 
-  document.getElementById('visible-count').textContent = visibleProducts.length;
+  document.getElementById('visible-count').textContent = products.length;
   document.getElementById('count-label').textContent = 'productos';
-  if (!visibleProducts.length) {
+  if (!products.length) {
     grid.style.display = 'none';
     if (empty) {
       empty.classList.remove('hidden');
-      empty.querySelector('.material-symbols-outlined').textContent = 'filter_alt_off';
-      empty.querySelector('p.font-headline').textContent = 'Sin productos en ese rango';
-      empty.querySelector('p.font-body').textContent = 'Probá con otro precio o limpiá el filtro.';
+      empty.querySelector('.material-symbols-outlined').textContent = 'inventory_2';
+      empty.querySelector('p.font-headline').textContent = 'Sin productos cargados';
+      empty.querySelector('p.font-body').textContent = 'No encontramos productos activos en esta categoria todavia.';
     }
     return;
   }
   if (empty) empty.classList.add('hidden');
 
-  visibleProducts.forEach(function(p, idx) {
+  products.forEach(function(p, idx) {
     var byOrder = catalogIsByOrderProduct(p);
     var hasStockValue = p.stock !== undefined && p.stock !== null && p.stock !== '';
     var stockValue = hasStockValue ? Number(p.stock) : null;
@@ -1587,7 +1527,6 @@ function buildCard(item, delay) {
 function renderGrid(items, animate) {
   var grid = document.getElementById('categories-grid');
   if (!grid) return;
-  currentProductList = [];
   grid.innerHTML = '';
   resetEmptyState();
 
@@ -1841,11 +1780,11 @@ function sortCards(order) {
     cards.sort(function(a, b) {
       return Number(a.dataset.order || 0) - Number(b.dataset.order || 0);
     });
-  } else if (order === 'price-low' || order === 'price-high') {
+  } else if (order === 'price-low') {
     cards.sort(function(a, b) {
       var priceA = Number(a.dataset.price || 0);
       var priceB = Number(b.dataset.price || 0);
-      return order === 'price-low' ? priceA - priceB : priceB - priceA;
+      return priceA - priceB;
     });
   } else {
     cards.sort(function(a, b) {
@@ -1859,7 +1798,6 @@ function sortCards(order) {
 
 function resetFilters() {
   currentFilter = 'all';
-  currentPriceFilter = 'all';
   currentSearch = '';
   currentRouteState = { view: 'root', filter: 'all', q: '' };
   updateCatalogHistory(currentRouteState, true);
