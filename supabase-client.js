@@ -858,7 +858,7 @@
       category: row.categoria_slug || '',
       icon: 'inventory_2',
       subtitle: row.descripcion || row.codigo || row.categoria || 'Consultar',
-      badge: stock === 0 ? 'Consultar' : '',
+      badge: stock === 0 ? 'Sin stock' : '',
       image: row.imagen_url || '',
       source: 'supabase',
       sourceLabel: row.categoria || 'Catalogo',

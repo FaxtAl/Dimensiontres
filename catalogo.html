@@ -813,8 +813,11 @@ function renderProductCards(products) {
 
   products.forEach(function(p, idx) {
     var byOrder = catalogIsByOrderProduct(p);
+    var hasStockValue = p.stock !== undefined && p.stock !== null && p.stock !== '';
+    var stockValue = hasStockValue ? Number(p.stock) : null;
+    var outOfStock = !byOrder && stockValue !== null && stockValue <= 0;
     var card = document.createElement('div');
-    card.className = 'product-card' + (byOrder ? ' is-by-order' : '');
+    card.className = 'product-card' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '');
     card.dataset.name = p.name || '';
     card.dataset.category = p.rootCategory || p.category || '';
     card.dataset.order = idx;
@@ -824,7 +827,7 @@ function renderProductCards(products) {
     };
 
     var media = document.createElement('div');
-    media.className = 'product-card-media' + (p.image ? ' has-image' : '');
+    media.className = 'product-card-media' + (p.image ? ' has-image' : '') + (outOfStock ? ' is-out-of-stock' : '');
     if (p.image) {
       var img = document.createElement('img');
       img.src = p.image;
@@ -835,6 +838,12 @@ function renderProductCards(products) {
       icon.className = 'material-symbols-outlined';
       icon.textContent = p.icon || 'inventory_2';
       media.appendChild(icon);
+    }
+    if (outOfStock) {
+      var soldOut = document.createElement('span');
+      soldOut.className = 'product-card-soldout';
+      soldOut.textContent = 'Sin stock';
+      media.appendChild(soldOut);
     }
     card.appendChild(media);
 
@@ -858,9 +867,8 @@ function renderProductCards(products) {
 
     if (byOrder || (p.stock !== undefined && p.stock !== null)) {
       var stock = document.createElement('span');
-      stock.className = 'product-card-stock' + (byOrder ? ' is-by-order' : '');
-      var stockValue = Number(p.stock || 0);
-      stock.textContent = byOrder ? 'A pedido' : (stockValue > 0 ? 'Stock ' + stockValue : 'Consultar');
+      stock.className = 'product-card-stock' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '');
+      stock.textContent = byOrder ? 'A pedido' : (outOfStock ? 'Sin stock' : (stockValue > 0 ? 'Stock ' + stockValue : 'Consultar'));
       body.appendChild(stock);
     }
 
