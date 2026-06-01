@@ -187,12 +187,10 @@
         <button type="button" class="filter-pill mobile-filter-option" data-filter="accesorios" onclick="setFilter('accesorios', this)">Accesorios</button>
       </div>
 
-      <label class="catalog-filter-label" for="mobile-sort-select">Ordenar</label>
+      <label class="catalog-filter-label" for="mobile-sort-select">Ordenar por precio</label>
       <select id="mobile-sort-select" class="mobile-sort-select" onchange="sortCards(this.value)">
-        <option value="default">Por defecto</option>
-        <option value="az">A - Z</option>
-        <option value="za">Z - A</option>
-        <option value="price-low">Mejor precio</option>
+        <option value="price-low">Menor precio</option>
+        <option value="price-high">Mayor precio</option>
       </select>
     </div>
   </aside>
@@ -222,22 +220,29 @@
             <span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">search</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Ordenar:</span>
+            <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Precio:</span>
             <select class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
               style="border-radius:6px;"
               onchange="sortCards(this.value)">
-              <option value="default">Por defecto</option>
-              <option value="az">A - Z</option>
-              <option value="za">Z - A</option>
-              <option value="price-low">Mejor precio</option>
+              <option value="price-low">Menor precio</option>
+              <option value="price-high">Mayor precio</option>
             </select>
           </div>
         </div>
 
         <!-- Boton volver + label de nivel sub -->
-        <div id="back-to-root" onclick="goToRoot()">
-          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-          <span id="back-label">Volver al catalogo</span>
+        <div class="catalog-results-toolbar">
+          <div id="back-to-root" onclick="goToRoot()">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            <span id="back-label">Volver al catalogo</span>
+          </div>
+          <div id="product-sort-controls" class="product-sort-controls">
+            <span>Precio</span>
+            <select class="custom-select" onchange="sortCards(this.value)">
+              <option value="price-low">Menor precio</option>
+              <option value="price-high">Mayor precio</option>
+            </select>
+          </div>
         </div>
 
         <div id="grid-helper" class="catalog-helper">
@@ -426,6 +431,12 @@ var catalogLoadedFromSupabase = false;
 var productSearchCache = {};
 var productSearchTimer = null;
 var searchSuggestionsTimer = null;
+var currentSortOrder = 'price-low';
+
+function setProductSortVisible(visible) {
+  var sortControls = document.getElementById('product-sort-controls');
+  if (sortControls) sortControls.classList.toggle('visible', !!visible);
+}
 
 var EXAMPLE_PRODUCTS = [
   { name: 'PS5 Slim Digital', slug: 'ps5-slim-digital', price: 680000, rootCategory: 'consolas', section: 'consolas', category: 'playstation', icon: 'sports_esports', subtitle: 'PlayStation 5', sourceLabel: 'Consolas', image: '', stock: 1 },
@@ -818,6 +829,7 @@ function renderProductCards(products) {
   products = products || [];
   grid.innerHTML = '';
   grid.style.display = '';
+  setProductSortVisible(products.length > 0);
   resetEmptyState();
   var empty = document.getElementById('empty-state');
 
@@ -911,6 +923,7 @@ function renderProductCards(products) {
     card.appendChild(body);
     grid.appendChild(card);
   });
+  sortCards(currentSortOrder || 'price-low');
 }
 
 function collectAccessSubcategoryIds(item) {
@@ -1527,6 +1540,7 @@ function buildCard(item, delay) {
 function renderGrid(items, animate) {
   var grid = document.getElementById('categories-grid');
   if (!grid) return;
+  setProductSortVisible(false);
   grid.innerHTML = '';
   resetEmptyState();
 
@@ -1774,6 +1788,10 @@ function handleSearchLive(query) {
 }
 
 function sortCards(order) {
+  currentSortOrder = order || 'price-low';
+  document.querySelectorAll('#mobile-sort-select, #desktop-controls select, #product-sort-controls select').forEach(function(select) {
+    select.value = currentSortOrder;
+  });
   var grid = document.getElementById('categories-grid');
   var cards = Array.from(grid.querySelectorAll('.cat-card, .product-card'));
   if (order === 'default') {
@@ -1785,6 +1803,12 @@ function sortCards(order) {
       var priceA = Number(a.dataset.price || 0);
       var priceB = Number(b.dataset.price || 0);
       return priceA - priceB;
+    });
+  } else if (order === 'price-high') {
+    cards.sort(function(a, b) {
+      var priceA = Number(a.dataset.price || 0);
+      var priceB = Number(b.dataset.price || 0);
+      return priceB - priceA;
     });
   } else {
     cards.sort(function(a, b) {
