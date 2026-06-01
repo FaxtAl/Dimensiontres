@@ -1106,6 +1106,89 @@
     return a.name.localeCompare(b.name, 'es');
   }
 
+  var PHYSICAL_GAMES_CATEGORY_ID = '3';
+  var PHYSICAL_GAMES_SUBCATEGORIES = [
+    { id: '69', name: 'Juegos Ps5' },
+    { id: '10', name: 'Juegos Ps4' },
+    { id: '9', name: 'Juegos Ps3' },
+    { id: '19', name: 'Juegos Xbox One' },
+    { id: '18', name: 'Juegos Nintendo' }
+  ];
+
+  function createPhysicalGamesChild(item) {
+    return {
+      id: 'subcat-' + item.id,
+      accessSubcategoryId: item.id,
+      name: item.name,
+      category: 'juegos',
+      icon: accessIconForText('Juegos Fisicos', item.name, ''),
+      subtitle: 'Juegos fisicos originales',
+      image: '',
+      productCount: 0,
+      children: null
+    };
+  }
+
+  function createPhysicalGamesCategory() {
+    return {
+      id: 'cat-juegos-fisicos',
+      accessCategoryId: PHYSICAL_GAMES_CATEGORY_ID,
+      accessCategoryIds: [PHYSICAL_GAMES_CATEGORY_ID],
+      name: 'Juegos Fisicos',
+      category: 'juegos',
+      icon: 'stadia_controller',
+      subtitle: 'Juegos fisicos originales por consola',
+      image: '',
+      productCount: 0,
+      useChildrenForProducts: true,
+      children: PHYSICAL_GAMES_SUBCATEGORIES.map(createPhysicalGamesChild)
+    };
+  }
+
+  function ensurePhysicalGamesCategory(catalog) {
+    var list = (catalog || []).slice();
+    var games = null;
+
+    list.some(function(item) {
+      var name = normalizeCatalogText(item.name);
+      if (name === 'juegos fisicos' || name === 'juegos originales') {
+        games = item;
+        return true;
+      }
+      return false;
+    });
+
+    if (!games) {
+      list.push(createPhysicalGamesCategory());
+      return list.sort(compareCatalogItems);
+    }
+
+    games.id = games.id || 'cat-juegos-fisicos';
+    games.name = 'Juegos Fisicos';
+    games.category = 'juegos';
+    games.icon = games.icon || 'stadia_controller';
+    games.accessCategoryId = games.accessCategoryId || PHYSICAL_GAMES_CATEGORY_ID;
+    games.accessCategoryIds = games.accessCategoryIds && games.accessCategoryIds.length ? games.accessCategoryIds : [PHYSICAL_GAMES_CATEGORY_ID];
+    games.useChildrenForProducts = true;
+    games.children = games.children || [];
+
+    PHYSICAL_GAMES_SUBCATEGORIES.forEach(function(item) {
+      var exists = games.children.some(function(child) {
+        return String(child.accessSubcategoryId || '') === item.id ||
+          String(child.id || '') === 'subcat-' + item.id ||
+          normalizeCatalogText(child.name) === normalizeCatalogText(item.name);
+      });
+      if (!exists) games.children.push(createPhysicalGamesChild(item));
+    });
+
+    games.children.sort(function(a, b) { return compareSubcategoryItems(games.name, a, b); });
+    games.subtitle = games.productCount
+      ? games.productCount + ' productos en ' + games.children.length + ' subcategorias'
+      : 'Juegos fisicos originales por consola';
+
+    return list.sort(compareCatalogItems);
+  }
+
   function isPcStorageSubcategory(subcategory) {
     var text = normalizeCatalogText(subcategory);
     return text === 'disco ssd' || text === 'disco rigido' || text === 'carry disco 2.55' || text === 'carry disco 3.55';
@@ -1290,11 +1373,11 @@
       });
     });
 
-    return Object.values(byCategory).map(function(item) {
+    return ensurePhysicalGamesCategory(Object.values(byCategory).map(function(item) {
       item.children.sort(function(a, b) { return compareSubcategoryItems(item.name, a, b); });
       item.subtitle = item.productCount + ' productos en ' + item.children.length + ' subcategorias';
       return item;
-    }).sort(compareCatalogItems);
+    }).sort(compareCatalogItems));
   }
 
   async function fetchAccessProductsBySubcategory(subcategoryId) {
