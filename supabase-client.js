@@ -955,7 +955,9 @@
 
   function accessGroupForCategory(category) {
     var text = normalizeCatalogText(category);
+    if (text.indexOf('juegos originales') !== -1 || text.indexOf('juegos fisicos') !== -1) return 'juegos';
     if (text.indexOf('consola') !== -1) return 'consolas';
+    if (text.indexOf('juego') !== -1) return 'juegos';
     if (text.indexOf('periferico') !== -1) return 'perifericos';
     if (text.indexOf('auricular') !== -1 || text.indexOf('parlante') !== -1) return 'audio';
     if (text.indexOf('hardware') !== -1 || text.indexOf('memoria') !== -1 || text.indexOf('pc') !== -1 || text.indexOf('silla') !== -1 || text.indexOf('carry') !== -1 || text.indexOf('disck') !== -1 || text.indexOf('disk') !== -1) return 'hardware';
@@ -964,6 +966,7 @@
 
   function accessIconForText(category, subcategory, product) {
     var text = normalizeCatalogText([category, subcategory, product].filter(Boolean).join(' '));
+    if (text.indexOf('juegos originales') !== -1 || text.indexOf('juegos fisicos') !== -1 || text.indexOf('juegos ps') !== -1 || text.indexOf('juegos xbox') !== -1 || text.indexOf('juegos nintendo') !== -1) return 'stadia_controller';
     if (text.indexOf('auricular') !== -1 || text.indexOf('headset') !== -1) return 'headset_mic';
     if (text.indexOf('parlante') !== -1) return 'speaker';
     if (text.indexOf('ram') !== -1 || text.indexOf('procesador') !== -1 || text.indexOf('mother') !== -1) return 'memory';
@@ -993,6 +996,7 @@
     return priorityFromList(category, [
       'Consolas de juegos',
       'Accesorios Consolas',
+      'Juegos Fisicos',
       'Hardware',
       'Perifericos PC',
       'Memorias',
@@ -1040,6 +1044,14 @@
         'Xbox 360',
         'Xbox Serie',
         'Nintendo'
+      ];
+    } else if (cat.indexOf('juegos fisicos') !== -1 || cat.indexOf('juegos originales') !== -1) {
+      order = [
+        'Juegos Ps5',
+        'Juegos Ps4',
+        'Juegos Ps3',
+        'Juegos Xbox One',
+        'Juegos Nintendo'
       ];
     } else if (cat.indexOf('hardware') !== -1) {
       order = [
@@ -1140,6 +1152,10 @@
     var category = row.categoria || 'Categoria';
     var categoryText = normalizeCatalogText(category);
     var subcategory = row.subcategoria || '';
+
+    if (categoryText === 'juegos originales') {
+      return 'Juegos Fisicos';
+    }
 
     if (categoryText === 'memorias' && isPcStorageSubcategory(subcategory)) {
       return 'Hardware';

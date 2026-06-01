@@ -182,6 +182,7 @@
         <button type="button" class="filter-pill mobile-filter-option" data-filter="all" onclick="setFilter('all', this)">Todo</button>
         <button type="button" class="filter-pill mobile-filter-option" data-filter="hardware" onclick="setFilter('hardware', this)">Hardware</button>
         <button type="button" class="filter-pill mobile-filter-option" data-filter="consolas" onclick="setFilter('consolas', this)">Consolas</button>
+        <button type="button" class="filter-pill mobile-filter-option" data-filter="juegos" onclick="setFilter('juegos', this)">Juegos</button>
         <button type="button" class="filter-pill mobile-filter-option" data-filter="perifericos" onclick="setFilter('perifericos', this)">Periféricos</button>
         <button type="button" class="filter-pill mobile-filter-option" data-filter="audio" onclick="setFilter('audio', this)">Audio</button>
         <button type="button" class="filter-pill mobile-filter-option" data-filter="accesorios" onclick="setFilter('accesorios', this)">Accesorios</button>
@@ -303,6 +304,21 @@ var CATALOG = [
       { id: 'consolas-retro', name: 'Consolas Retro', icon: 'stadia_controller', subtitle: 'Family - Sega - Mini consolas', image: 'img/Consolas.jpg', children: null },
       { id: 'consolas-portatiles', name: 'Consolas Portatiles', icon: 'stadia_controller', subtitle: 'Retro portatil - X6 - Game Stick', image: 'img/Consolas.jpg', children: null },
       { id: 'arcades', name: 'Arcades', icon: 'sports_esports', subtitle: 'Arcade simple - Doble - Multiconsola', image: 'img/Consolas.jpg', children: null }
+    ]
+  },
+  {
+    id: 'juegos-fisicos',
+    name: 'Juegos Fisicos',
+    category: 'juegos',
+    icon: 'stadia_controller',
+    subtitle: 'PS5 - PS4 - PS3 - Xbox - Nintendo',
+    image: 'img/Consolas.jpg',
+    children: [
+      { id: 'juegos-ps5', name: 'Juegos PS5', icon: 'sports_esports', subtitle: 'Fisicos originales PlayStation 5', image: 'img/Consolas.jpg', children: null },
+      { id: 'juegos-ps4', name: 'Juegos PS4', icon: 'sports_esports', subtitle: 'Fisicos originales PlayStation 4', image: 'img/Consolas.jpg', children: null },
+      { id: 'juegos-ps3', name: 'Juegos PS3', icon: 'videogame_asset', subtitle: 'Fisicos originales PlayStation 3', image: 'img/Consolas.jpg', children: null },
+      { id: 'juegos-xbox-one', name: 'Juegos Xbox One', icon: 'sports_esports', subtitle: 'Fisicos originales Xbox One', image: 'img/Consolas.jpg', children: null },
+      { id: 'juegos-nintendo', name: 'Juegos Nintendo', icon: 'sports_esports', subtitle: 'Fisicos originales Nintendo', image: 'img/Consolas.jpg', children: null }
     ]
   },
   {
@@ -473,6 +489,7 @@ function getCategoryLabel(item, hasChildren) {
   var labels = {
     hardware: 'Hardware',
     consolas: 'Consolas',
+    juegos: 'Juegos',
     perifericos: 'Perifericos',
     audio: 'Audio',
     accesorios: 'Accesorios'
@@ -482,6 +499,9 @@ function getCategoryLabel(item, hasChildren) {
 
 function getCatalogVisualMeta(item) {
   var text = normalizeSearchValue([item.name, item.subtitle].filter(Boolean).join(' '));
+  if (text.indexOf('juego') !== -1 && text.indexOf('consolas de juego') === -1) {
+    return { icon: 'stadia_controller', image: 'img/Consolas.jpg' };
+  }
   if (text.indexOf('consola') !== -1 && text.indexOf('accesorio') === -1 && text.indexOf('joystick') === -1) {
     return { icon: 'sports_esports', image: 'img/Consolas.jpg' };
   }
