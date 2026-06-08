@@ -4,6 +4,9 @@ node_modules/
 .env
 .env.*
 scripts/sync-access-config.ps1
+scripts/invid-config.ps1
+scripts/.sync-cache/
+scripts/invid-pc-catalog.csv
 
 # OS/editor noise
 .DS_Store

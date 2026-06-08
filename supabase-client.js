@@ -15,6 +15,285 @@
     return client;
   }
 
+  var LOCAL_PRODUCT_IMAGE_FILES = [
+    '[6984521291670] Auricular Intra Manos Libres Samsung AKG S21 Ultra.png',
+    'Adaptador Bluetooth 5.4 nano usb mercury MA530.webp',
+    'Arcade Doble Multiconsola.webp',
+    'Auricular JBL (Replica).webp',
+    'Auricular Samsung Replica Galaxy S10+ Caja Chica.png',
+    'Auricular Sport SF-A41 HI-FI.webp',
+    'Auricular Tame AU-1236.webp',
+    'auriculares inalambricos inpods 12 I12.webp',
+    'Auriculares Noga Voice NGV-400.webp',
+    'Base de carga joystick ps5.png',
+    'Base joystick ps4 Luz led.jpg',
+    'Cable Mallado 2 Hembra Auricularesmicrofono A Plug 3.5mm Macho.webp',
+    'Cable VGA 1.5M.jpg',
+    'Consola Game TV Stick Your Name Gamer.webp',
+    'Consola portatil X6.webp',
+    'Funda silicona PS4.webp',
+    'Inova Cable de Datos.webp',
+    'Joystick Ps3 Alternativos.webp',
+    'Kit Gabinete Kelyx LC727-14 Fuente 500w.jpg',
+    'Mini Consola 2 joystick inalambricos Extreme Mini Game Box.jpg',
+    'Noga Stormer NG-8620.webp',
+    'Parlantes 2.1 Noga.jpg',
+    'Pendrive Kingston 64 GB.webp',
+    'receptor de musica inalambrico BT-163.webp',
+    'Seisa Fast 2USB Charge Kit.jpg',
+    'Sentech ST-HS450.webp',
+    'Sup + joystick gme-61020.jpg',
+    'Sy830mv.webp'
+  ];
+  var LOCAL_PRODUCT_IMAGES = buildLocalProductImageIndex();
+  var LOCAL_PRODUCT_IMAGE_KEYS = Object.keys(LOCAL_PRODUCT_IMAGES);
+
+  function normalizeImageKey(value) {
+    var text = String(value || '').trim().toLowerCase();
+    if (text.normalize) {
+      text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    return text.replace(/[^a-z0-9]+/g, ' ').replace(/^\s+|\s+$/g, '');
+  }
+
+  function productImagePath(fileName) {
+    return 'img/productos/' + encodeURIComponent(fileName).replace(/%2F/g, '/');
+  }
+
+  function addLocalProductImage(index, key, path) {
+    key = normalizeImageKey(key);
+    if (key && !index[key]) index[key] = path;
+  }
+
+  function buildLocalProductImageIndex() {
+    var index = {};
+    LOCAL_PRODUCT_IMAGE_FILES.forEach(function(fileName) {
+      var path = productImagePath(fileName);
+      var baseName = fileName.replace(/\.[^.]+$/, '');
+      addLocalProductImage(index, baseName, path);
+
+      var codedName = baseName.match(/^\[(\d+)\]\s*(.+)$/);
+      if (codedName) {
+        addLocalProductImage(index, codedName[1], path);
+        addLocalProductImage(index, codedName[2], path);
+      }
+    });
+    return index;
+  }
+
+  function findLocalProductImage(value) {
+    var key = normalizeImageKey(value);
+    if (!key) return '';
+    if (LOCAL_PRODUCT_IMAGES[key]) return LOCAL_PRODUCT_IMAGES[key];
+    if (key.length < 6) return '';
+
+    for (var i = 0; i < LOCAL_PRODUCT_IMAGE_KEYS.length; i++) {
+      var localKey = LOCAL_PRODUCT_IMAGE_KEYS[i];
+      if (localKey.length < 6) continue;
+      if (key.indexOf(localKey) !== -1 || localKey.indexOf(key) !== -1) {
+        return LOCAL_PRODUCT_IMAGES[localKey];
+      }
+    }
+    return '';
+  }
+
+  function normalizeProductImageCode(value) {
+    return String(value || '').trim().toUpperCase().replace(/[^A-Z0-9]+/g, '');
+  }
+
+  function splitProductImageCodes(value) {
+    return String(value || '').split(/[,;|\n\r]+/).map(normalizeProductImageCode).filter(Boolean);
+  }
+
+  function findMappedProductImageById(value, byId) {
+    var id = String(value || '').trim();
+    return id && byId && byId[id] ? byId[id] : '';
+  }
+
+  function findMappedProductImageByCode(value, byCode) {
+    if (!byCode) return '';
+    var codes = splitProductImageCodes(value);
+    for (var i = 0; i < codes.length; i++) {
+      if (byCode[codes[i]]) return byCode[codes[i]];
+    }
+    return '';
+  }
+
+  function findMappedProductImage(row) {
+    var map = window.DT_PRODUCT_IMAGE_MAP || {};
+    var byId = Object.assign({}, map.ids || {}, map.byId || {});
+    var byCode = Object.assign({}, map.codes || {}, map.byCode || {});
+    var idFields = [
+      row && row.id_productos,
+      row && row.id_viejo,
+      row && row.accessId,
+      row && row.productId,
+      row && row.id
+    ];
+    var codeFields = [
+      row && row.codigo,
+      row && row.code,
+      row && row.model,
+      row && row.sku
+    ];
+
+    for (var i = 0; i < idFields.length; i++) {
+      var byIdMatch = findMappedProductImageById(idFields[i], byId);
+      if (byIdMatch) return byIdMatch;
+    }
+
+    for (var j = 0; j < codeFields.length; j++) {
+      var byCodeMatch = findMappedProductImageByCode(codeFields[j], byCode);
+      if (byCodeMatch) return byCodeMatch;
+    }
+
+    return '';
+  }
+
+  function resolveProductImage(row) {
+    var mappedImage = findMappedProductImage(row);
+    if (mappedImage) return mappedImage;
+    if (row && row.imagen_url) return row.imagen_url;
+    if (row && row.image_url) return row.image_url;
+    if (row && row.invid_imagen_url) return row.invid_imagen_url;
+    for (var i = 1; i < arguments.length; i++) {
+      var found = findLocalProductImage(arguments[i]);
+      if (found) return found;
+    }
+    return '';
+  }
+
+  var ML_IMAGE_CACHE_PREFIX = 'dt-ml-image-';
+  var PUBLIC_CATALOG_CACHE_PREFIX = 'dt-public-catalog-v20260608-local-product-images-';
+  var PUBLIC_CATALOG_CACHE_TTL_MS = Math.max(5, Number(cfg.PUBLIC_CATALOG_CACHE_MINUTES || 30)) * 60 * 1000;
+  var mlImageRequests = {};
+
+  function safeLocalStorageGet(key) {
+    try {
+      return window.localStorage ? window.localStorage.getItem(key) : '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function safeLocalStorageSet(key, value) {
+    try {
+      if (window.localStorage) window.localStorage.setItem(key, value);
+    } catch (error) {
+      // El cache es opcional; si el navegador lo bloquea seguimos igual.
+    }
+  }
+
+  function safeLocalStorageRemove(key) {
+    try {
+      if (window.localStorage) window.localStorage.removeItem(key);
+    } catch (error) {
+      // Sin localStorage, simplemente no cacheamos.
+    }
+  }
+
+  function publicCatalogCacheKey(key) {
+    return PUBLIC_CATALOG_CACHE_PREFIX + key;
+  }
+
+  function readPublicCatalogCache(key) {
+    var raw = safeLocalStorageGet(publicCatalogCacheKey(key));
+    if (!raw) return { hit: false, value: null };
+
+    try {
+      var cached = JSON.parse(raw);
+      if (!cached || cached.expiresAt < Date.now()) {
+        safeLocalStorageRemove(publicCatalogCacheKey(key));
+        return { hit: false, value: null };
+      }
+      return { hit: true, value: cached.value };
+    } catch (error) {
+      safeLocalStorageRemove(publicCatalogCacheKey(key));
+      return { hit: false, value: null };
+    }
+  }
+
+  function writePublicCatalogCache(key, value) {
+    safeLocalStorageSet(publicCatalogCacheKey(key), JSON.stringify({
+      expiresAt: Date.now() + PUBLIC_CATALOG_CACHE_TTL_MS,
+      value: value
+    }));
+  }
+
+  async function withPublicCatalogCache(key, loader) {
+    var cached = readPublicCatalogCache(key);
+    if (cached.hit) return cached.value;
+
+    var value = await loader();
+    if (!Array.isArray(value) || value.length > 0) {
+      writePublicCatalogCache(key, value);
+    }
+    return value;
+  }
+
+  function productLookupCode(product) {
+    return String((product && (product.codigo || product.code || product.model || product.sku || product.ref)) || '').trim();
+  }
+
+  function productLookupName(product) {
+    return String((product && (product.name || product.nombre || product.producto || product.description)) || '').trim();
+  }
+
+  function productLookupKey(product) {
+    var id = String((product && (product.accessId || product.id_productos || product.productId)) || '').trim();
+    var code = normalizeProductImageCode(productLookupCode(product));
+    return id || code || normalizeImageKey(productLookupName(product));
+  }
+
+  function firstMercadoLibreImage(result) {
+    var pictures = (result && result.pictures) || [];
+    for (var i = 0; i < pictures.length; i++) {
+      if (/mlstatic\.com/i.test(pictures[i] || '')) return pictures[i];
+    }
+    var thumb = (result && (result.thumbnail || result.secure_thumbnail)) || '';
+    return /mlstatic\.com/i.test(thumb) ? thumb : '';
+  }
+
+  async function findMercadoLibreImage(product) {
+    if (!product || product.image) return (product && product.image) || '';
+    var code = productLookupCode(product);
+    if (!code) return '';
+
+    var key = productLookupKey(product);
+    if (!key) return '';
+
+    var cacheKey = ML_IMAGE_CACHE_PREFIX + key;
+    var cached = safeLocalStorageGet(cacheKey);
+    if (cached) return cached;
+
+    if (mlImageRequests[key]) return mlImageRequests[key];
+
+    mlImageRequests[key] = (async function() {
+      try {
+        var params = new URLSearchParams();
+        params.set('codigo', code);
+        params.set('limit', '1');
+        var name = productLookupName(product);
+        if (name) params.set('name', name);
+
+        var response = await fetch('api/ml-search.php?' + params.toString(), { cache: 'no-store' });
+        if (!response.ok) return '';
+        var data = await response.json();
+        if (!data || !data.ok || !data.results || !data.results.length) return '';
+
+        var image = firstMercadoLibreImage(data.results[0]);
+        if (image) safeLocalStorageSet(cacheKey, image);
+        return image;
+      } catch (error) {
+        return '';
+      } finally {
+        delete mlImageRequests[key];
+      }
+    }());
+
+    return mlImageRequests[key];
+  }
+
   function formatCurrency(currency) {
     return currency || cfg.CURRENCY || 'ARS';
   }
@@ -531,6 +810,38 @@
     return Number.isFinite(amount) ? amount : 0;
   }
 
+  function normalizeInvidStockValue(stock, status) {
+    var text = normalizeCatalogText(status || '');
+    if (text) {
+      if (text.indexOf('sin stock') !== -1 || text.indexOf('agot') !== -1) return 0;
+      if (text.indexOf('bajo stock') !== -1) return 2;
+      if (text.indexOf('stock ok') !== -1 || text.indexOf('dispon') !== -1 || text.indexOf('stock') !== -1) return 10;
+    }
+
+    var numeric = stock !== null && stock !== undefined && stock !== '' ? Number(stock) : null;
+    if (Number.isFinite(numeric)) {
+      if (numeric <= 0) return 0;
+      return numeric === 1 ? 10 : numeric;
+    }
+    return 0;
+  }
+
+  function getInvidSalePrice(price, currency) {
+    var amount = Number(price || 0);
+    if (!Number.isFinite(amount) || amount <= 0) return 0;
+
+    var sourceCurrency = String(currency || 'USD').toUpperCase();
+    if (sourceCurrency !== 'USD') return amount;
+
+    var usdRate = Number(cfg.INVID_USD_RATE || 0);
+    if (!Number.isFinite(usdRate) || usdRate <= 0) return 0;
+
+    var markup = Number(cfg.INVID_MARKUP_RATE || 0);
+    if (!Number.isFinite(markup) || markup < 0) markup = 0;
+
+    return Math.round(amount * usdRate * (1 + markup));
+  }
+
   function formatStoreMoney(value) {
     var amount = Number(value || 0);
     var hasCents = Math.abs(amount - Math.round(amount)) > 0.009;
@@ -858,14 +1169,21 @@
       category: row.categoria_slug || '',
       icon: 'inventory_2',
       subtitle: row.descripcion || row.codigo || row.categoria || 'Consultar',
-      badge: stock === 0 ? 'Sin stock' : '',
-      image: row.imagen_url || '',
+      badge: stock === 0 ? 'Consultar' : '',
+      image: resolveProductImage(row, row.codigo, row.nombre, row.descripcion),
       source: 'supabase',
       sourceLabel: row.categoria || 'Catalogo',
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent(row.categoria_slug || ''),
       slug: row.slug,
+      accessId: row.id_viejo || null,
+      codigo: row.codigo || '',
+      code: row.codigo || '',
       description: row.descripcion || '',
       stock: stock,
+      availabilityLabel: 'En local',
+      deliveryLabel: 'En local',
+      fulfillment: 'local',
+      simpleDetail: true,
       byOrder: byOrder,
       producto_sinstock: byOrder
     };
@@ -877,22 +1195,24 @@
 
     var categorySlugs = slugs.filter(Boolean).filter(function(slug, index, arr) {
       return arr.indexOf(slug) === index;
-    });
+    }).sort();
     if (!categorySlugs.length) return [];
 
-    var result = await sb
-      .from('productos')
-      .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo,producto_sinstock')
-      .eq('activo', true)
-      .in('categoria_slug', categorySlugs)
-      .order('nombre', { ascending: true });
+    return withPublicCatalogCache('products-slugs-' + categorySlugs.join('|'), async function() {
+      var result = await sb
+        .from('productos')
+        .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo,producto_sinstock')
+        .eq('activo', true)
+        .in('categoria_slug', categorySlugs)
+        .order('nombre', { ascending: true });
 
-    if (result.error) {
-      console.warn('Supabase productos error:', result.error.message);
-      return [];
-    }
+      if (result.error) {
+        console.warn('Supabase productos error:', result.error.message);
+        return [];
+      }
 
-    return filterVisibleCatalogRows(result.data).map(mapProduct);
+      return filterVisibleCatalogRows(result.data).map(mapProduct);
+    });
   }
 
   function normalizeCatalogText(value) {
@@ -928,6 +1248,8 @@
     'Nota de credito',
     'Sena Dolares',
     'Joystick ps3 Sony no originales',
+    'Juegos Xbox one original',
+    'Juegos Digitales Ps3 Ps4 Ps5',
     '701179990048',
     'Seña Dolares'
   ].map(compactCatalogText);
@@ -969,6 +1291,10 @@
     if (text.indexOf('juegos originales') !== -1 || text.indexOf('juegos fisicos') !== -1 || text.indexOf('juegos ps') !== -1 || text.indexOf('juegos xbox') !== -1 || text.indexOf('juegos nintendo') !== -1) return 'stadia_controller';
     if (text.indexOf('auricular') !== -1 || text.indexOf('headset') !== -1) return 'headset_mic';
     if (text.indexOf('parlante') !== -1) return 'speaker';
+    if (text.indexOf('placa de video') !== -1 || text.indexOf('geforce') !== -1 || text.indexOf('radeon') !== -1 || text.indexOf('gpu') !== -1) return 'developer_board';
+    if (text.indexOf('fuente') !== -1) return 'bolt';
+    if (text.indexOf('gabinete') !== -1 || text.indexOf('pc armada') !== -1 || text.indexOf('mini pc') !== -1) return 'desktop_windows';
+    if (text.indexOf('cooler') !== -1 || text.indexOf('refrigeracion') !== -1 || text.indexOf('fan') !== -1) return 'ac_unit';
     if (text.indexOf('ram') !== -1 || text.indexOf('procesador') !== -1 || text.indexOf('mother') !== -1) return 'memory';
     if (text.indexOf('memoria') !== -1 || text.indexOf('disco') !== -1 || text.indexOf('carry') !== -1 || text.indexOf('disck') !== -1 || text.indexOf('disk') !== -1 || text.indexOf('pendrive') !== -1) return 'storage';
     if (text.indexOf('cable') !== -1) return 'cable';
@@ -995,17 +1321,19 @@
   function accessCategoryPriority(category) {
     return priorityFromList(category, [
       'Consolas de juegos',
-      'Accesorios Consolas',
       'Juegos Fisicos',
+      'Accesorios Consolas',
+      'PC y Componentes',
       'Hardware',
       'Perifericos PC',
+      'Almacenamiento',
       'Memorias',
       'Auriculares',
+      'Parlantes',
       'Cables',
       'Adaptadores',
       'Accesorio Celular',
       'Silla Gamer',
-      'Parlantes',
       'Otros'
     ]);
   }
@@ -1053,30 +1381,50 @@
         'Juegos Xbox One',
         'Juegos Nintendo'
       ];
-    } else if (cat.indexOf('hardware') !== -1) {
+    } else if (cat.indexOf('hardware') !== -1 || cat.indexOf('pc y componentes') !== -1) {
       order = [
+        'Procesadores',
         'Procesador',
+        'Microprocesadores',
+        'Placas Madre',
         'Placa Madre',
+        'Mothers',
+        'Memorias RAM',
+        'Memorias',
+        'Placas de Video',
+        'Placa de Video',
+        'SSD / M.2',
         'Disco SSD',
+        'Disco SSD M2',
+        'Discos HDD',
         'Disco Rigido',
         'Carry Disco 2.55',
         'Carry Disco 3.55',
         'Fuentes',
         'Gabinetes',
-        'Red',
+        'Refrigeracion / Coolers',
+        'Coolers',
         'Pasta Termica',
+        'Monitores',
+        'Monitor',
+        'PCs Armadas / Mini PC',
+        'Red',
         'Otros'
       ];
     } else if (cat.indexOf('perifericos pc') !== -1) {
       order = [
         'Combos Perifericos',
+        'Monitores',
         'Monitor',
         'Teclados',
         'Mouse',
+        'Mouse Pads',
         'PadMouse',
         'Joystick PC',
         'Microfono'
       ];
+    } else if (cat.indexOf('almacenamiento') !== -1) {
+      order = ['SSD / M.2', 'Disco SSD', 'Discos HDD', 'Disco Rigido', 'Pendrive', 'Memoria Flash', 'MicroSD / SD'];
     } else if (cat.indexOf('memorias') !== -1) {
       order = ['Pendrive', 'Memoria Flash'];
     } else if (cat.indexOf('auriculares') !== -1) {
@@ -1191,7 +1539,18 @@
 
   function isPcStorageSubcategory(subcategory) {
     var text = normalizeCatalogText(subcategory);
-    return text === 'disco ssd' || text === 'disco rigido' || text === 'carry disco 2.55' || text === 'carry disco 3.55';
+    return [
+      'disco ssd',
+      'ssd',
+      'disco rigido',
+      'discos hdd',
+      'carry disco 2.55',
+      'carry disco 3.55',
+      'pendrive',
+      'memoria flash',
+      'microsd',
+      'micro sd'
+    ].indexOf(text) !== -1;
   }
 
   function isPcPeripheralSubcategory(subcategory) {
@@ -1212,9 +1571,21 @@
     var text = normalizeCatalogText(subcategory);
     return [
       'procesador',
+      'procesadores',
+      'microprocesadores',
       'placa madre',
+      'placas madre',
+      'mothers',
+      'memorias',
+      'memoria ram',
+      'memorias ram',
+      'ram',
+      'placa de video',
+      'placas de video',
       'fuentes',
       'gabinetes',
+      'refrigeracion',
+      'coolers',
       'pasta termica'
     ].indexOf(text) !== -1;
   }
@@ -1227,6 +1598,25 @@
     if (categoryText === 'accesorio pc' && subcategoryText === 'combos pc') {
       return 'Combos Perifericos';
     }
+
+    var aliases = {
+      'procesador': 'Procesadores',
+      'microprocesadores': 'Procesadores',
+      'placa madre': 'Placas Madre',
+      'mothers': 'Placas Madre',
+      'memorias': 'Memorias RAM',
+      'memoria ram': 'Memorias RAM',
+      'placa de video': 'Placas de Video',
+      'placas de video': 'Placas de Video',
+      'disco ssd': 'SSD / M.2',
+      'ssd': 'SSD / M.2',
+      'disco rigido': 'Discos HDD',
+      'discos hdd': 'Discos HDD',
+      'monitor': 'Monitores',
+      'padmouse': 'Mouse Pads',
+      'microfono': 'Microfonos'
+    };
+    if (aliases[subcategoryText]) return aliases[subcategoryText];
 
     return subcategory;
   }
@@ -1241,15 +1631,23 @@
     }
 
     if (categoryText === 'memorias' && isPcStorageSubcategory(subcategory)) {
-      return 'Hardware';
+      return 'Almacenamiento';
+    }
+
+    if (categoryText === 'memorias') {
+      return 'Almacenamiento';
     }
 
     if (categoryText === 'carry disck' || categoryText === 'carry disk') {
-      return 'Hardware';
+      return 'Almacenamiento';
+    }
+
+    if (categoryText === 'hardware' || categoryText === 'hadware') {
+      return 'PC y Componentes';
     }
 
     if (categoryText === 'accesorio pc' && isPcHardwareSubcategory(subcategory)) {
-      return 'Hardware';
+      return 'PC y Componentes';
     }
 
     if (categoryText === 'accesorio pc' && isPcPeripheralSubcategory(subcategory)) {
@@ -1257,7 +1655,7 @@
     }
 
     if (categoryText === 'accesorio pc') {
-      return 'Hardware';
+      return 'PC y Componentes';
     }
 
     return category;
@@ -1304,7 +1702,7 @@
       icon: accessIconForText(category, subcategory, name),
       subtitle: subtitle,
       badge: '',
-      image: row.imagen_url || '',
+      image: resolveProductImage(row, code, name, row.producto, row.descripcion),
       source: 'access',
       sourceLabel: subcategory,
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent('subcat-' + (row.id_subcategoria2 || '')),
@@ -1315,8 +1713,59 @@
       stock: row.totalproductos !== null && row.totalproductos !== undefined ? parseMoney(row.totalproductos) : null,
       brand: row.marca || '',
       model: code || subcategory,
+      sourceIntegration: row.invid_id ? 'invid' : '',
+      supplierId: row.invid_id || '',
+      supplierName: row.invid_titulo || '',
+      supplierImage: row.invid_imagen_url || '',
+      supplierStockStatus: row.invid_stock_status || '',
+      availabilityLabel: row.invid_id ? '48 hs de demora' : 'En local',
+      deliveryLabel: row.invid_id ? '48 hs de demora' : 'En local',
+      fulfillment: row.invid_id ? 'provider' : 'local',
+      simpleDetail: true,
       byOrder: byOrder,
       producto_sinstock: byOrder
+    };
+  }
+
+  function mapInvidProduct(row) {
+    var id = String(row.id_productos || '').trim();
+    var sourceCurrency = formatCurrency(row.moneda || 'USD');
+    var supplierPrice = parseMoney(row.precio_de_venta);
+    var stock = normalizeInvidStockValue(row.totalproductos, row.stock_status || row.invid_stock_status);
+    return {
+      id: 'invid-' + id,
+      accessId: '',
+      productId: id,
+      name: row.producto || ('Invid #' + id),
+      price: getInvidSalePrice(supplierPrice, sourceCurrency),
+      currency: 'ARS',
+      category: 'hardware',
+      rootCategory: 'hardware',
+      subcategoryId: '',
+      icon: accessIconForText(row.categoria || 'Hardware', row.subcategoria || '', row.producto || ''),
+      subtitle: row.marca || row.subcategoria || 'Invid PC',
+      badge: '',
+      image: resolveProductImage(row, row.codigo, row.producto, row.descripcion),
+      source: 'invid',
+      sourceIntegration: 'invid',
+      sourceLabel: row.subcategoria || 'Invid PC',
+      sourceFile: 'catalogo.html?sub=' + encodeURIComponent('invid-cat-' + catalogSlug(row.subcategoria || 'invid-pc')),
+      slug: 'invid-' + id,
+      codigo: row.codigo || id,
+      code: row.codigo || id,
+      description: row.descripcion || row.subcategoria || '',
+      stock: stock,
+      brand: row.marca || '',
+      model: row.codigo || id,
+      supplierPrice: supplierPrice,
+      supplierCurrency: sourceCurrency,
+      supplierStockStatus: row.stock_status || row.invid_stock_status || '',
+      availabilityLabel: '48 hs de demora',
+      deliveryLabel: '48 hs de demora',
+      fulfillment: 'provider',
+      simpleDetail: true,
+      byOrder: false,
+      producto_sinstock: false
     };
   }
 
@@ -1324,101 +1773,190 @@
     var sb = getClient();
     if (!sb) return [];
 
-    var result = await sb.rpc('catalogo_categorias_access');
-    if (result.error) {
-      console.warn('Supabase catalogo categorias error:', result.error.message);
-      return [];
-    }
+    return withPublicCatalogCache('access-tree', async function() {
+      var result = await sb.rpc('catalogo_categorias_access');
+      if (result.error) {
+        console.warn('Supabase catalogo categorias error:', result.error.message);
+        return [];
+      }
 
-    var byCategory = {};
-    (result.data || []).forEach(function(row) {
-      var categoryId = String(row.id_categoria || '').trim();
-      var subcategoryId = String(row.id_subcategoria2 || '').trim();
-      if (!categoryId || !subcategoryId) return;
+      var byCategory = {};
+      (result.data || []).forEach(function(row) {
+        var categoryId = String(row.id_categoria || '').trim();
+        var subcategoryId = String(row.id_subcategoria2 || '').trim();
+        if (!categoryId || !subcategoryId) return;
 
-      var displayCategory = accessDisplayCategoryForRow(row);
-      var displaySubcategory = accessDisplaySubcategoryForRow(row);
-      var rootId = 'cat-' + catalogSlug(displayCategory);
-      if (!byCategory[rootId]) {
-        byCategory[rootId] = {
-          id: rootId,
-          accessCategoryId: null,
-          accessCategoryIds: [],
-          name: displayCategory,
-          category: accessGroupForCategory(displayCategory),
-          icon: accessIconForText(displayCategory, '', ''),
-          subtitle: '',
+        var displayCategory = accessDisplayCategoryForRow(row);
+        var displaySubcategory = accessDisplaySubcategoryForRow(row);
+        var rootId = 'cat-' + catalogSlug(displayCategory);
+        if (!byCategory[rootId]) {
+          byCategory[rootId] = {
+            id: rootId,
+            accessCategoryId: null,
+            accessCategoryIds: [],
+            name: displayCategory,
+            category: accessGroupForCategory(displayCategory),
+            icon: accessIconForText(displayCategory, '', ''),
+            subtitle: '',
+            image: '',
+            productCount: 0,
+            useChildrenForProducts: false,
+            children: []
+          };
+        }
+
+        var count = Number(row.product_count || 0);
+        if (byCategory[rootId].accessCategoryIds.indexOf(categoryId) === -1) {
+          byCategory[rootId].accessCategoryIds.push(categoryId);
+        }
+        byCategory[rootId].productCount += count;
+        byCategory[rootId].children.push({
+          id: 'subcat-' + subcategoryId,
+          accessSubcategoryId: subcategoryId,
+          name: displaySubcategory,
+          category: byCategory[rootId].category,
+          icon: accessIconForText(displayCategory, displaySubcategory, ''),
+          subtitle: count === 1 ? '1 producto' : count + ' productos',
           image: '',
-          productCount: 0,
-          useChildrenForProducts: true,
-          children: []
-        };
-      }
-
-      var count = Number(row.product_count || 0);
-      if (byCategory[rootId].accessCategoryIds.indexOf(categoryId) === -1) {
-        byCategory[rootId].accessCategoryIds.push(categoryId);
-      }
-      byCategory[rootId].productCount += count;
-      byCategory[rootId].children.push({
-        id: 'subcat-' + subcategoryId,
-        accessSubcategoryId: subcategoryId,
-        name: displaySubcategory,
-        category: byCategory[rootId].category,
-        icon: accessIconForText(displayCategory, displaySubcategory, ''),
-        subtitle: count === 1 ? '1 producto' : count + ' productos',
-        image: '',
-        productCount: count,
-        children: null
+          productCount: count,
+          children: null
+        });
       });
-    });
 
-    return ensurePhysicalGamesCategory(Object.values(byCategory).map(function(item) {
-      item.children.sort(function(a, b) { return compareSubcategoryItems(item.name, a, b); });
-      item.subtitle = item.productCount + ' productos en ' + item.children.length + ' subcategorias';
-      return item;
-    }).sort(compareCatalogItems));
+      return ensurePhysicalGamesCategory(Object.values(byCategory).map(function(item) {
+        item.children.sort(function(a, b) { return compareSubcategoryItems(item.name, a, b); });
+        item.subtitle = item.productCount + ' productos en ' + item.children.length + ' subcategorias';
+        return item;
+      }).sort(compareCatalogItems));
+    });
   }
 
   async function fetchAccessProductsBySubcategory(subcategoryId) {
     var sb = getClient();
     if (!sb || !subcategoryId) return [];
 
-    var result = await sb.rpc('catalogo_productos_access', { subcategoria_id: String(subcategoryId) });
-    if (result.error) {
-      console.warn('Supabase catalogo productos error:', result.error.message);
-      return [];
-    }
+    return withPublicCatalogCache('access-subcategory-' + String(subcategoryId), async function() {
+      var result = await sb.rpc('catalogo_productos_access', { subcategoria_id: String(subcategoryId) });
+      if (result.error) {
+        console.warn('Supabase catalogo productos error:', result.error.message);
+        return [];
+      }
 
-    return filterVisibleCatalogRows(result.data).map(mapAccessProduct);
+      return filterVisibleCatalogRows(result.data).map(mapAccessProduct);
+    });
   }
 
   async function fetchAccessProductsByCategory(categoryId) {
     var sb = getClient();
     if (!sb || !categoryId) return [];
 
-    var result = await sb.rpc('catalogo_productos_categoria_access', { categoria_id: String(categoryId) });
-    if (result.error) {
-      console.warn('Supabase catalogo categoria productos error:', result.error.message);
-      return [];
-    }
+    return withPublicCatalogCache('access-category-' + String(categoryId), async function() {
+      var result = await sb.rpc('catalogo_productos_categoria_access', { categoria_id: String(categoryId) });
+      if (result.error) {
+        console.warn('Supabase catalogo categoria productos error:', result.error.message);
+        return [];
+      }
 
-    return filterVisibleCatalogRows(result.data).map(mapAccessProduct);
+      return filterVisibleCatalogRows(result.data).map(mapAccessProduct);
+    });
+  }
+
+  async function fetchInvidPcCatalogTree() {
+    var sb = getClient();
+    if (!sb) return [];
+
+    return withPublicCatalogCache('invid-pc-tree-all', async function() {
+      var result = await sb.rpc('catalogo_invid_pc_categorias', { limite_por_categoria: 0 });
+      if (result.error) {
+        console.warn('Supabase catalogo Invid PC error:', result.error.message);
+        return [];
+      }
+
+      var rows = result.data || [];
+      if (!rows.length) return [];
+      var total = rows.reduce(function(sum, row) {
+        return sum + Number(row.product_count || 0);
+      }, 0);
+
+      return [{
+        id: 'invid-pc',
+        name: 'Invid PC',
+        category: 'hardware',
+        icon: 'memory',
+        subtitle: total + ' productos en ' + rows.length + ' categorias',
+        image: 'img/hadware.jpg',
+        productCount: total,
+        useChildrenForProducts: false,
+        children: rows.map(function(row) {
+          return {
+            id: row.id,
+            invidCategoryName: row.nombre,
+            name: row.nombre,
+            category: 'hardware',
+            icon: accessIconForText('Hardware', row.nombre, ''),
+            subtitle: Number(row.product_count || 0) + ' productos',
+            image: row.image_url || '',
+            productCount: Number(row.product_count || 0),
+            children: null
+          };
+        }).sort(compareCatalogItems)
+      }];
+    });
+  }
+
+  async function fetchInvidPcProductsByCategory(categoryName) {
+    var sb = getClient();
+    if (!sb || !categoryName) return [];
+
+    return withPublicCatalogCache('invid-pc-category-' + catalogSlug(categoryName) + '-all-stock', async function() {
+      var result = await sb.rpc('catalogo_invid_pc_productos', {
+        categoria_nombre: String(categoryName),
+        limite_por_categoria: 0
+      });
+      if (result.error) {
+        console.warn('Supabase productos Invid PC error:', result.error.message);
+        return [];
+      }
+
+      return (result.data || [])
+        .map(mapInvidProduct)
+        .filter(function(product) {
+          return Number(product.stock || 0) > 0 && Number(product.price || 0) > 0;
+        });
+    });
+  }
+
+  async function fetchInvidProductById(productId) {
+    var sb = getClient();
+    if (!sb || !productId) return null;
+
+    return withPublicCatalogCache('invid-product-' + String(productId), async function() {
+      var result = await sb.rpc('catalogo_invid_producto', { invid_id: String(productId) });
+      if (result.error) {
+        console.warn('Supabase producto Invid error:', result.error.message);
+        return null;
+      }
+
+      var row = Array.isArray(result.data) ? result.data[0] : result.data;
+      return row ? mapInvidProduct(row) : null;
+    });
   }
 
   async function fetchAccessProductById(productId) {
     var sb = getClient();
     if (!sb || !productId) return null;
 
-    var result = await sb.rpc('catalogo_producto_access', { producto_id: String(productId) });
-    if (result.error) {
-      console.warn('Supabase catalogo producto error:', result.error.message);
-      return null;
-    }
+    return withPublicCatalogCache('access-product-' + String(productId), async function() {
+      var result = await sb.rpc('catalogo_producto_access', { producto_id: String(productId) });
+      if (result.error) {
+        console.warn('Supabase catalogo producto error:', result.error.message);
+        return null;
+      }
 
-    var row = Array.isArray(result.data) ? result.data[0] : result.data;
-    if (isHiddenCatalogProductRow(row)) return null;
-    return row ? mapAccessProduct(row) : null;
+      var row = Array.isArray(result.data) ? result.data[0] : result.data;
+      if (isHiddenCatalogProductRow(row)) return null;
+      return row ? mapAccessProduct(row) : null;
+    });
   }
 
   async function fetchProductBySlug(slug) {
@@ -1428,19 +1966,24 @@
     var accessMatch = String(slug).match(/^access-(.+)$/);
     if (accessMatch) return fetchAccessProductById(accessMatch[1]);
 
-    var result = await sb
-      .from('productos')
-      .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo,producto_sinstock')
-      .eq('activo', true)
-      .eq('slug', slug)
-      .maybeSingle();
+    var invidMatch = String(slug).match(/^invid-(.+)$/);
+    if (invidMatch) return fetchInvidProductById(invidMatch[1]);
 
-    if (result.error) {
-      console.warn('Supabase producto error:', result.error.message);
-      return null;
-    }
-    if (isHiddenCatalogProductRow(result.data)) return null;
-    return result.data ? mapProduct(result.data) : null;
+    return withPublicCatalogCache('product-slug-' + String(slug), async function() {
+      var result = await sb
+        .from('productos')
+        .select('id,id_viejo,nombre,slug,codigo,descripcion,imagen_url,categoria,categoria_slug,precio_venta,moneda,stock,activo,producto_sinstock')
+        .eq('activo', true)
+        .eq('slug', slug)
+        .maybeSingle();
+
+      if (result.error) {
+        console.warn('Supabase producto error:', result.error.message);
+        return null;
+      }
+      if (isHiddenCatalogProductRow(result.data)) return null;
+      return result.data ? mapProduct(result.data) : null;
+    });
   }
 
   function parseCartProductId(item) {
@@ -1692,7 +2235,11 @@
     fetchAccessProductsByCategory: fetchAccessProductsByCategory,
     fetchAccessProductsBySubcategory: fetchAccessProductsBySubcategory,
     fetchAccessProductById: fetchAccessProductById,
+    fetchInvidPcCatalogTree: fetchInvidPcCatalogTree,
+    fetchInvidPcProductsByCategory: fetchInvidPcProductsByCategory,
+    fetchInvidProductById: fetchInvidProductById,
     fetchProductBySlug: fetchProductBySlug,
+    findMercadoLibreImage: findMercadoLibreImage,
     getAccessToken: getAccessToken,
     createWebOrder: createWebOrder,
     deletePendingWebOrder: deletePendingWebOrder

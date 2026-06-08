@@ -19,6 +19,8 @@ function getCartItemStock(item) {
   return normalizeCartStock(value);
 }
 
+var LOW_STOCK_LIMIT = 3;
+
 function normalizeProductRuleText(value) {
   return String(value || '')
     .normalize('NFD')
@@ -66,9 +68,26 @@ function isByOrderProduct(item) {
   return explicitFlag === true;
 }
 
+function getProductStockState(item) {
+  var stock = getCartItemStock(item);
+  if (isByOrderProduct(item)) return { status: 'by-order', label: 'A pedido', stock: stock };
+  if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
+  if (stock <= 0) return { status: 'out', label: 'Consultar', stock: stock };
+  if (stock <= LOW_STOCK_LIMIT) return { status: 'low', label: 'Stock bajo', stock: stock };
+  return { status: 'available', label: 'Stock disponible', stock: stock };
+}
+
+function isOutOfStockProduct(item) {
+  return getProductStockState(item).status === 'out';
+}
+
 window.DimensionTresProductRules = window.DimensionTresProductRules || {};
 window.DimensionTresProductRules.isByOrderProduct = isByOrderProduct;
+window.DimensionTresProductRules.getStockState = getProductStockState;
+window.DimensionTresProductRules.isOutOfStockProduct = isOutOfStockProduct;
 window.isByOrderProduct = isByOrderProduct;
+window.getProductStockState = getProductStockState;
+window.isOutOfStockProduct = isOutOfStockProduct;
 
 function mergeCartItemData(target, source) {
   if (!target || !source) return;
@@ -94,6 +113,10 @@ const CartStore = (() => {
       const ex = items.find(i => i.id === item.id);
       const stock = getCartItemStock(item);
       const currentQty = Number((ex && ex.qty) || 0);
+
+      if (stock !== null && stock <= 0) {
+        return { ok: false, reason: 'sin-stock', available: 0, current: currentQty, item: ex || item };
+      }
 
       if (stock !== null && stock > 0 && currentQty + amount > stock) {
         return { ok: false, reason: 'stock', available: stock, current: currentQty, item: ex || item };
@@ -128,6 +151,10 @@ const CartStore = (() => {
         return { ok: false, reason: 'pedido', item: i };
       }
 
+      if (d > 0 && stock !== null && stock <= 0) {
+        return { ok: false, reason: 'sin-stock', available: 0, current: currentQty, item: i };
+      }
+
       if (d > 0 && stock !== null && stock > 0 && nextQty > stock) {
         return { ok: false, reason: 'stock', available: stock, current: currentQty, item: i };
       }
@@ -155,10 +182,10 @@ const CartStore = (() => {
     getSubtotal()  { return get().reduce((a, i) => a + i.price * i.qty, 0); },
     getItemStock: getCartItemStock,
     getStockLabel(item) {
-      if (isByOrderProduct(item)) return 'A pedido';
-      var stock = getCartItemStock(item);
-      return stock !== null && stock > 0 ? 'Stock ' + stock : 'Consultar';
+      return getProductStockState(item).label;
     },
+    getStockState: getProductStockState,
+    isOutOfStockProduct: isOutOfStockProduct,
     isByOrderProduct: isByOrderProduct
   };
 })();
@@ -282,6 +309,10 @@ function cartByOrderToast(name) {
   cartToastMessage((name ? name + ': ' : '') + 'Producto a pedido. Consultanos por WhatsApp para reservarlo.', 'error');
 }
 
+function cartOutOfStockToast(name) {
+  cartToastMessage((name ? name + ': ' : '') + 'Consultanos por WhatsApp para confirmar disponibilidad.', 'error');
+}
+
 /**
  * addToCart — wrapper llamado desde los sub-catálogos.
  * Firma: addToCart(name, price, img, event)
@@ -311,6 +342,10 @@ function addToCart(name, price, img, event) {
       cartByOrderToast(product.name);
       return;
     }
+    if (!result.ok && result.reason === 'sin-stock') {
+      cartOutOfStockToast(product.name);
+      return;
+    }
     if (!result.ok && result.reason === 'stock') {
       cartStockToast(product.name, result.available);
       return;
@@ -328,6 +363,11 @@ function addToCartUI(btn, product) {
   if (!result.ok && result.reason === 'pedido') {
     btn.disabled = false;
     cartByOrderToast(product.name);
+    return;
+  }
+  if (!result.ok && result.reason === 'sin-stock') {
+    btn.disabled = false;
+    cartOutOfStockToast(product.name);
     return;
   }
   if (!result.ok && result.reason === 'stock') {

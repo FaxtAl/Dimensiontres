@@ -22,6 +22,15 @@ var CONFIG = {
   // API (futuro)
   API_BASE_URL: 'http://localhost:3000',
 
+  // Ahorro Supabase: reduce llamadas publicas para no pasar el egress del plan gratis.
+  LOW_EGRESS_MODE: true,
+  PUBLIC_CATALOG_CACHE_MINUTES: 30,
+
+  // Invid: precios del proveedor en USD -> venta web en ARS.
+  // Cambiar INVID_USD_RATE cuando actualicen la cotizacion interna.
+  INVID_USD_RATE: 1300,
+  INVID_MARKUP_RATE: 0.30,
+
   // Supabase (clave publica para navegador)
   SUPABASE_URL: 'https://gzqepncnbwbbocvbetdw.supabase.co',
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_AR03x41l3cgySLgShkWEuA_rsHKgIXV',

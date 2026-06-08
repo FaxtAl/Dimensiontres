@@ -617,6 +617,32 @@ async function createSavedOrder(method, notes) {
   return { saved: saved, totals: totals, items: items };
 }
 
+async function notifyStoreOrder(saved, eventType) {
+  if (!saved || saved.reused || !saved.order || !saved.order.id) return;
+  if (!window.SupabaseStore || !window.SupabaseStore.getAccessToken) return;
+
+  try {
+    var token = await window.SupabaseStore.getAccessToken();
+    if (!token) return;
+
+    await fetch('api/whatsapp-order-notify.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        'X-Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        order_id: saved.order.id,
+        event: eventType || 'created',
+        access_token: token
+      })
+    });
+  } catch (error) {
+    console.warn('No se pudo avisar el pedido por WhatsApp Cloud API:', error);
+  }
+}
+
 function setCheckoutButtonLoading(button, loadingText) {
   if (!button) return '';
   var originalHtml = button.innerHTML;
@@ -650,6 +676,10 @@ async function checkoutSavedOrder(button, method) {
   if (saved.error) {
     alert(saved.error.message || 'No se pudo guardar el pedido.');
     return;
+  }
+
+  if ((method || 'whatsapp') === 'whatsapp') {
+    notifyStoreOrder(saved, 'created');
   }
 
   var orderRef = saved.order && saved.order.external_reference ? saved.order.external_reference : '';

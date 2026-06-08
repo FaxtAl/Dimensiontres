@@ -192,6 +192,41 @@
     box.classList.add('active');
   }
 
+  function renderCatalogShortcut(input, query) {
+    var box = ensureBox(input);
+    if (!box) return;
+
+    box.innerHTML = '';
+    var item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'global-search-suggestion';
+    item.addEventListener('click', function() {
+      goToCatalog(input);
+    });
+
+    var thumb = document.createElement('span');
+    thumb.className = 'global-search-thumb';
+    thumb.innerHTML = '<span class="material-symbols-outlined">search</span>';
+
+    var copy = document.createElement('span');
+    copy.className = 'global-search-copy';
+
+    var name = document.createElement('span');
+    name.className = 'global-search-name';
+    name.textContent = 'Buscar en catalogo';
+
+    var meta = document.createElement('span');
+    meta.className = 'global-search-meta';
+    meta.textContent = String(query || '').trim();
+
+    copy.appendChild(name);
+    copy.appendChild(meta);
+    item.appendChild(thumb);
+    item.appendChild(copy);
+    box.appendChild(item);
+    box.classList.add('active');
+  }
+
   function goToCatalog(input) {
     var query = String(input.value || '').trim();
     if (!query) return;
@@ -224,6 +259,11 @@
 
       renderLoading(input);
       var timer = setTimeout(async function() {
+        if (!window.CONFIG || window.CONFIG.LOW_EGRESS_MODE !== false) {
+          renderCatalogShortcut(input, query);
+          return;
+        }
+
         var products = await loadProducts();
         renderSuggestions(input, getSuggestions(products, query));
       }, 220);

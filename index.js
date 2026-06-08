@@ -338,6 +338,24 @@ function renderHomePromo(tree) {
   promo.onclick = function() { window.location.href = homeCatalogHref(item); };
 }
 
+function setFeaturedProductImage(media, product, image) {
+  if (!media || !product || !image || media.querySelector('img')) return;
+  product.image = image;
+  var icon = media.querySelector('.feat-icon');
+  if (icon) icon.remove();
+  var img = document.createElement('img');
+  img.className = 'feat-card-img';
+  img.src = image;
+  img.alt = product.name || 'Producto';
+  media.insertBefore(img, media.firstChild);
+}
+
+async function hydrateFeaturedProductImage(product, media) {
+  if (!window.SupabaseStore || !window.SupabaseStore.findMercadoLibreImage) return;
+  var image = await window.SupabaseStore.findMercadoLibreImage(product);
+  setFeaturedProductImage(media, product, image);
+}
+
 function createFeaturedProductCard(product) {
   var card = document.createElement('div');
   card.className = 'featured-card group';
@@ -357,6 +375,7 @@ function createFeaturedProductCard(product) {
     icon.className = 'material-symbols-outlined feat-icon';
     icon.textContent = product.icon || 'inventory_2';
     media.appendChild(icon);
+    hydrateFeaturedProductImage(product, media);
   }
   var line = document.createElement('div');
   line.className = 'feat-bottom-line';
@@ -515,6 +534,7 @@ async function loadHomeCatalogSections() {
     if (!tree || !tree.length) return;
     renderHomeCategories(tree);
     renderHomePromo(tree);
+    if (window.CONFIG && window.CONFIG.LOW_EGRESS_MODE !== false) return;
     var products = await loadHomeFeaturedProducts(tree);
     renderHomeFeaturedProducts(products);
   } catch (err) {

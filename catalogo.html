@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=product-images-20260515">
-<link rel="stylesheet" href="catalogo.css?v=mobile-center-20260528">
+<link rel="stylesheet" href="catalogo.css?v=mobile-filter-panel-20260605">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="tailwind.config.js"></script>
 </head>
@@ -188,8 +188,22 @@
         <button type="button" class="filter-pill mobile-filter-option" data-filter="accesorios" onclick="setFilter('accesorios', this)">Accesorios</button>
       </div>
 
+      <div id="mobile-product-filters" class="mobile-product-filters">
+        <label class="catalog-filter-label" for="mobile-brand-filter-select">Marca</label>
+        <select id="mobile-brand-filter-select" class="mobile-sort-select" onchange="setProductBrandFilter(this.value)">
+          <option value="all">Todas las marcas</option>
+        </select>
+
+        <label class="catalog-filter-label" for="mobile-fulfillment-filter-select">Entrega</label>
+        <select id="mobile-fulfillment-filter-select" class="mobile-sort-select" onchange="setProductFulfillmentFilter(this.value)">
+          <option value="all">Todo</option>
+          <option value="local">En local</option>
+          <option value="provider">48 hs de demora</option>
+        </select>
+      </div>
+
       <label class="catalog-filter-label" for="mobile-sort-select">Ordenar por precio</label>
-      <select id="mobile-sort-select" class="mobile-sort-select" onchange="sortCards(this.value)">
+      <select id="mobile-sort-select" class="mobile-sort-select" data-sort-select onchange="sortCards(this.value)">
         <option value="price-low">Menor precio</option>
         <option value="price-high">Mayor precio</option>
       </select>
@@ -223,6 +237,7 @@
           <div class="flex items-center gap-3">
             <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Precio:</span>
             <select class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
+              data-sort-select
               style="border-radius:6px;"
               onchange="sortCards(this.value)">
               <option value="price-low">Menor precio</option>
@@ -238,8 +253,24 @@
             <span id="back-label">Volver al catalogo</span>
           </div>
           <div id="product-sort-controls" class="product-sort-controls">
+            <div class="product-filter-controls">
+              <label class="product-filter-control">
+                <span>Marca</span>
+                <select id="brand-filter-select" class="custom-select" onchange="setProductBrandFilter(this.value)">
+                  <option value="all">Todas</option>
+                </select>
+              </label>
+              <label class="product-filter-control">
+                <span>Entrega</span>
+                <select id="fulfillment-filter-select" class="custom-select" onchange="setProductFulfillmentFilter(this.value)">
+                  <option value="all">Todo</option>
+                  <option value="local">En local</option>
+                  <option value="provider">48 hs</option>
+                </select>
+              </label>
+            </div>
             <span>Precio</span>
-            <select class="custom-select" onchange="sortCards(this.value)">
+            <select class="custom-select" data-sort-select onchange="sortCards(this.value)">
               <option value="price-low">Menor precio</option>
               <option value="price-high">Mayor precio</option>
             </select>
@@ -277,10 +308,14 @@
 
 <script src="shared.js"></script>
 <script src="nav.js"></script>
-<script src="config.js"></script>
+<script src="config.js?v=invid-ars-20260604"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js?v=pedido-sync-20260528"></script>
-<script src="cart.js?v=pedido-sync-20260528"></script>
+<script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
+<script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
+<script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
+<script src="img/producto-imagenes-local.js?v=local-product-images-20260608"></script>
+<script src="supabase-client.js?v=local-product-images-20260608"></script>
+<script src="cart.js?v=consultar-stock-20260608"></script>
 
 <script>
 /* ══════════════════════════════════════════════════════
@@ -451,6 +486,11 @@ var productSearchCache = {};
 var productSearchTimer = null;
 var searchSuggestionsTimer = null;
 var currentSortOrder = 'price-low';
+var currentProductFilters = {
+  brand: 'all',
+  fulfillment: 'all'
+};
+var currentProductFilterPool = [];
 
 function setProductSortVisible(visible) {
   var sortControls = document.getElementById('product-sort-controls');
@@ -612,11 +652,18 @@ function getExampleProductsForView() {
   return shuffleExamples(products);
 }
 
+function catalogRouteSlug(value) {
+  return normalizeSearchValue(value)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || '';
+}
+
 function findSubcategory(id) {
+  var targetId = String(id || '').trim();
   function walk(items, ancestors) {
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
-      if (item.id === id) {
+      if (item.id === targetId || catalogRouteSlug(item.name) === targetId) {
         return {
           parent: ancestors[ancestors.length - 1] || item,
           child: item,
@@ -638,6 +685,460 @@ function getSupabaseSlugs(found) {
   });
 }
 
+function normalizeInvidName(value) {
+  return normalizeSearchValue(value);
+}
+
+var INVID_MEMORY_NAMES = [
+  'DDR3',
+  'DDR4',
+  'DDR5',
+  'Memoria DDR2',
+  'Memoria DDR3',
+  'Memoria DDR4',
+  'Memoria DDR5',
+  'Memoria Sodimm'
+];
+
+var INVID_CPU_NAMES = [
+  'AMD',
+  'Intel'
+];
+
+var INVID_MOTHERBOARD_NAMES = [
+  'Plataforma AMD',
+  'Plataforma Intel'
+];
+
+var INVID_SSD_NAMES = [
+  'Disco SSD',
+  'Disco SSD M2'
+];
+
+var INVID_HDD_NAMES = [
+  'Carry Disk',
+  'Disco Rígido Externo',
+  'Disco Rígido Notebook',
+  'Disco Rígido NAS',
+  'Disco Rígido SATA',
+  'Disco RÃ­gido Externo',
+  'Disco RÃ­gido Notebook',
+  'Disco RÃ­gido NAS',
+  'Disco RÃ­gido SATA',
+  'Disco Rigido Externo',
+  'Disco Rigido Notebook',
+  'Disco Rigido NAS',
+  'Disco Rigido SATA'
+];
+
+var INVID_POWER_NAMES = [
+  'Fuentes de Alimentacion'
+];
+
+var INVID_CASE_NAMES = [
+  'Gabinetes con Fuente',
+  'Gabinetes sin Fuente'
+];
+
+var INVID_COOLING_NAMES = [
+  'Fans',
+  'Watercoolers'
+];
+
+var INVID_MONITOR_NAMES = [
+  'Monitor Consumo',
+  'Monitor Corporativo',
+  'Monitor Gamer'
+];
+
+var INVID_PC_BUILD_NAMES = [
+  'All in One',
+  'KIT PC',
+  'Kit Gabinete, teclado, mouse y parlante',
+  'Mini PC',
+  'PC'
+];
+
+var INVID_MOUSE_KEYBOARD_NAMES = [
+  'Mouse',
+  'Mouse y Mousepads',
+  'Mousepads',
+  'Teclado + Mouse',
+  'Teclados'
+];
+
+var INVID_AUDIO_NAMES = [
+  'Auriculares',
+  'Parlantes',
+  'Microfonos'
+];
+
+var INVID_STREAMING_NAMES = [
+  'Streaming',
+  'Webcams'
+];
+
+var INVID_NETWORK_NAMES = [
+  'Accesorios Bluetooth',
+  'De red',
+  'Placas de Red Ethernet y Adaptadores USB',
+  'Placas de Red WiFi PCI',
+  'Placas de Red WiFi USB',
+  'Router',
+  'Router Wireless',
+  'Switches Administrables',
+  'Switches No Administrables'
+];
+
+var INVID_CABLE_ADAPTER_NAMES = [
+  'Cables'
+];
+
+var INVID_POWER_BACKUP_NAMES = [
+  'UPS'
+];
+
+var INVID_VIDEO_NAMES = [
+  'Linea AMD RADEON',
+  'Linea Intel Arc',
+  'Linea NVIDIA GEFORCE',
+  'Linea Quadro/Radeon Pro'
+];
+
+var INVID_HARDWARE_NAMES = []
+  .concat(INVID_CPU_NAMES)
+  .concat(INVID_MOTHERBOARD_NAMES)
+  .concat(INVID_MEMORY_NAMES)
+  .concat(INVID_SSD_NAMES)
+  .concat(INVID_HDD_NAMES)
+  .concat(INVID_POWER_NAMES)
+  .concat(INVID_CASE_NAMES)
+  .concat(INVID_VIDEO_NAMES)
+  .concat(INVID_COOLING_NAMES)
+  .concat(INVID_NETWORK_NAMES)
+  .concat(INVID_POWER_BACKUP_NAMES)
+  .concat(INVID_MONITOR_NAMES)
+  .concat(INVID_PC_BUILD_NAMES);
+
+var INVID_PERIPHERAL_PC_NAMES = []
+  .concat(INVID_MONITOR_NAMES)
+  .concat(INVID_MOUSE_KEYBOARD_NAMES)
+  .concat(INVID_STREAMING_NAMES);
+
+var INVID_NODE_TARGETS = [
+  { terms: ['perifericos pc', 'periferico', 'perifericos'], names: INVID_PERIPHERAL_PC_NAMES },
+  { terms: ['procesador', 'procesadores', 'microprocesador', 'microprocesadores', 'cpu'], names: INVID_CPU_NAMES },
+  { terms: ['placa madre', 'placas madre', 'mother', 'mothers'], names: INVID_MOTHERBOARD_NAMES },
+  { terms: ['memoria ram', 'ram'], names: INVID_MEMORY_NAMES },
+  { terms: ['disco ssd', 'ssd', 'm2', 'nvme'], names: INVID_SSD_NAMES },
+  { terms: ['disco hdd', 'discos hdd', 'disco rigido', 'hdd', 'carry disk', 'carry disco'], names: INVID_HDD_NAMES },
+  { terms: ['fuente', 'fuentes'], names: INVID_POWER_NAMES },
+  { terms: ['gabinete', 'gabinetes'], names: INVID_CASE_NAMES },
+  { terms: ['placa de video', 'video', 'gpu', 'geforce', 'radeon'], names: INVID_VIDEO_NAMES },
+  { terms: ['refrigeracion', 'cooler', 'coolers', 'fan', 'fans', 'water'], names: INVID_COOLING_NAMES },
+  { terms: ['monitor', 'monitores'], names: INVID_MONITOR_NAMES },
+  { terms: ['mouse', 'mouses', 'mousepad', 'mouse pads', 'teclado', 'teclados'], names: INVID_MOUSE_KEYBOARD_NAMES },
+  { terms: ['webcam', 'webcams', 'streaming', 'camara'], names: INVID_STREAMING_NAMES },
+  { terms: ['audio', 'auricular', 'auriculares', 'headset', 'parlante', 'parlantes', 'microfono', 'microfonos'], names: INVID_AUDIO_NAMES },
+  { terms: ['red', 'redes', 'wifi', 'wi-fi', 'wireless', 'bluetooth', 'router', 'switch', 'ethernet'], names: INVID_NETWORK_NAMES },
+  { terms: ['cable', 'cables', 'adaptador', 'adaptadores', 'usb', 'hdmi'], names: INVID_CABLE_ADAPTER_NAMES },
+  { terms: ['ups', 'energia'], names: INVID_POWER_BACKUP_NAMES },
+  { terms: ['combo', 'pc armada', 'pcs armadas', 'computadora', 'mini pc', 'all in one'], names: INVID_PC_BUILD_NAMES }
+];
+
+function collectInvidCatalogChildren(invidCatalog) {
+  var children = [];
+  (invidCatalog || []).forEach(function(item) {
+    if (item && item.invidCategoryName) children.push(item);
+    (item && item.children || []).forEach(function(child) {
+      if (child && child.invidCategoryName) children.push(child);
+    });
+  });
+  return children;
+}
+
+function createInvidMeta(children) {
+  var meta = {};
+  children.forEach(function(child) {
+    var name = child.invidCategoryName || child.name;
+    var key = normalizeInvidName(name);
+    if (!key) return;
+    meta[key] = {
+      name: name,
+      count: Number(child.productCount || 0)
+    };
+  });
+  return meta;
+}
+
+function resolveInvidNames(names, meta) {
+  var resolved = [];
+  (names || []).forEach(function(name) {
+    var item = meta[normalizeInvidName(name)];
+    if (item && resolved.indexOf(item.name) === -1) resolved.push(item.name);
+  });
+  return resolved;
+}
+
+function getInvidNamesForCatalogNode(item, meta) {
+  var text = normalizeSearchValue([item.name, item.subtitle].filter(Boolean).join(' '));
+  var names = [];
+
+  if (item.category === 'hardware' && (text === 'hardware' || text.indexOf('hardware') !== -1 || text.indexOf('pc y componentes') !== -1)) {
+    names = names.concat(INVID_HARDWARE_NAMES);
+  }
+
+  if (item.category === 'perifericos' && (text.indexOf('perifericos pc') !== -1 || text.indexOf('pc') !== -1)) {
+    names = names.concat(INVID_PERIPHERAL_PC_NAMES);
+  }
+
+  INVID_NODE_TARGETS.forEach(function(target) {
+    var match = target.terms.some(function(term) {
+      return text.indexOf(normalizeSearchValue(term)) !== -1;
+    });
+    if (match) names = names.concat(target.names);
+  });
+
+  return resolveInvidNames(names, meta);
+}
+
+function addInvidNamesToItem(item, names, meta) {
+  var existing = item.invidCategoryNames || [];
+  names = (names || []).filter(function(name, index, arr) {
+    return name && arr.indexOf(name) === index && existing.indexOf(name) === -1;
+  });
+  if (!names.length) return;
+
+  item.invidCategoryNames = existing.concat(names);
+  var addedProductCount = names.reduce(function(sum, name) {
+    var itemMeta = meta[normalizeInvidName(name)];
+    return sum + Number(itemMeta && itemMeta.count || 0);
+  }, 0);
+  item.invidProductCount = Number(item.invidProductCount || 0) + addedProductCount;
+  item.productCount = Number(item.productCount || 0) + addedProductCount;
+  if (item.children && item.children.length) {
+    item.subtitle = item.productCount + ' productos en ' + item.children.length + ' subcategorias';
+  } else {
+    item.subtitle = item.productCount + (item.productCount === 1 ? ' producto' : ' productos');
+  }
+}
+
+function findCatalogItemByName(name) {
+  var target = normalizeSearchValue(name);
+  var found = null;
+  function walk(items) {
+    (items || []).some(function(item) {
+      if (normalizeSearchValue(item.name) === target) {
+        found = item;
+        return true;
+      }
+      walk(item.children || []);
+      return !!found;
+    });
+  }
+  walk(CATALOG);
+  return found;
+}
+
+var CATALOG_ROOT_NAME_ORDER = [
+  'Consolas de juegos',
+  'Consolas',
+  'Juegos Fisicos',
+  'Accesorios Consolas',
+  'Joysticks y Accesorios',
+  'PC y Componentes',
+  'Hardware',
+  'Perifericos PC',
+  'Almacenamiento',
+  'Audio',
+  'Cables, Adaptadores y Cargadores',
+  'Cables',
+  'Adaptadores',
+  'Accesorio Celular',
+  'Memorias',
+  'Auriculares',
+  'Parlantes',
+  'Silla Gamer',
+  'Otros'
+];
+
+var CATALOG_CHILD_NAME_ORDER = [
+  'Componentes de PC',
+  'Procesadores',
+  'Procesador',
+  'Microprocesadores',
+  'Placas Madre',
+  'Placa Madre',
+  'Mothers',
+  'Memorias RAM',
+  'Memorias',
+  'Placas de Video',
+  'Placa de Video',
+  'SSD / M.2',
+  'SSD',
+  'Disco SSD',
+  'Discos HDD',
+  'Disco Rigido',
+  'Discos HDD / Externos',
+  'Fuentes',
+  'Gabinetes',
+  'Refrigeracion / Coolers',
+  'Coolers',
+  'Pasta Termica',
+  'Monitores',
+  'Monitor',
+  'PCs Armadas / Mini PC',
+  'Computadoras / Mini PC',
+  'Redes, WiFi y Bluetooth',
+  'Red',
+  'Juegos PS5',
+  'Juegos PS4',
+  'Juegos PS3',
+  'Juegos Xbox One',
+  'Juegos Nintendo',
+  'Joysticks PS5',
+  'Joysticks PS4',
+  'Joysticks PS3',
+  'Joysticks PS2',
+  'Joysticks Xbox / PC',
+  'Accesorios PS5',
+  'Accesorios PS4',
+  'Accesorios PS3',
+  'Accesorios PS2',
+  'Mouse',
+  'Combos Teclado + Mouse',
+  'Teclados',
+  'Mouse Pads',
+  'Webcams / Streaming',
+  'Auriculares',
+  'Parlantes',
+  'Microfonos',
+  'Routers y Switches',
+  'HDMI',
+  'Cables',
+  'USB / Tipo C',
+  'Adaptadores y Conversores',
+  'UPS / Energia',
+  'Cargadores / Power Banks'
+];
+
+function catalogOrderIndex(name, order) {
+  var normalized = normalizeSearchValue(name);
+  for (var i = 0; i < order.length; i++) {
+    var candidate = normalizeSearchValue(order[i]);
+    if (normalized === candidate) return i;
+  }
+  for (var j = 0; j < order.length; j++) {
+    var partial = normalizeSearchValue(order[j]);
+    if (normalized.indexOf(partial) === 0 || partial.indexOf(normalized) === 0) return j + 0.1;
+  }
+  return 999;
+}
+
+function compareCatalogDisplayItems(a, b, parentName) {
+  var order = parentName === 'root' ? CATALOG_ROOT_NAME_ORDER : CATALOG_CHILD_NAME_ORDER;
+  var priorityDiff = catalogOrderIndex(a.name, order) - catalogOrderIndex(b.name, order);
+  if (priorityDiff !== 0) return priorityDiff;
+  var productDiff = Number(b.productCount || 0) - Number(a.productCount || 0);
+  if (productDiff !== 0) return productDiff;
+  return String(a.name || '').localeCompare(String(b.name || ''), 'es');
+}
+
+function sortCatalogTree(items, parentName) {
+  (items || []).forEach(function(item) {
+    if (item.children && item.children.length) sortCatalogTree(item.children, item.name);
+  });
+  (items || []).sort(function(a, b) {
+    return compareCatalogDisplayItems(a, b, parentName || 'root');
+  });
+}
+
+function findCatalogItemByNames(names) {
+  var found = null;
+  (names || []).some(function(name) {
+    found = findCatalogItemByName(name);
+    return !!found;
+  });
+  return found;
+}
+
+function catalogNameMatchesAny(value, names) {
+  var text = normalizeSearchValue(value);
+  return (names || []).some(function(name) {
+    var candidate = normalizeSearchValue(name);
+    return text === candidate || text.indexOf(candidate) !== -1 || candidate.indexOf(text) !== -1;
+  });
+}
+
+function ensureInvidSubcategory(meta, config) {
+  var parent = findCatalogItemByNames(config.parentNames || []);
+  if (!parent) return;
+
+  var resolved = resolveInvidNames(config.invidNames || [], meta);
+  if (!resolved.length) return;
+
+  parent.children = parent.children || [];
+  var matchNames = (config.matchNames || []).concat([config.name]);
+  var existing = parent.children.find(function(child) {
+    return catalogNameMatchesAny(child.name, matchNames);
+  });
+
+  var target = existing || {
+    id: config.id,
+    name: config.name,
+    category: config.category || parent.category || 'hardware',
+    icon: config.icon || parent.icon || 'inventory_2',
+    image: config.image || '',
+    children: null
+  };
+
+  addInvidNamesToItem(target, resolved, meta);
+  if (!existing) parent.children.push(target);
+}
+
+function ensureInvidCatalogSubcategories(meta) {
+  var pcParents = ['Componentes de PC', 'Hardware', 'PC y Componentes'];
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'procesadores', name: 'Procesadores', matchNames: ['Procesador', 'Microprocesadores'], icon: 'memory', invidNames: INVID_CPU_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'placas-madre', name: 'Placas Madre', matchNames: ['Placa Madre', 'Mothers'], icon: 'developer_board', invidNames: INVID_MOTHERBOARD_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'memorias-ram', name: 'Memorias RAM', matchNames: ['Memorias', 'Memoria RAM', 'RAM'], icon: 'sim_card', invidNames: INVID_MEMORY_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'placas-de-video', name: 'Placas de Video', matchNames: ['Placa de Video', 'Video', 'GPU'], icon: 'developer_board', image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=800&q=80', invidNames: INVID_VIDEO_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'ssd-m2', name: 'SSD / M.2', matchNames: ['SSD', 'Disco SSD', 'M.2'], icon: 'storage', invidNames: INVID_SSD_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'discos-hdd', name: 'Discos HDD', matchNames: ['Disco Rigido', 'Discos HDD', 'Carry Disk'], icon: 'hard_drive', invidNames: INVID_HDD_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'fuentes', name: 'Fuentes', icon: 'bolt', invidNames: INVID_POWER_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'gabinetes', name: 'Gabinetes', icon: 'desktop_windows', invidNames: INVID_CASE_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'refrigeracion-coolers', name: 'Refrigeracion / Coolers', matchNames: ['Coolers', 'Refrigeracion'], icon: 'ac_unit', invidNames: INVID_COOLING_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC', 'PC y Componentes', 'Hardware'], id: 'monitores', name: 'Monitores', matchNames: ['Monitor'], icon: 'desktop_windows', invidNames: INVID_MONITOR_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'mouse', name: 'Mouse', icon: 'mouse', invidNames: ['Mouse'] });
+  ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'teclados', name: 'Teclados', icon: 'keyboard', invidNames: ['Teclados'] });
+  ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'combos-teclado-mouse', name: 'Combos Teclado + Mouse', matchNames: ['Teclado + Mouse', 'Combos'], icon: 'keyboard', invidNames: ['Teclado + Mouse'] });
+  ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'mousepads', name: 'Mouse Pads', matchNames: ['Mousepads', 'Mouse y Mousepads'], icon: 'mouse', invidNames: ['Mousepads', 'Mouse y Mousepads'] });
+  ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'webcams-streaming', name: 'Webcams / Streaming', matchNames: ['Streaming', 'Webcams'], icon: 'videocam', invidNames: INVID_STREAMING_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Audio'], id: 'auriculares', name: 'Auriculares', icon: 'headphones', invidNames: ['Auriculares'] });
+  ensureInvidSubcategory(meta, { parentNames: ['Audio'], id: 'parlantes', name: 'Parlantes', icon: 'speaker', invidNames: ['Parlantes'] });
+  ensureInvidSubcategory(meta, { parentNames: ['Audio'], id: 'microfonos', name: 'Microfonos', icon: 'mic', invidNames: ['Microfonos'] });
+  ensureInvidSubcategory(meta, { parentNames: ['PC y Componentes', 'Hardware', 'Perifericos PC'], id: 'redes-wifi-bluetooth', name: 'Redes, WiFi y Bluetooth', matchNames: ['Red', 'Redes', 'Routers y Switches'], icon: 'router', invidNames: INVID_NETWORK_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Cables, Adaptadores y Cargadores', 'Cables', 'Adaptadores'], id: 'cables', name: 'Cables', icon: 'cable', invidNames: INVID_CABLE_ADAPTER_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Cables, Adaptadores y Cargadores', 'PC y Componentes', 'Hardware'], id: 'ups-energia', name: 'UPS / Energia', icon: 'battery_charging_full', invidNames: INVID_POWER_BACKUP_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['PC y Componentes', 'Hardware', 'Perifericos PC'], id: 'pcs-armadas-mini-pc', name: 'PCs Armadas / Mini PC', matchNames: ['Computadoras', 'Mini PC', 'PC Armada'], icon: 'desktop_windows', invidNames: INVID_PC_BUILD_NAMES });
+}
+
+function applyInvidCatalogToExistingTree(invidCatalog) {
+  var children = collectInvidCatalogChildren(invidCatalog);
+  if (!children.length) return false;
+
+  var meta = createInvidMeta(children);
+  ensureInvidCatalogSubcategories(meta);
+  function walk(item) {
+    if (!item) return;
+    addInvidNamesToItem(item, getInvidNamesForCatalogNode(item, meta), meta);
+    (item.children || []).forEach(walk);
+  }
+
+  CATALOG.forEach(walk);
+  sortCatalogTree(CATALOG, 'root');
+  return true;
+}
+
 async function loadAccessCatalog() {
   if (!window.SupabaseStore || !window.SupabaseStore.isReady || !window.SupabaseStore.isReady()) return;
   if (!window.SupabaseStore.fetchAccessCatalogTree) return;
@@ -647,6 +1148,16 @@ async function loadAccessCatalog() {
     CATALOG = accessCatalog;
     catalogLoadedFromSupabase = true;
   }
+
+  if (window.SupabaseStore.fetchInvidPcCatalogTree) {
+    var invidCatalog = await window.SupabaseStore.fetchInvidPcCatalogTree();
+    if (invidCatalog && invidCatalog.length) {
+      applyInvidCatalogToExistingTree(invidCatalog);
+      catalogLoadedFromSupabase = true;
+    }
+  }
+
+  sortCatalogTree(CATALOG, 'root');
 }
 
 function scrollCatalogTop() {
@@ -810,6 +1321,7 @@ function openCatalogPanel(type) {
   closeCatalogPanel(false);
   renderCategorySidebar();
   syncRootControls();
+  syncProductFilterControls();
 
   if (backdrop) backdrop.classList.add('active');
   if (panel) panel.classList.add('active');
@@ -842,17 +1354,237 @@ function catalogIsByOrderProduct(product) {
   return false;
 }
 
+function catalogGetStockState(product) {
+  if (typeof getProductStockState === 'function') return getProductStockState(product);
+
+  var byOrder = catalogIsByOrderProduct(product);
+  var rawStock = product && product.stock;
+  var hasStockValue = rawStock !== undefined && rawStock !== null && rawStock !== '';
+  var stock = hasStockValue ? Number(rawStock) : null;
+  if (!Number.isFinite(stock)) stock = null;
+  if (byOrder) return { status: 'by-order', label: 'A pedido', stock: stock };
+  if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
+  if (stock <= 0) return { status: 'out', label: 'Consultar', stock: stock };
+  if (stock <= 3) return { status: 'low', label: 'Stock bajo', stock: stock };
+  return { status: 'available', label: 'Stock disponible', stock: stock };
+}
+
+function catalogStockChipClass(stockState) {
+  if (!stockState) return '';
+  if (stockState.status === 'by-order') return ' is-by-order';
+  if (stockState.status === 'out') return ' is-out-of-stock';
+  if (stockState.status === 'low') return ' is-low-stock';
+  if (stockState.status === 'available') return ' is-stock-available';
+  return ' is-unknown';
+}
+
+function setCatalogMediaImage(media, product, image) {
+  if (!media || !product || !image || media.querySelector('img')) return;
+  product.image = image;
+  var icon = media.querySelector('.material-symbols-outlined');
+  if (icon) icon.remove();
+  var img = document.createElement('img');
+  img.src = image;
+  img.alt = product.name || 'Producto';
+  media.insertBefore(img, media.firstChild);
+  media.classList.add('has-image');
+}
+
+async function hydrateCatalogProductImage(product, media) {
+  if (!window.SupabaseStore || !window.SupabaseStore.findMercadoLibreImage) return;
+  var image = await window.SupabaseStore.findMercadoLibreImage(product);
+  setCatalogMediaImage(media, product, image);
+}
+
 function getProductPrice(product) {
   var price = Number(product && product.price);
   return Number.isFinite(price) ? price : 0;
 }
 
+function formatProductPrice(product) {
+  var price = getProductPrice(product);
+  if (price <= 0) return 'Consultar';
+  var currency = String(product && product.currency || CONFIG.CURRENCY || 'ARS').toUpperCase();
+  var symbol = currency === 'USD' ? 'US$' : (CONFIG.CURRENCY_SYMBOL || '$');
+  var hasCents = Math.abs(price - Math.round(price)) > 0.009;
+  return symbol + (currency === 'USD' ? ' ' : '') + price.toLocaleString('es-AR', {
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: 2
+  });
+}
+
+function isProviderProduct(product) {
+  return !!product && (product.sourceIntegration === 'invid' || product.source === 'invid');
+}
+
+function getProductAvailabilityLabel(product) {
+  return isProviderProduct(product) ? '48 hs de demora' : 'En local';
+}
+
+function getProductFulfillmentKey(product) {
+  return isProviderProduct(product) ? 'provider' : 'local';
+}
+
+function getProductBrandLabel(product) {
+  var brand = product && (product.brand || product.marca || product.brandName);
+  brand = displayCatalogText(brand || '').trim();
+  return brand || 'Sin marca';
+}
+
+function getProductBrandKey(product) {
+  return normalizeSearchValue(getProductBrandLabel(product)).replace(/[^a-z0-9]+/g, '-') || 'sin-marca';
+}
+
+function setProductFiltersVisible(visible) {
+  var mobileFilters = document.getElementById('mobile-product-filters');
+  if (mobileFilters) mobileFilters.classList.toggle('visible', !!visible);
+}
+
+function resetProductFilters() {
+  currentProductFilters.brand = 'all';
+  currentProductFilters.fulfillment = 'all';
+}
+
+function syncProductFilterControls() {
+  ['brand-filter-select', 'mobile-brand-filter-select'].forEach(function(id) {
+    var select = document.getElementById(id);
+    if (select) select.value = currentProductFilters.brand || 'all';
+  });
+  ['fulfillment-filter-select', 'mobile-fulfillment-filter-select'].forEach(function(id) {
+    var select = document.getElementById(id);
+    if (select) select.value = currentProductFilters.fulfillment || 'all';
+  });
+}
+
+function fillSelectOptions(select, options, currentValue) {
+  if (!select) return;
+  select.innerHTML = '';
+  options.forEach(function(option) {
+    var el = document.createElement('option');
+    el.value = option.value;
+    el.textContent = option.label;
+    select.appendChild(el);
+  });
+  select.value = currentValue || 'all';
+}
+
+function buildProductFilterOptions(products) {
+  products = products || [];
+  var brandMap = {};
+  var fulfillmentCounts = { local: 0, provider: 0 };
+
+  products.forEach(function(product) {
+    var brandKey = getProductBrandKey(product);
+    if (!brandMap[brandKey]) {
+      brandMap[brandKey] = {
+        value: brandKey,
+        label: getProductBrandLabel(product),
+        count: 0
+      };
+    }
+    brandMap[brandKey].count++;
+    fulfillmentCounts[getProductFulfillmentKey(product)]++;
+  });
+
+  var brandOptions = [{ value: 'all', label: 'Todas las marcas' }]
+    .concat(Object.keys(brandMap).map(function(key) { return brandMap[key]; })
+      .sort(function(a, b) {
+        if (b.count !== a.count) return b.count - a.count;
+        return a.label.localeCompare(b.label, 'es');
+      })
+      .map(function(item) {
+        return {
+          value: item.value,
+          label: item.label + ' (' + item.count + ')'
+        };
+      }));
+
+  var fulfillmentOptions = [{ value: 'all', label: 'Todo' }];
+  if (fulfillmentCounts.local > 0) {
+    fulfillmentOptions.push({ value: 'local', label: 'En local (' + fulfillmentCounts.local + ')' });
+  }
+  if (fulfillmentCounts.provider > 0) {
+    fulfillmentOptions.push({ value: 'provider', label: '48 hs de demora (' + fulfillmentCounts.provider + ')' });
+  }
+
+  fillSelectOptions(document.getElementById('brand-filter-select'), brandOptions, currentProductFilters.brand);
+  fillSelectOptions(document.getElementById('mobile-brand-filter-select'), brandOptions, currentProductFilters.brand);
+  fillSelectOptions(document.getElementById('fulfillment-filter-select'), fulfillmentOptions, currentProductFilters.fulfillment);
+  fillSelectOptions(document.getElementById('mobile-fulfillment-filter-select'), fulfillmentOptions, currentProductFilters.fulfillment);
+}
+
+function productCardMatchesFilters(card) {
+  if (!card) return false;
+  var brand = currentProductFilters.brand || 'all';
+  var fulfillment = currentProductFilters.fulfillment || 'all';
+  if (brand !== 'all' && card.dataset.brandKey !== brand) return false;
+  if (fulfillment !== 'all' && card.dataset.fulfillment !== fulfillment) return false;
+  return true;
+}
+
+function applyProductFilters() {
+  var grid = document.getElementById('categories-grid');
+  if (!grid) return;
+  var cards = Array.from(grid.querySelectorAll('.product-card'));
+  var visibleCount = 0;
+
+  cards.forEach(function(card) {
+    var visible = productCardMatchesFilters(card);
+    card.classList.toggle('hidden-filter', !visible);
+    if (visible) visibleCount++;
+  });
+
+  document.getElementById('visible-count').textContent = visibleCount;
+  document.getElementById('count-label').textContent = 'productos';
+
+  var empty = document.getElementById('empty-state');
+  if (!empty) return;
+  if (cards.length && !visibleCount) {
+    empty.classList.remove('hidden');
+    empty.querySelector('.material-symbols-outlined').textContent = 'filter_alt_off';
+    empty.querySelector('p.font-headline').textContent = 'Sin productos para esos filtros';
+    empty.querySelector('p.font-body').textContent = 'Probá con otra marca o tipo de entrega.';
+    var emptyBtn = empty.querySelector('button');
+    if (emptyBtn) {
+      emptyBtn.textContent = 'Limpiar filtros';
+      emptyBtn.onclick = clearProductFilters;
+    }
+  } else if (cards.length) {
+    empty.classList.add('hidden');
+  }
+}
+
+function setProductBrandFilter(value) {
+  currentProductFilters.brand = value || 'all';
+  syncProductFilterControls();
+  applyProductFilters();
+  closeCatalogPanel();
+}
+
+function setProductFulfillmentFilter(value) {
+  currentProductFilters.fulfillment = value || 'all';
+  syncProductFilterControls();
+  applyProductFilters();
+  closeCatalogPanel();
+}
+
+function clearProductFilters() {
+  resetProductFilters();
+  syncProductFilterControls();
+  applyProductFilters();
+}
+
 function renderProductCards(products) {
   var grid = document.getElementById('categories-grid');
   products = products || [];
+  currentProductFilterPool = products.slice();
+  resetProductFilters();
   grid.innerHTML = '';
   grid.style.display = '';
   setProductSortVisible(products.length > 0);
+  setProductFiltersVisible(products.length > 0);
+  buildProductFilterOptions(products);
+  syncProductFilterControls();
   resetEmptyState();
   var empty = document.getElementById('empty-state');
 
@@ -871,17 +1603,24 @@ function renderProductCards(products) {
   if (empty) empty.classList.add('hidden');
 
   products.forEach(function(p, idx) {
-    var byOrder = catalogIsByOrderProduct(p);
+    var stockState = catalogGetStockState(p);
+    var byOrder = stockState.status === 'by-order';
+    var outOfStock = stockState.status === 'out';
     var hasStockValue = p.stock !== undefined && p.stock !== null && p.stock !== '';
-    var stockValue = hasStockValue ? Number(p.stock) : null;
-    var outOfStock = !byOrder && stockValue !== null && stockValue <= 0;
     var card = document.createElement('div');
     card.className = 'product-card' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '');
     card.dataset.name = p.name || '';
     card.dataset.category = p.rootCategory || p.category || '';
+    card.dataset.brandKey = getProductBrandKey(p);
+    card.dataset.brandLabel = getProductBrandLabel(p);
+    card.dataset.fulfillment = getProductFulfillmentKey(p);
     card.dataset.order = idx;
     card.dataset.price = String(getProductPrice(p));
+    card.dataset.stockStatus = stockState.status;
     card.style.animationDelay = (idx * 0.035) + 's';
+    if (outOfStock) {
+      card.setAttribute('aria-disabled', 'true');
+    }
     card.onclick = function() {
       window.location.href = 'producto.html?id=' + encodeURIComponent(p.slug);
     };
@@ -898,11 +1637,12 @@ function renderProductCards(products) {
       icon.className = 'material-symbols-outlined';
       icon.textContent = p.icon || 'inventory_2';
       media.appendChild(icon);
+      hydrateCatalogProductImage(p, media);
     }
     if (outOfStock) {
       var soldOut = document.createElement('span');
       soldOut.className = 'product-card-soldout';
-      soldOut.textContent = 'Sin stock';
+      soldOut.textContent = 'Consultar';
       media.appendChild(soldOut);
     }
     card.appendChild(media);
@@ -915,6 +1655,11 @@ function renderProductCards(products) {
     source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
     body.appendChild(source);
 
+    var availability = document.createElement('span');
+    availability.className = 'product-card-availability ' + (isProviderProduct(p) ? 'is-provider' : 'is-local');
+    availability.textContent = getProductAvailabilityLabel(p);
+    body.appendChild(availability);
+
     var title = document.createElement('h3');
     title.className = 'product-card-title';
     title.textContent = p.name;
@@ -925,17 +1670,18 @@ function renderProductCards(products) {
     subtitle.textContent = displayCatalogText(p.subtitle || 'Consultar disponibilidad');
     body.appendChild(subtitle);
 
-    if (byOrder || (p.stock !== undefined && p.stock !== null)) {
-      var stock = document.createElement('span');
-      stock.className = 'product-card-stock' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '');
-      stock.textContent = byOrder ? 'A pedido' : (outOfStock ? 'Sin stock' : (stockValue > 0 ? 'Stock ' + stockValue : 'Consultar'));
-      body.appendChild(stock);
+    var stock = document.createElement('span');
+    stock.className = 'product-card-stock' + catalogStockChipClass(stockState);
+    stock.textContent = stockState.label;
+    if (hasStockValue && Number.isFinite(Number(p.stock)) && stockState.status !== 'out') {
+      stock.title = Number(p.stock) + ' unidades disponibles';
     }
+    body.appendChild(stock);
 
     var foot = document.createElement('div');
     foot.className = 'product-card-foot';
     var price = document.createElement('strong');
-    price.textContent = formatPrice(p.price || 0);
+    price.textContent = formatProductPrice(p);
     foot.appendChild(price);
     var action = document.createElement('span');
     action.className = 'material-symbols-outlined';
@@ -947,6 +1693,7 @@ function renderProductCards(products) {
     grid.appendChild(card);
   });
   sortCards(currentSortOrder || 'price-low');
+  applyProductFilters();
 }
 
 function collectAccessSubcategoryIds(item) {
@@ -977,6 +1724,65 @@ async function fetchProductsByAccessSubcategories(ids) {
     seen[key] = true;
     return true;
   });
+}
+
+async function fetchProductsForCatalogItem(item, includeChildren) {
+  var products = [];
+  if (!item || !window.SupabaseStore || !window.SupabaseStore.isReady || !window.SupabaseStore.isReady()) {
+    return products;
+  }
+
+  var subcategoryIds = collectAccessSubcategoryIds(item);
+  if (item.useChildrenForProducts && subcategoryIds.length) {
+    products = await fetchProductsByAccessSubcategories(subcategoryIds);
+  } else if (item.accessSubcategoryId && window.SupabaseStore.fetchAccessProductsBySubcategory) {
+    products = await window.SupabaseStore.fetchAccessProductsBySubcategory(item.accessSubcategoryId);
+  } else if (item.accessCategoryId && window.SupabaseStore.fetchAccessProductsByCategory) {
+    products = await window.SupabaseStore.fetchAccessProductsByCategory(item.accessCategoryId);
+  }
+
+  if (!products.length && subcategoryIds.length && window.SupabaseStore.fetchAccessProductsBySubcategory) {
+    products = await fetchProductsByAccessSubcategories(subcategoryIds);
+  } else if (!products.length && window.SupabaseStore.fetchProductsByCategorySlugs) {
+    products = await window.SupabaseStore.fetchProductsByCategorySlugs([item.id, catalogRouteSlug(item.name)]);
+  }
+
+  products = uniqueProducts(products.concat(await fetchInvidProductsForItem(item, includeChildren === true)));
+  return products;
+}
+
+function collectInvidCategoryNames(item, includeChildren) {
+  var names = [];
+  function add(name) {
+    name = String(name || '').trim();
+    if (name && names.indexOf(name) === -1) names.push(name);
+  }
+  function walk(node) {
+    if (!node) return;
+    add(node.invidCategoryName);
+    (node.invidCategoryNames || []).forEach(add);
+    if (includeChildren) (node.children || []).forEach(walk);
+  }
+  walk(item);
+  return names;
+}
+
+async function fetchInvidProductsForItem(item, includeChildren) {
+  if (!window.SupabaseStore || !window.SupabaseStore.fetchInvidPcProductsByCategory) return [];
+  var names = collectInvidCategoryNames(item, includeChildren);
+  if (!names.length) return [];
+
+  var groups = await runInChunks(names, 2, function(name) {
+    return window.SupabaseStore.fetchInvidPcProductsByCategory(name);
+  });
+  var label = item && item.name ? item.name : '';
+  return uniqueProducts((groups || []).map(function(product) {
+    if (!product || !label) return product;
+    return Object.assign({}, product, {
+      sourceLabel: label,
+      sourceFile: 'catalogo.html?sub=' + encodeURIComponent(item.id || '')
+    });
+  }));
 }
 
 function uniqueProducts(products) {
@@ -1025,6 +1831,23 @@ function collectAccessSubcategoryIdsForSearch(filter) {
   return ids;
 }
 
+function collectInvidCategoryNamesForSearch(filter) {
+  var names = [];
+  function add(name) {
+    name = String(name || '').trim();
+    if (name && names.indexOf(name) === -1) names.push(name);
+  }
+  function walk(node) {
+    if (!node) return;
+    if (filter !== 'all' && node.category !== filter) return;
+    add(node.invidCategoryName);
+    (node.invidCategoryNames || []).forEach(add);
+    (node.children || []).forEach(walk);
+  }
+  CATALOG.forEach(walk);
+  return names;
+}
+
 async function getProductPoolForSearch(filter) {
   filter = filter || 'all';
   if (productSearchCache[filter]) return productSearchCache[filter];
@@ -1043,6 +1866,14 @@ async function getProductPoolForSearch(filter) {
       products = await runInChunks(subcategoryIds, 6, function(id) {
         return window.SupabaseStore.fetchAccessProductsBySubcategory(id);
       });
+    }
+
+    if (window.SupabaseStore.fetchInvidPcProductsByCategory) {
+      var invidCategories = collectInvidCategoryNamesForSearch(filter);
+      var invidProducts = await runInChunks(invidCategories, 4, function(name) {
+        return window.SupabaseStore.fetchInvidPcProductsByCategory(name);
+      });
+      products = products.concat(invidProducts || []);
     }
   }
 
@@ -1162,7 +1993,7 @@ function renderSearchSuggestions(input, products, query) {
 
     var price = document.createElement('span');
     price.className = 'search-suggestion-price';
-    price.textContent = formatPrice(product.price || 0);
+    price.textContent = formatProductPrice(product);
 
     item.appendChild(media);
     item.appendChild(copy);
@@ -1268,6 +2099,8 @@ async function renderProductSearchResults(query, options) {
 
   var grid = document.getElementById('categories-grid');
   var empty = document.getElementById('empty-state');
+  setProductSortVisible(false);
+  setProductFiltersVisible(false);
   grid.style.display = 'none';
   document.getElementById('visible-count').textContent = '...';
   document.getElementById('count-label').textContent = 'productos';
@@ -1352,6 +2185,8 @@ async function showSubcategoryComingSoon(found, options) {
   if (mobileBar) mobileBar.style.display = '';
 
   setBackAction(found.parent && found.parent !== found.child ? 'Volver a ' + found.parent.name : 'Volver al catalogo', goBackOneLevel);
+  setProductSortVisible(false);
+  setProductFiltersVisible(false);
   document.getElementById('categories-grid').style.display = 'none';
   document.getElementById('visible-count').textContent = '...';
   document.getElementById('count-label').textContent = 'productos';
@@ -1369,14 +2204,26 @@ async function showSubcategoryComingSoon(found, options) {
   scrollCatalogTop();
 
   var products = [];
+  var usingParentFallback = false;
   if (window.SupabaseStore && window.SupabaseStore.isReady()) {
-    if (found.child.accessSubcategoryId && window.SupabaseStore.fetchAccessProductsBySubcategory) {
-      products = await window.SupabaseStore.fetchAccessProductsBySubcategory(found.child.accessSubcategoryId);
-    } else {
-      products = await window.SupabaseStore.fetchProductsByCategorySlugs(getSupabaseSlugs(found));
+    products = await fetchProductsForCatalogItem(found.child, false);
+    if (!products.length && found.parent && found.parent !== found.child) {
+      var parentProducts = await fetchProductsForCatalogItem(found.parent, true);
+      if (parentProducts.length) {
+        products = parentProducts;
+        usingParentFallback = true;
+      }
     }
   }
   if (requestId !== productsRequestId) return;
+
+  if (usingParentFallback) {
+    document.getElementById('page-title').textContent = found.parent.name;
+    document.getElementById('page-subtitle').textContent = 'Todos los productos de ' + found.parent.name + '.';
+    var levelLabel = document.getElementById('level-label');
+    levelLabel.textContent = 'Categoria';
+    levelLabel.classList.add('visible');
+  }
 
   document.getElementById('visible-count').textContent = products.length;
   if (products.length) {
@@ -1392,6 +2239,8 @@ async function showSubcategoryComingSoon(found, options) {
 }
 
 async function showCategoryProducts(item, requestId) {
+  setProductSortVisible(false);
+  setProductFiltersVisible(false);
   document.getElementById('categories-grid').style.display = 'none';
   document.getElementById('visible-count').textContent = '...';
   document.getElementById('count-label').textContent = 'productos';
@@ -1410,18 +2259,7 @@ async function showCategoryProducts(item, requestId) {
 
   var products = [];
   if (window.SupabaseStore && window.SupabaseStore.isReady()) {
-    var subcategoryIds = collectAccessSubcategoryIds(item);
-    if (item.useChildrenForProducts && subcategoryIds.length) {
-      products = await fetchProductsByAccessSubcategories(subcategoryIds);
-    } else if (item.accessCategoryId && window.SupabaseStore.fetchAccessProductsByCategory) {
-      products = await window.SupabaseStore.fetchAccessProductsByCategory(item.accessCategoryId);
-    }
-
-    if (!products.length && subcategoryIds.length && window.SupabaseStore.fetchAccessProductsBySubcategory) {
-      products = await fetchProductsByAccessSubcategories(subcategoryIds);
-    } else if (!products.length && window.SupabaseStore.fetchProductsByCategorySlugs) {
-      products = await window.SupabaseStore.fetchProductsByCategorySlugs([item.id]);
-    }
+    products = await fetchProductsForCatalogItem(item, true);
   }
   if (requestId !== productsRequestId) return;
 
@@ -1564,6 +2402,7 @@ function renderGrid(items, animate) {
   var grid = document.getElementById('categories-grid');
   if (!grid) return;
   setProductSortVisible(false);
+  setProductFiltersVisible(false);
   grid.innerHTML = '';
   resetEmptyState();
 
@@ -1658,7 +2497,7 @@ function drillInto(item, options) {
     var parent = found && found.parent !== item ? found.parent : null;
     setBackAction(parent ? 'Volver a ' + parent.name : 'Volver a Catálogo', goBackOneLevel);
 
-    if ((item.accessCategoryId || item.useChildrenForProducts) && window.SupabaseStore) {
+    if (window.SupabaseStore && window.SupabaseStore.isReady && window.SupabaseStore.isReady()) {
       await showCategoryProducts(item, requestId);
     } else {
       renderGrid(item.children, true);
@@ -1810,34 +2649,52 @@ function handleSearchLive(query) {
   renderGrid(currentParent ? currentParent.children : CATALOG);
 }
 
+function getCardAvailabilityRank(card) {
+  if (!card || !card.classList || !card.classList.contains('product-card')) return 0;
+  var status = card.dataset.stockStatus || '';
+  if (status === 'available') return 0;
+  if (status === 'low') return 1;
+  if (status === 'by-order' || status === 'unknown') return 2;
+  if (status === 'out') return 3;
+  return 1;
+}
+
+function compareCardAvailability(a, b) {
+  return getCardAvailabilityRank(a) - getCardAvailabilityRank(b);
+}
+
 function sortCards(order) {
   currentSortOrder = order || 'price-low';
-  document.querySelectorAll('#mobile-sort-select, #desktop-controls select, #product-sort-controls select').forEach(function(select) {
+  document.querySelectorAll('[data-sort-select]').forEach(function(select) {
     select.value = currentSortOrder;
   });
   var grid = document.getElementById('categories-grid');
   var cards = Array.from(grid.querySelectorAll('.cat-card, .product-card'));
   if (order === 'default') {
     cards.sort(function(a, b) {
-      return Number(a.dataset.order || 0) - Number(b.dataset.order || 0);
+      return compareCardAvailability(a, b) || Number(a.dataset.order || 0) - Number(b.dataset.order || 0);
     });
   } else if (order === 'price-low') {
     cards.sort(function(a, b) {
+      var availabilityDiff = compareCardAvailability(a, b);
+      if (availabilityDiff !== 0) return availabilityDiff;
       var priceA = Number(a.dataset.price || 0);
       var priceB = Number(b.dataset.price || 0);
       return priceA - priceB;
     });
   } else if (order === 'price-high') {
     cards.sort(function(a, b) {
+      var availabilityDiff = compareCardAvailability(a, b);
+      if (availabilityDiff !== 0) return availabilityDiff;
       var priceA = Number(a.dataset.price || 0);
       var priceB = Number(b.dataset.price || 0);
       return priceB - priceA;
     });
   } else {
     cards.sort(function(a, b) {
-      return order === 'az'
+      return compareCardAvailability(a, b) || (order === 'az'
         ? a.dataset.name.localeCompare(b.dataset.name, 'es')
-        : b.dataset.name.localeCompare(a.dataset.name, 'es');
+        : b.dataset.name.localeCompare(a.dataset.name, 'es'));
     });
   }
   cards.forEach(function(c) { grid.appendChild(c); });
@@ -1935,6 +2792,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.history.scrollRestoration = 'manual';
   }
   await loadAccessCatalog();
+  sortCatalogTree(CATALOG, 'root');
   initSearchSuggestions();
   applyCatalogRoute({ replaceHistory: true, scroll: true });
   updateCartBadge();
