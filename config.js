@@ -2,7 +2,7 @@
 var CONFIG = {
   // Contacto
   CONTACT_PHONE: "5493534019085",
-  STORE_LOCATION: "Villa María, Córdoba, Argentina",
+  STORE_LOCATION: "Villa María, CóC?rdoba, Argentina",
 
   // Impuestos y moneda
   TAX_RATE: 0.21, // IVA Argentina
@@ -22,20 +22,25 @@ var CONFIG = {
   // API (futuro)
   API_BASE_URL: 'http://localhost:3000',
 
-  // Ahorro Supabase: reduce llamadas publicas para no pasar el egress del plan gratis.
+  // Cache publico del catalogo.
+  // Antes estaba en 240 minutos y podia mostrar stock viejo demasiado tiempo.
+  // Para el local conviene corto: si cambias stock en Access, la web refresca rapido.
   LOW_EGRESS_MODE: true,
-  PUBLIC_CATALOG_CACHE_MINUTES: 30,
+  PUBLIC_CATALOG_CACHE_MINUTES: 1,
+  PUBLIC_CATALOG_TIMEOUT_MS: 9000,
+  MERCADO_LIBRE_AUTO_IMAGE_SEARCH: false,
 
   // Invid: precios del proveedor en USD -> venta web en ARS.
-  // Cambiar INVID_USD_RATE cuando actualicen la cotizacion interna.
+  // Cambiar INVID_USD_RATE cuando actualicen la cotizaci?n interna.
   INVID_USD_RATE: 1300,
   INVID_MARKUP_RATE: 0.30,
+  INVID_MIN_WEB_PRICE: 30000,
 
-  // Supabase (clave publica para navegador)
-  SUPABASE_URL: 'https://gzqepncnbwbbocvbetdw.supabase.co',
-  SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_AR03x41l3cgySLgShkWEuA_rsHKgIXV',
+  // Supabase local publicado por Cloudflare Tunnel (clave publica para navegador)
+  SUPABASE_URL: 'https://api.dimensiontres.com',
+  SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_ACJWLzQHlZjBrEguHvfOxg_3BJgxAaH',
 
-  // Límites
+  // LíL?mites
   MAX_SEARCH_LENGTH: 100,
   MAX_QUANTITY: 999,
   MIN_QUANTITY: 1,

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="dark" lang="es" style="scroll-behavior:smooth;"><head>
+﻿<!DOCTYPE html><html class="dark" lang="es" style="scroll-behavior:smooth;"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>DimensionTres | Hardware, Gaming y Servicio Técnico</title>
@@ -7,17 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 
 
-  <link rel="stylesheet" href="shared.css?v=product-images-20260515">
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="shared.css?v=mobile-polish-20260623">
+  <link rel="stylesheet" href="index.css?v=mobile-categorias-dark-20260623">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script src="tailwind.config.js"></script>
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" data-mode="connect" style="scroll-padding-top:5rem; overflow-x:hidden;">
-<!-- ═══════════════════════════════════════
+<!-- =======================================
      BARRA DE NAVEGACIÓN
      - Desktop: logo | links | íconos
      - Mobile:  logo | íconos | hamburguesa
-     ═══════════════════════════════════════ -->
+     ======================================= -->
 <nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom: 1px solid rgba(0,240,255,0.08);">
 
   <!-- Contenedor principal del nav -->
@@ -28,7 +28,7 @@
       DimensionTres
     </a>
 
-    <!-- Links de secciones — solo visibles en desktop (md+) -->
+    <!-- Links de secciones ? solo visibles en desktop (md+) -->
     <div class="hidden md:flex items-center space-x-6 lg:space-x-8 font-headline tracking-tight uppercase font-bold text-sm lg:text-base">
       <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 transition-all" href="#inicio">Inicio</a>
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#categorias">Categorías</a>
@@ -36,7 +36,7 @@
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#servicios">Servicios</a>
     </div>
 
-    <!-- Search bar — visible solo en desktop (md+) -->
+    <!-- Search bar ? visible solo en desktop (md+) -->
     <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
       <div class="relative w-full flex items-center">
         <input
@@ -58,21 +58,21 @@
       </div>
     </div>
 
-    <!-- Íconos derecha (siempre visibles) + botón hamburguesa (solo mobile) -->
+    <!-- íconos derecha (siempre visibles) + botón hamburguesa (solo mobile) -->
     <div class="flex items-center gap-3 md:gap-4">
 
-      <!-- Ícono cuenta -->
+      <!-- ícono cuenta -->
        <a href="cuenta.html">
       <button class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">person</button>
       </a>
 
-      <!-- Ícono carrito con badge -->
+      <!-- ícono carrito con badge -->
       <div class="relative">
         <button data-cart-btn class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px] relative" onclick="window.location.href='carrito.html'">shopping_cart</button>
         <!--<span class="absolute -top-1.5 -right-1.5 bg-secondary text-on-secondary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full"></span>-->
       </div>
 
-      <!-- Botón hamburguesa — solo visible en mobile -->
+      <!-- Botón hamburguesa ? solo visible en mobile -->
       <button
         id="menu-btn"
         onclick="toggleMenu()"
@@ -89,9 +89,9 @@
 
 </nav>
 
-<!-- ── DRAWER MOBILE ─────────────────────────────────────────────
+<!-- -- DRAWER MOBILE ---------------------------------------------
      Se desliza desde la izquierda con backdrop oscuro.
-     ══════════════════════════════════════════════════════════ -->
+     ========================================================== -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -119,7 +119,7 @@
   </div>
 </div>
 
-<!-- Script del menú mobile — animación hamburguesa → X y despliegue -->
+<!-- Script del menú mobile ? animación hamburguesa -> X y despliegue -->
 
 <main class="pt-16 md:pt-20">
 <!-- Hero Section -->
@@ -145,15 +145,15 @@
 </div>
 </section>
 <!-- Brand Carousel (Static for UI) -->
-<!-- ═══════════════════════════
+<!-- ===========================
      CARRUSEL DE MARCAS INFINITO
      Usa CSS @keyframes marquee para
      desplazamiento sin JavaScript.
-     ════════════════════════════ -->
+     ============================ -->
 <section class="py-5 md:py-5 bg-surface-container-lowest border-y border-outline-variant/5 overflow-hidden">
   
 
-  <!-- Wrapper con overflow:hidden — el track corre dentro sin romper el layout -->
+  <!-- Wrapper con overflow:hidden ? el track corre dentro sin romper el layout -->
   <div class="marquee-wrapper">
     <!-- El track tiene 4 sets idénticos:
          suficiente para cubrir cualquier pantalla ancha sin gaps -->
@@ -210,67 +210,61 @@
 </div>
 
 </div>
-<div id="home-category-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+<div id="home-category-grid" class="home-category-grid grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
 <!-- Consolas -->
-<div class="sm:col-span-2 lg:col-span-1 group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=consolas'">
-<img alt="Consolas" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Modern gaming consoles and controllers on a dark shelf." src="img/Consolas.jpg">
+<a href="catalogo.html?catid=cat-consolas-de-juegos" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
+<img alt="Consolas" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/Consolas.jpg">
 <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
 <div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-4xl">sports_esports</span>
-<h3 class="font-headline text-2xl font-black uppercase tracking-tighter">Consolas</h3>
-<p class="text-on-surface-variant text-sm uppercase tracking-widest mt-1">PlayStation - Xbox - Nintendo</p>
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">sports_esports</span>
+<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Consolas</h3>
 </div>
-</div>
-<!-- Joysticks -->
-<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=consolas&q=joysticks'">
-<img alt="Joysticks" class="w-full h-full object-cover opacity-45 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/Consolas_Accesorios.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">gamepad</span>
-<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Joysticks</h3>
-<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Controles y accesorios</p>
-</div>
-</div>
-<!-- Perifericos -->
-<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=perifericos'">
-<img alt="Perifericos" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Mechanical gaming keyboard with blue backlighting." src="img/perifericos.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">mouse</span>
-<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Perifericos</h3>
-<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Mouse - Teclados - Pads</p>
-</div>
-</div>
-<!-- Audio -->
-<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=audio'">
-<img alt="Audio" class="w-full h-full object-cover opacity-45 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Gaming headset with subtle lighting." src="img/auriculares.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">headphones</span>
-<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Audio</h3>
-<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Auriculares - Parlantes</p>
-</div>
-</div>
-<!-- Cables -->
-<div class="group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=accesorios'">
-<img alt="Cables y cargadores" class="w-full h-full object-cover opacity-45 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/cables.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">cable</span>
-<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Cables</h3>
-<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Adaptadores y cargadores</p>
-</div>
-</div>
-<!-- Hardware -->
-<div class="sm:col-span-2 lg:col-span-1 group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]" onclick="window.location.href='catalogo.html?cat=hardware'">
-<img alt="Hardware" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" data-alt="Internal view of a powerful gaming PC." src="img/hadware.jpg">
+</a>
+<!-- PC y Componentes -->
+<a href="catalogo.html?catid=cat-pc-y-componentes" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
+<img alt="PC y Componentes" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/hadware.jpg">
 <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="material-symbols-outlined text-primary mb-2 text-3xl">memory</span>
-<h3 class="font-headline text-xl font-black uppercase tracking-tighter">Hardware</h3>
-<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">PC - Stock - Redes</p>
+<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">PC y Componentes</h3>
 </div>
+</a>
+<!-- Perifericos PC -->
+<a href="catalogo.html?catid=cat-perifericos-pc" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
+<img alt="Perifericos PC" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/perifericos.jpg">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">mouse</span>
+<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Perifericos PC</h3>
 </div>
+</a>
+<!-- Accesorios Consolas -->
+<a href="catalogo.html?catid=cat-accesorios-consolas" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
+<img alt="Accesorios Consolas" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/Consolas_Accesorios.jpg">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">gamepad</span>
+<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Accesorios Consolas</h3>
+</div>
+</a>
+<!-- Auriculares -->
+<a href="catalogo.html?catid=cat-auriculares" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
+<img alt="Auriculares" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/auriculares.jpg">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">headphones</span>
+<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Auriculares</h3>
+</div>
+</a>
+<!-- Adaptadores -->
+<a href="catalogo.html?catid=cat-adaptadores" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
+<img alt="Adaptadores" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/adaptadores.jpg">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">device_hub</span>
+<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Adaptadores</h3>
+</div>
+</a>
 </div>
 
   <!-- Botón Ver todo el catálogo -->
@@ -615,99 +609,39 @@ Ver todo
 
 <div class="featured-showcase">
   <div id="home-promo-card" class="setup-promo-card" onclick="window.location.href='catalogo.html?cat=hardware'">
-    <img src="img/Water%20cooler%20corner.jpg" alt="Hardware para PC">
+    <img src="img/hadware.jpg" alt="PC y Componentes">
     <div class="setup-promo-content">
-      <span class="setup-kicker">Mejorá tu hardware</span>
-      <h3 class="setup-promo-title">Hardware</h3>
-      <p class="setup-promo-text">Actualizá tu PC con componentes, almacenamiento y accesorios pensados para rendir mejor.</p>
-      <span class="setup-promo-link">Ver categoría <span class="material-symbols-outlined text-[18px]">arrow_forward</span></span>
+      <span class="setup-kicker">Productos del catálogo</span>
+      <h3 class="setup-promo-title">PC y Componentes</h3>
+      <span class="setup-promo-link">Ver productos <span class="material-symbols-outlined text-[18px]">arrow_forward</span></span>
     </div>
   </div>
 
 <div id="home-featured-grid" class="featured-products-grid">
 
-  <!-- Card 1 -->
-  <div class="featured-card group">
-    <div class="feat-img-wrap">
-      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVumLLeAXBrjKpb053SbgK1ganLFdB9WQb9AvBdr4HnCS1Dl5oW5OcG7S-R78nx_5U7AJy2I9VscAIWv5QJNkNsAiuZ0Ne27-YZIv2SY6d7HxAqCRJuI1nTeMWKniv9_-ZXo-y6RLPfDgX35lXWX7E4szCBA6ATFwTNUMAko-1gqdp5Z-5MizdDZKJHuEF4VMAYxsUTwf2GeRrvgSFkd126_bGOgoCxg9gR_bmzSTswxYgcMLirzmNO2PNIw9PkGr8-SkA6dkPl0Cd" alt="DualSense Edge">
-      <div class="feat-bottom-line"></div>
-    </div>
-    <div class="feat-body">
-      <p class="feat-tag">Consolas</p>
-      <p class="feat-name">DualSense Edge Controller</p>
-      <p class="feat-price">$ 199.990</p>
-      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-PS5-DS', name:'DualSense Edge Controller', price:199990, ref:'DT-77420', category:'Consolas', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
-    </div>
+  <div class="featured-card featured-loading" aria-hidden="true">
+    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
+    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
   </div>
-
-  <!-- Card 2 -->
-  <div class="featured-card group">
-    <div class="feat-img-wrap">
-      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ3BOFyer3zVYnGjRxVo8fS0WezEHu4KP1bJoWi8R2BheDHE8B-RAVvuuqXpvtOaDNTnotkQdMQqaT6zmm_QrMyHZpvP4jePE3n4th3nGd8v5FnguhdwN1_SJmLG336dd_DLaa2r67h7uqZTqm8SGxAUZWncbMUXWmXcYgL2psHV2wTsRALuzM3ORnnD6PJzwa8bIAT8QDOgba1y2iRJmU7kzO71vVx1xhBJkkrNEjHZT74EYwibNZS1CUbCeAdwPUYW4WoZpr2ItL" alt="Redragon Kumara K552">
-      <div class="feat-bottom-line"></div>
-    </div>
-    <div class="feat-body">
-      <p class="feat-tag">Periféricos</p>
-      <p class="feat-name">Redragon Kumara K552</p>
-      <p class="feat-price">$ 49.990</p>
-      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-RD-K552', name:'Redragon Kumara K552', price:49990, ref:'DT-K552', category:'Periféricos', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
-    </div>
+  <div class="featured-card featured-loading" aria-hidden="true">
+    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
+    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
   </div>
-
-  <!-- Card 3 -->
-  <div class="featured-card group">
-    <div class="feat-img-wrap">
-      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ3BOFyer3zVYnGjRxVo8fS0WezEHu4KP1bJoWi8R2BheDHE8B-RAVvuuqXpvtOaDNTnotkQdMQqaT6zmm_QrMyHZpvP4jePE3n4th3nGd8v5FnguhdwN1_SJmLG336dd_DLaa2r67h7uqZTqm8SGxAUZWncbMUXWmXcYgL2psHV2wTsRALuzM3ORnnD6PJzwa8bIAT8QDOgba1y2iRJmU7kzO71vVx1xhBJkkrNEjHZT74EYwibNZS1CUbCeAdwPUYW4WoZpr2ItL" alt="Logitech G502 X">
-      <div class="feat-bottom-line"></div>
-    </div>
-    <div class="feat-body">
-      <p class="feat-tag">Periféricos</p>
-      <p class="feat-name">Logitech G502 X Plus</p>
-      <p class="feat-price">$ 79.990</p>
-      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-LG-G502', name:'Logitech G502 X Plus', price:79990, ref:'DT-G502X', category:'Periféricos', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
-    </div>
+  <div class="featured-card featured-loading" aria-hidden="true">
+    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
+    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
   </div>
-
-  <!-- Card 4 -->
-  <div class="featured-card group">
-    <div class="feat-img-wrap">
-      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB3PpsOjowVlTiBoe9ouGqFWkzllQoohykdp6r8iu8dCnPUw6Jo73qYGZ75s1G3ARNm0wtiL57JYJ31IA8wU98gf7KpJJPsAVeuETktDwM__dNi7yGAXwrjXVC60TfbeP-H1hlYnpceYhAHQRTNCGotj90t4t4pk06_WFOId3lGga72eBbVG94dVhvpcoklUG_qQIitKdMELRu3DgN7jg_rIvPiOW8qHJ5seZsozm8EKatRm9BztZzOW7Ds9RpXawAJlxzG2Zu2_lp" alt="HyperX Cloud II">
-      <div class="feat-bottom-line"></div>
-    </div>
-    <div class="feat-body">
-      <p class="feat-tag">Audio</p>
-      <p class="feat-name">HyperX Cloud II</p>
-      <p class="feat-price">$ 59.990</p>
-      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-HX-C2', name:'HyperX Cloud II', price:59990, ref:'DT-HXC2', category:'Audio', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
-    </div>
+  <div class="featured-card featured-loading" aria-hidden="true">
+    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
+    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
   </div>
-
-  <!-- Card 5 -->
-  <div class="featured-card group">
-    <div class="feat-img-wrap">
-      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw46vWt6b7aEC1UqprLqz0wiwFqW_ccIxdd7Hp-kWBWbwoayvCvn3j-howkQKGnzymZXZ5KKbGE7K37ss5e-h6w6lo5gCCpW038lfjNQULE0EyzB33ws5pArIRYwkRCLMcI48yVHBFlRqNwc5gXFQ6a1-0uCZx0Ey6uP84FDdOhgYH272IBYRom4lRtfmA8j-1buRigpbH8YsN7HnZ_qbO8v2P4w482a3O4vWof9AVPTKpE78SMTtwv9Z-ClARSq9XspgOPYprXvgm" alt="Monitor 24">
-      <div class="feat-bottom-line"></div>
-    </div>
-    <div class="feat-body">
-      <p class="feat-tag">Monitores</p>
-      <p class="feat-name">Monitor 24" 144Hz</p>
-      <p class="feat-price">$ 189.990</p>
-      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-MON-24', name:'Monitor 24 144Hz', price:189990, ref:'DT-MON24', category:'Monitores', image:this.closest('.featured-card').querySelector('img').src, byOrder:true})">A pedido</button>
-    </div>
+  <div class="featured-card featured-loading" aria-hidden="true">
+    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
+    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
   </div>
-
-  <!-- Card 6 -->
-  <div class="featured-card group">
-    <div class="feat-img-wrap">
-      <img class="feat-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT61781KfBkLigbB03oaT3NPl-9Of9hR04nbNiVj8SZ5-GkD3k8ge0oDxnU496AjWPD6WHofG0yUE1InF1gv-6fP0mWyqjmQs7G1um2Fb50oGNKoOV7JwxxnpEztkpZPkv4-1n9UAqrz-4IlTf11uI4f7e3oKfWoBJLhqKql8vuKDEgpgrIR7PamB44PGFbEs0TKW0wn7JMxl4YKn4vjV3CEVdgnT1hpzcCSdq56IyrhGceg1sR2sz3Idg35RTANFO0UXBbDKKUjtJ" alt="SSD 1TB">
-      <div class="feat-bottom-line"></div>
-    </div>
-    <div class="feat-body">
-      <p class="feat-tag">Almacenamiento</p>
-      <p class="feat-name">SSD 1TB NVMe</p>
-      <p class="feat-price">$ 45.990</p>
-      <button class="feat-btn" onclick="addToCartUI(this, {id:'SKU-SSD-1T', name:'SSD 1TB NVMe', price:45990, ref:'DT-SSD1T', category:'Almacenamiento', image:this.closest('.featured-card').querySelector('img').src})">Agregar al carrito</button>
-    </div>
+  <div class="featured-card featured-loading" aria-hidden="true">
+    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
+    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
   </div>
 
 </div>
@@ -856,7 +790,7 @@ Ver todo
               <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">wb_sunny</span>
               <span class="font-headline font-bold uppercase tracking-wide text-sm text-on-surface">Mañana</span>
             </div>
-            <span class="font-body text-on-surface-variant text-sm">9:00 — 13:00</span>
+            <span class="font-body text-on-surface-variant text-sm">9:00 - 13:00</span>
           </div>
 
           <!-- Franja tarde -->
@@ -865,13 +799,13 @@ Ver todo
               <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">partly_cloudy_day</span>
               <span class="font-headline font-bold uppercase tracking-wide text-sm text-on-surface">Tarde</span>
             </div>
-            <span class="font-body text-on-surface-variant text-sm">16:30 — 20:30</span>
+            <span class="font-body text-on-surface-variant text-sm">16:30 - 20:30</span>
           </div>
         </div>
         
 
         <!-- Dirección -->
-        <!-- Cambiá la dirección por la real del local -->
+        <!-- Cambia la dirección por la real del local -->
         <div class="flex items-start gap-3">
           <span class="material-symbols-outlined text-primary mt-0.5" style="font-size:1.2rem;">location_on</span>
           <div>
@@ -924,17 +858,23 @@ Ver todo
 
 
   <script src="shared.js"></script>
-  <script src="config.js?v=low-egress-20260603"></script>
+  <script src="config.js?v=img-fast-20260611"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
   <script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
   <script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
-  <script src="img/producto-imagenes-local.js?v=local-product-images-20260608"></script>
-  <script src="supabase-client.js?v=local-product-images-20260608"></script>
-  <script src="search-global.js?v=low-egress-20260603"></script>
-  <script src="nav.js"></script>
-  <script src="cart.js?v=consultar-stock-20260608"></script>
-  <script src="index.js?v=low-egress-20260603"></script>
+  <script src="img/producto-imagenes-local.js?v=local-product-images-20260629-imgsync3"></script>
+<script src="img/invid-imagenes-local.js?v=invid-images-local-20260629-fast"></script>
+<script src="supabase-client.js?v=invid-image-map-progress2-20260629"></script>
+  <script src="search-global.js?v=smart-search-20260623"></script>
+  <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
+  <script src="cart.js?v=cart-add-fix-20260622"></script>
+  <script src="index.js?v=home-real-categories-20260623"></script>
 
 </body>
 </html>
+
+
+
+
+

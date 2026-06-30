@@ -72,7 +72,7 @@ function getProductStockState(item) {
   var stock = getCartItemStock(item);
   if (isByOrderProduct(item)) return { status: 'by-order', label: 'A pedido', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 0) return { status: 'out', label: 'Consultar', stock: stock };
+  if (stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock <= LOW_STOCK_LIMIT) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
@@ -313,14 +313,28 @@ function cartOutOfStockToast(name) {
   cartToastMessage((name ? name + ': ' : '') + 'Consultanos por WhatsApp para confirmar disponibilidad.', 'error');
 }
 
+function cartBuildProductWhatsAppUrl(product) {
+  const phone = String((window.CONFIG && CONFIG.CONTACT_PHONE) || '5493534019085').replace(/\D+/g, '');
+  const name = String((product && product.name) || 'producto').trim();
+  const code = String(product && (product.ref || product.codigo || product.code || product.accessId || product.id) || '').trim();
+  const category = String(product && (product.sourceLabel || product.category) || '').trim();
+  const parts = ['Hola! Quiero consultar disponibilidad de: ' + name];
+  if (code) parts.push('Código/ref: ' + code);
+  if (category) parts.push('Categoría: ' + category);
+  parts.push('Me podrían confirmar stock?');
+  return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(parts.join('\n'));
+}
+
+function cartOpenProductWhatsApp(product) {
+  window.open(cartBuildProductWhatsAppUrl(product), '_blank', 'noopener');
+}
+
 /**
  * addToCart — wrapper llamado desde los sub-catálogos.
  * Firma: addToCart(name, price, img, event)
  * Genera un id estable desde el nombre del producto.
  */
 function addToCart(name, price, img, event) {
-  if (!ensureUserLoggedIn('add-to-cart')) return;
-
   const product = {
     id:    name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
     name,
@@ -339,10 +353,12 @@ function addToCart(name, price, img, event) {
     // Fallback sin animación de botón
     const result = CartStore.add(product);
     if (!result.ok && result.reason === 'pedido') {
+      cartOpenProductWhatsApp(product);
       cartByOrderToast(product.name);
       return;
     }
     if (!result.ok && result.reason === 'sin-stock') {
+      cartOpenProductWhatsApp(product);
       cartOutOfStockToast(product.name);
       return;
     }
@@ -356,17 +372,18 @@ function addToCart(name, price, img, event) {
 }
 
 function addToCartUI(btn, product) {
-  if (!ensureUserLoggedIn('add-to-cart')) return;
   if (btn.disabled) return;
   btn.disabled = true;
   const result = CartStore.add(product);
   if (!result.ok && result.reason === 'pedido') {
     btn.disabled = false;
+    cartOpenProductWhatsApp(product);
     cartByOrderToast(product.name);
     return;
   }
   if (!result.ok && result.reason === 'sin-stock') {
     btn.disabled = false;
+    cartOpenProductWhatsApp(product);
     cartOutOfStockToast(product.name);
     return;
   }

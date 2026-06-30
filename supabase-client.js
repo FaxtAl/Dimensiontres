@@ -18,6 +18,8 @@
   var LOCAL_PRODUCT_IMAGE_FILES = [
     '[6984521291670] Auricular Intra Manos Libres Samsung AKG S21 Ultra.png',
     'Adaptador Bluetooth 5.4 nano usb mercury MA530.webp',
+    'Adaptador Joystick Ps4 TCON.webp',
+    'All gamestick x2 consola retro.webp',
     'Arcade Doble Multiconsola.webp',
     'Auricular JBL (Replica).webp',
     'Auricular Samsung Replica Galaxy S10+ Caja Chica.png',
@@ -25,26 +27,94 @@
     'Auricular Tame AU-1236.webp',
     'auriculares inalambricos inpods 12 I12.webp',
     'Auriculares Noga Voice NGV-400.webp',
+    'Adaptador inalambrico tp link 150 Mbps.webp',
+    'Base cargadora joystick ps5.webp',
     'Base de carga joystick ps5.png',
+    'Cable miniplug a miniplug + microfono.webp',
+    'Joystick Dualsense Ps5 Blanco.webp',
+    'Joystick Bluetooth x3.webp',
+    'ps5 con lectora.webp',
+    'ps5 digital.webp',
     'Base joystick ps4 Luz led.jpg',
+    'bateria joystick Xbox one.webp',
+    'Cable Audio Video ps2 AV.webp',
     'Cable Mallado 2 Hembra Auricularesmicrofono A Plug 3.5mm Macho.webp',
+    'Cable usb Cargador Joystick PS4.webp',
+    'Cable USB Ps3 1.5M Data Cable.webp',
     'Cable VGA 1.5M.jpg',
+    'Cable video compuesto Ps2 Ps3.webp',
+    'Caja pilas joystick Xbox 360.webp',
+    'Consola Game TV Stick Your Name Gamer.avif',
     'Consola Game TV Stick Your Name Gamer.webp',
+    'Consola portatil Pop It electronico.webp',
     'Consola portatil X6.webp',
+    'Conversor HDMI a VGA.webp',
+    'Cubre grip x4.webp',
+    'D_Q_NP_831147-MLA79987574616_102024-F.webp',
+    'Dead Alliance Day One Edition Ps4.webp',
+    'Funda Silicola Ps3.webp',
     'Funda silicona PS4.webp',
+    'gamestick AllGames (ps5).webp',
     'Inova Cable de Datos.webp',
     'Joystick Ps3 Alternativos.webp',
     'Kit Gabinete Kelyx LC727-14 Fuente 500w.jpg',
+    'Micrófono Noga Vintage MIC-2030 PC Cardioide color plateado.webp',
     'Mini Consola 2 joystick inalambricos Extreme Mini Game Box.jpg',
+    'MOUSE GAMER RAPTOR STORM GRIP 4 BOTONES 3600DPI 7 COLORES.webp',
+    'Mouse Gamer Retroiluminado T-Wolf v1 Óptico 1200Dpi USB RGB.webp',
+    'Mouse Gamer T-Wolf V15 Celeste Retroiluminado 1600 Dpi USB.webp',
     'Noga Stormer NG-8620.webp',
+    'Pad Mouse Raptor Ultra Glide Antideslizante Impermeable Xl Color Negro.webp',
     'Parlantes 2.1 Noga.jpg',
+    'Pendrive 32 gb Hiksemi Cassic.webp',
+    'Pendrive 64GB Hiksemi 3.2 Pully.webp',
     'Pendrive Kingston 64 GB.webp',
     'receptor de musica inalambrico BT-163.webp',
     'Seisa Fast 2USB Charge Kit.jpg',
     'Sentech ST-HS450.webp',
     'Sup + joystick gme-61020.jpg',
-    'Sy830mv.webp'
+    'Sy830mv.webp',
+    'Teclado Logitech K120 QWERTY español color negro.webp',
+    'Teclado Para Una Mano Shipido.webp',
+    'tranyoo cable Tipo Ca C 1M 3A.webp'
   ];
+  var LOCAL_PRODUCT_IMAGE_ALIASES = {
+    'convertidor hdmi a vga': 'Conversor HDMI a VGA.webp',
+    'conversor hdmi a vga': 'Conversor HDMI a VGA.webp',
+    'cable tipo c a c 1m 3a': 'tranyoo cable Tipo Ca C 1M 3A.webp',
+    'cable tranyoo tipo c a c 1m 3a': 'tranyoo cable Tipo Ca C 1M 3A.webp',
+    'tranyoo cable tipo c a c 1m 3a': 'tranyoo cable Tipo Ca C 1M 3A.webp',
+    'pendrive 32 gb hiksemi classic': 'Pendrive 32 gb Hiksemi Cassic.webp',
+    'pendrive 32gb hiksemi classic': 'Pendrive 32 gb Hiksemi Cassic.webp',
+    'pendrive 64gb hiksemi pully': 'Pendrive 64GB Hiksemi 3.2 Pully.webp',
+    'adaptador inalambrico tplink 150 mbps': 'Adaptador inalambrico tp link 150 Mbps.webp',
+    'adaptador inalambrico tp link 150 mbps': 'Adaptador inalambrico tp link 150 Mbps.webp',
+    'playstation 5 consola con lectora': 'ps5 con lectora.webp',
+    'playstation 5 con lectora': 'ps5 con lectora.webp',
+    'ps5 con lectora': 'ps5 con lectora.webp',
+    'consola con lectora': 'ps5 con lectora.webp',
+    'playstation 5 consola de juego digital': 'ps5 digital.webp',
+    'playstation 5 digital': 'ps5 digital.webp',
+    'ps5 digital': 'ps5 digital.webp',
+    'consola de juego digital': 'ps5 digital.webp',
+    'playstation 4 slim 1tb usada': 'PlayStation 4 Slim 1TB Usada.webp',
+    'ps4 slim 1tb usada': 'PlayStation 4 Slim 1TB Usada.webp',
+    'playstation 3 slim usada': 'PlayStation 3 Slim Usada.webp',
+    'ps3 slim usada': 'PlayStation 3 Slim Usada.webp',
+    'xbox one s usada': 'Xbox One S Usada.jpg',
+    'adaptador para celular joystick ps4': 'Adaptador Para celular Joystick ps4.webp',
+    'adaptador celular joystick ps4': 'Adaptador Para celular Joystick ps4.webp',
+    'joystick alternativo ps4 argentina replica': 'Joystick Alternativo Ps4 Argentina Replica.webp',
+    'joystick ps4 alternativo argentina replica': 'Joystick Alternativo Ps4 Argentina Replica.webp',
+    'joystick original usado ps4': 'Joystick original usado Ps4.webp',
+    'joystick ps4 original usado': 'Joystick original usado Ps4.webp',
+    'little nightmares ii ps4': 'Little Nighmares II Ps4.jpg',
+    'little nightmares 2 ps4': 'Little Nighmares II Ps4.jpg',
+    'little nighmares ii ps4': 'Little Nighmares II Ps4.jpg',
+    'tom clancys ghost recon juego original ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg',
+    'tom clancy ghost recon ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg',
+    'ghost recon juego original ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg'
+  };
   var LOCAL_PRODUCT_IMAGES = buildLocalProductImageIndex();
   var LOCAL_PRODUCT_IMAGE_KEYS = Object.keys(LOCAL_PRODUCT_IMAGES);
 
@@ -60,6 +130,24 @@
     return 'img/productos/' + encodeURIComponent(fileName).replace(/%2F/g, '/');
   }
 
+  function getLocalProductImageFiles() {
+    var files = LOCAL_PRODUCT_IMAGE_FILES.slice();
+    var externalFiles = window.DT_LOCAL_PRODUCT_IMAGE_FILES;
+    if (Array.isArray(externalFiles)) {
+      externalFiles.forEach(function(fileName) {
+        if (fileName && files.indexOf(fileName) === -1) files.push(fileName);
+      });
+    }
+    return files;
+  }
+
+  function cleanSupplierCodeText(value) {
+    return String(value || '')
+      .replace(/\s*\(\d{3,}\)/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
   function addLocalProductImage(index, key, path) {
     key = normalizeImageKey(key);
     if (key && !index[key]) index[key] = path;
@@ -67,7 +155,7 @@
 
   function buildLocalProductImageIndex() {
     var index = {};
-    LOCAL_PRODUCT_IMAGE_FILES.forEach(function(fileName) {
+    getLocalProductImageFiles().forEach(function(fileName) {
       var path = productImagePath(fileName);
       var baseName = fileName.replace(/\.[^.]+$/, '');
       addLocalProductImage(index, baseName, path);
@@ -77,6 +165,10 @@
         addLocalProductImage(index, codedName[1], path);
         addLocalProductImage(index, codedName[2], path);
       }
+    });
+    Object.keys(LOCAL_PRODUCT_IMAGE_ALIASES).forEach(function(alias) {
+      var fileName = LOCAL_PRODUCT_IMAGE_ALIASES[alias];
+      if (fileName) addLocalProductImage(index, alias, productImagePath(fileName));
     });
     return index;
   }
@@ -119,6 +211,49 @@
     return '';
   }
 
+  function imageRowText(row) {
+    return normalizeImageKey([
+      row && row.producto,
+      row && row.nombre,
+      row && row.descripcion,
+      row && row.categoria,
+      row && row.subcategoria,
+      row && row.sourceLabel
+    ].filter(Boolean).join(' '));
+  }
+
+  function isPhysicalGameImageRow(row) {
+    var text = imageRowText(row);
+    return text.indexOf('juego') !== -1 || text.indexOf('juegos') !== -1;
+  }
+
+  function trustedGameImageUrl(url) {
+    url = String(url || '').toLowerCase();
+    return url.indexOf('img/productos/') === 0
+      || url.indexOf('img/invid/') === 0
+      || url.indexOf('dixgamer.com') !== -1
+      || url.indexOf('image.api.playstation.com') !== -1
+      || url.indexOf('assets.nintendo.com') !== -1
+      || url.indexOf('steamstatic.com') !== -1;
+  }
+
+  function imagePlatformConflicts(row, url) {
+    var text = imageRowText(row);
+    url = normalizeImageKey(url);
+    var productPlatforms = ['ps5', 'ps4', 'ps3', 'ps2'].filter(function(platform) {
+      return text.indexOf(platform) !== -1 || text.indexOf('playstation ' + platform.slice(2)) !== -1;
+    });
+    if (!productPlatforms.length) return false;
+    return ['ps5', 'ps4', 'ps3', 'ps2'].some(function(platform) {
+      return productPlatforms.indexOf(platform) === -1 && url.indexOf(platform) !== -1;
+    });
+  }
+
+  function isAllowedMappedGameImage(row, url) {
+    if (!isPhysicalGameImageRow(row)) return true;
+    return trustedGameImageUrl(url) && !imagePlatformConflicts(row, url);
+  }
+
   function findMappedProductImage(row) {
     var map = window.DT_PRODUCT_IMAGE_MAP || {};
     var byId = Object.assign({}, map.ids || {}, map.byId || {});
@@ -139,33 +274,136 @@
 
     for (var i = 0; i < idFields.length; i++) {
       var byIdMatch = findMappedProductImageById(idFields[i], byId);
-      if (byIdMatch) return byIdMatch;
+      if (byIdMatch && isAllowedMappedGameImage(row, byIdMatch)) return byIdMatch;
     }
 
     for (var j = 0; j < codeFields.length; j++) {
       var byCodeMatch = findMappedProductImageByCode(codeFields[j], byCode);
-      if (byCodeMatch) return byCodeMatch;
+      if (byCodeMatch && isAllowedMappedGameImage(row, byCodeMatch)) return byCodeMatch;
     }
 
     return '';
   }
 
   function resolveProductImage(row) {
-    var mappedImage = findMappedProductImage(row);
-    if (mappedImage) return mappedImage;
-    if (row && row.imagen_url) return row.imagen_url;
-    if (row && row.image_url) return row.image_url;
-    if (row && row.invid_imagen_url) return row.invid_imagen_url;
     for (var i = 1; i < arguments.length; i++) {
       var found = findLocalProductImage(arguments[i]);
       if (found) return found;
     }
+    var mappedImage = findMappedProductImage(row);
+    if (mappedImage) return mappedImage;
+    if (row && row.imagen_url && isAllowedMappedGameImage(row, row.imagen_url)) return row.imagen_url;
+    if (row && row.image_url && isAllowedMappedGameImage(row, row.image_url)) return row.image_url;
+    if (row && row.invid_imagen_url && isAllowedMappedGameImage(row, row.invid_imagen_url)) return row.invid_imagen_url;
     return '';
   }
 
+  function normalizeRemoteImageUrl(url) {
+    var value = String(url || '').trim().replace(/^["']|["']$/g, '');
+    if (!value) return '';
+    value = value.replace(/\\\//g, '/').replace(/\s+/g, '%20');
+    if (value.indexOf('//') === 0) value = 'https:' + value;
+    if (/^http:\/\//i.test(value)) value = value.replace(/^http:\/\//i, 'https://');
+    if (/^(www\.|invidcomputers\.com|api\.|cdn\.)/i.test(value)) value = 'https://' + value;
+    value = value.replace(/^https:\/\/invidcomputers\.com\//i, 'https://www.invidcomputers.com/');
+    if (/^\/[^/]/.test(value)) value = 'https://www.invidcomputers.com' + value;
+    if (/^(imagenes|images|img|uploads|storage)\//i.test(value)) value = 'https://www.invidcomputers.com/' + value;
+    return value;
+  }
+
+  function getInvidLocalImageCandidates(row) {
+    var rawId = row && (row.id_productos || row.invid_id || row.productId || row.id);
+    var id = String(rawId || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!id) return [];
+
+    var exactLocalFile = window.DT_INVID_IMAGE_FILES && window.DT_INVID_IMAGE_FILES[id];
+    if (exactLocalFile) {
+      return ['img/invid/' + encodeURIComponent(exactLocalFile).replace(/%2F/g, '/')];
+    }
+
+    var exts = [];
+    function addExt(ext) {
+      ext = String(ext || '').toLowerCase().replace(/^\./, '');
+      if (ext && exts.indexOf(ext) === -1) exts.push(ext);
+    }
+
+    var remoteUrl = String(row && (row.invid_imagen_url || row.invid_image_url || row.imagen_url || row.image_url) || '').split('?')[0];
+    var match = remoteUrl.match(/\.([a-z0-9]+)$/i);
+    if (match) {
+      var ext = match[1].toLowerCase();
+      if (ext === 'jpeg') ext = 'jpg';
+      if (['png', 'jpg', 'webp', 'gif', 'avif'].indexOf(ext) !== -1) addExt(ext);
+    }
+
+    ['png', 'jpg', 'jpeg', 'webp', 'gif', 'avif'].forEach(addExt);
+    return exts.map(function(ext) {
+      return 'img/invid/' + id + '.' + ext;
+    });
+  }
+
+  function pushInvidImageCandidate(row, candidates, value) {
+    if (value === null || value === undefined) return;
+    if (Array.isArray(value)) {
+      value.forEach(function(item) { pushInvidImageCandidate(row, candidates, item); });
+      return;
+    }
+    if (typeof value === 'object') {
+      [
+        'url', 'src', 'href', 'path', 'imagen', 'image', 'foto', 'thumbnail',
+        'small', 'medium', 'large', 'original', 'secure_url'
+      ].forEach(function(key) {
+        pushInvidImageCandidate(row, candidates, value[key]);
+      });
+      return;
+    }
+
+    var raw = String(value || '').trim();
+    if (!raw) return;
+    if ((raw.charAt(0) === '[' || raw.charAt(0) === '{') && window.JSON) {
+      try {
+        pushInvidImageCandidate(row, candidates, JSON.parse(raw));
+        return;
+      } catch (error) {}
+    }
+
+    raw.split(/[|,;]/).forEach(function(part) {
+      part = String(part || '').trim().replace(/\\/g, '/');
+      var isLocalAsset = /^img\/(productos|invid)\//i.test(part);
+      var url = isLocalAsset ? part : normalizeRemoteImageUrl(part);
+      if (!url || candidates.indexOf(url) !== -1) return;
+      if (!/^https?:\/\//i.test(url) && url.indexOf('img/productos/') !== 0 && url.indexOf('img/invid/') !== 0) return;
+      if (isAllowedMappedGameImage(row, url)) candidates.push(url);
+    });
+  }
+
+  function collectInvidApiImages(row) {
+    var candidates = [];
+    getInvidLocalImageCandidates(row).forEach(function(url) {
+      pushInvidImageCandidate(row, candidates, url);
+    });
+    var fields = [
+      'invid_imagen_url', 'invid_image_url', 'imagen_url', 'image_url', 'url_imagen',
+      'urlImagen', 'foto_url', 'foto', 'imagen', 'image', 'thumbnail', 'thumb',
+      'picture', 'pictures', 'imagenes', 'images', 'fotos', 'galeria'
+    ];
+    for (var i = 0; row && i < fields.length; i++) {
+      pushInvidImageCandidate(row, candidates, row[fields[i]]);
+    }
+    return candidates;
+  }
+
+  function resolveInvidApiImage(row) {
+    var candidates = collectInvidApiImages(row);
+    return candidates[0] || '';
+  }
+
   var ML_IMAGE_CACHE_PREFIX = 'dt-ml-image-';
-  var PUBLIC_CATALOG_CACHE_PREFIX = 'dt-public-catalog-v20260608-local-product-images-';
-  var PUBLIC_CATALOG_CACHE_TTL_MS = Math.max(5, Number(cfg.PUBLIC_CATALOG_CACHE_MINUTES || 30)) * 60 * 1000;
+  // Cache corto porque stock/precios cambian desde Access durante el dia.
+  // Cambiar el prefijo fuerza al navegador a ignorar caches viejos.
+  var PUBLIC_CATALOG_CACHE_PREFIX = 'dt-public-catalog-v20260629-img-local-progress2-';
+  var PUBLIC_CATALOG_CACHE_TTL_MS = Math.max(1, Number(cfg.PUBLIC_CATALOG_CACHE_MINUTES || 1)) * 60 * 1000;
+  var publicCatalogMemoryCache = {};
+  var publicCatalogPending = {};
   var mlImageRequests = {};
 
   function safeLocalStorageGet(key) {
@@ -197,15 +435,23 @@
   }
 
   function readPublicCatalogCache(key) {
+    var memory = publicCatalogMemoryCache[key];
+    if (memory && memory.expiresAt > Date.now()) {
+      return { hit: true, value: memory.value };
+    }
+
     var raw = safeLocalStorageGet(publicCatalogCacheKey(key));
     if (!raw) return { hit: false, value: null };
 
     try {
       var cached = JSON.parse(raw);
       if (!cached || cached.expiresAt < Date.now()) {
-        safeLocalStorageRemove(publicCatalogCacheKey(key));
-        return { hit: false, value: null };
+        return { hit: false, stale: true, value: cached && cached.value ? cached.value : null };
       }
+      publicCatalogMemoryCache[key] = {
+        expiresAt: cached.expiresAt,
+        value: cached.value
+      };
       return { hit: true, value: cached.value };
     } catch (error) {
       safeLocalStorageRemove(publicCatalogCacheKey(key));
@@ -214,21 +460,56 @@
   }
 
   function writePublicCatalogCache(key, value) {
+    publicCatalogMemoryCache[key] = {
+      expiresAt: Date.now() + PUBLIC_CATALOG_CACHE_TTL_MS,
+      value: value
+    };
     safeLocalStorageSet(publicCatalogCacheKey(key), JSON.stringify({
       expiresAt: Date.now() + PUBLIC_CATALOG_CACHE_TTL_MS,
       value: value
     }));
   }
 
+  async function withPublicCatalogTimeout(promise, key) {
+    var timeoutMs = Math.max(3000, Number(cfg.PUBLIC_CATALOG_TIMEOUT_MS || 6500));
+    return Promise.race([
+      Promise.resolve(promise),
+      new Promise(function(resolve) {
+        window.setTimeout(function() {
+          resolve({ __dtCatalogTimeout: true, key: key });
+        }, timeoutMs);
+      })
+    ]);
+  }
+
   async function withPublicCatalogCache(key, loader) {
     var cached = readPublicCatalogCache(key);
     if (cached.hit) return cached.value;
+    if (publicCatalogPending[key]) return publicCatalogPending[key];
 
-    var value = await loader();
-    if (!Array.isArray(value) || value.length > 0) {
-      writePublicCatalogCache(key, value);
-    }
-    return value;
+    publicCatalogPending[key] = (async function() {
+      var value;
+      try {
+        value = await withPublicCatalogTimeout(loader(), key);
+      } catch (error) {
+        console.warn('Catalogo local: error de API, usando cache si existe:', key, error);
+        if (cached.stale && cached.value) return cached.value;
+        return [];
+      } finally {
+        delete publicCatalogPending[key];
+      }
+      if (value && value.__dtCatalogTimeout) {
+        console.warn('Catalogo local: la API tardo demasiado, usando cache si existe:', key);
+        if (cached.stale && cached.value) return cached.value;
+        return [];
+      }
+      if (!Array.isArray(value) || value.length > 0) {
+        writePublicCatalogCache(key, value);
+      }
+      return value;
+    })();
+
+    return publicCatalogPending[key];
   }
 
   function productLookupCode(product) {
@@ -255,6 +536,7 @@
   }
 
   async function findMercadoLibreImage(product) {
+    if (cfg.MERCADO_LIBRE_AUTO_IMAGE_SEARCH === false) return '';
     if (!product || product.image) return (product && product.image) || '';
     var code = productLookupCode(product);
     if (!code) return '';
@@ -564,11 +846,31 @@
     return { error: result.error || null };
   }
 
+  async function getActiveSession(sb) {
+    if (!sb || !sb.auth) return { data: { session: null }, error: null };
+
+    var sessionResult = await sb.auth.getSession();
+    if (sessionResult.error) return sessionResult;
+
+    var session = sessionResult.data && sessionResult.data.session;
+    if (!session) return sessionResult;
+
+    var expiresAtMs = Number(session.expires_at || 0) * 1000;
+    var shouldRefresh = !session.access_token || (expiresAtMs && expiresAtMs - Date.now() < 120000);
+    if (!shouldRefresh || typeof sb.auth.refreshSession !== 'function') return sessionResult;
+
+    var refreshResult = await sb.auth.refreshSession();
+    if (refreshResult.error) return refreshResult;
+    return refreshResult.data && refreshResult.data.session ? refreshResult : sessionResult;
+  }
+
+  // Devuelve la cuenta actualmente logueada en Supabase Auth.
+  // Si el email interno es dni-XXXX@dimension3.local, tambien busca el cliente local por DNI.
   async function getCurrentAccount() {
     var sb = getClient();
     if (!sb) return { user: null, error: null };
 
-    var sessionResult = await sb.auth.getSession();
+    var sessionResult = await getActiveSession(sb);
     if (sessionResult.error) return { user: null, error: sessionResult.error };
 
     var authUser = sessionResult.data && sessionResult.data.session
@@ -606,6 +908,8 @@
     return { user: user, error: null };
   }
 
+  // Activa una cuenta web usando un DNI que ya vino desde Access.
+  // Sirve para que el cliente vea compras/reparaciones historicas del local.
   async function registerCustomerByDni(dni, password) {
     var sb = getClient();
     var cleanDni = normalizeDni(dni);
@@ -618,7 +922,7 @@
       return {
         user: null,
         error: {
-          message: 'Tu DNI no se encuentra en esta base de datos. Por favor creá una cuenta normal o registrate con Google.'
+          message: 'Tu DNI no se encuentra en esta base de datos. Por favor crea una cuenta nueva o consultanos por WhatsApp.'
         }
       };
     }
@@ -657,6 +961,7 @@
     };
   }
 
+  // Login por DNI: convierte el DNI al email interno y autentica contra Supabase.
   async function loginCustomerByDni(dni, password) {
     var sb = getClient();
     var cleanDni = normalizeDni(dni);
@@ -713,7 +1018,7 @@
     var sb = getClient();
     if (!sb) return { user: null, error: { message: 'Supabase no esta disponible.' } };
 
-    var sessionResult = await sb.auth.getSession();
+    var sessionResult = await getActiveSession(sb);
     if (sessionResult.error) return { user: null, error: sessionResult.error };
     if (!sessionResult.data || !sessionResult.data.session) {
       return {
@@ -842,6 +1147,23 @@
     return Math.round(amount * usdRate * (1 + markup));
   }
 
+  function getInvidMinWebPrice() {
+    var minPrice = Number(cfg.INVID_MIN_WEB_PRICE || 0);
+    return Number.isFinite(minPrice) && minPrice > 0 ? minPrice : 0;
+  }
+
+  function isInvidWebPriceAllowed(price) {
+    var amount = Number(price || 0);
+    return Number.isFinite(amount) && amount >= getInvidMinWebPrice();
+  }
+
+  function getInvidRowWebPrice(row) {
+    if (!row || !row.invid_id) return 0;
+    var sourceCurrency = formatCurrency(row.invid_moneda || 'USD');
+    var sourcePrice = parseMoney(row.invid_precio_final || row.invid_precio || 0);
+    return getInvidSalePrice(sourcePrice, sourceCurrency);
+  }
+
   function formatStoreMoney(value) {
     var amount = Number(value || 0);
     var hasCents = Math.abs(amount - Math.round(amount)) > 0.009;
@@ -945,7 +1267,7 @@
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
 
-    var sessionResult = await sb.auth.getSession();
+    var sessionResult = await getActiveSession(sb);
     if (sessionResult.error) return { orders: [], error: sessionResult.error };
     var session = sessionResult.data && sessionResult.data.session;
     if (!session || !session.user) return { orders: [], error: null };
@@ -1006,6 +1328,7 @@
     };
   }
 
+  // Historial de compras: combina facturas sincronizadas desde Access con pedidos web.
   async function fetchAccountOrders(limit) {
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
@@ -1102,6 +1425,7 @@
     };
   }
 
+  // Historial de reparaciones: lee ordenes del local sincronizadas desde Access.
   async function fetchAccountRepairs(limit) {
     var sb = getClient();
     if (!sb) return { repairs: [], error: { message: 'Supabase no esta disponible.' } };
@@ -1265,7 +1589,11 @@
 
     if (!haystack) return false;
     return HIDDEN_CATALOG_PRODUCT_TERMS.some(function(term) {
-      return term && haystack.indexOf(term) !== -1;
+      if (!term) return false;
+      if (term === 'consola de juego') {
+        return haystack.indexOf(term) !== -1 && haystack.indexOf('playstation 5') === -1 && haystack.indexOf('ps5') === -1;
+      }
+      return haystack.indexOf(term) !== -1;
     });
   }
 
@@ -1280,7 +1608,7 @@
     if (text.indexOf('juegos originales') !== -1 || text.indexOf('juegos fisicos') !== -1) return 'juegos';
     if (text.indexOf('consola') !== -1) return 'consolas';
     if (text.indexOf('juego') !== -1) return 'juegos';
-    if (text.indexOf('periferico') !== -1) return 'perifericos';
+    if (text.indexOf('periferico') !== -1) return 'periféricos';
     if (text.indexOf('auricular') !== -1 || text.indexOf('parlante') !== -1) return 'audio';
     if (text.indexOf('hardware') !== -1 || text.indexOf('memoria') !== -1 || text.indexOf('pc') !== -1 || text.indexOf('silla') !== -1 || text.indexOf('carry') !== -1 || text.indexOf('disck') !== -1 || text.indexOf('disk') !== -1) return 'hardware';
     return 'accesorios';
@@ -1325,7 +1653,7 @@
       'Accesorios Consolas',
       'PC y Componentes',
       'Hardware',
-      'Perifericos PC',
+      'Periféricos PC',
       'Almacenamiento',
       'Memorias',
       'Auriculares',
@@ -1344,19 +1672,11 @@
 
     if (cat.indexOf('consolas de juegos') !== -1) {
       order = [
-        'Consola Ps5',
+        'Consolas Retro',
         'Consola PS4',
+        'Consola Ps5',
         'Consola PS3',
-        'Consola Ps2',
-        'Consola Portatil',
-        'Game TV Stick',
-        'Mini Consola',
-        'Arcade',
-        'Consola Xbox Serie',
-        'Consola Xbox One',
-        'Consola Xbox 360',
-        'Consola Nintendo',
-        'Consolas Retro'
+        'Consola Xbox 360'
       ];
     } else if (cat.indexOf('accesorios consolas') !== -1) {
       order = [
@@ -1377,9 +1697,7 @@
       order = [
         'Juegos Ps5',
         'Juegos Ps4',
-        'Juegos Ps3',
-        'Juegos Xbox One',
-        'Juegos Nintendo'
+        'Juegos Ps3'
       ];
     } else if (cat.indexOf('hardware') !== -1 || cat.indexOf('pc y componentes') !== -1) {
       order = [
@@ -1411,9 +1729,9 @@
         'Red',
         'Otros'
       ];
-    } else if (cat.indexOf('perifericos pc') !== -1) {
+    } else if (cat.indexOf('periféricos pc') !== -1) {
       order = [
-        'Combos Perifericos',
+        'Combos Periféricos',
         'Monitores',
         'Monitor',
         'Teclados',
@@ -1424,11 +1742,11 @@
         'Microfono'
       ];
     } else if (cat.indexOf('almacenamiento') !== -1) {
-      order = ['SSD / M.2', 'Disco SSD', 'Discos HDD', 'Disco Rigido', 'Pendrive', 'Memoria Flash', 'MicroSD / SD'];
+      order = ['Pendrive', 'Memoria Flash', 'MicroSD / SD', 'Carry Disco 2.55', 'Carry Disco 3.55'];
     } else if (cat.indexOf('memorias') !== -1) {
       order = ['Pendrive', 'Memoria Flash'];
     } else if (cat.indexOf('auriculares') !== -1) {
-      order = ['Auricular Gamer', 'Auricular tipo vincha', 'Auricular in ear', 'Adaptador Auricular'];
+      order = ['Auricular Gamer', 'Auricular tipo vincha', 'Auricular in ear'];
     } else if (cat.indexOf('cables') !== -1) {
       order = ['Cable HDMI', 'Cable USB', 'Cable de Red', 'Cable Corriente', 'Cable Vga', 'Cable Plug'];
     } else if (cat.indexOf('accesorio celular') !== -1) {
@@ -1455,13 +1773,27 @@
   }
 
   var PHYSICAL_GAMES_CATEGORY_ID = '3';
+  var CONSOLE_VISIBLE_SUBCATEGORIES = [
+    { id: '72', name: 'Consolas Retro' },
+    { id: '3', name: 'Consola PS4' },
+    { id: '4', name: 'Consola Ps5' },
+    { id: '2', name: 'Consola PS3' },
+    { id: '5', name: 'Consola Xbox 360' }
+  ];
+  var CONSOLE_VISIBLE_IDS = CONSOLE_VISIBLE_SUBCATEGORIES.reduce(function(acc, item) {
+    acc[item.id] = true;
+    return acc;
+  }, {});
+
   var PHYSICAL_GAMES_SUBCATEGORIES = [
     { id: '69', name: 'Juegos Ps5' },
     { id: '10', name: 'Juegos Ps4' },
-    { id: '9', name: 'Juegos Ps3' },
-    { id: '19', name: 'Juegos Xbox One' },
-    { id: '18', name: 'Juegos Nintendo' }
+    { id: '9', name: 'Juegos Ps3' }
   ];
+  var PHYSICAL_GAMES_ALLOWED_IDS = PHYSICAL_GAMES_SUBCATEGORIES.reduce(function(acc, item) {
+    acc[item.id] = true;
+    return acc;
+  }, {});
 
   function createPhysicalGamesChild(item) {
     return {
@@ -1519,6 +1851,12 @@
     games.accessCategoryIds = games.accessCategoryIds && games.accessCategoryIds.length ? games.accessCategoryIds : [PHYSICAL_GAMES_CATEGORY_ID];
     games.useChildrenForProducts = true;
     games.children = games.children || [];
+    games.children = games.children.filter(function(child) {
+      var id = String(child.accessSubcategoryId || '').trim();
+      return PHYSICAL_GAMES_ALLOWED_IDS[id] || PHYSICAL_GAMES_SUBCATEGORIES.some(function(item) {
+        return normalizeCatalogText(child.name) === normalizeCatalogText(item.name);
+      });
+    });
 
     PHYSICAL_GAMES_SUBCATEGORIES.forEach(function(item) {
       var exists = games.children.some(function(child) {
@@ -1530,11 +1868,63 @@
     });
 
     games.children.sort(function(a, b) { return compareSubcategoryItems(games.name, a, b); });
+    games.productCount = games.children.reduce(function(total, child) {
+      return total + Number(child.productCount || 0);
+    }, 0);
     games.subtitle = games.productCount
       ? games.productCount + ' productos en ' + games.children.length + ' subcategorias'
       : 'Juegos fisicos originales por consola';
 
     return list.sort(compareCatalogItems);
+  }
+
+  function shouldHideAccessCatalogChild(displayCategory, displaySubcategory, subcategoryId) {
+    var categoryText = normalizeCatalogText(displayCategory);
+    var subcategoryText = normalizeCatalogText(displaySubcategory);
+    var id = String(subcategoryId || '').trim();
+
+    if (categoryText === 'consolas de juegos' || categoryText === 'consolas') {
+      return !CONSOLE_VISIBLE_IDS[id] && !CONSOLE_VISIBLE_SUBCATEGORIES.some(function(item) {
+        return subcategoryText === normalizeCatalogText(item.name);
+      });
+    }
+
+    if (categoryText === 'juegos fisicos') {
+      return id === '18' || id === '19' || subcategoryText === 'juegos nintendo' || subcategoryText === 'juegos xbox one';
+    }
+
+    if (categoryText === 'auriculares') {
+      return subcategoryText === 'auriculares' || subcategoryText === 'adaptador auricular';
+    }
+
+    if (categoryText === 'almacenamiento' && isPcComponentStorageSubcategory(displaySubcategory)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function isPcComponentStorageSubcategory(subcategory) {
+    var text = normalizeCatalogText(subcategory);
+    return [
+      'disco ssd',
+      'disco ssd m2',
+      'ssd',
+      'ssd / m.2',
+      'm.2',
+      'nvme',
+      'disco rigido',
+      'disco rigido externo',
+      'disco rigido notebook',
+      'disco rigido nas',
+      'disco rigido sata',
+      'discos hdd',
+      'discos hdd / externos',
+      'hdd',
+      'memoria ram',
+      'memorias ram',
+      'ram'
+    ].indexOf(text) !== -1;
   }
 
   function isPcStorageSubcategory(subcategory) {
@@ -1557,7 +1947,7 @@
     var text = normalizeCatalogText(subcategory);
     return [
       'combos pc',
-      'combos perifericos',
+      'combos periféricos',
       'monitor',
       'teclados',
       'mouse',
@@ -1596,7 +1986,7 @@
     var subcategoryText = normalizeCatalogText(subcategory);
 
     if (categoryText === 'accesorio pc' && subcategoryText === 'combos pc') {
-      return 'Combos Perifericos';
+      return 'Combos Periféricos';
     }
 
     var aliases = {
@@ -1630,8 +2020,8 @@
       return 'Juegos Fisicos';
     }
 
-    if (categoryText === 'memorias' && isPcStorageSubcategory(subcategory)) {
-      return 'Almacenamiento';
+    if ((categoryText === 'memorias' || categoryText === 'almacenamiento') && isPcComponentStorageSubcategory(subcategory)) {
+      return 'PC y Componentes';
     }
 
     if (categoryText === 'memorias') {
@@ -1651,7 +2041,7 @@
     }
 
     if (categoryText === 'accesorio pc' && isPcPeripheralSubcategory(subcategory)) {
-      return 'Perifericos PC';
+      return 'Periféricos PC';
     }
 
     if (categoryText === 'accesorio pc') {
@@ -1689,6 +2079,12 @@
     var subtitle = description || subcategory;
     var group = accessGroupForCategory(category);
     var byOrder = isTruthy(row.producto_sinstock) || isTruthy(row.prodcuto_sinstock);
+    var invidWebPrice = getInvidRowWebPrice(row);
+    var hasAllowedSupplier = !!row.invid_id && isInvidWebPriceAllowed(invidWebPrice);
+    var localImage = resolveProductImage(row, code, name, row.producto, row.descripcion);
+    var supplierImage = hasAllowedSupplier ? resolveInvidApiImage({
+      invid_imagen_url: row.invid_imagen_url
+    }) : '';
 
     return {
       id: id,
@@ -1702,7 +2098,8 @@
       icon: accessIconForText(category, subcategory, name),
       subtitle: subtitle,
       badge: '',
-      image: resolveProductImage(row, code, name, row.producto, row.descripcion),
+      image: localImage || supplierImage,
+      imageCandidates: [localImage, supplierImage].filter(Boolean),
       source: 'access',
       sourceLabel: subcategory,
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent('subcat-' + (row.id_subcategoria2 || '')),
@@ -1713,14 +2110,15 @@
       stock: row.totalproductos !== null && row.totalproductos !== undefined ? parseMoney(row.totalproductos) : null,
       brand: row.marca || '',
       model: code || subcategory,
-      sourceIntegration: row.invid_id ? 'invid' : '',
-      supplierId: row.invid_id || '',
-      supplierName: row.invid_titulo || '',
-      supplierImage: row.invid_imagen_url || '',
-      supplierStockStatus: row.invid_stock_status || '',
-      availabilityLabel: row.invid_id ? '48 hs de demora' : 'En local',
-      deliveryLabel: row.invid_id ? '48 hs de demora' : 'En local',
-      fulfillment: row.invid_id ? 'provider' : 'local',
+      sourceIntegration: hasAllowedSupplier ? 'invid' : '',
+      supplierId: hasAllowedSupplier ? row.invid_id : '',
+      supplierName: hasAllowedSupplier ? row.invid_titulo : '',
+      supplierImage: supplierImage,
+      supplierStockStatus: hasAllowedSupplier ? row.invid_stock_status : '',
+      supplierWebPrice: hasAllowedSupplier ? invidWebPrice : 0,
+      availabilityLabel: hasAllowedSupplier ? '48 hs de demora' : 'En local',
+      deliveryLabel: hasAllowedSupplier ? '48 hs de demora' : 'En local',
+      fulfillment: hasAllowedSupplier ? 'provider' : 'local',
       simpleDetail: true,
       byOrder: byOrder,
       producto_sinstock: byOrder
@@ -1732,28 +2130,36 @@
     var sourceCurrency = formatCurrency(row.moneda || 'USD');
     var supplierPrice = parseMoney(row.precio_de_venta);
     var stock = normalizeInvidStockValue(row.totalproductos, row.stock_status || row.invid_stock_status);
+    var salePrice = getInvidSalePrice(supplierPrice, sourceCurrency);
+    var rawName = row.producto || ('Invid #' + id);
+    var cleanName = cleanSupplierCodeText(rawName) || ('Invid #' + id);
+    var cleanDescription = cleanSupplierCodeText(row.descripcion || row.subcategoria || '');
+    var cleanSourceLabel = cleanSupplierCodeText(row.subcategoria || 'Invid PC');
+    var imageCandidates = collectInvidApiImages(row);
     return {
       id: 'invid-' + id,
       accessId: '',
       productId: id,
-      name: row.producto || ('Invid #' + id),
-      price: getInvidSalePrice(supplierPrice, sourceCurrency),
+      name: cleanName,
+      price: salePrice,
       currency: 'ARS',
       category: 'hardware',
       rootCategory: 'hardware',
       subcategoryId: '',
-      icon: accessIconForText(row.categoria || 'Hardware', row.subcategoria || '', row.producto || ''),
-      subtitle: row.marca || row.subcategoria || 'Invid PC',
+      icon: accessIconForText(row.categoria || 'Hardware', row.subcategoria || '', rawName),
+      subtitle: cleanSupplierCodeText(row.marca || row.subcategoria || 'Invid PC'),
       badge: '',
-      image: resolveProductImage(row, row.codigo, row.producto, row.descripcion),
+      image: imageCandidates[0] || '',
+      imageCandidates: imageCandidates,
+      apiImageCandidates: imageCandidates,
       source: 'invid',
       sourceIntegration: 'invid',
-      sourceLabel: row.subcategoria || 'Invid PC',
+      sourceLabel: cleanSourceLabel,
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent('invid-cat-' + catalogSlug(row.subcategoria || 'invid-pc')),
       slug: 'invid-' + id,
       codigo: row.codigo || id,
       code: row.codigo || id,
-      description: row.descripcion || row.subcategoria || '',
+      description: cleanDescription,
       stock: stock,
       brand: row.marca || '',
       model: row.codigo || id,
@@ -1808,6 +2214,10 @@
         var count = Number(row.product_count || 0);
         if (byCategory[rootId].accessCategoryIds.indexOf(categoryId) === -1) {
           byCategory[rootId].accessCategoryIds.push(categoryId);
+        }
+        if (shouldHideAccessCatalogChild(displayCategory, displaySubcategory, subcategoryId)) {
+          byCategory[rootId].productCount += count;
+          return;
         }
         byCategory[rootId].productCount += count;
         byCategory[rootId].children.push({
@@ -1921,7 +2331,7 @@
       return (result.data || [])
         .map(mapInvidProduct)
         .filter(function(product) {
-          return Number(product.stock || 0) > 0 && Number(product.price || 0) > 0;
+          return Number(product.stock || 0) > 0 && isInvidWebPriceAllowed(product.price);
         });
     });
   }
@@ -1938,7 +2348,8 @@
       }
 
       var row = Array.isArray(result.data) ? result.data[0] : result.data;
-      return row ? mapInvidProduct(row) : null;
+      var product = row ? mapInvidProduct(row) : null;
+      return product && isInvidWebPriceAllowed(product.price) ? product : null;
     });
   }
 
@@ -2020,7 +2431,7 @@
     var sb = getClient();
     if (!sb) return '';
 
-    var sessionResult = await sb.auth.getSession();
+    var sessionResult = await getActiveSession(sb);
     if (sessionResult.error) return '';
 
     var session = sessionResult.data && sessionResult.data.session;
@@ -2070,6 +2481,7 @@
     return null;
   }
 
+  // Guarda un pedido creado en la web. Requiere sesion real para evitar pedidos anonimos.
   async function createWebOrder(data) {
     var sb = getClient();
     if (!sb) return { order: null, error: { message: 'Supabase no esta disponible.' } };
@@ -2077,7 +2489,7 @@
     var items = (data && data.items) || [];
     if (!items.length) return { order: null, error: { message: 'El carrito esta vacio.' } };
 
-    var sessionResult = await sb.auth.getSession();
+    var sessionResult = await getActiveSession(sb);
     if (sessionResult.error) return { order: null, error: sessionResult.error };
     var session = sessionResult.data && sessionResult.data.session;
     if (!session || !session.user) {
@@ -2175,7 +2587,7 @@
     if (!sb) return { ok: false, error: { message: 'Supabase no esta disponible.' } };
     if (!cleanId) return { ok: false, error: { message: 'Falta el pedido para eliminar.' } };
 
-    var sessionResult = await sb.auth.getSession();
+    var sessionResult = await getActiveSession(sb);
     if (sessionResult.error) return { ok: false, error: sessionResult.error };
 
     var session = sessionResult.data && sessionResult.data.session;

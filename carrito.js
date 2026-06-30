@@ -7,6 +7,13 @@
 // Los precios que llegan desde Access ya incluyen IVA, asi que el carrito no suma impuesto extra.
 var TAX         = 0;
 var discountPct = 0; // porcentaje de descuento aplicado (0–1)
+var mercadoPagoInstallments = 1;
+
+function selectMercadoPagoInstallments() {
+  mercadoPagoInstallments = 1;
+  var label = document.getElementById('mp-selected-label');
+  if (label) label.textContent = 'Checkout directo - 1 cuota';
+}
 
 function formatMoney(value) {
   var amount = Number(value || 0);
@@ -65,10 +72,52 @@ function showCartNotice(message) {
   alert(message);
 }
 
+function isPaymentSessionExpiredError(error) {
+  var message = String(error && error.message ? error.message : error || '').toLowerCase();
+  if (isPaymentBackendJwtConfigError(error)) return false;
+  return (error && (error.code === 'session_expired' || error.code === 'session_required')) ||
+    message.indexOf('session_expired') !== -1 ||
+    message.indexOf('session_required') !== -1 ||
+    message.indexOf('tu sesion vencio') !== -1 ||
+    message.indexOf('sesion invalida') !== -1 ||
+    message.indexOf('inicia sesion') !== -1 ||
+    message.indexOf('sesión') !== -1;
+}
+
+function isPaymentBackendJwtConfigError(error) {
+  var message = String(error && error.message ? error.message : error || '').toLowerCase();
+  return message.indexOf('bad_jwt') !== -1 ||
+    message.indexOf('jwt') !== -1 ||
+    message.indexOf('unrecognized jwt') !== -1 ||
+    message.indexOf('unable to parse or verify signature') !== -1 ||
+    message.indexOf('keyfunc') !== -1;
+}
+
+async function resetCheckoutSessionAndRedirect(message) {
+  try {
+    if (window.SupabaseStore && window.SupabaseStore.signOutAccount) {
+      await window.SupabaseStore.signOutAccount();
+    }
+  } catch (error) {}
+
+  try {
+    for (var i = localStorage.length - 1; i >= 0; i--) {
+      var key = localStorage.key(i);
+      var normalized = String(key || '').toLowerCase();
+      if (normalized.indexOf('supabase') !== -1 || (normalized.indexOf('sb-') === 0 && normalized.indexOf('auth') !== -1)) {
+        localStorage.removeItem(key);
+      }
+    }
+  } catch (error) {}
+
+  alert(message || 'Tu sesion vencio. Inicia sesion de nuevo y volve al carrito para pagar.');
+  window.location.href = 'cuenta.html?next=carrito.html';
+}
+
 function cleanCartText(value) {
   return String(value || '')
     .replace(/\bCodigo\b/gi, 'Código')
-    .replace(/\bPerifericos\b/gi, 'Periféricos')
+    .replace(/\bPeriféricos\b/gi, 'Periféricos')
     .replace(/\bCatalogo\b/gi, 'Catálogo')
     .replace(/\s+/g, ' ')
     .trim();
@@ -447,128 +496,12 @@ function checkoutWhatsApp() {
 }
 
 function checkoutUnavailable(methodName) {
-  alert(methodName + ' queda para el siguiente paso. Para 3 o 6 cuotas lo conectamos con Getnet.');
+  alert(methodName + ' queda para el siguiente paso.');
 }
 
-async function fetchGetnetOptions(total) {
-  var response = await fetch('api/getnet-installments.php?amount=' + encodeURIComponent(total), {
-    headers: { 'Accept': 'application/json' }
-  });
-  var raw = await response.text();
-  var data = null;
-  try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
-  if (!response.ok || !data || !data.ok) {
-    throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
-  }
-  return data.options || [];
-}
-
-function chooseGetnetInstallments(options) {
-  var lines = ['Elegí cuotas para Getnet: 3 o 6', ''];
-  options.forEach(function(option) {
-    lines.push(
-      option.installments + ' cuotas: ' +
-      formatMoney(option.installment_amount) + ' c/u - final ' +
-      formatMoney(option.total) +
-      (option.rate_percent > 0 ? ' (' + option.rate_percent + '%)' : '')
-    );
-  });
-
-  var selected = prompt(lines.join('\n'), '3');
-  if (selected === null) return null;
-  selected = String(selected).trim();
-  var option = options.find(function(item) { return String(item.installments) === selected; });
-  if (!option) {
-    alert('Por ahora Getnet está preparado solo para 3 o 6 cuotas.');
-    return null;
-  }
-  return option;
-}
-
-async function checkoutGetnet(button) {
-  var totals = calculateCartTotals();
-  var options = [];
-  try {
-    options = await fetchGetnetOptions(totals.total);
-  } catch (error) {
-    console.warn('No se pudieron leer cuotas Getnet:', error);
-    options = [
-      { installments: 3, rate_percent: 0, base_total: totals.total, surcharge: 0, total: totals.total, installment_amount: Math.ceil((totals.total / 3) * 100) / 100 },
-      { installments: 6, rate_percent: 0, base_total: totals.total, surcharge: 0, total: totals.total, installment_amount: Math.ceil((totals.total / 6) * 100) / 100 }
-    ];
-  }
-
-  var selectedOption = chooseGetnetInstallments(options);
-  if (!selectedOption) return;
-
-  var installments = selectedOption.installments;
-  var installmentAmount = selectedOption.installment_amount;
-  var ok = confirm(
-    'Getnet en ' + installments + ' cuotas\n\n' +
-    'Subtotal: ' + formatMoney(selectedOption.base_total || totals.total) + '\n' +
-    (selectedOption.surcharge > 0 ? 'Recargo: ' + formatMoney(selectedOption.surcharge) + '\n' : '') +
-    'Total final: ' + formatMoney(selectedOption.total || totals.total) + '\n' +
-    'Cada cuota: ' + formatMoney(installmentAmount) + '\n\n' +
-    'Te llevamos al checkout seguro de Getnet.'
-  );
-  if (!ok) return;
-
-  var originalHtml = setCheckoutButtonLoading(button, 'Preparando Getnet...');
-
-  try {
-    var result = await createSavedOrder(
-      'getnet',
-      'Pedido creado para Getnet en ' + installments + ' cuotas de ' + formatMoney(installmentAmount) + '.'
-    );
-    if (!result || result.cancelled) return;
-    if (result.error || !result.saved) {
-      alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
-      return;
-    }
-    if (result.saved.error) {
-      alert(result.saved.error.message || 'No se pudo guardar el pedido.');
-      return;
-    }
-
-    var token = window.SupabaseStore && window.SupabaseStore.getAccessToken
-      ? await window.SupabaseStore.getAccessToken()
-      : '';
-    var order = result.saved.order;
-
-    var response = await fetch('api/getnet-create-checkout.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-        'X-Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        order_id: order.id,
-        installments: installments,
-        access_token: token
-      })
-    });
-
-    var raw = await response.text();
-    var data = null;
-    try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
-    if (!response.ok || !data || !data.ok) {
-      throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
-    }
-
-    localStorage.setItem('dt_last_order_reference', data.order_ref || order.external_reference || '');
-    window.location.href = data.checkout_url;
-  } catch (error) {
-    console.error('Error Getnet:', error);
-    alert(error.message || 'No se pudo preparar Getnet.');
-  } finally {
-    restoreCheckoutButton(button, originalHtml);
-  }
-}
-
+// Antes de comprar o guardar pedido siempre valida la sesion real de Supabase.
+// No alcanza con localStorage: si no hay sesion activa manda a cuenta.html.
 async function resolveCheckoutUser() {
-  var currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-
   if (window.SupabaseStore && window.SupabaseStore.getCurrentAccount) {
     try {
       var account = await window.SupabaseStore.getCurrentAccount();
@@ -581,12 +514,14 @@ async function resolveCheckoutUser() {
     }
   }
 
-  if (currentUser && currentUser.id) return currentUser;
+  try { localStorage.removeItem('d3_user'); } catch (error) {}
 
   window.location.href = 'cuenta.html?from=checkout&return=' + encodeURIComponent('carrito.html');
   return null;
 }
 
+// Guarda el pedido web en Supabase. Despues la cuenta lo muestra en historial
+// y Mercado Pago usa este order_id para no pagar pedidos anonimos.
 async function createSavedOrder(method, notes) {
   var items = CartStore.getAll();
   if (!items.length) return { cancelled: true };
@@ -617,6 +552,7 @@ async function createSavedOrder(method, notes) {
   return { saved: saved, totals: totals, items: items };
 }
 
+// Avisa al local por WhatsApp Cloud API cuando entra un pedido web.
 async function notifyStoreOrder(saved, eventType) {
   if (!saved || saved.reused || !saved.order || !saved.order.id) return;
   if (!window.SupabaseStore || !window.SupabaseStore.getAccessToken) return;
@@ -657,6 +593,7 @@ function restoreCheckoutButton(button, originalHtml) {
   button.innerHTML = originalHtml;
 }
 
+// Flujo de WhatsApp: guarda pedido en Supabase y abre el mensaje con el detalle.
 async function checkoutSavedOrder(button, method) {
   var originalHtml = setCheckoutButtonLoading(button, 'Guardando pedido...');
 
@@ -665,6 +602,10 @@ async function checkoutSavedOrder(button, method) {
 
   if (!result || result.cancelled) return;
   if (result.error || !result.saved) {
+    if (isPaymentSessionExpiredError(result.error)) {
+      await resetCheckoutSessionAndRedirect('Inicia sesion para guardar el pedido y comprar.');
+      return;
+    }
     alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
     return;
   }
@@ -698,33 +639,38 @@ async function checkoutSavedOrder(button, method) {
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 
+// Flujo de Mercado Pago: guarda pedido primero, valida sesion y recien ahi crea preferencia de pago.
 async function checkoutMercadoPago(button) {
   var originalHtml = setCheckoutButtonLoading(button, 'Preparando pago...');
+  var selectedInstallments = 1;
 
   try {
-    var result = await createSavedOrder('mercadopago', 'Pedido creado para pagar en 1 cuota con Mercado Pago.');
-    if (!result || result.cancelled) return;
-    if (result.error || !result.saved) {
-      alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
-      return;
-    }
-    if (result.saved.error) {
-      alert(result.saved.error.message || 'No se pudo guardar el pedido.');
+    var items = CartStore.getAll();
+    if (!items.length) return;
+    if (cartHasByOrderItems(items)) {
+      warnByOrderCheckout();
       return;
     }
 
-    if (!window.SupabaseStore || !window.SupabaseStore.getAccessToken) {
-      alert('No se pudo validar tu sesion para Mercado Pago.');
-      return;
+    var orderResult = await createSavedOrder(
+      'mercadopago',
+      'Pedido creado desde carrito web para Mercado Pago en 1 cuota.'
+    );
+    if (!orderResult || orderResult.cancelled) return;
+    if (orderResult.error || !orderResult.saved || !orderResult.saved.order || !orderResult.saved.order.id) {
+      throw new Error((orderResult.error && orderResult.error.message) || 'No se pudo guardar el pedido antes de pagar.');
     }
 
-    var token = await window.SupabaseStore.getAccessToken();
+    var token = '';
+    if (window.SupabaseStore && window.SupabaseStore.getAccessToken) {
+      token = await window.SupabaseStore.getAccessToken();
+    }
     if (!token) {
-      alert('Inicia sesion de nuevo para pagar.');
-      return;
+      var sessionError = new Error('Inicia sesion para pagar con Mercado Pago.');
+      sessionError.code = 'session_required';
+      throw sessionError;
     }
 
-    var order = result.saved.order;
     var response = await fetch('api/mp-create-preference.php', {
       method: 'POST',
       headers: {
@@ -733,9 +679,9 @@ async function checkoutMercadoPago(button) {
         'X-Authorization': 'Bearer ' + token
       },
       body: JSON.stringify({
-        order_id: order.id,
-        installments: 1,
-        access_token: token
+        order_id: orderResult.saved.order.id,
+        access_token: token,
+        max_installments: selectedInstallments
       })
     });
 
@@ -743,13 +689,23 @@ async function checkoutMercadoPago(button) {
     var data = null;
     try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
     if (!response.ok || !data || !data.ok) {
-      throw new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
+      var checkoutError = new Error((data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status));
+      if (data && data.code) checkoutError.code = data.code;
+      throw checkoutError;
     }
 
-    localStorage.setItem('dt_last_order_reference', data.order_ref || order.external_reference || '');
+    localStorage.setItem('dt_last_order_reference', data.order_ref || '');
     window.location.href = data.checkout_url;
   } catch (error) {
     console.error('Error Mercado Pago:', error);
+    if (isPaymentBackendJwtConfigError(error)) {
+      alert('El pago no puede validar tu sesion porque la API de pagos esta usando otra clave de Supabase. Subi api/payment-config.php actualizado y volve a probar.');
+      return;
+    }
+    if (isPaymentSessionExpiredError(error)) {
+      await resetCheckoutSessionAndRedirect();
+      return;
+    }
     alert(error.message || 'No se pudo iniciar Mercado Pago.');
   } finally {
     restoreCheckoutButton(button, originalHtml);
@@ -761,6 +717,7 @@ window.addEventListener('storage', function(e) { if (e.key === 'dt_cart_v1') ren
 document.addEventListener('DOMContentLoaded', function() {
   render();
   updateCartBadge();
+  selectMercadoPagoInstallments(mercadoPagoInstallments);
   hydrateCartImages().then(function(changed) {
     if (changed) render();
   });

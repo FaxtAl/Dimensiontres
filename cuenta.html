@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
@@ -6,7 +6,7 @@
 <title>Mi Cuenta | DimensionTres</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link rel="stylesheet" href="shared.css?v=product-images-20260515">
+<link rel="stylesheet" href="shared.css?v=mobile-polish-20260623">
 <style>
   :root {
     --cyan: #8ff5ff;
@@ -27,7 +27,7 @@
   body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; }
   .font-headline { font-family: 'Space Grotesk', sans-serif; }
 
-  /* ── Animations ── */
+  /* -- Animations -- */
   @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
   @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
@@ -41,7 +41,7 @@
   .animate-slide-in { animation: slideIn .4s ease forwards; }
   .animate-scale-in { animation: scaleIn .4s cubic-bezier(.25,.46,.45,.94) forwards; }
 
-  /* ── Split Layout ── */
+  /* -- Split Layout -- */
   .split-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -143,7 +143,7 @@
     flex-shrink: 0;
   }
 
-  /* ── Right Panel (Form) ── */
+  /* -- Right Panel (Form) -- */
   .split-right {
     display: flex;
     align-items: center;
@@ -177,7 +177,7 @@
     .form-wrapper { max-width: 560px; }
   }
 
-  /* ── Tab Switcher ── */
+  /* -- Tab Switcher -- */
   .auth-tabs {
     display: flex;
     background: var(--surface);
@@ -210,7 +210,7 @@
 
   .auth-tab:not(.active):hover { color: var(--text); }
 
-  /* ── Form Card ── */
+  /* -- Form Card -- */
   .form-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -235,7 +235,7 @@
     margin-bottom: 1.75rem;
   }
 
-  /* ── Google Button ── */
+  /* -- Google Button -- */
   .google-btn {
     width: 100%;
     display: flex;
@@ -263,7 +263,7 @@
 
   .google-btn:active { transform: translateY(0); }
 
-  /* ── Divider ── */
+  /* -- Divider -- */
   .divider {
     display: flex;
     align-items: center;
@@ -284,7 +284,7 @@
     color: var(--text-dim);
   }
 
-  /* ── Input Group ── */
+  /* -- Input Group -- */
   .input-group { margin-bottom: 1rem; }
 
   .create-fields {
@@ -368,7 +368,7 @@
   .input-field.has-error { border-color: var(--error); }
   .input-field.has-error + .input-error-msg { display: block; }
 
-  /* ── Submit Button ── */
+  /* -- Submit Button -- */
   .submit-btn {
     width: 100%;
     padding: 0.95rem;
@@ -400,7 +400,7 @@
     transform: none;
   }
 
-  /* ── Forgot / Extra Links ── */
+  /* -- Forgot / Extra Links -- */
   .form-links {
     display: flex;
     justify-content: space-between;
@@ -420,7 +420,7 @@
 
   .form-link:hover { color: var(--cyan); }
 
-  /* ── Status Message ── */
+  /* -- Status Message -- */
   .status-msg {
     padding: 0.85rem 1rem;
     border-radius: 6px;
@@ -445,9 +445,9 @@
     color: var(--success);
   }
 
-  /* ══════════════════════════════════════
+  /* ======================================
      DASHBOARD (logueado)
-     ══════════════════════════════════════ */
+     ====================================== */
 
   #dashboard {
     display: none;
@@ -463,7 +463,7 @@
     padding: 0 1.5rem 3rem;
   }
 
-  /* ── Header ── */
+  /* -- Header -- */
   .dash-header {
     display: flex;
     flex-direction: column;
@@ -522,7 +522,7 @@
     background: rgba(255,113,108,0.05);
   }
 
-  /* ── User Card ── */
+  /* -- User Card -- */
   .user-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -605,7 +605,7 @@
     margin-top: 0.5rem;
   }
 
-  /* ── Section Tabs ── */
+  /* -- Section Tabs -- */
   .section-tabs {
     display: flex;
     gap: 0;
@@ -643,11 +643,11 @@
 
   .section-tab .material-symbols-outlined { font-size: 18px; }
 
-  /* ── Section Panels ── */
+  /* -- Section Panels -- */
   .section-panel { display: none; animation: fadeUp .35s ease forwards; }
   .section-panel.active { display: block; }
 
-  /* ── Stats Grid ── */
+  /* -- Stats Grid -- */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -696,7 +696,7 @@
     color: var(--text-dim);
   }
 
-  /* ── Order List ── */
+  /* -- Order List -- */
   .orders-list {
     display: flex;
     flex-direction: column;
@@ -932,7 +932,7 @@
 
   .order-item.expanded .expand-icon { transform: rotate(180deg); }
 
-  /* ── Empty State ── */
+  /* -- Empty State -- */
   .empty-state {
     text-align: center;
     padding: 3rem 2rem;
@@ -982,7 +982,7 @@
 
   .empty-action:hover { box-shadow: 0 0 30px rgba(0,240,255,0.4); transform: translateY(-1px); }
 
-  /* ── Profile Form ── */
+  /* -- Profile Form -- */
   .profile-form {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1054,7 +1054,7 @@
   .save-msg.visible { opacity: 1; }
   .save-msg.error { color: var(--error); }
 
-  /* ── Password Section ── */
+  /* -- Password Section -- */
   .password-section {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -1105,13 +1105,13 @@
     border-color: rgba(143,245,255,0.3);
   }
 
-  /* ── Scrollbar ── */
+  /* -- Scrollbar -- */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }
   ::-webkit-scrollbar-thumb:hover { background: #484847; }
 
-  /* ── Noise ── */
+  /* -- Noise -- */
   body::after {
     content: '';
     position: fixed;
@@ -1387,7 +1387,7 @@
     }
   }
 
-  /* ── Material Symbols ── */
+  /* -- Material Symbols -- */
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 </style>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -1395,9 +1395,9 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
+<!-- ======================================
      SPLIT LAYOUT (no logueado)
-     ══════════════════════════════════════ -->
+     ====================================== -->
 <div id="auth-view" class="split-container">
 
   <!-- Left Brand Panel -->
@@ -1414,9 +1414,9 @@
         </div>
         <div class="brand-feature">
           <div class="brand-feature-icon">
-            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">local_shipping</span>
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">storefront</span>
           </div>
-          <span>Seguimiento de envíos</span>
+          <span>Retiro y atención en el local</span>
         </div>
         <div class="brand-feature">
           <div class="brand-feature-icon">
@@ -1445,41 +1445,24 @@
         <button class="auth-tab" id="tab-create" onclick="switchAuthTab('create')">Crear cuenta</button>
       </div>
 
-      <!-- ── LOGIN FORM ── -->
+      <!-- -- LOGIN FORM -- -->
       <div id="panel-login" class="form-card">
         <h2 class="form-title">Iniciar sesión</h2>
-        <p class="form-subtitle">Ingresá con DNI o email y contraseña. Si ya pasaste por el local y registraron tus datos, seguramente ya estás cargado en el sistema.</p>
+        <p class="form-subtitle">Ingresá con tu DNI y contraseña. Si ya pasaste por el local, tus datos pueden estar cargados para activar la cuenta.</p>
 
         <div id="login-status" class="status-msg"></div>
 
         <div class="input-group">
-          <label class="input-label">DNI o email</label>
-          <input class="input-field" type="text" id="login-dni" placeholder="Ej: 30111222 o tu@email.com" autocomplete="username"/>
+          <label class="input-label">DNI</label>
+          <input class="input-field" type="text" id="login-dni" placeholder="Ej: 30111222" inputmode="numeric" autocomplete="username"/>
         </div>
 
         <div class="input-group">
           <label class="input-label">Contraseña</label>
-          <input class="input-field" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+          <input class="input-field" type="password" id="login-pass" placeholder="Tu contraseña" autocomplete="current-password"/>
         </div>
 
         <button class="submit-btn" onclick="handleDniLogin()">Ingresar</button>
-
-        <div class="divider" style="margin-top:1.5rem;">
-          <span class="divider-line"></span>
-          <span class="divider-text">o</span>
-          <span class="divider-line"></span>
-        </div>
-
-        <button class="google-btn" onclick="signInWithGoogle('login-status')">
-          <svg width="20" height="20" viewBox="0 0 48 48">
-            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            <path fill="none" d="M0 0h48v48H0z"/>
-          </svg>
-          Iniciar con Google
-        </button>
 
         <div class="form-links">
           <button class="form-link" onclick="switchAuthTab('register')">Activar mi DNI</button>
@@ -1487,7 +1470,7 @@
         </div>
       </div>
 
-      <!-- ── REGISTER FORM ── -->
+      <!-- -- REGISTER FORM -- -->
       <div id="panel-register" class="form-card" style="display:none;">
         <h2 class="form-title">Activar DNI</h2>
         <p class="form-subtitle">Si ya fuiste al local y te registraron, ingresá tu DNI para encontrar tus datos y crear tu contraseña.</p>
@@ -1517,10 +1500,10 @@
         </div>
       </div>
 
-      <!-- ── CREATE FORM ── -->
+      <!-- -- CREATE FORM -- -->
       <div id="panel-create" class="form-card" style="display:none;">
         <h2 class="form-title">Crear cuenta</h2>
-        <p class="form-subtitle">Creá una cuenta nueva con email y contraseña, o usá Google. Si tu DNI ya está cargado, te vamos a pedir que actives el DNI.</p>
+        <p class="form-subtitle">Creá una cuenta nueva con tus datos. Si tu DNI ya está cargado, usá Activar DNI para vincularlo.</p>
 
         <div id="create-status" class="status-msg"></div>
 
@@ -1553,24 +1536,7 @@
 
         </div>
 
-        <button class="submit-btn" onclick="handleNormalRegister()">Crear cuenta normal</button>
-
-        <div class="divider" style="margin-top:1.5rem;">
-          <span class="divider-line"></span>
-          <span class="divider-text">o</span>
-          <span class="divider-line"></span>
-        </div>
-
-        <button class="google-btn" onclick="signInWithGoogle('create-status')">
-          <svg width="20" height="20" viewBox="0 0 48 48">
-            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            <path fill="none" d="M0 0h48v48H0z"/>
-          </svg>
-          Continuar con Google
-        </button>
+        <button class="submit-btn" onclick="handleNormalRegister()">Crear cuenta</button>
 
         <div class="form-links">
           <button class="form-link" onclick="switchAuthTab('login')">Iniciar sesión</button>
@@ -1582,9 +1548,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ======================================
      DASHBOARD (logueado)
-     ══════════════════════════════════════ -->
+     ====================================== -->
 <div id="dashboard">
 
   <!-- Header -->
@@ -1610,8 +1576,8 @@
         <div class="online-dot"></div>
       </div>
       <div class="user-info">
-        <p class="user-name" id="user-name-display">—</p>
-        <p class="user-email" id="user-email-display">—</p>
+        <p class="user-name" id="user-name-display">?</p>
+        <p class="user-email" id="user-email-display">?</p>
         <div class="user-provider" id="user-provider">
           <span class="material-symbols-outlined" style="font-size:12px">mail</span>
           <span id="provider-text">Email</span>
@@ -1635,7 +1601,7 @@
       </button>
     </div>
 
-    <!-- ── SECTION: PEDIDOS ── -->
+    <!-- -- SECTION: PEDIDOS -- -->
     <div id="section-pedidos" class="section-panel">
       <div class="orders-list" id="orders-list">
         <!-- Llenado por JS -->
@@ -1651,7 +1617,7 @@
       </div>
     </div>
 
-    <!-- ── SECTION: REPARACIONES ── -->
+    <!-- -- SECTION: REPARACIONES -- -->
     <div id="section-reparaciones" class="section-panel">
       <div class="orders-list" id="repairs-list">
         <!-- Llenado por JS -->
@@ -1663,7 +1629,7 @@
       </div>
     </div>
 
-    <!-- ── SECTION: DATOS ── -->
+    <!-- -- SECTION: DATOS -- -->
     <div id="section-datos" class="section-panel">
       <div class="profile-form">
         <div class="profile-section-title">Datos personales</div>
@@ -1689,8 +1655,8 @@
             <input class="input-field" type="tel" id="pf-phone" placeholder="+54 9 ..."/>
           </div>
           <div class="full-width">
-            <label class="input-label">Dirección de envío</label>
-            <input class="input-field" type="text" id="pf-address" placeholder="Calle, número, ciudad"/>
+            <label class="input-label">Dirección / referencia opcional</label>
+            <input class="input-field" type="text" id="pf-address" placeholder="Referencia para el local"/>
           </div>
         </div>
         <div class="profile-save-row">
@@ -1698,7 +1664,7 @@
             <span class="material-symbols-outlined" style="font-size:16px">save</span>
             Guardar Cambios
           </button>
-          <span id="save-msg" class="save-msg">✓ Cambios guardados</span>
+          <span id="save-msg" class="save-msg">&#10003; Cambios guardados</span>
         </div>
       </div>
 
@@ -1726,9 +1692,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ======================================
      NAV (completo, igual que index.html)
-     ══════════════════════════════════════ -->
+     ====================================== -->
 <nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom:1px solid rgba(0,240,255,0.08);">
   <div class="flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
     <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">DimensionTres</a>
@@ -1759,9 +1725,9 @@
   </div>
 </nav>
 
-<!-- ── DRAWER MOBILE ─────────────────────────────────────────────
+<!-- -- DRAWER MOBILE ---------------------------------------------
      Se desliza desde la izquierda con backdrop oscuro.
-     ══════════════════════════════════════════════════════════ -->
+     ========================================================== -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -1792,32 +1758,33 @@
 <footer></footer>
 
 <script src="shared.js"></script>
-<script src="nav.js"></script>
-<script src="config.js?v=low-egress-20260603"></script>
+<script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
+<script src="config.js?v=img-fast-20260611"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
 <script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
 <script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
-<script src="img/producto-imagenes-local.js?v=local-product-images-20260608"></script>
-<script src="supabase-client.js?v=local-product-images-20260608"></script>
-<script src="search-global.js?v=low-egress-20260603"></script>
-<script src="cart.js?v=consultar-stock-20260608"></script>
+<script src="img/producto-imagenes-local.js?v=local-product-images-20260629-imgsync3"></script>
+<script src="img/invid-imagenes-local.js?v=invid-images-local-20260629-fast"></script>
+<script src="supabase-client.js?v=invid-image-map-progress2-20260629"></script>
+<script src="search-global.js?v=smart-search-20260623"></script>
+<script src="cart.js?v=whatsapp-consultar-20260609"></script>
 <script>
-// ══════════════════════════════════════════════════════════════
+// ==============================================================
 //  CUENTA - Rediseño completo | Dimensión Tres
-// ══════════════════════════════════════════════════════════════
+// ==============================================================
 
 let currentUser = null;
 let profileComplete = false;
 let googleStatusTarget = 'create-status';
 
-// ── Historial desde Supabase ──
+// -- Historial desde Supabase --
 let accountOrders = [];
 let accountRepairs = [];
 let ordersLoaded = false;
 let repairsLoaded = false;
 
-// ── Auth Tab Switching ──
+// -- Auth Tab Switching --
 function switchAuthTab(tab) {
   const loginTab = document.getElementById('tab-login');
   const registerTab = document.getElementById('tab-register');
@@ -1866,17 +1833,18 @@ function showStatus(el, msg, type) {
   el.className = 'status-msg ' + type;
 }
 
-// ── Section Switching ──
+// -- Section Switching --
 
-// ── Login / Register por DNI ──
+// -- Login / Register por DNI --
 function cleanDni(value) {
   return String(value || '').replace(/\D/g, '');
 }
 
+// Login principal del local: el cliente entra con DNI y contrasena.
+// Supabase busca ese DNI contra los clientes sincronizados desde Access.
 async function handleDniLogin() {
   const account = document.getElementById('login-dni').value.trim();
   const dni = cleanDni(account);
-  const isEmail = account.includes('@');
   const pass = document.getElementById('login-pass').value;
   const status = document.getElementById('login-status');
 
@@ -1884,7 +1852,11 @@ async function handleDniLogin() {
     showStatus(status, 'Completá todos los campos.', 'error');
     return;
   }
-  if (!isEmail && dni.length < 7) {
+  if (account.includes('@')) {
+    showStatus(status, 'Ingresá solamente con DNI.', 'error');
+    return;
+  }
+  if (dni.length < 7) {
     showStatus(status, 'DNI inválido.', 'error');
     return;
   }
@@ -1892,26 +1864,22 @@ async function handleDniLogin() {
     showStatus(status, 'Contraseña muy corta.', 'error');
     return;
   }
-  if (!window.SupabaseStore || !window.SupabaseStore.loginCustomerByDni || !window.SupabaseStore.loginEmailAccount) {
+  if (!window.SupabaseStore || !window.SupabaseStore.loginCustomerByDni) {
     showStatus(status, 'Supabase no está disponible.', 'error');
     return;
   }
 
   showStatus(status, 'Validando cuenta...', 'success');
-  const result = isEmail
-    ? await window.SupabaseStore.loginEmailAccount(account, pass)
-    : await window.SupabaseStore.loginCustomerByDni(dni, pass);
+  const result = await window.SupabaseStore.loginCustomerByDni(dni, pass);
   if (result.error) {
-    const msg = isEmail && String(result.error.message || '').toLowerCase().includes('invalid')
-      ? 'No encontramos esa cuenta. Creá una cuenta normal o registrate con Google.'
-      : (result.error.message || 'No pudimos ingresar con esos datos.');
-    showStatus(status, msg, 'error');
+    showStatus(status, result.error.message || 'No pudimos ingresar con ese DNI.', 'error');
     return;
   }
 
   loginUser(result.user);
 }
 
+// Activa un DNI que ya existe en Access/Supabase y le crea contrasena web.
 async function handleDniRegister() {
   const dni = cleanDni(document.getElementById('reg-dni').value);
   const pass = document.getElementById('reg-pass').value;
@@ -1953,6 +1921,7 @@ async function handleDniRegister() {
   loginUser(result.user);
 }
 
+// Crea una cuenta nueva desde la web. Si carga DNI, despues se puede vincular al historial local.
 async function handleNormalRegister() {
   const name = document.getElementById('create-name').value.trim();
   const email = document.getElementById('create-email').value.trim().toLowerCase();
@@ -2008,25 +1977,6 @@ async function handleNormalRegister() {
   loginUser(result.user);
 }
 
-// ── Google OAuth ──
-async function signInWithGoogle(statusId) {
-  googleStatusTarget = statusId || 'create-status';
-  const s = document.getElementById(googleStatusTarget);
-
-  if (!window.SupabaseStore || !window.SupabaseStore.signInWithGoogle) {
-    showStatus(s, 'Supabase no está disponible.', 'error');
-    return;
-  }
-
-  showStatus(s, 'Abriendo Google...', 'success');
-  const redirectTo = window.location.origin + window.location.pathname + window.location.search;
-  const result = await window.SupabaseStore.signInWithGoogle(redirectTo);
-  if (result.error) {
-    showStatus(s, result.error.message || 'No se pudo abrir Google.', 'error');
-    return;
-  }
-}
-
 function getAuthReturnUrl() {
   const params = new URLSearchParams(window.location.search);
   const from = params.get('from') || '';
@@ -2035,7 +1985,9 @@ function getAuthReturnUrl() {
   return /^[a-z0-9_-]+\.html(?:[?#].*)?$/i.test(target) ? target : '';
 }
 
-// ── Login User ──
+// -- Login User --
+// Guarda la sesion visible para la web y muestra el panel de cuenta.
+// La sesion real igualmente vive en Supabase Auth.
 function loginUser(user) {
   currentUser = user;
   localStorage.setItem('d3_user', JSON.stringify(user));
@@ -2047,7 +1999,7 @@ function loginUser(user) {
   renderDashboard(user);
 }
 
-// ── Logout ──
+// -- Logout --
 async function signOut() {
   currentUser = null;
   localStorage.removeItem('d3_user');
@@ -2057,7 +2009,7 @@ async function signOut() {
   showAuthView();
 }
 
-// ── Render Dashboard ──
+// -- Render Dashboard --
 function renderDashboard(user) {
   // Hide auth view, show dashboard
   document.getElementById('auth-view').style.display = 'none';
@@ -2101,11 +2053,10 @@ function renderDashboard(user) {
   document.getElementById('pf-phone').value = user.phone || saved.phone || '';
   document.getElementById('pf-address').value = user.address || saved.address || '';
 
-  // Check if profile is complete (email, phone and address required)
+  // Check if profile is complete (email and phone required)
   profileComplete = !!(
     document.getElementById('pf-email').value &&
-    document.getElementById('pf-phone').value &&
-    document.getElementById('pf-address').value
+    document.getElementById('pf-phone').value
   );
 
   // If profile incomplete, show datos tab and show warning
@@ -2120,7 +2071,7 @@ function renderDashboard(user) {
       warning = document.createElement('div');
       warning.id = 'profile-warning';
       warning.style.cssText = 'background:rgba(255,198,0,0.1);border:1px solid rgba(255,198,0,0.3);color:var(--warning);padding:1rem 1.25rem;border-radius:8px;margin-bottom:1.5rem;font-size:0.82rem;display:flex;align-items:center;gap:0.5rem;';
-      warning.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">warning</span><span>Completá email, teléfono y dirección para continuar.</span>';
+      warning.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">warning</span><span>Completá email y teléfono para continuar.</span>';
       const tabsEl = document.querySelector('.section-tabs');
       if (tabsEl) tabsEl.parentNode.insertBefore(warning, tabsEl.nextSibling);
     }
@@ -2423,6 +2374,10 @@ async function cleanupPendingOrdersNotInCart() {
   }
 }
 
+// Carga el historial de la cuenta:
+// - compras/facturas desde Access sincronizado
+// - pedidos web guardados desde carrito
+// - reparaciones del local si el DNI/cliente coincide
 async function loadAccountHistory() {
   if (!window.SupabaseStore) {
     ordersLoaded = true;
@@ -2500,7 +2455,7 @@ function renderOrders() {
               </div>
               <div class="order-product-info">
                 <p class="order-product-name">${escapeHtml(item.name)}</p>
-                <p class="order-product-meta">Cantidad: ${escapeHtml(item.qty || 0)}${item.code ? ' · Código: ' + escapeHtml(item.code) : ''}</p>
+                <p class="order-product-meta">Cantidad: ${escapeHtml(item.qty || 0)}${item.code ? ' ? Código: ' + escapeHtml(item.code) : ''}</p>
                 ${order.paymentMethod ? `<p class="order-product-meta">Pago: ${escapeHtml(order.paymentMethod)}</p>` : ''}
               </div>
               <div class="order-product-price">${formatAccountMoney(item.subtotal || (item.price * item.qty))}</div>
@@ -2571,7 +2526,7 @@ function renderRepairs() {
             <div class="order-product-info">
               ${repair.consoleName ? `<p class="order-product-name">${escapeHtml(repair.consoleName)}</p>` : ''}
               ${repair.issue ? `<p class="order-product-meta">Falla: ${escapeHtml(repair.issue)}</p>` : ''}
-              <p class="order-product-meta">${repair.serial ? 'Serie: ' + escapeHtml(repair.serial) : ''}${repair.sticker ? ' · Pegatina: ' + escapeHtml(repair.sticker) : ''}</p>
+              <p class="order-product-meta">${repair.serial ? 'Serie: ' + escapeHtml(repair.serial) : ''}${repair.sticker ? ' ? Pegatina: ' + escapeHtml(repair.sticker) : ''}</p>
             </div>
             <div class="order-product-price">${escapeHtml(repair.state || repair.statusLabel || '')}</div>
           </div>
@@ -2585,7 +2540,7 @@ function toggleOrderDetail(el) {
   el.classList.toggle('expanded');
 }
 
-// ── Save Profile ──
+// -- Save Profile --
 async function saveProfile() {
   if (!currentUser) return;
 
@@ -2646,19 +2601,19 @@ async function saveProfile() {
   localStorage.setItem('d3_user', JSON.stringify(currentUser));
 
   // Check if profile is now complete
-  if (email && phone && address) {
+  if (email && phone) {
     profileComplete = true;
     const warning = document.getElementById('profile-warning');
     if (warning) warning.style.display = 'none';
   }
 
-  msg.textContent = '✓ Cambios guardados en Supabase';
+  msg.textContent = '&#10003; Cambios guardados en Supabase';
   msg.classList.remove('error');
   msg.classList.add('visible');
   setTimeout(() => msg.classList.remove('visible'), 3000);
 }
 
-// ── Section Switch with profile check ──
+// -- Section Switch with profile check --
 function switchSection(name, btn) {
   // If trying to access pedidos and profile incomplete, show warning and redirect
   if ((name === 'pedidos' || name === 'reparaciones') && !profileComplete && !accountOrders.length && !accountRepairs.length) {
@@ -2712,14 +2667,16 @@ async function changePassword() {
   alert('Contraseña actualizada.');
 }
 
-// ── Show Auth View ──
+// -- Show Auth View --
 function showAuthView() {
   document.getElementById('auth-view').style.display = '';
   document.getElementById('dashboard').classList.remove('visible');
   switchAuthTab('login');
 }
 
-// ── INIT ──
+// -- INIT --
+// Al abrir Mi Cuenta primero intenta restaurar sesion real de Supabase.
+// Esto evita que el checkout pida iniciar sesion si el cliente ya habia entrado.
 document.addEventListener('DOMContentLoaded', async function() {
   updateCartBadge();
 
@@ -2743,9 +2700,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch (e) {}
   }
 
-  // No user logged in — show auth view
+  // No user logged in ? show auth view
   showAuthView();
 });
 </script>
 </body>
 </html>
+
+
+
+
+

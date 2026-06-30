@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
@@ -6,8 +6,8 @@
 <title>Tu Arsenal | DimensionTres</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link rel="stylesheet" href="shared.css?v=getnet-soon-20260522">
-<link rel="stylesheet" href="carrito.css?v=getnet-soon-20260522">
+<link rel="stylesheet" href="shared.css?v=mobile-polish-20260623">
+<link rel="stylesheet" href="carrito.css?v=mp-one-payment-20260629">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="tailwind.config.js"></script>
 </head>
@@ -45,9 +45,9 @@
 
 </nav>
 
-<!-- ── DRAWER MOBILE ─────────────────────────────────────────────
+<!-- -- DRAWER MOBILE ---------------------------------------------
      Se desliza desde la izquierda con backdrop oscuro.
-     ══════════════════════════════════════════════════════════ -->
+     ========================================================== -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -84,7 +84,7 @@
 
   <div id="cart-empty" style="display:none" class="flex-col items-center justify-center py-32 gap-5 text-center">
     <span class="material-symbols-outlined text-[72px] text-[#262626]">shopping_cart</span>
-    <h2 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface-variant mt-4">Tu arsenal está vacío</h2>
+    <h2 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface-variant mt-4">Tu arsenal está vacáo</h2>
     <p class="font-body text-sm text-[#484847]">Explorá el catálogo y armá tu setup.</p>
     <a href="catalogo.html" class="mt-4 px-8 py-4 bg-primary-container text-on-primary font-headline font-black uppercase tracking-widest neon-glow hover:scale-105 transition-all inline-block">Ver Catálogo</a>
   </div>
@@ -137,7 +137,7 @@
           </div>
         </div>
         <div class="payment-methods">
-          <p class="payment-methods-title">Elegí cómo pagar</p>
+          <p class="payment-methods-title">Elegí el medio de pago</p>
           <button onclick="checkoutSavedOrder(this, 'whatsapp')" class="payment-method is-active">
             <span class="material-symbols-outlined">chat</span>
             <span>
@@ -149,14 +149,7 @@
             <span class="material-symbols-outlined">account_balance_wallet</span>
             <span>
               <strong>Mercado Pago</strong>
-              <small>1 cuota online</small>
-            </span>
-          </button>
-          <button type="button" class="payment-method payment-method-soon" disabled aria-disabled="true" title="Getnet se activa cuando el banco habilite el producto.">
-            <span class="material-symbols-outlined">credit_card</span>
-            <span>
-              <strong>Getnet</strong>
-              <small>Proximamente</small>
+              <small id="mp-selected-label">Checkout directo - 1 cuota</small>
             </span>
           </button>
         </div>
@@ -192,12 +185,12 @@
       <div class="bg-surface-container p-6 flex flex-col items-center justify-center text-center group hover:bg-primary-container transition-colors duration-500 cursor-pointer">
         <img class="w-64 h-64 object-contain mb-4 group-hover: transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDScYLHopP6fZ0ao8_na2pY9_scxNhTQ3qMtBOvzXFYZql2zafaABlIfkhnmAwMFAC2w4Tfha1RS2llCugt6jkvB0Us0T-eDMBzWnHX262a2OwdGQAOf5a1kLfiZDNI6fRwoMMAiCUOw7ygcbJ18j-wK3W0PXg0KWlVT9wS2T-s8SxaJpDE7hdtgOkPNzaG8xVEx2EEXzUiAsiSNQ7Gck92X2ga3d_JV0ucQB3_0In3jKgpwG5a_sVBvV1Ct5899YUR6EtcSNN01t3F" alt="Mecánico TKL"/>
         <h4 class="font-headline font-bold uppercase group-hover:text-on-primary">Teclados Gamer</h4>
-        <p class="text-xs text-on-surface-variant mt-1 group-hover:text-on-primary/70">Mecánicos · RGB · TKL</p>
+        <p class="text-xs text-on-surface-variant mt-1 group-hover:text-on-primary/70">Mecánicos ? RGB ? TKL</p>
       </div>
       <div class="bg-surface-container p-6 flex flex-col items-center justify-center text-center group hover:bg-secondary-container transition-colors duration-500 cursor-pointer">
         <img class="w-64 h-64 object-contain mb-4 group-hover: transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZLknuTqd4nkOinze_SDQMC5Q6kajyH5bnEAEnNika8azw4KVSqxCdY9hs3LkjS-CLMCDhmvAREYtdoHtEp_bEPhLC9HcPEV9mqfXDjhz-i74XDFlPF2-7sufoN7yBKL9vq2SZK-MFoDNyMA-Zwoqc94CZnAUVW1XrNkU8Nd8Up0Dj0ssusahXHy5ku0hByuOey4HmV49AZMbtrs9F3qnxHKvXeBs5OGCJwsjK7TytjmtjpC428I8OM0KHtWKGaj35JrgWnUXdGWq2" alt="Audio Espacial"/>
         <h4 class="font-headline font-bold uppercase group-hover:text-white">Audio Gamer</h4>
-        <p class="text-xs text-on-surface-variant mt-1 group-hover:text-white/70">Auriculares · Micrófonos</p>
+        <p class="text-xs text-on-surface-variant mt-1 group-hover:text-white/70">Auriculares ? Micrófonos</p>
       </div>
     </div>
   </section>
@@ -207,16 +200,24 @@
 <footer></footer>
 
 <script src="shared.js"></script>
-<script src="nav.js"></script>
-<script src="config.js?v=low-egress-20260603"></script>
+<script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
+<script src="config.js?v=img-fast-20260611"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
 <script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
 <script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
-<script src="img/producto-imagenes-local.js?v=local-product-images-20260608"></script>
-<script src="supabase-client.js?v=local-product-images-20260608"></script>
-<script src="cart.js?v=consultar-stock-20260608"></script>
-<script src="carrito.js?v=whatsapp-notify-20260605"></script>
+<script src="img/producto-imagenes-local.js?v=local-product-images-20260629-imgsync3"></script>
+<script src="img/invid-imagenes-local.js?v=invid-images-local-20260629-fast"></script>
+<script src="supabase-client.js?v=invid-image-map-progress2-20260629"></script>
+<script src="cart.js?v=cart-add-fix-20260622"></script>
+<script src="carrito.js?v=mp-one-payment-items-20260629"></script>
 
 </body>
 </html>
+
+
+
+
+
+
+

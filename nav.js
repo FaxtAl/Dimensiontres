@@ -22,6 +22,7 @@ function toggleMenu() {
     if (h2) h2.style.opacity = '1';
     if (h3) h3.style.transform = 'none';
     document.body.style.overflow = '';
+    document.body.classList.remove('dt-mobile-menu-open');
   } else {
     drawer.setAttribute('data-open', 'true');
     drawer.style.transform = 'translateX(0)';
@@ -31,6 +32,7 @@ function toggleMenu() {
     if (h2) h2.style.opacity = '0';
     if (h3) h3.style.transform = 'translateY(-8px) rotate(-45deg)';
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('dt-mobile-menu-open');
   }
 }
 
@@ -51,6 +53,7 @@ function closeMenu() {
   if (h2) h2.style.opacity = '1';
   if (h3) h3.style.transform = 'none';
   document.body.style.overflow = '';
+  document.body.classList.remove('dt-mobile-menu-open');
 }
 
 window.addEventListener('scroll', function() {

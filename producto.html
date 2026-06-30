@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
@@ -6,7 +6,7 @@
 <title>Producto | DimensionTres</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link rel="stylesheet" href="shared.css?v=product-images-20260515">
+<link rel="stylesheet" href="shared.css?v=mobile-polish-20260623">
 <style>
 body::after {
   content:'';position:fixed;inset:0;
@@ -304,6 +304,14 @@ body::after {
   text-align:left;
 }
 
+@media (max-width:640px) {
+  #prod-badges,
+  .product-side-summary #prod-category-label,
+  .product-side-summary #prod-subtitle-tag {
+    display:none !important;
+  }
+}
+
 #prod-info-col {
   max-width:780px;
 }
@@ -537,7 +545,7 @@ body::after {
           <ul id="features-list" style="list-style:none;display:flex;flex-direction:column;gap:.6rem;"></ul>
         </div>
 
-        <!-- Qty + Add — Desktop -->
+        <!-- Qty + Add ? Desktop -->
         <div id="desktop-purchase-block" class="hidden md:block">
           <div class="purchase-row">
             <div>
@@ -558,7 +566,7 @@ body::after {
             <span><span class="material-symbols-outlined">verified</span>Producto verificado</span>
             <span><span class="material-symbols-outlined">shield</span>Garantía del local</span>
             <span><span class="material-symbols-outlined">storefront</span>Retiro en Villa María</span>
-            <span><span class="material-symbols-outlined">chat</span>Consultá por WhatsApp</span>
+            <span><span class="material-symbols-outlined">chat</span>Consulta por WhatsApp</span>
           </div>
         </div>
         
@@ -568,10 +576,10 @@ body::after {
     </div><!-- /product grid -->
 
     <!-- Related Products -->
-    <section class="mt-20 md:mt-28 px-5 md:px-8 fade-up-3">
+    <section id="related-products-section" class="mt-20 md:mt-28 px-5 md:px-8 fade-up-3">
       <div class="flex items-end justify-between mb-8 md:mb-12">
         <div>
-          <span id="related-eyebrow" style="display:block;font-family:'Space Grotesk',sans-serif;font-size:.65rem;font-weight:700;color:#8ff5ff;text-transform:uppercase;letter-spacing:.3em;margin-bottom:6px;">Más Productos</span>
+          <span id="related-eyebrow" style="display:block;font-family:'Space Grotesk',sans-serif;font-size:.65rem;font-weight:700;color:#8ff5ff;text-transform:uppercase;letter-spacing:.3em;margin-bottom:6px;">Más productos</span>
           <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:clamp(1.4rem,3vw,2rem);text-transform:uppercase;letter-spacing:-.02em;">De esta Categoría</h2>
         </div>
         <a id="related-all-link" href="catalogo.html" style="font-family:'Space Grotesk',sans-serif;font-size:.7rem;font-weight:700;color:#adaaaa;text-transform:uppercase;letter-spacing:.1em;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap;" class="hover:text-white transition-colors">
@@ -589,7 +597,6 @@ body::after {
 <div class="mobile-sticky-cta md:hidden fade-up-4" id="mobile-cta" style="display:none!important;">
   <div class="flex flex-col" style="min-width:0;">
     <span id="mob-price" style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;color:#fff;line-height:1;"></span>
-    <span id="mob-name" style="font-family:'Manrope',sans-serif;font-size:.7rem;color:#484847;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
   </div>
   <button id="add-btn-mobile" onclick="handleAddToCart(this)" class="btn-primary flex-1 py-4 flex items-center justify-center gap-2" style="min-height:48px;">
     <span class="material-symbols-outlined" style="font-size:17px;">add_shopping_cart</span>
@@ -603,21 +610,22 @@ body::after {
 <footer></footer>
 
 <script src="shared.js"></script>
-<script src="nav.js"></script>
-<script src="config.js?v=invid-ars-20260604"></script>
+<script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
+<script src="config.js?v=img-fast-20260611"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
 <script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
 <script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
-<script src="img/producto-imagenes-local.js?v=local-product-images-20260608"></script>
-<script src="supabase-client.js?v=local-product-images-20260608"></script>
-<script src="cart.js?v=consultar-stock-20260608"></script>
+<script src="img/producto-imagenes-local.js?v=local-product-images-20260629-imgsync3"></script>
+<script src="img/invid-imagenes-local.js?v=invid-images-local-20260629-fast"></script>
+<script src="supabase-client.js?v=invid-image-map-progress2-20260629"></script>
+<script src="cart.js?v=cart-add-fix-20260622"></script>
 
 <script>
 // -------------------------------------------------------
-//  PRODUCTS DATABASE — generado automáticamente
+//  PRODUCTS DATABASE - generado automáticamente
 // -------------------------------------------------------
-var PRODUCTS_DB = {"cable-hdmi-2-0-1-5m":{"name":"Cable HDMI 2.0 1.5m","price":4500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-hdmi-2-0-1-5m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-hdmi-2-1-2m":{"name":"Cable HDMI 2.1 2m","price":8500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-hdmi-2-1-2m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-usb-c-1m-65w":{"name":"Cable USB-C 1m 65W","price":3500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-usb-c-1m-65w","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-displayport-2m":{"name":"Cable DisplayPort 2m","price":6500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-displayport-2m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-usb-a-3-0-1m":{"name":"Cable USB-A 3.0 1m","price":2500,"category":"cable","icon":"cable","subtitle":"Transfer 5Gbps","badge":"","image":"","source":"sub-accesorios","slug":"cable-usb-a-3-0-1m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"base-cargadora-ps5":{"name":"Base Cargadora PS5","price":18000,"category":"cargador","icon":"battery_charging_full","subtitle":"Dual DualSense","badge":"","image":"","source":"sub-accesorios","slug":"base-cargadora-ps5","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"base-cargadora-ps4":{"name":"Base Cargadora PS4","price":12000,"category":"cargador","icon":"battery_charging_full","subtitle":"Dual DualShock","badge":"","image":"","source":"sub-accesorios","slug":"base-cargadora-ps4","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cargador-usb-c-gan-65w":{"name":"Cargador USB-C GaN 65W","price":14000,"category":"cargador","icon":"power","subtitle":"Compacto Viaje","badge":"","image":"","source":"sub-accesorios","slug":"cargador-usb-c-gan-65w","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"hub-usb-3-0-7-puertos":{"name":"Hub USB 3.0 7 puertos","price":18000,"category":"adaptador","icon":"hub","subtitle":"Con Alimentacion","badge":"","image":"","source":"sub-accesorios","slug":"hub-usb-3-0-7-puertos","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"adaptador-hdmi-a-vga":{"name":"Adaptador HDMI a VGA","price":4500,"category":"adaptador","icon":"settings_input_hdmi","subtitle":"Full HD 1080p","badge":"","image":"","source":"sub-accesorios","slug":"adaptador-hdmi-a-vga","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"adaptador-usb-c-a-hdmi":{"name":"Adaptador USB-C a HDMI","price":8500,"category":"adaptador","icon":"settings_input_hdmi","subtitle":"4K 60Hz","badge":"","image":"","source":"sub-accesorios","slug":"adaptador-usb-c-a-hdmi","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"tira-led-rgb-5m":{"name":"Tira LED RGB 5m","price":12000,"category":"led","icon":"light_mode","subtitle":"USB Control App","badge":"","image":"","source":"sub-accesorios","slug":"tira-led-rgb-5m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"tira-led-monitor-1m":{"name":"Tira LED Monitor 1m","price":7500,"category":"led","icon":"light_mode","subtitle":"Retroiluminacion TV","badge":"","image":"","source":"sub-accesorios","slug":"tira-led-monitor-1m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"kit-tiras-led-gaming":{"name":"Kit Tiras LED Gaming","price":22000,"category":"led","icon":"light_mode","subtitle":"Habitacion 20m2","badge":"","image":"","source":"sub-accesorios","slug":"kit-tiras-led-gaming","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-monitor-vesa":{"name":"Soporte Monitor VESA","price":28000,"category":"soporte","icon":"monitor","subtitle":"Articulado Simple","badge":"","image":"","source":"sub-accesorios","slug":"soporte-monitor-vesa","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-dual-monitor":{"name":"Soporte Dual Monitor","price":45000,"category":"soporte","icon":"monitor","subtitle":"2 Pantallas VESA","badge":"","image":"","source":"sub-accesorios","slug":"soporte-dual-monitor","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-auriculares":{"name":"Soporte Auriculares","price":8500,"category":"soporte","icon":"headphones","subtitle":"Escritorio Madera","badge":"","image":"","source":"sub-accesorios","slug":"soporte-auriculares","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"ssd-240gb-sata":{"name":"SSD 240GB SATA","price":22000,"category":"ssd","icon":"storage","subtitle":"2.5\" 550MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-240gb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"ssd-480gb-sata":{"name":"SSD 480GB SATA","price":35000,"category":"ssd","icon":"storage","subtitle":"2.5\" 550MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-480gb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"ssd-1tb-sata":{"name":"SSD 1TB SATA","price":58000,"category":"ssd","icon":"storage","subtitle":"2.5\" 560MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-1tb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-500gb":{"name":"NVMe M.2 500GB","price":42000,"category":"ssd","icon":"memory","subtitle":"PCIe 3.0 3500MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-500gb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-1tb":{"name":"NVMe M.2 1TB","price":72000,"category":"ssd","icon":"memory","subtitle":"PCIe 3.0 3500MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-1tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-2tb-pcie-4-0":{"name":"NVMe M.2 2TB PCIe 4.0","price":135000,"category":"ssd","icon":"memory","subtitle":"7000MB/s Gen4","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-2tb-pcie-4-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-1tb-7200rpm":{"name":"HDD 1TB 7200rpm","price":28000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" SATA III","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-1tb-7200rpm","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-2tb-7200rpm":{"name":"HDD 2TB 7200rpm","price":42000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" SATA III","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-2tb-7200rpm","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-4tb-nas":{"name":"HDD 4TB NAS","price":75000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" WD Red","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-4tb-nas","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-32gb-usb-3-0":{"name":"Pendrive 32GB USB 3.0","price":6500,"category":"pendrive","icon":"usb","subtitle":"Lectura 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-32gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-64gb-usb-3-0":{"name":"Pendrive 64GB USB 3.0","price":9500,"category":"pendrive","icon":"usb","subtitle":"Lectura 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-64gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-128gb-usb-3-0":{"name":"Pendrive 128GB USB 3.0","price":14000,"category":"pendrive","icon":"usb","subtitle":"Lectura 150MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-128gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"memoria-sd-64gb-c10":{"name":"Memoria SD 64GB C10","price":8000,"category":"sd","icon":"sd_card","subtitle":"UHS-I 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"memoria-sd-64gb-c10","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"memoria-sd-128gb-u3-4k":{"name":"Memoria SD 128GB U3 4K","price":14000,"category":"sd","icon":"sd_card","subtitle":"170MB/s Video","badge":"","image":"","source":"sub-almacenamiento","slug":"memoria-sd-128gb-u3-4k","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"disco-externo-1tb":{"name":"Disco Externo 1TB","price":45000,"category":"externo","icon":"hard_drive_2","subtitle":"USB 3.0 Portatil","badge":"","image":"","source":"sub-almacenamiento","slug":"disco-externo-1tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"disco-externo-2tb":{"name":"Disco Externo 2TB","price":65000,"category":"externo","icon":"hard_drive_2","subtitle":"USB 3.0 Portatil","badge":"","image":"","source":"sub-almacenamiento","slug":"disco-externo-2tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"auricular-over-ear-hifi":{"name":"Auricular Over-Ear HiFi","price":38000,"category":"auricular","icon":"headphones","subtitle":"Estudio 50mm Driver","badge":"","image":"","source":"sub-audio","slug":"auricular-over-ear-hifi","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auricular-gamer-7-1":{"name":"Auricular Gamer 7.1","price":32000,"category":"auricular","icon":"headset","subtitle":"Surround USB RGB","badge":"","image":"","source":"sub-audio","slug":"auricular-gamer-7-1","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auricular-sony-mdr-zx110":{"name":"Auricular Sony MDR-ZX110","price":18000,"category":"auricular","icon":"headphones","subtitle":"Alambrico 3.5mm","badge":"","image":"","source":"sub-audio","slug":"auricular-sony-mdr-zx110","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"in-ear-monitor-dual-driver":{"name":"In-Ear Monitor Dual Driver","price":55000,"category":"auricular","icon":"hearing","subtitle":"IEM Profesional","badge":"","image":"","source":"sub-audio","slug":"in-ear-monitor-dual-driver","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auriculares-bluetooth-anc":{"name":"Auriculares Bluetooth ANC","price":72000,"category":"inalambrico","icon":"headphones","subtitle":"Noise Cancelling","badge":"Nuevo","image":"","source":"sub-audio","slug":"auriculares-bluetooth-anc","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"tws-earbuds":{"name":"TWS Earbuds","price":28000,"category":"inalambrico","icon":"earbuds","subtitle":"True Wireless IPX5","badge":"","image":"","source":"sub-audio","slug":"tws-earbuds","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-bluetooth-20w":{"name":"Parlante Bluetooth 20W","price":32000,"category":"parlante","icon":"speaker","subtitle":"Portatil IPX5","badge":"","image":"","source":"sub-audio","slug":"parlante-bluetooth-20w","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-bluetooth-40w":{"name":"Parlante Bluetooth 40W","price":55000,"category":"parlante","icon":"speaker","subtitle":"Estereo Potente","badge":"","image":"","source":"sub-audio","slug":"parlante-bluetooth-40w","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"barra-de-sonido-2-1":{"name":"Barra de Sonido 2.1","price":88000,"category":"parlante","icon":"speaker_group","subtitle":"HDMI ARC 120W","badge":"Nuevo","image":"","source":"sub-audio","slug":"barra-de-sonido-2-1","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-pc-2-0-usb":{"name":"Parlante PC 2.0 USB","price":18000,"category":"parlante","icon":"speaker","subtitle":"10W Escritorio","badge":"","image":"","source":"sub-audio","slug":"parlante-pc-2-0-usb","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"sistema-2-1-subwoofer":{"name":"Sistema 2.1 Subwoofer","price":42000,"category":"parlante","icon":"speaker_group","subtitle":"PC/TV 42W Total","badge":"","image":"","source":"sub-audio","slug":"sistema-2-1-subwoofer","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"microfono-usb-condensador":{"name":"Microfono USB Condensador","price":42000,"category":"micro","icon":"mic","subtitle":"Cardioide Studio","badge":"","image":"","source":"sub-audio","slug":"microfono-usb-condensador","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"microfono-dinamico-podcast":{"name":"Microfono Dinamico Podcast","price":55000,"category":"micro","icon":"mic_external_on","subtitle":"Broadcast XLR/USB","badge":"Nuevo","image":"","source":"sub-audio","slug":"microfono-dinamico-podcast","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"ryzen-5-5600x":{"name":"Ryzen 5 5600X","price":115000,"category":"cpu","icon":"memory","subtitle":"AMD AM4 6 Nucleos","badge":"","image":"","source":"sub-componentes-pc","slug":"ryzen-5-5600x","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ryzen-7-5700x":{"name":"Ryzen 7 5700X","price":148000,"category":"cpu","icon":"memory","subtitle":"AMD AM4 8 Nucleos","badge":"","image":"","source":"sub-componentes-pc","slug":"ryzen-7-5700x","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"core-i5-12400f":{"name":"Core i5-12400F","price":128000,"category":"cpu","icon":"memory","subtitle":"Intel LGA1700 6C","badge":"","image":"","source":"sub-componentes-pc","slug":"core-i5-12400f","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"core-i7-12700kf":{"name":"Core i7-12700KF","price":220000,"category":"cpu","icon":"memory","subtitle":"Intel LGA1700 12C","badge":"","image":"","source":"sub-componentes-pc","slug":"core-i7-12700kf","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-8gb-3200":{"name":"RAM DDR4 8GB 3200","price":28000,"category":"ram","icon":"sim_card","subtitle":"Single Stick","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-8gb-3200","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-16gb-kit-3600":{"name":"RAM DDR4 16GB Kit 3600","price":52000,"category":"ram","icon":"sim_card","subtitle":"2x8GB RGB","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-16gb-kit-3600","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-32gb-kit":{"name":"RAM DDR4 32GB Kit","price":95000,"category":"ram","icon":"sim_card","subtitle":"2x16GB 3200MHz","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-32gb-kit","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-b450m-ds3h":{"name":"Placa B450M DS3H","price":55000,"category":"mb","icon":"developer_board","subtitle":"AMD AM4 mATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-b450m-ds3h","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-b550-atx-gaming":{"name":"Placa B550 ATX Gaming","price":88000,"category":"mb","icon":"developer_board","subtitle":"AMD AM4 Full ATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-b550-atx-gaming","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-h610m-intel":{"name":"Placa H610M Intel","price":65000,"category":"mb","icon":"developer_board","subtitle":"Intel LGA1700 mATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-h610m-intel","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rx-6600-8gb-gddr6":{"name":"RX 6600 8GB GDDR6","price":210000,"category":"gpu","icon":"display_settings","subtitle":"AMD RDNA2","badge":"","image":"","source":"sub-componentes-pc","slug":"rx-6600-8gb-gddr6","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rx-6700-xt-12gb":{"name":"RX 6700 XT 12GB","price":310000,"category":"gpu","icon":"display_settings","subtitle":"AMD RDNA2","badge":"","image":"","source":"sub-componentes-pc","slug":"rx-6700-xt-12gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"gtx-1660-super-6gb":{"name":"GTX 1660 Super 6GB","price":175000,"category":"gpu","icon":"display_settings","subtitle":"NVIDIA Turing Usado","badge":"","image":"","source":"sub-componentes-pc","slug":"gtx-1660-super-6gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rtx-3060-12gb":{"name":"RTX 3060 12GB","price":280000,"category":"gpu","icon":"display_settings","subtitle":"NVIDIA Ampere","badge":"","image":"","source":"sub-componentes-pc","slug":"rtx-3060-12gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"fuente-550w-80-bronze":{"name":"Fuente 550W 80+ Bronze","price":45000,"category":"fuente","icon":"power","subtitle":"ATX Semi-Modular","badge":"","image":"","source":"sub-componentes-pc","slug":"fuente-550w-80-bronze","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"fuente-750w-80-gold":{"name":"Fuente 750W 80+ Gold","price":78000,"category":"fuente","icon":"power","subtitle":"ATX Full Modular","badge":"","image":"","source":"sub-componentes-pc","slug":"fuente-750w-80-gold","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"cooler-air-120mm-tower":{"name":"Cooler Air 120mm Tower","price":22000,"category":"cooler","icon":"toys_fan","subtitle":"CPU 4 Heat Pipes","badge":"","image":"","source":"sub-componentes-pc","slug":"cooler-air-120mm-tower","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"cooler-liquido-240mm-aio":{"name":"Cooler Liquido 240mm AIO","price":65000,"category":"cooler","icon":"water_drop","subtitle":"RGB Dual Fan","badge":"","image":"","source":"sub-componentes-pc","slug":"cooler-liquido-240mm-aio","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ps5-slim-digital":{"name":"PS5 Slim Digital","price":680000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 5","badge":"","image":"","source":"sub-consolas","slug":"ps5-slim-digital","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps5-slim-con-lector":{"name":"PS5 Slim con Lector","price":780000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 5","badge":"","image":"","source":"sub-consolas","slug":"ps5-slim-con-lector","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps4-pro-1tb":{"name":"PS4 Pro 1TB","price":210000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 4","badge":"","image":"","source":"sub-consolas","slug":"ps4-pro-1tb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps4-slim-500gb":{"name":"PS4 Slim 500GB","price":165000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 4","badge":"","image":"","source":"sub-consolas","slug":"ps4-slim-500gb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps3-slim-160gb":{"name":"PS3 Slim 160GB","price":85000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 3","badge":"","image":"","source":"sub-consolas","slug":"ps3-slim-160gb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps2-fat-original":{"name":"PS2 Fat Original","price":55000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 2","badge":"","image":"","source":"sub-consolas","slug":"ps2-fat-original","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-series-x":{"name":"Xbox Series X","price":720000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Series","badge":"","image":"","source":"sub-consolas","slug":"xbox-series-x","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-series-s":{"name":"Xbox Series S","price":480000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Series","badge":"","image":"","source":"sub-consolas","slug":"xbox-series-s","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-one-s-1tb":{"name":"Xbox One S 1TB","price":185000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox One","badge":"","image":"","source":"sub-consolas","slug":"xbox-one-s-1tb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-360-slim":{"name":"Xbox 360 Slim","price":75000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox 360","badge":"","image":"","source":"sub-consolas","slug":"xbox-360-slim","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-oled":{"name":"Nintendo Switch OLED","price":420000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-oled","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-v2":{"name":"Nintendo Switch V2","price":320000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-v2","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-lite":{"name":"Nintendo Switch Lite","price":260000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-lite","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"dualsense-blanco":{"name":"DualSense Blanco","price":68000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-blanco","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-negro":{"name":"DualSense Negro","price":68000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-negro","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-cosmic-red":{"name":"DualSense Cosmic Red","price":72000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-cosmic-red","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-edge":{"name":"DualSense Edge","price":160000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Pro Controller","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-edge","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualshock-4-blanco":{"name":"DualShock 4 Blanco","price":35000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Original","badge":"","image":"","source":"sub-joysticks","slug":"dualshock-4-blanco","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualshock-4-negro":{"name":"DualShock 4 Negro","price":35000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Original","badge":"","image":"","source":"sub-joysticks","slug":"dualshock-4-negro","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps4-generico":{"name":"Control PS4 Generico","price":16000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Compatible","badge":"","image":"","source":"sub-joysticks","slug":"control-ps4-generico","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps3-original":{"name":"Control PS3 Original","price":20000,"category":"ps3","icon":"sports_esports","subtitle":"PS3 Usado","badge":"","image":"","source":"sub-joysticks","slug":"control-ps3-original","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps3-generico":{"name":"Control PS3 Generico","price":12000,"category":"ps3","icon":"sports_esports","subtitle":"PS3 Compatible","badge":"","image":"","source":"sub-joysticks","slug":"control-ps3-generico","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"xbox-series-controller":{"name":"Xbox Series Controller","price":65000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"xbox-series-controller","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"xbox-one-controller":{"name":"Xbox One Controller","price":40000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Original Usado","badge":"","image":"","source":"sub-joysticks","slug":"xbox-one-controller","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-pc-usb":{"name":"Control PC USB","price":14000,"category":"pc","icon":"sports_esports","subtitle":"PC / Android","badge":"","image":"","source":"sub-joysticks","slug":"control-pc-usb","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"gamepad-bluetooth":{"name":"Gamepad Bluetooth","price":18000,"category":"pc","icon":"sports_esports","subtitle":"PC / Celular","badge":"","image":"","source":"sub-joysticks","slug":"gamepad-bluetooth","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"joystick-arcade-usb":{"name":"Joystick Arcade USB","price":22000,"category":"pc","icon":"joystick","subtitle":"PC Retro Gaming","badge":"","image":"","source":"sub-joysticks","slug":"joystick-arcade-usb","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"teclado-mecanico-rgb-tkl":{"name":"Teclado Mecanico RGB TKL","price":45000,"category":"teclado","icon":"keyboard","subtitle":"Switch Red 80%","badge":"","image":"","source":"sub-perifericos","slug":"teclado-mecanico-rgb-tkl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-mecanico-full-rgb":{"name":"Teclado Mecanico Full RGB","price":52000,"category":"teclado","icon":"keyboard","subtitle":"Switch Blue 100%","badge":"","image":"","source":"sub-perifericos","slug":"teclado-mecanico-full-rgb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-membrana-rgb":{"name":"Teclado Membrana RGB","price":18000,"category":"teclado","icon":"keyboard","subtitle":"Full Size USB","badge":"","image":"","source":"sub-perifericos","slug":"teclado-membrana-rgb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-inalambrico":{"name":"Teclado Inalambrico","price":28000,"category":"teclado","icon":"keyboard","subtitle":"Bluetooth/USB 2.4G","badge":"","image":"","source":"sub-perifericos","slug":"teclado-inalambrico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-gamer-6400dpi":{"name":"Mouse Gamer 6400DPI","price":22000,"category":"mouse","icon":"mouse","subtitle":"RGB Optico","badge":"","image":"","source":"sub-perifericos","slug":"mouse-gamer-6400dpi","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-gamer-12400dpi":{"name":"Mouse Gamer 12400DPI","price":38000,"category":"mouse","icon":"mouse","subtitle":"RGB Optico Pro","badge":"","image":"","source":"sub-perifericos","slug":"mouse-gamer-12400dpi","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-inalambrico":{"name":"Mouse Inalambrico","price":26000,"category":"mouse","icon":"mouse","subtitle":"Silencioso 2.4G","badge":"","image":"","source":"sub-perifericos","slug":"mouse-inalambrico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-xl":{"name":"Mouse Pad XL","price":8500,"category":"pad","icon":"table_bar","subtitle":"900x400mm Cosido","badge":"","image":"","source":"sub-perifericos","slug":"mouse-pad-xl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-rgb-xl":{"name":"Mouse Pad RGB XL","price":18000,"category":"pad","icon":"table_bar","subtitle":"900x400mm LED USB","badge":"Nuevo","image":"","source":"sub-perifericos","slug":"mouse-pad-rgb-xl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-chico":{"name":"Mouse Pad Chico","price":4500,"category":"pad","icon":"table_bar","subtitle":"240x200mm","badge":"","image":"","source":"sub-perifericos","slug":"mouse-pad-chico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"auricular-7-1-surround":{"name":"Auricular 7.1 Surround","price":32000,"category":"auricular","icon":"headset","subtitle":"Gaming USB RGB","badge":"","image":"","source":"sub-perifericos","slug":"auricular-7-1-surround","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"auricular-estereo":{"name":"Auricular Estereo","price":14000,"category":"auricular","icon":"headset","subtitle":"3.5mm Con Microfono","badge":"","image":"","source":"sub-perifericos","slug":"auricular-estereo","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"microfono-condensador-usb":{"name":"Microfono Condensador USB","price":42000,"category":"micro","icon":"mic","subtitle":"Cardioide Studio","badge":"","image":"","source":"sub-perifericos","slug":"microfono-condensador-usb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"microfono-de-estudio":{"name":"Microfono de Estudio","price":75000,"category":"micro","icon":"mic_external_on","subtitle":"XLR/USB Pro","badge":"Nuevo","image":"","source":"sub-perifericos","slug":"microfono-de-estudio","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"webcam-full-hd-1080p":{"name":"Webcam Full HD 1080p","price":28000,"category":"webcam","icon":"videocam","subtitle":"30fps Autofocus","badge":"","image":"","source":"sub-perifericos","slug":"webcam-full-hd-1080p","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"webcam-4k-hdr":{"name":"Webcam 4K HDR","price":65000,"category":"webcam","icon":"videocam","subtitle":"2160p 30fps","badge":"Nuevo","image":"","source":"sub-perifericos","slug":"webcam-4k-hdr","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"}};
+var PRODUCTS_DB = {"cable-hdmi-2-0-1-5m":{"name":"Cable HDMI 2.0 1.5m","price":4500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-hdmi-2-0-1-5m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-hdmi-2-1-2m":{"name":"Cable HDMI 2.1 2m","price":8500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-hdmi-2-1-2m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-usb-c-1m-65w":{"name":"Cable USB-C 1m 65W","price":3500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-usb-c-1m-65w","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-displayport-2m":{"name":"Cable DisplayPort 2m","price":6500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-displayport-2m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-usb-a-3-0-1m":{"name":"Cable USB-A 3.0 1m","price":2500,"category":"cable","icon":"cable","subtitle":"Transfer 5Gbps","badge":"","image":"","source":"sub-accesorios","slug":"cable-usb-a-3-0-1m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"base-cargadora-ps5":{"name":"Base Cargadora PS5","price":18000,"category":"cargador","icon":"battery_charging_full","subtitle":"Dual DualSense","badge":"","image":"","source":"sub-accesorios","slug":"base-cargadora-ps5","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"base-cargadora-ps4":{"name":"Base Cargadora PS4","price":12000,"category":"cargador","icon":"battery_charging_full","subtitle":"Dual DualShock","badge":"","image":"","source":"sub-accesorios","slug":"base-cargadora-ps4","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cargador-usb-c-gan-65w":{"name":"Cargador USB-C GaN 65W","price":14000,"category":"cargador","icon":"power","subtitle":"Compacto Viaje","badge":"","image":"","source":"sub-accesorios","slug":"cargador-usb-c-gan-65w","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"hub-usb-3-0-7-puertos":{"name":"Hub USB 3.0 7 puertos","price":18000,"category":"adaptador","icon":"hub","subtitle":"Con Alimentacion","badge":"","image":"","source":"sub-accesorios","slug":"hub-usb-3-0-7-puertos","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"adaptador-hdmi-a-vga":{"name":"Adaptador HDMI a VGA","price":4500,"category":"adaptador","icon":"settings_input_hdmi","subtitle":"Full HD 1080p","badge":"","image":"","source":"sub-accesorios","slug":"adaptador-hdmi-a-vga","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"adaptador-usb-c-a-hdmi":{"name":"Adaptador USB-C a HDMI","price":8500,"category":"adaptador","icon":"settings_input_hdmi","subtitle":"4K 60Hz","badge":"","image":"","source":"sub-accesorios","slug":"adaptador-usb-c-a-hdmi","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"tira-led-rgb-5m":{"name":"Tira LED RGB 5m","price":12000,"category":"led","icon":"light_mode","subtitle":"USB Control App","badge":"","image":"","source":"sub-accesorios","slug":"tira-led-rgb-5m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"tira-led-monitor-1m":{"name":"Tira LED Monitor 1m","price":7500,"category":"led","icon":"light_mode","subtitle":"Retroiluminacion TV","badge":"","image":"","source":"sub-accesorios","slug":"tira-led-monitor-1m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"kit-tiras-led-gaming":{"name":"Kit Tiras LED Gaming","price":22000,"category":"led","icon":"light_mode","subtitle":"Habitacion 20m2","badge":"","image":"","source":"sub-accesorios","slug":"kit-tiras-led-gaming","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-monitor-vesa":{"name":"Soporte Monitor VESA","price":28000,"category":"soporte","icon":"monitor","subtitle":"Articulado Simple","badge":"","image":"","source":"sub-accesorios","slug":"soporte-monitor-vesa","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-dual-monitor":{"name":"Soporte Dual Monitor","price":45000,"category":"soporte","icon":"monitor","subtitle":"2 Pantallas VESA","badge":"","image":"","source":"sub-accesorios","slug":"soporte-dual-monitor","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-auriculares":{"name":"Soporte Auriculares","price":8500,"category":"soporte","icon":"headphones","subtitle":"Escritorio Madera","badge":"","image":"","source":"sub-accesorios","slug":"soporte-auriculares","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"ssd-240gb-sata":{"name":"SSD 240GB SATA","price":22000,"category":"ssd","icon":"storage","subtitle":"2.5\" 550MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-240gb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"ssd-480gb-sata":{"name":"SSD 480GB SATA","price":35000,"category":"ssd","icon":"storage","subtitle":"2.5\" 550MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-480gb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"ssd-1tb-sata":{"name":"SSD 1TB SATA","price":58000,"category":"ssd","icon":"storage","subtitle":"2.5\" 560MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-1tb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-500gb":{"name":"NVMe M.2 500GB","price":42000,"category":"ssd","icon":"memory","subtitle":"PCIe 3.0 3500MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-500gb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-1tb":{"name":"NVMe M.2 1TB","price":72000,"category":"ssd","icon":"memory","subtitle":"PCIe 3.0 3500MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-1tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-2tb-pcie-4-0":{"name":"NVMe M.2 2TB PCIe 4.0","price":135000,"category":"ssd","icon":"memory","subtitle":"7000MB/s Gen4","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-2tb-pcie-4-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-1tb-7200rpm":{"name":"HDD 1TB 7200rpm","price":28000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" SATA III","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-1tb-7200rpm","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-2tb-7200rpm":{"name":"HDD 2TB 7200rpm","price":42000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" SATA III","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-2tb-7200rpm","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-4tb-nas":{"name":"HDD 4TB NAS","price":75000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" WD Red","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-4tb-nas","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-32gb-usb-3-0":{"name":"Pendrive 32GB USB 3.0","price":6500,"category":"pendrive","icon":"usb","subtitle":"Lectura 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-32gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-64gb-usb-3-0":{"name":"Pendrive 64GB USB 3.0","price":9500,"category":"pendrive","icon":"usb","subtitle":"Lectura 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-64gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-128gb-usb-3-0":{"name":"Pendrive 128GB USB 3.0","price":14000,"category":"pendrive","icon":"usb","subtitle":"Lectura 150MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-128gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"memoria-sd-64gb-c10":{"name":"Memoria SD 64GB C10","price":8000,"category":"sd","icon":"sd_card","subtitle":"UHS-I 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"memoria-sd-64gb-c10","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"memoria-sd-128gb-u3-4k":{"name":"Memoria SD 128GB U3 4K","price":14000,"category":"sd","icon":"sd_card","subtitle":"170MB/s Video","badge":"","image":"","source":"sub-almacenamiento","slug":"memoria-sd-128gb-u3-4k","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"disco-externo-1tb":{"name":"Disco Externo 1TB","price":45000,"category":"externo","icon":"hard_drive_2","subtitle":"USB 3.0 Portatil","badge":"","image":"","source":"sub-almacenamiento","slug":"disco-externo-1tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"disco-externo-2tb":{"name":"Disco Externo 2TB","price":65000,"category":"externo","icon":"hard_drive_2","subtitle":"USB 3.0 Portatil","badge":"","image":"","source":"sub-almacenamiento","slug":"disco-externo-2tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"auricular-over-ear-hifi":{"name":"Auricular Over-Ear HiFi","price":38000,"category":"auricular","icon":"headphones","subtitle":"Estudio 50mm Driver","badge":"","image":"","source":"sub-audio","slug":"auricular-over-ear-hifi","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auricular-gamer-7-1":{"name":"Auricular Gamer 7.1","price":32000,"category":"auricular","icon":"headset","subtitle":"Surround USB RGB","badge":"","image":"","source":"sub-audio","slug":"auricular-gamer-7-1","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auricular-sony-mdr-zx110":{"name":"Auricular Sony MDR-ZX110","price":18000,"category":"auricular","icon":"headphones","subtitle":"Alambrico 3.5mm","badge":"","image":"","source":"sub-audio","slug":"auricular-sony-mdr-zx110","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"in-ear-monitor-dual-driver":{"name":"In-Ear Monitor Dual Driver","price":55000,"category":"auricular","icon":"hearing","subtitle":"IEM Profesional","badge":"","image":"","source":"sub-audio","slug":"in-ear-monitor-dual-driver","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auriculares-bluetooth-anc":{"name":"Auriculares Bluetooth ANC","price":72000,"category":"inalambrico","icon":"headphones","subtitle":"Noise Cancelling","badge":"Nuevo","image":"","source":"sub-audio","slug":"auriculares-bluetooth-anc","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"tws-earbuds":{"name":"TWS Earbuds","price":28000,"category":"inalambrico","icon":"earbuds","subtitle":"True Wireless IPX5","badge":"","image":"","source":"sub-audio","slug":"tws-earbuds","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-bluetooth-20w":{"name":"Parlante Bluetooth 20W","price":32000,"category":"parlante","icon":"speaker","subtitle":"Portatil IPX5","badge":"","image":"","source":"sub-audio","slug":"parlante-bluetooth-20w","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-bluetooth-40w":{"name":"Parlante Bluetooth 40W","price":55000,"category":"parlante","icon":"speaker","subtitle":"Estereo Potente","badge":"","image":"","source":"sub-audio","slug":"parlante-bluetooth-40w","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"barra-de-sonido-2-1":{"name":"Barra de Sonido 2.1","price":88000,"category":"parlante","icon":"speaker_group","subtitle":"HDMI ARC 120W","badge":"Nuevo","image":"","source":"sub-audio","slug":"barra-de-sonido-2-1","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-pc-2-0-usb":{"name":"Parlante PC 2.0 USB","price":18000,"category":"parlante","icon":"speaker","subtitle":"10W Escritorio","badge":"","image":"","source":"sub-audio","slug":"parlante-pc-2-0-usb","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"sistema-2-1-subwoofer":{"name":"Sistema 2.1 Subwoofer","price":42000,"category":"parlante","icon":"speaker_group","subtitle":"PC/TV 42W Total","badge":"","image":"","source":"sub-audio","slug":"sistema-2-1-subwoofer","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"microfono-usb-condensador":{"name":"Microfono USB Condensador","price":42000,"category":"micro","icon":"mic","subtitle":"Cardioide Studio","badge":"","image":"","source":"sub-audio","slug":"microfono-usb-condensador","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"microfono-dinamico-podcast":{"name":"Microfono Dinamico Podcast","price":55000,"category":"micro","icon":"mic_external_on","subtitle":"Broadcast XLR/USB","badge":"Nuevo","image":"","source":"sub-audio","slug":"microfono-dinamico-podcast","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"ryzen-5-5600x":{"name":"Ryzen 5 5600X","price":115000,"category":"cpu","icon":"memory","subtitle":"AMD AM4 6 Nucleos","badge":"","image":"","source":"sub-componentes-pc","slug":"ryzen-5-5600x","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ryzen-7-5700x":{"name":"Ryzen 7 5700X","price":148000,"category":"cpu","icon":"memory","subtitle":"AMD AM4 8 Nucleos","badge":"","image":"","source":"sub-componentes-pc","slug":"ryzen-7-5700x","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"core-i5-12400f":{"name":"Core i5-12400F","price":128000,"category":"cpu","icon":"memory","subtitle":"Intel LGA1700 6C","badge":"","image":"","source":"sub-componentes-pc","slug":"core-i5-12400f","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"core-i7-12700kf":{"name":"Core i7-12700KF","price":220000,"category":"cpu","icon":"memory","subtitle":"Intel LGA1700 12C","badge":"","image":"","source":"sub-componentes-pc","slug":"core-i7-12700kf","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-8gb-3200":{"name":"RAM DDR4 8GB 3200","price":28000,"category":"ram","icon":"sim_card","subtitle":"Single Stick","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-8gb-3200","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-16gb-kit-3600":{"name":"RAM DDR4 16GB Kit 3600","price":52000,"category":"ram","icon":"sim_card","subtitle":"2x8GB RGB","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-16gb-kit-3600","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-32gb-kit":{"name":"RAM DDR4 32GB Kit","price":95000,"category":"ram","icon":"sim_card","subtitle":"2x16GB 3200MHz","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-32gb-kit","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-b450m-ds3h":{"name":"Placa B450M DS3H","price":55000,"category":"mb","icon":"developer_board","subtitle":"AMD AM4 mATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-b450m-ds3h","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-b550-atx-gaming":{"name":"Placa B550 ATX Gaming","price":88000,"category":"mb","icon":"developer_board","subtitle":"AMD AM4 Full ATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-b550-atx-gaming","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-h610m-intel":{"name":"Placa H610M Intel","price":65000,"category":"mb","icon":"developer_board","subtitle":"Intel LGA1700 mATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-h610m-intel","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rx-6600-8gb-gddr6":{"name":"RX 6600 8GB GDDR6","price":210000,"category":"gpu","icon":"display_settings","subtitle":"AMD RDNA2","badge":"","image":"","source":"sub-componentes-pc","slug":"rx-6600-8gb-gddr6","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rx-6700-xt-12gb":{"name":"RX 6700 XT 12GB","price":310000,"category":"gpu","icon":"display_settings","subtitle":"AMD RDNA2","badge":"","image":"","source":"sub-componentes-pc","slug":"rx-6700-xt-12gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"gtx-1660-super-6gb":{"name":"GTX 1660 Super 6GB","price":175000,"category":"gpu","icon":"display_settings","subtitle":"NVIDIA Turing Usado","badge":"","image":"","source":"sub-componentes-pc","slug":"gtx-1660-super-6gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rtx-3060-12gb":{"name":"RTX 3060 12GB","price":280000,"category":"gpu","icon":"display_settings","subtitle":"NVIDIA Ampere","badge":"","image":"","source":"sub-componentes-pc","slug":"rtx-3060-12gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"fuente-550w-80-bronze":{"name":"Fuente 550W 80+ Bronze","price":45000,"category":"fuente","icon":"power","subtitle":"ATX Semi-Modular","badge":"","image":"","source":"sub-componentes-pc","slug":"fuente-550w-80-bronze","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"fuente-750w-80-gold":{"name":"Fuente 750W 80+ Gold","price":78000,"category":"fuente","icon":"power","subtitle":"ATX Full Modular","badge":"","image":"","source":"sub-componentes-pc","slug":"fuente-750w-80-gold","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"cooler-air-120mm-tower":{"name":"Cooler Air 120mm Tower","price":22000,"category":"cooler","icon":"toys_fan","subtitle":"CPU 4 Heat Pipes","badge":"","image":"","source":"sub-componentes-pc","slug":"cooler-air-120mm-tower","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"cooler-liquido-240mm-aio":{"name":"Cooler Liquido 240mm AIO","price":65000,"category":"cooler","icon":"water_drop","subtitle":"RGB Dual Fan","badge":"","image":"","source":"sub-componentes-pc","slug":"cooler-liquido-240mm-aio","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ps5-slim-digital":{"name":"PS5 Slim Digital","price":680000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 5","badge":"","image":"","source":"sub-consolas","slug":"ps5-slim-digital","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps5-slim-con-lector":{"name":"PS5 Slim con Lector","price":780000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 5","badge":"","image":"","source":"sub-consolas","slug":"ps5-slim-con-lector","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps4-pro-1tb":{"name":"PS4 Pro 1TB","price":210000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 4","badge":"","image":"","source":"sub-consolas","slug":"ps4-pro-1tb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps4-slim-500gb":{"name":"PS4 Slim 500GB","price":165000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 4","badge":"","image":"","source":"sub-consolas","slug":"ps4-slim-500gb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps3-slim-160gb":{"name":"PS3 Slim 160GB","price":85000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 3","badge":"","image":"","source":"sub-consolas","slug":"ps3-slim-160gb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps2-fat-original":{"name":"PS2 Fat Original","price":55000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 2","badge":"","image":"","source":"sub-consolas","slug":"ps2-fat-original","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-series-x":{"name":"Xbox Series X","price":720000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Series","badge":"","image":"","source":"sub-consolas","slug":"xbox-series-x","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-series-s":{"name":"Xbox Series S","price":480000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Series","badge":"","image":"","source":"sub-consolas","slug":"xbox-series-s","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-one-s-1tb":{"name":"Xbox One S 1TB","price":185000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox One","badge":"","image":"","source":"sub-consolas","slug":"xbox-one-s-1tb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-360-slim":{"name":"Xbox 360 Slim","price":75000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox 360","badge":"","image":"","source":"sub-consolas","slug":"xbox-360-slim","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-oled":{"name":"Nintendo Switch OLED","price":420000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-oled","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-v2":{"name":"Nintendo Switch V2","price":320000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-v2","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-lite":{"name":"Nintendo Switch Lite","price":260000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-lite","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"dualsense-blanco":{"name":"DualSense Blanco","price":68000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-blanco","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-negro":{"name":"DualSense Negro","price":68000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-negro","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-cosmic-red":{"name":"DualSense Cosmic Red","price":72000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-cosmic-red","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-edge":{"name":"DualSense Edge","price":160000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Pro Controller","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-edge","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualshock-4-blanco":{"name":"DualShock 4 Blanco","price":35000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Original","badge":"","image":"","source":"sub-joysticks","slug":"dualshock-4-blanco","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualshock-4-negro":{"name":"DualShock 4 Negro","price":35000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Original","badge":"","image":"","source":"sub-joysticks","slug":"dualshock-4-negro","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps4-generico":{"name":"Control PS4 Generico","price":16000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Compatible","badge":"","image":"","source":"sub-joysticks","slug":"control-ps4-generico","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps3-original":{"name":"Control PS3 Original","price":20000,"category":"ps3","icon":"sports_esports","subtitle":"PS3 Usado","badge":"","image":"","source":"sub-joysticks","slug":"control-ps3-original","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps3-generico":{"name":"Control PS3 Generico","price":12000,"category":"ps3","icon":"sports_esports","subtitle":"PS3 Compatible","badge":"","image":"","source":"sub-joysticks","slug":"control-ps3-generico","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"xbox-series-controller":{"name":"Xbox Series Controller","price":65000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"xbox-series-controller","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"xbox-one-controller":{"name":"Xbox One Controller","price":40000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Original Usado","badge":"","image":"","source":"sub-joysticks","slug":"xbox-one-controller","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-pc-usb":{"name":"Control PC USB","price":14000,"category":"pc","icon":"sports_esports","subtitle":"PC / Android","badge":"","image":"","source":"sub-joysticks","slug":"control-pc-usb","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"gamepad-bluetooth":{"name":"Gamepad Bluetooth","price":18000,"category":"pc","icon":"sports_esports","subtitle":"PC / Celular","badge":"","image":"","source":"sub-joysticks","slug":"gamepad-bluetooth","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"joystick-arcade-usb":{"name":"Joystick Arcade USB","price":22000,"category":"pc","icon":"joystick","subtitle":"PC Retro Gaming","badge":"","image":"","source":"sub-joysticks","slug":"joystick-arcade-usb","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"teclado-mecanico-rgb-tkl":{"name":"Teclado Mecanico RGB TKL","price":45000,"category":"teclado","icon":"keyboard","subtitle":"Switch Red 80%","badge":"","image":"","source":"sub-periféricos","slug":"teclado-mecanico-rgb-tkl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-mecanico-full-rgb":{"name":"Teclado Mecanico Full RGB","price":52000,"category":"teclado","icon":"keyboard","subtitle":"Switch Blue 100%","badge":"","image":"","source":"sub-periféricos","slug":"teclado-mecanico-full-rgb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-membrana-rgb":{"name":"Teclado Membrana RGB","price":18000,"category":"teclado","icon":"keyboard","subtitle":"Full Size USB","badge":"","image":"","source":"sub-periféricos","slug":"teclado-membrana-rgb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-inalambrico":{"name":"Teclado Inalambrico","price":28000,"category":"teclado","icon":"keyboard","subtitle":"Bluetooth/USB 2.4G","badge":"","image":"","source":"sub-periféricos","slug":"teclado-inalambrico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-gamer-6400dpi":{"name":"Mouse Gamer 6400DPI","price":22000,"category":"mouse","icon":"mouse","subtitle":"RGB óptico","badge":"","image":"","source":"sub-periféricos","slug":"mouse-gamer-6400dpi","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-gamer-12400dpi":{"name":"Mouse Gamer 12400DPI","price":38000,"category":"mouse","icon":"mouse","subtitle":"RGB óptico Pro","badge":"","image":"","source":"sub-periféricos","slug":"mouse-gamer-12400dpi","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-inalambrico":{"name":"Mouse Inalambrico","price":26000,"category":"mouse","icon":"mouse","subtitle":"Silencioso 2.4G","badge":"","image":"","source":"sub-periféricos","slug":"mouse-inalambrico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-xl":{"name":"Mouse Pad XL","price":8500,"category":"pad","icon":"table_bar","subtitle":"900x400mm Cosido","badge":"","image":"","source":"sub-periféricos","slug":"mouse-pad-xl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-rgb-xl":{"name":"Mouse Pad RGB XL","price":18000,"category":"pad","icon":"table_bar","subtitle":"900x400mm LED USB","badge":"Nuevo","image":"","source":"sub-periféricos","slug":"mouse-pad-rgb-xl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-chico":{"name":"Mouse Pad Chico","price":4500,"category":"pad","icon":"table_bar","subtitle":"240x200mm","badge":"","image":"","source":"sub-periféricos","slug":"mouse-pad-chico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"auricular-7-1-surround":{"name":"Auricular 7.1 Surround","price":32000,"category":"auricular","icon":"headset","subtitle":"Gaming USB RGB","badge":"","image":"","source":"sub-periféricos","slug":"auricular-7-1-surround","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"auricular-estereo":{"name":"Auricular Estereo","price":14000,"category":"auricular","icon":"headset","subtitle":"3.5mm Con Microfono","badge":"","image":"","source":"sub-periféricos","slug":"auricular-estereo","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"microfono-condensador-usb":{"name":"Microfono Condensador USB","price":42000,"category":"micro","icon":"mic","subtitle":"Cardioide Studio","badge":"","image":"","source":"sub-periféricos","slug":"microfono-condensador-usb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"microfono-de-estudio":{"name":"Microfono de Estudio","price":75000,"category":"micro","icon":"mic_external_on","subtitle":"XLR/USB Pro","badge":"Nuevo","image":"","source":"sub-periféricos","slug":"microfono-de-estudio","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"webcam-full-hd-1080p":{"name":"Webcam Full HD 1080p","price":28000,"category":"webcam","icon":"videocam","subtitle":"30fps Autofocus","badge":"","image":"","source":"sub-periféricos","slug":"webcam-full-hd-1080p","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"webcam-4k-hdr":{"name":"Webcam 4K HDR","price":65000,"category":"webcam","icon":"videocam","subtitle":"2160p 30fps","badge":"Nuevo","image":"","source":"sub-periféricos","slug":"webcam-4k-hdr","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"}};
 
 // -------------------------------------------------------
 //  SPECS POR CATEGORÍA
@@ -655,7 +663,7 @@ var CATEGORY_SPECS = {
   digital:  [['Tipo','Código Digital'],['Entrega','Inmediata'],['Región','Argentina'],['Validez','Sin vencer']],
   reparacion:[['Diagnóstico','Incluido'],['Garantía','30 días trabajo'],['Entrega','24-72hs'],['Domicilio','Villa María']],
   consola:  [['Tipo','Custom FW'],['Riesgo','Garantía anulada'],['Soporte','Post-servicio'],['Domicilio','Villa María']],
-  software: [['Entrega','Mismo día'],['Activación','Incluida'],['Versión','Última'],['Domicilio','Villa María']],
+  software: [['Entrega','Mismo día'],['Activación','Incluida'],['Versión','última'],['Domicilio','Villa María']],
   pc:       [['Sistema','Windows'],['Entrega','24-48hs'],['Garantía','30 días'],['Domicilio','Villa María']],
 };
 
@@ -666,7 +674,7 @@ var CATEGORY_FEATURES = {
   auricular: ['Almohadillas de memoria','Micrófono con cancelación de ruido','Cable y adaptador incluidos'],
   micro:     ['Soporte ajustable incluido','Cable USB incluido','Compatible con OBS / Discord / Zoom'],
   webcam:    ['Plug & play sin drivers','Clip de montaje universal','Compatible con Zoom, Teams, Streamlabs'],
-  ssd:       ['Sin partes móviles — más duradero','Incluye tornillo de montaje M.2','Compatible con PS4/PS5 (SATA)'],
+  ssd:       ['Sin partes móviles y más duradero','Incluye tornillo de montaje M.2','Compatible con PS4/PS5 (SATA)'],
   hdd:       ['Alta capacidad a bajo costo','Formato 3.5" para PC de escritorio','Optimizado para uso continuo'],
   pendrive:  ['Diseño compacto y liviano','Tapa protectora incluida','Compatible con todo sistema operativo'],
   sd:        ['Compatible con cámaras y drones','Incluye adaptador SD full-size','A prueba de agua y temperatura'],
@@ -687,7 +695,7 @@ var CATEGORY_FEATURES = {
   nintendo:  ['Consola verificada y funcional','Incluye cables y dock (modelos TV)','Garantía 30 días del local'],
   ps5:       ['Vibración háptica y gatillos adaptativos','Carga por USB-C','Garantía 30 días del local'],
   ps4:       ['Control verificado y funcional','Cable micro-USB incluido','Garantía 30 días del local'],
-  ps3:       ['Funcional — revisado por técnico','Cable micro-USB incluido','Garantía 30 días del local'],
+  ps3:       ['Funcional y revisado por técnico','Cable micro-USB incluido','Garantía 30 días del local'],
   videogame_asset:['Juego físico en buen estado','Compatible con la consola indicada','Sin región lock en Argentina'],
   digital:   ['Código enviado por WhatsApp','Sin vencimiento de validez','Recarga oficial PSN / Xbox'],
   reparacion:['Presupuesto sin cargo previo','Piezas originales o equivalentes','Retiro a domicilio disponible'],
@@ -703,11 +711,12 @@ var PRODUCT = null;
 var qty = 1;
 
 function slugify(name) {
-  return name.toLowerCase()
-    .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
-    .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
-    .replace(/[úùü]/g,'u').replace(/ñ/g,'n')
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  return String(name || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 function formatPrice(n) {
@@ -722,7 +731,7 @@ function formatPrice(n) {
 
 function formatProductPrice(p) {
   var amount = Number(p && p.price);
-  if (!Number.isFinite(amount) || amount <= 0) return 'Consultar';
+  if (!Number.isFinite(amount) || amount <= 1) return 'Consultar';
   var currency = String(p && p.currency || CONFIG.CURRENCY || 'ARS').toUpperCase();
   var symbol = currency === 'USD' ? 'US$' : (CONFIG.CURRENCY_SYMBOL || '$');
   var hasCents = Math.abs(amount - Math.round(amount)) > 0.009;
@@ -732,12 +741,41 @@ function formatProductPrice(p) {
   });
 }
 
+function getProductConsultCode(p) {
+  return String(p && (p.codigo || p.code || p.model || p.accessId || p.id) || '').trim();
+}
+
+function buildProductWhatsAppUrl(p) {
+  var phone = String((CONFIG && CONFIG.CONTACT_PHONE) || '5493534019085').replace(/\D+/g, '');
+  var name = String(p && p.name || 'producto').trim();
+  var code = getProductConsultCode(p);
+  var price = formatProductPrice(p);
+  var source = String(p && (p.sourceLabel || p.category) || '').trim();
+  var parts = ['Hola! Quiero consultar disponibilidad de: ' + name];
+  if (code) parts.push('Código/ref: ' + code);
+  if (source) parts.push('Categoría: ' + cleanText(source));
+  if (price && price !== 'Consultar') parts.push('Precio web: ' + price);
+  parts.push('Me podrían confirmar stock?');
+  return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(parts.join('\n'));
+}
+
+function openProductWhatsApp(p) {
+  window.open(buildProductWhatsAppUrl(p), '_blank', 'noopener');
+}
+
+function productNeedsWhatsAppConsult(p) {
+  if (!p) return false;
+  var stockState = getProductStockStateForView(p);
+  var amount = Number(p.price);
+  return productIsByOrder(p) || stockState.status === 'out' || stockState.status === 'unknown' || !Number.isFinite(amount) || amount <= 1;
+}
+
 function getSpecs(cat) {
   return CATEGORY_SPECS[cat] || [['Categoría', cat],['Disponibilidad','Consultar'],['Garantía','30 días'],['Entrega','Villa María']];
 }
 
 function getFeatures(cat) {
-  return CATEGORY_FEATURES[cat] || ['Producto verificado por nuestro equipo','Garantía del local','Consultá por WhatsApp'];
+  return CATEGORY_FEATURES[cat] || ['Producto verificado por nuestro equipo','Garantía del local','Consulta por WhatsApp'];
 }
 
 function useSimpleProductDetail(p) {
@@ -750,11 +788,14 @@ function useSimpleProductDetail(p) {
 
 function cleanText(text) {
   return String(text || '')
+    .replace(/\s*\(\d{3,}\)/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
     .replace(/\bDescripcion\b/g, 'Descripción')
     .replace(/\bInstalacion\b/g, 'Instalación')
     .replace(/\bInalambrico\b/g, 'Inalámbrico')
     .replace(/\bMecanico\b/g, 'Mecánico')
-    .replace(/\bOptico\b/g, 'Óptico')
+    .replace(/\bóptico\b/g, 'óptico')
     .replace(/\bMicrofono\b/g, 'Micrófono')
     .replace(/\bReparacion\b/g, 'Reparación')
     .replace(/\bDiagnostico\b/g, 'Diagnóstico')
@@ -763,7 +804,9 @@ function cleanText(text) {
     .replace(/\bAccessorios\b/gi, 'Accesorios')
     .replace(/\bAccessorio\b/gi, 'Accesorio')
     .replace(/\bTermica\b/g, 'Térmica')
-    .replace(/\bPortatil\b/g, 'Portátil');
+    .replace(/\bPortatil\b/g, 'Portátil')
+    .replace(/Periféricos/g, 'Periféricos')
+    .replace(/Óptico/g, 'óptico');
 }
 
 function getCatalogHref(p) {
@@ -786,7 +829,7 @@ function getProductStockStateForView(p) {
   if (!Number.isFinite(stock)) stock = null;
   if (productIsByOrder(p)) return { status: 'by-order', label: 'A pedido', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 0) return { status: 'out', label: 'Consultar', stock: stock };
+  if (stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock <= 3) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
@@ -820,10 +863,10 @@ function renderStock(p) {
   if (typeof p.stock === 'number') {
     if (p.stock > 5) label = p.stock + ' disponibles';
     else if (p.stock > 0) {
-      label = 'Últimas ' + p.stock + ' unidades';
+      label = 'últimas ' + p.stock + ' unidades';
       color = '#ffc600';
     } else {
-      label = 'Consultar';
+      label = 'Sin stock';
     }
   } else if (p.stockLabel) {
     label = p.stockLabel;
@@ -836,8 +879,8 @@ function getStockLabel(p) {
   if (productIsByOrder(p)) return 'A pedido';
   if (typeof p.stock === 'number') {
     if (p.stock > 5) return p.stock + ' disponibles';
-    if (p.stock > 0) return 'Últimas ' + p.stock;
-    return 'Consultar';
+    if (p.stock > 0) return 'últimas ' + p.stock;
+    return 'Sin stock';
   }
   return p.stockLabel || 'Consultar';
 }
@@ -887,17 +930,17 @@ function getConditionLabel(p) {
 
 function getProductCodeText(p) {
   var value = cleanText(p.codigo || p.code || p.model || p.subtitle || p.category || 'Consultar');
-  var match = value.match(/(?:c[oó]digo\s*)?([0-9]{5,})/i);
+  var match = value.match(/(?:c[o\u00f3]digo\s*)?([0-9]{5,})/i);
   if (match) return match[1];
-  return value.replace(/^c[oó]digo\s*/i, '') || 'Consultar';
+  return value.replace(/^c[o\u00f3]digo\s*/i, '') || 'Consultar';
 }
 
 function getProductDescriptionText(p) {
   var code = getProductCodeText(p);
   var value = cleanText(p.description || p.subtitle || '');
   value = value
-    .replace(/^c[oó]digo\s*[0-9]{5,}\s*[-–]\s*/i, '')
-    .replace(/^[-–]\s*/, '')
+    .replace(/^c[o\u00f3]digo\s*[0-9]{5,}\s*[-?]\s*/i, '')
+    .replace(/^[-?]\s*/, '')
     .trim();
 
   if (!value || value === code) return '';
@@ -989,6 +1032,56 @@ function setGeneratedDetailBlocksVisible(p) {
   });
 }
 
+function getProductImageCandidates(product, image) {
+  var list = [];
+  function push(url) {
+    url = String(url || '').trim();
+    if (url && list.indexOf(url) === -1) list.push(url);
+  }
+  push(image);
+  push(product && product.image);
+  var extra = product && (product.imageCandidates || product.apiImageCandidates);
+  if (Array.isArray(extra)) extra.forEach(push);
+  else push(extra);
+  return list;
+}
+
+function attachProductImageFallback(img, product, imgArea) {
+  if (!img || !product || !imgArea) return;
+  var candidates = getProductImageCandidates(product, img.getAttribute('src'));
+  img.dataset.fallbackIndex = '0';
+  img.onerror = function() {
+    var nextIndex = Number(img.dataset.fallbackIndex || 0) + 1;
+    if (nextIndex < candidates.length) {
+      img.dataset.fallbackIndex = String(nextIndex);
+      product.image = candidates[nextIndex];
+      img.src = candidates[nextIndex];
+      return;
+    }
+    imgArea.innerHTML = '';
+    if (imgArea.id === 'img-area') {
+      imgArea.className = 'product-icon-wrap';
+      if (product.source === 'sub-servicios') imgArea.classList.add('is-service');
+    }
+    var iconEl = document.createElement('span');
+    iconEl.className = imgArea.id === 'img-area' ? 'material-symbols-outlined product-big-icon' : 'material-symbols-outlined';
+    iconEl.style.fontVariationSettings = "'FILL' 0,'wght' 100";
+    iconEl.textContent = product.icon || 'inventory_2';
+    if (imgArea.id === 'img-area') {
+      var imageLabel = document.createElement('span');
+      imageLabel.className = 'product-placeholder-label';
+      imageLabel.textContent = 'Imagen proximamente';
+      imgArea.appendChild(iconEl);
+      imgArea.appendChild(imageLabel);
+    } else {
+      var iconWrap = document.createElement('div');
+      iconWrap.className = 'related-card-placeholder';
+      iconWrap.appendChild(iconEl);
+      imgArea.appendChild(iconWrap);
+    }
+  };
+}
+
 function setProductPageImage(product, image) {
   var imgArea = document.getElementById('img-area');
   if (!imgArea || !product || !image || imgArea.querySelector('img')) return;
@@ -1003,6 +1096,8 @@ function setProductPageImage(product, image) {
   prodImg.src = image;
   prodImg.alt = product.name || 'Producto';
   prodImg.className = 'product-image';
+  prodImg.referrerPolicy = 'no-referrer';
+  attachProductImageFallback(prodImg, product, imgArea);
   imageStage.appendChild(prodImg);
   imgArea.appendChild(imageStage);
 }
@@ -1046,6 +1141,8 @@ function renderProduct(p) {
     prodImg.src = p.image;
     prodImg.alt = p.name;
     prodImg.className = 'product-image';
+    prodImg.referrerPolicy = 'no-referrer';
+    attachProductImageFallback(prodImg, p, imgArea);
     imageStage.appendChild(prodImg);
     imgArea.appendChild(imageStage);
   } else {
@@ -1058,7 +1155,7 @@ function renderProduct(p) {
 
     var imageLabel = document.createElement('span');
     imageLabel.className = 'product-placeholder-label';
-    imageLabel.textContent = 'Imagen próximamente';
+      imageLabel.textContent = 'Imagen próximamente';
     imgArea.appendChild(iconEl);
     imgArea.appendChild(imageLabel);
     hydrateProductPageImage(p);
@@ -1069,7 +1166,7 @@ function renderProduct(p) {
   if (byOrder) {
     badgesEl.innerHTML = '<span class="badge-new" style="color:#ffd96a;border-color:rgba(255,198,0,.28);background:rgba(255,198,0,.08);">A pedido</span>';
   } else if (productIsOutOfStock(p)) {
-    badgesEl.innerHTML = '<span class="badge-new" style="color:#d7d7d7;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06);">Consultar</span>';
+    badgesEl.innerHTML = '<span class="badge-new" style="color:#d7d7d7;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06);">Sin stock</span>';
   } else if (productIsProvider(p)) {
     badgesEl.innerHTML = '<span class="badge-new" style="color:#ffe38a;border-color:rgba(255,198,0,.32);background:rgba(255,198,0,.09);">48 hs de demora</span>';
   } else if (p.badge) {
@@ -1081,7 +1178,7 @@ function renderProduct(p) {
   // Category
   document.getElementById('prod-category-label').textContent = cleanText(p.sourceLabel || p.category);
 
-  // Title — split at last word for accent color
+  // Title: split at last word for accent color
   var displayName = cleanText(p.name);
   var words = displayName.split(' ');
   var last = words.pop();
@@ -1100,7 +1197,6 @@ function renderProduct(p) {
 
   // Mobile CTA
   document.getElementById('mob-price').textContent = formatProductPrice(p);
-  document.getElementById('mob-name').textContent = displayName;
   var mobileCta = document.getElementById('mobile-cta');
   mobileCta.style.removeProperty('display');
   if (p.price === 0) {
@@ -1147,7 +1243,8 @@ function setPurchaseButtonsMode(p) {
   var byOrder = productIsByOrder(p);
   var stockState = getProductStockStateForView(p);
   var outOfStock = stockState.status === 'out';
-  var disabled = byOrder || outOfStock;
+  var needsConsult = productNeedsWhatsAppConsult(p);
+  var disabled = needsConsult;
   var desktopBtn = document.getElementById('add-btn-desktop');
   var mobileBtn = document.getElementById('add-btn-mobile');
   var qtyButtons = document.querySelectorAll('.qty-btn');
@@ -1159,22 +1256,18 @@ function setPurchaseButtonsMode(p) {
   });
 
   if (desktopBtn) {
-    desktopBtn.disabled = disabled;
-    desktopBtn.title = outOfStock ? 'Consultar disponibilidad' : (byOrder ? 'Producto a pedido' : 'Agregar al carrito');
-    desktopBtn.innerHTML = outOfStock
-      ? '<span class="material-symbols-outlined" style="font-size:18px;">chat</span> Consultar'
-      : (byOrder
-        ? '<span class="material-symbols-outlined" style="font-size:18px;">pending_actions</span> A pedido'
-        : '<span class="material-symbols-outlined" style="font-size:18px;">add_shopping_cart</span> Agregar al Carrito');
+    desktopBtn.disabled = false;
+    desktopBtn.title = needsConsult ? 'Consultar por WhatsApp' : 'Agregar al carrito';
+    desktopBtn.innerHTML = needsConsult
+      ? '<span class="material-symbols-outlined" style="font-size:18px;">chat</span> Consultar por WhatsApp'
+      : '<span class="material-symbols-outlined" style="font-size:18px;">add_shopping_cart</span> Agregar al Carrito';
   }
   if (mobileBtn) {
-    mobileBtn.disabled = disabled;
-    mobileBtn.title = outOfStock ? 'Consultar disponibilidad' : (byOrder ? 'Producto a pedido' : 'Agregar al carrito');
-    mobileBtn.innerHTML = outOfStock
-      ? '<span class="material-symbols-outlined" style="font-size:17px;">chat</span> Consultar'
-      : (byOrder
-        ? '<span class="material-symbols-outlined" style="font-size:17px;">pending_actions</span> A pedido'
-        : '<span class="material-symbols-outlined" style="font-size:17px;">add_shopping_cart</span> Agregar');
+    mobileBtn.disabled = false;
+    mobileBtn.title = needsConsult ? 'Consultar por WhatsApp' : 'Agregar al carrito';
+    mobileBtn.innerHTML = needsConsult
+      ? '<span class="material-symbols-outlined" style="font-size:17px;">chat</span> WhatsApp'
+      : '<span class="material-symbols-outlined" style="font-size:17px;">add_shopping_cart</span> Agregar';
   }
 }
 
@@ -1246,6 +1339,8 @@ function setRelatedMediaImage(media, product, image) {
   img.src = image;
   img.alt = cleanText(product.name);
   img.className = 'acc-img related-card-img';
+  img.referrerPolicy = 'no-referrer';
+  attachProductImageFallback(img, product, media);
   media.insertBefore(img, media.firstChild);
 }
 
@@ -1258,6 +1353,7 @@ async function hydrateRelatedProductImage(product, media) {
 function renderRelatedCard(p, i) {
     var stockState = getProductStockStateForView(p);
     var outOfStock = stockState.status === 'out';
+    var needsConsult = productNeedsWhatsAppConsult(p);
     var card = document.createElement('div');
     card.className = 'acc-card' + (outOfStock ? ' is-out-of-stock' : '');
     card.style.animationDelay = (i * 0.035) + 's';
@@ -1270,6 +1366,8 @@ function renderRelatedCard(p, i) {
       img.src = p.image;
       img.alt = cleanText(p.name);
       img.className = 'acc-img related-card-img';
+      img.referrerPolicy = 'no-referrer';
+      attachProductImageFallback(img, p, media);
       media.appendChild(img);
     } else {
       var iconWrap = document.createElement('div');
@@ -1291,7 +1389,7 @@ function renderRelatedCard(p, i) {
     if (outOfStock) {
       var soldOut = document.createElement('span');
       soldOut.className = 'related-card-soldout';
-      soldOut.textContent = 'Consultar';
+      soldOut.textContent = 'Sin stock';
       media.appendChild(soldOut);
     }
 
@@ -1314,11 +1412,15 @@ function renderRelatedCard(p, i) {
 
     var addButton = document.createElement('button');
     addButton.className = 'material-symbols-outlined related-card-add';
-    addButton.disabled = outOfStock;
-    addButton.textContent = outOfStock ? 'block' : (productIsByOrder(p) ? 'pending_actions' : 'add_shopping_cart');
-    addButton.title = outOfStock ? 'Consultar disponibilidad' : (productIsByOrder(p) ? 'Producto a pedido' : 'Agregar al carrito');
+    addButton.disabled = false;
+    addButton.textContent = needsConsult ? 'chat' : 'add_shopping_cart';
+    addButton.title = needsConsult ? 'Consultar por WhatsApp' : 'Agregar al carrito';
     addButton.addEventListener('click', function(event) {
       event.stopPropagation();
+      if (needsConsult) {
+        openProductWhatsApp(p);
+        return;
+      }
       addToCart(p.name, p.price, p.image || '', p);
     });
     addButton.addEventListener('mouseenter', function() { addButton.style.color = color; });
@@ -1339,6 +1441,14 @@ function renderRelatedCard(p, i) {
 }
 
 async function renderRelated(current) {
+  var section = document.getElementById('related-products-section');
+  if (section) section.style.display = '';
+
+  if (productIsProvider(current)) {
+    if (section) section.style.display = 'none';
+    return;
+  }
+
   var relLink = document.getElementById('related-all-link');
   relLink.href = 'catalogo.html';
 
@@ -1349,7 +1459,7 @@ async function renderRelated(current) {
   grid.innerHTML = '';
 
   if (!related.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;color:#605f5e;font-family:\'Manrope\',sans-serif;">No hay más productos cargados en esta categoría todavía.</div>';
+    if (section) section.style.display = 'none';
     return;
   }
 
@@ -1375,7 +1485,10 @@ function changeQty(delta) {
 
 function handleAddToCart(btn) {
   if (!PRODUCT || btn.disabled) return;
-  if (!ensureUserLoggedIn('add-to-cart')) return;
+  if (productNeedsWhatsAppConsult(PRODUCT)) {
+    openProductWhatsApp(PRODUCT);
+    return;
+  }
   if (productIsByOrder(PRODUCT)) {
     if (typeof cartByOrderToast === 'function') cartByOrderToast(PRODUCT.name);
     else alert('Producto a pedido. Consultanos para reservarlo.');
@@ -1434,7 +1547,10 @@ function handleAddToCart(btn) {
 }
 
 function addToCart(name, price, image, product) {
-  if (!ensureUserLoggedIn('add-to-cart')) return;
+  if (productNeedsWhatsAppConsult(product)) {
+    openProductWhatsApp(product || { name: name, price: price, image: image });
+    return;
+  }
   if (productIsByOrder(product)) {
     if (typeof cartByOrderToast === 'function') cartByOrderToast(name);
     else alert('Producto a pedido. Consultanos para reservarlo.');
@@ -1478,7 +1594,7 @@ function addToCart(name, price, image, product) {
 }
 
 // -------------------------------------------------------
-//  INIT — leer ?id= de la URL
+//  INIT - leer id de la URL
 // -------------------------------------------------------
 document.addEventListener('DOMContentLoaded', async function() {
   var params = new URLSearchParams(window.location.search);
@@ -1504,3 +1620,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 </body>
 </html>
+
+
+
+
+
+

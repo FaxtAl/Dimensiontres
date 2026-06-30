@@ -148,6 +148,7 @@ function normalizeHomeText(value) {
 }
 
 function homeCatalogHref(item) {
+  if (item && item.href) return item.href;
   return 'catalogo.html?catid=' + encodeURIComponent(item.id);
 }
 
@@ -157,12 +158,28 @@ function homeProductHref(product) {
 
 function homeCategoryMeta(name) {
   var text = normalizeHomeText(name);
-  if (text.indexOf('consolas de juegos') !== -1) {
+  if (text.indexOf('placas de video') !== -1) {
+    return {
+      title: 'Placas de video',
+      subtitle: 'GPU - RTX - Radeon',
+      icon: 'memory',
+      image: 'img/hadware.jpg'
+    };
+  }
+  if (text === 'consolas' || text.indexOf('consolas de juegos') !== -1) {
     return {
       title: 'Consolas',
       subtitle: 'PS4 - Retro - Consolas',
       icon: 'sports_esports',
       image: 'img/Consolas.jpg'
+    };
+  }
+  if (text.indexOf('juegos fisicos') !== -1 || text.indexOf('juegos originales') !== -1) {
+    return {
+      title: 'Juegos Físicos',
+      subtitle: 'PS5 - PS4 - PS3',
+      icon: 'stadia_controller',
+      image: 'img/Consolas_Accesorios.jpg'
     };
   }
   if (text.indexOf('accesorios consolas') !== -1) {
@@ -173,9 +190,17 @@ function homeCategoryMeta(name) {
       image: 'img/Consolas_Accesorios.jpg'
     };
   }
+  if (text.indexOf('pc y componentes') !== -1) {
+    return {
+      title: 'PC y Componentes',
+      subtitle: 'Procesador - Mother - Placa de Video',
+      icon: 'memory',
+      image: 'img/hadware.jpg'
+    };
+  }
   if (text.indexOf('hardware') !== -1) {
     return {
-      title: 'Hardware',
+      title: 'PC y Componentes',
       subtitle: 'Procesadores - Mother - Fuentes',
       icon: 'memory',
       image: 'img/hadware.jpg'
@@ -191,10 +216,42 @@ function homeCategoryMeta(name) {
   }
   if (text.indexOf('perifericos pc') !== -1) {
     return {
-      title: 'Perifericos PC',
+      title: 'Periféricos PC',
       subtitle: 'Mouse - Teclados - Monitores',
       icon: 'mouse',
       image: 'img/perifericos.jpg'
+    };
+  }
+  if (text.indexOf('monitores') !== -1) {
+    return {
+      title: 'Monitores',
+      subtitle: 'Gaming - Oficina - 144Hz',
+      icon: 'desktop_windows',
+      image: 'img/perifericos.jpg'
+    };
+  }
+  if (text.indexOf('pc gamers') !== -1 || text.indexOf('pc gamer') !== -1) {
+    return {
+      title: 'PC Gamers',
+      subtitle: 'Gabinetes - Setups - Armados',
+      icon: 'desktop_windows',
+      image: 'img/hadware.jpg'
+    };
+  }
+  if (text.indexOf('teclados mecanicos') !== -1 || text.indexOf('teclados') !== -1) {
+    return {
+      title: 'Teclados mecánicos',
+      subtitle: 'Redragon - Gamer - RGB',
+      icon: 'keyboard',
+      image: 'img/perifericos.jpg'
+    };
+  }
+  if (text.indexOf('almacenamiento') !== -1) {
+    return {
+      title: 'Almacenamiento',
+      subtitle: 'SSD - HDD - Pendrives - MicroSD',
+      icon: 'storage',
+      image: 'img/memorias.webp'
     };
   }
   if (text.indexOf('memoria') !== -1) {
@@ -253,6 +310,14 @@ function homeCategoryMeta(name) {
       image: 'img/cables.jpg'
     };
   }
+  if (text === 'otros' || text.indexOf('otros') !== -1) {
+    return {
+      title: 'Otros',
+      subtitle: 'Productos varios del catalogo',
+      icon: 'inventory_2',
+      image: 'img/Water%20cooler%20corner.jpg'
+    };
+  }
   return {
     title: name,
     subtitle: 'Ver productos disponibles',
@@ -262,20 +327,41 @@ function homeCategoryMeta(name) {
 }
 
 function pickHomeCategories(tree) {
+  // Home: solo seis accesos visuales a categorias reales del catalogo.
   var wanted = [
-    'Consolas de juegos',
-    'Accesorios Consolas',
-    'Hardware',
-    'Perifericos PC',
-    'Auriculares',
-    'Cables'
+    { title: 'Consolas', source: 'Consolas de juegos', href: 'catalogo.html?catid=cat-consolas-de-juegos' },
+    { title: 'PC y Componentes', source: 'PC y Componentes', href: 'catalogo.html?catid=cat-pc-y-componentes' },
+    { title: 'Perifericos PC', source: 'Periféricos PC', href: 'catalogo.html?catid=cat-perifericos-pc' },
+    { title: 'Accesorios Consolas', source: 'Accesorios Consolas', href: 'catalogo.html?catid=cat-accesorios-consolas' },
+    { title: 'Auriculares', source: 'Auriculares', href: 'catalogo.html?catid=cat-auriculares' },
+    { title: 'Adaptadores', source: 'Adaptadores', href: 'catalogo.html?catid=cat-adaptadores' }
   ];
-  return wanted
-    .map(function(name) {
-      var target = normalizeHomeText(name);
-      return tree.find(function(item) { return normalizeHomeText(item.name) === target; });
-    })
-    .filter(Boolean);
+
+  // Fallbacks estaticos (mismo slugify que catalogSlug del supabase-client.js)
+  function slug(name) {
+    return 'cat-' + String(name || '')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  }
+
+  var fallbacks = wanted.reduce(function(acc, entry) {
+    var source = entry.source || entry.title;
+    acc[normalizeHomeText(source)] = { id: slug(source), name: source };
+    return acc;
+  }, {});
+
+  return wanted.map(function(entry) {
+    var target = normalizeHomeText(entry.source || entry.title);
+    var found = (tree || []).find(function(item) { return normalizeHomeText(item.name) === target; });
+    var base = found || fallbacks[target] || null;
+    if (!base) return null;
+    var item = Object.assign({}, base);
+    item.homeTitle = entry.title;
+    if (entry.href) item.href = entry.href;
+    return item;
+  }).filter(Boolean);
 }
 
 function renderHomeCategories(tree) {
@@ -285,11 +371,11 @@ function renderHomeCategories(tree) {
   if (!categories.length) return;
 
   grid.innerHTML = '';
-  categories.forEach(function(item, index) {
-    var meta = homeCategoryMeta(item.name);
+  categories.forEach(function(item) {
+    var meta = homeCategoryMeta(item.homeTitle || item.name);
     var card = document.createElement('a');
-    card.className = (index === 0 || index === categories.length - 1 ? 'sm:col-span-2 lg:col-span-1 ' : '') +
-      'group block relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]';
+    // 13 categorías → grid responsive (1/2/4/5 columnas) heredado del HTML
+    card.className = 'home-category-card group block relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]';
     card.href = homeCatalogHref(item);
     card.setAttribute('aria-label', 'Ver categoria ' + meta.title);
 
@@ -307,8 +393,7 @@ function renderHomeCategories(tree) {
     content.className = 'absolute bottom-6 left-6 right-6';
     content.innerHTML =
       '<span class="material-symbols-outlined text-primary mb-2 text-3xl">' + meta.icon + '</span>' +
-      '<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">' + meta.title + '</h3>' +
-      '<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">' + meta.subtitle + '</p>';
+      '<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">' + meta.title + '</h3>';
     card.appendChild(content);
     grid.appendChild(card);
   });
@@ -317,7 +402,10 @@ function renderHomeCategories(tree) {
 function renderHomePromo(tree) {
   var promo = document.getElementById('home-promo-card');
   if (!promo) return;
-  var item = tree.find(function(cat) { return normalizeHomeText(cat.name) === 'hardware'; }) || tree[0];
+  var item = tree.find(function(cat) {
+    var text = normalizeHomeText(cat.name);
+    return text === 'hardware' || text === 'pc y componentes';
+  }) || tree[0];
   if (!item) return;
 
   var meta = homeCategoryMeta(item.name);
@@ -333,7 +421,10 @@ function renderHomePromo(tree) {
 
   if (kicker) kicker.textContent = 'Productos del catalogo';
   if (title) title.textContent = meta.title;
-  if (text) text.textContent = 'Entra directo a productos reales cargados desde la base: stock, precios y categorias actualizadas.';
+  if (text) {
+    text.textContent = '';
+    text.style.display = 'none';
+  }
   if (link) link.innerHTML = 'Ver productos <span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
   promo.onclick = function() { window.location.href = homeCatalogHref(item); };
 }
@@ -347,7 +438,46 @@ function setFeaturedProductImage(media, product, image) {
   img.className = 'feat-card-img';
   img.src = image;
   img.alt = product.name || 'Producto';
+  img.referrerPolicy = 'no-referrer';
+  attachFeaturedImageFallback(img, product, media);
   media.insertBefore(img, media.firstChild);
+}
+
+function getFeaturedImageCandidates(product, image) {
+  var list = [];
+  function push(url) {
+    url = String(url || '').trim();
+    if (url && list.indexOf(url) === -1) list.push(url);
+  }
+  push(image);
+  push(product && product.image);
+  push(product && product.supplierImage);
+  var extra = product && (product.imageCandidates || product.apiImageCandidates);
+  if (Array.isArray(extra)) extra.forEach(push);
+  else push(extra);
+  return list;
+}
+
+function attachFeaturedImageFallback(img, product, media) {
+  if (!img || !product || !media) return;
+  var candidates = getFeaturedImageCandidates(product, img.getAttribute('src'));
+  img.dataset.fallbackIndex = '0';
+  img.onerror = function() {
+    var nextIndex = Number(img.dataset.fallbackIndex || 0) + 1;
+    if (nextIndex < candidates.length) {
+      img.dataset.fallbackIndex = String(nextIndex);
+      product.image = candidates[nextIndex];
+      img.src = candidates[nextIndex];
+      return;
+    }
+    img.remove();
+    if (!media.querySelector('.feat-icon')) {
+      var icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined feat-icon';
+      icon.textContent = product.icon || 'inventory_2';
+      media.insertBefore(icon, media.firstChild);
+    }
+  };
 }
 
 async function hydrateFeaturedProductImage(product, media) {
@@ -369,6 +499,8 @@ function createFeaturedProductCard(product) {
     img.className = 'feat-card-img';
     img.src = product.image;
     img.alt = product.name;
+    img.referrerPolicy = 'no-referrer';
+    attachFeaturedImageFallback(img, product, media);
     media.appendChild(img);
   } else {
     var icon = document.createElement('span');
@@ -426,6 +558,130 @@ function createFeaturedProductCard(product) {
   return card;
 }
 
+function homeFeaturedProductText(product) {
+  return normalizeHomeText([
+    product && product.name,
+    product && product.subtitle,
+    product && product.description,
+    product && product.sourceLabel,
+    product && product.category,
+    product && product.rootCategory,
+    product && product.model,
+    product && product.codigo,
+    product && product.code
+  ].filter(Boolean).join(' '));
+}
+
+function isUsableHomeFeaturedProduct(product) {
+  if (!product || !product.name || !product.slug) return false;
+  if (Number(product.price || 0) <= 0) return false;
+  var text = homeFeaturedProductText(product);
+  var hiddenTerms = [
+    'servicio',
+    'arreglo',
+    'consola de juego',
+    'juegos digitales',
+    'cargar mercado pago',
+    'nota de credito',
+    'estacionamiento',
+    'actualizacion kinect'
+  ];
+  return !hiddenTerms.some(function(term) {
+    if (term === 'consola de juego') {
+      return text.indexOf(term) !== -1 && text.indexOf('playstation 5') === -1 && text.indexOf('ps5') === -1;
+    }
+    return text.indexOf(term) !== -1;
+  });
+}
+
+function compareHomeFeaturedProducts(a, b) {
+  var imageDiff = Number(!!b.image) - Number(!!a.image);
+  if (imageDiff !== 0) return imageDiff;
+
+  var stockDiff = Number(Number(b.stock || 0) > 0) - Number(Number(a.stock || 0) > 0);
+  if (stockDiff !== 0) return stockDiff;
+
+  return String(a.name || '').localeCompare(String(b.name || ''), 'es');
+}
+
+function productMatchesFeaturedRule(product, rule) {
+  var text = homeFeaturedProductText(product);
+  var categoryText = normalizeHomeText([product && product.category, product && product.rootCategory].filter(Boolean).join(' '));
+  var labelText = normalizeHomeText(product && product.sourceLabel);
+  var isConsoleCategory = categoryText.indexOf('consolas de juegos') !== -1 || labelText.indexOf('consola') === 0;
+  var isConsoleAccessoryCategory = categoryText.indexOf('accesorios consolas') !== -1 || labelText.indexOf('accessorios') !== -1 || labelText.indexOf('accesorios') !== -1;
+  var isJoystickAccessoryOnly = ['adaptador', 'base', 'cable', 'funda', 'cubre', 'bateria', 'caja', 'pilas', 'cargador', 'ventilador', 'cooler', 'usb hub'].some(function(term) {
+    return text.indexOf(term) !== -1;
+  });
+  var isJoystick = (text.indexOf('joystick') !== -1 || text.indexOf('dualsense') !== -1 || text.indexOf('dualshock') !== -1) && !isJoystickAccessoryOnly;
+  var isPs5 = text.indexOf('ps5') !== -1 || text.indexOf('playstation 5') !== -1;
+  var isPs4 = text.indexOf('ps4') !== -1 || text.indexOf('playstation 4') !== -1;
+
+  if (rule === 'ps5-console') return isPs5 && isConsoleCategory && !isJoystick;
+  if (rule === 'ps4-console') return isPs4 && isConsoleCategory && !isJoystick;
+  if (rule === 'ps5-joystick') return isPs5 && isJoystick;
+  if (rule === 'ps4-joystick') return isPs4 && isJoystick;
+  if (rule === 'any-joystick') return isJoystick;
+  if (rule === 'console-extra') return isConsoleCategory || isConsoleAccessoryCategory;
+  return false;
+}
+
+function pickPreferredHomeFeaturedProducts(products) {
+  var seen = {};
+  var pool = (products || [])
+    .filter(isUsableHomeFeaturedProduct)
+    .filter(function(product) {
+      if (!product.slug || seen[product.slug]) return false;
+      seen[product.slug] = true;
+      return true;
+    })
+    .sort(compareHomeFeaturedProducts);
+
+  var selected = [];
+  var selectedSlugs = {};
+  function addFirst(rule) {
+    var found = pool.find(function(product) {
+      return !selectedSlugs[product.slug] && productMatchesFeaturedRule(product, rule);
+    });
+    if (!found) return;
+    selected.push(found);
+    selectedSlugs[found.slug] = true;
+  }
+
+  [
+    'ps5-console',
+    'ps4-console',
+    'ps5-joystick',
+    'ps4-joystick',
+    'any-joystick',
+    'console-extra'
+  ].forEach(addFirst);
+
+  pool.forEach(function(product) {
+    if (selected.length >= 6 || selectedSlugs[product.slug]) return;
+    if (productMatchesFeaturedRule(product, 'any-joystick')) {
+      selected.push(product);
+      selectedSlugs[product.slug] = true;
+    }
+  });
+
+  pool.forEach(function(product) {
+    if (selected.length >= 6 || selectedSlugs[product.slug]) return;
+    if (productMatchesFeaturedRule(product, 'console-extra')) {
+      selected.push(product);
+      selectedSlugs[product.slug] = true;
+    }
+  });
+
+  pool.forEach(function(product) {
+    if (selected.length >= 6 || selectedSlugs[product.slug]) return;
+    selected.push(product);
+    selectedSlugs[product.slug] = true;
+  });
+
+  return selected.slice(0, 6);
+}
+
 function wireStaticSetupLinks() {
   var grid = document.getElementById('home-featured-grid');
   if (!grid) return;
@@ -473,14 +729,9 @@ async function loadHomeFeaturedProducts(tree) {
       .catch(function() { return []; });
   }));
 
-  var seen = {};
-  return batches.reduce(function(all, group) {
-    return all.concat(group);
-  }, []).filter(function(product) {
-    if (!product.slug || seen[product.slug]) return false;
-    seen[product.slug] = true;
-    return true;
-  }).slice(0, 6);
+  return pickPreferredHomeFeaturedProducts(batches.reduce(function(all, group) {
+    return all.concat(group || []);
+  }, []));
 }
 
 function renderHomeFeaturedProducts(products) {
@@ -534,9 +785,8 @@ async function loadHomeCatalogSections() {
     if (!tree || !tree.length) return;
     renderHomeCategories(tree);
     renderHomePromo(tree);
-    if (window.CONFIG && window.CONFIG.LOW_EGRESS_MODE !== false) return;
     var products = await loadHomeFeaturedProducts(tree);
-    renderHomeFeaturedProducts(products);
+    renderHomeFeaturedProducts(products.slice(0, 6));
   } catch (err) {
     console.warn('No se pudo actualizar el inicio desde Supabase:', err);
   }
