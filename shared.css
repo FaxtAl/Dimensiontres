@@ -695,3 +695,76 @@ body.dt-modal-open .dt-whatsapp-float {
   background: rgba(0, 240, 255, 0.07);
   box-shadow: inset 2px 0 0 #00f0ff;
 }
+
+/* ============================================================
+   Nav de escritorio en dos filas, como gorilagames.com:
+   arriba logo + buscador ancho + redes, abajo Productos + links
+   + carrito. En celular la fila 1 no existe y queda la barra
+   unica con el logo centrado.
+   ============================================================ */
+
+.dt-nav-top { display: none; }
+
+@media (min-width: 768px) {
+  /* Alto fijo para la fila 1. Es lo que se le suma al body como padding:
+     con alto automatico el valor dependeria del contenido y el nav, que es
+     fixed, terminaria tapando el inicio de cada pagina. */
+  :root { --dt-nav-fila1: 72px; }
+
+  .dt-nav-top {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    width: 100%;
+    max-width: 1920px;
+    height: var(--dt-nav-fila1);
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* El logo de la fila 2 se apaga: ya esta arriba y tenerlo dos veces
+     desordena la fila de abajo. */
+  .dt-nav-logo { display: none; }
+
+  .dt-nav-row { gap: 1.25rem; }
+
+  /* La fila 2 conserva su alto de siempre (md:h-20), asi el pt-20 que ya
+     tenian las paginas sigue alcanzando. Solo se compensa la fila nueva. */
+  body { padding-top: var(--dt-nav-fila1); }
+}
+
+.dt-nav-top-logo {
+  flex-shrink: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #00f0ff;
+  text-decoration: none;
+}
+
+.dt-nav-buscador {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dt-nav-redes {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-shrink: 0;
+}
+
+.dt-nav-redes a {
+  display: flex;
+  color: #adaaaa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.dt-nav-redes a:hover { color: #00f0ff; }
+.dt-nav-redes .material-symbols-outlined { font-size: 22px; }

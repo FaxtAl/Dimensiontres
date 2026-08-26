@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 
 
-  <link rel="stylesheet" href="shared.css?v=nav-categorias-20260826">
+  <link rel="stylesheet" href="shared.css?v=nav-dos-filas-b-20260826">
   <link rel="stylesheet" href="index.css?v=cards-cobertura-20260730">
   <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
@@ -35,6 +35,36 @@
      barra de navegacin entre 
      ======================================= -->
 <nav class="fixed top-0 w-full z-50" style="background:#0e0e0e; border-bottom: 1px solid rgba(0,240,255,0.08);">
+  <!-- FILA 1 (solo escritorio): logo + buscador ancho + redes -->
+  <div class="dt-nav-top">
+    <a href="index.html" class="dt-nav-top-logo">DimensionTres</a>
+<div class="dt-nav-buscador">
+      <div class="relative w-full flex items-center">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Buscar productos..."
+          class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none"
+          style="border-radius: 6px;"
+          onkeydown="if(event.key===&#39;Enter&#39;) handleSearch()"
+        />
+        <button
+          onclick="handleSearch()"
+          class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors"
+          style="border-radius: 0 6px 6px 0;"
+          aria-label="Buscar"
+        >
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </button>
+      </div>
+    </div>
+    <div class="dt-nav-redes">
+      <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20disponibilidad" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
+        <span class="material-symbols-outlined">chat</span>
+      </a>
+    </div>
+  </div>
+
 
   <!-- Contenedor principal del nav -->
   <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
@@ -87,26 +117,7 @@
     </div>
 
     <!-- Buscador: solo en escritorio (md+) -->
-    <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
-      <div class="relative w-full flex items-center">
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Buscar productos..."
-          class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none"
-          style="border-radius: 6px;"
-          onkeydown="if(event.key===&#39;Enter&#39;) handleSearch()"
-        />
-        <button
-          onclick="handleSearch()"
-          class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors"
-          style="border-radius: 0 6px 6px 0;"
-          aria-label="Buscar"
-        >
-          <span class="material-symbols-outlined text-[20px]">search</span>
-        </button>
-      </div>
-    </div>
+    
 
     <!-- DERECHA: carrito y cuenta, en ese orden como en la referencia -->
     <div class="flex items-center gap-3 md:gap-4">
