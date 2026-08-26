@@ -2172,7 +2172,8 @@ body::after {
 
   .dt-filtros-cabecera button:hover { color: #00f0ff; }
 
-  /* En el panel el arbol tiene toda la altura que quiera: aca no compite
-     con nada, a diferencia del escritorio donde tapaba el precio. */
-  .catalog-sidebar .category-tree { max-height: none; }
+  /* El arbol tambien va acotado en el panel. Con altura libre ocupaba las
+     50 filas enteras y empujaba Precio y los grupos de filtros fuera de la
+     vista: habia que scrollear todo el arbol para encontrarlos. */
+  .catalog-sidebar .category-tree { max-height: 38vh; }
 }
