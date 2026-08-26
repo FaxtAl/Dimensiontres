@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=nav-categorias-20260826">
-<link rel="stylesheet" href="catalogo.css?v=filtros-migas-20260826">
+<link rel="stylesheet" href="catalogo.css?v=filtros-movil-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -226,19 +226,19 @@
         </button>
       </div>
       <div class="mobile-catalog-actions">
-        <button type="button" class="mobile-catalog-action" onclick="openCatalogPanel('categories')" aria-controls="catalog-category-panel">
-          <span class="material-symbols-outlined">more_vert</span>
-          <span>Categorías</span>
-        </button>
-        <button type="button" class="mobile-catalog-action" onclick="openCatalogPanel('filters')" aria-controls="catalog-filter-panel">
+        <!-- Un solo boton, como en la referencia: abre la misma barra lateral
+             del escritorio, que ya tiene categorias, precio y los filtros.
+             Antes eran dos botones y dos paneles distintos. -->
+        <button type="button" class="mobile-catalog-action" onclick="dtToggleFiltrosMovil()" aria-controls="catalog-sidebar">
           <span class="material-symbols-outlined">filter_list</span>
-          <span>Filtros</span>
+          <span>Filtrar</span>
         </button>
       </div>
     </div>
   </section>
 
   <div id="catalog-panel-backdrop" class="catalog-panel-backdrop" onclick="closeCatalogPanel()"></div>
+  <div id="dt-filtros-fondo" class="dt-filtros-fondo" onclick="dtToggleFiltrosMovil(true)"></div>
 
   <aside id="catalog-category-panel" class="catalog-mobile-panel" aria-label="Categorías del catálogo">
     <div class="catalog-panel-header">
@@ -316,7 +316,13 @@
   <section class="container mx-auto px-5 md:px-8 py-8 md:py-10 max-w-[1920px]">
 
     <div class="catalog-layout">
-      <aside class="catalog-sidebar" aria-label="Categorias del catalogo">
+      <aside id="catalog-sidebar" class="catalog-sidebar" aria-label="Filtros del catalogo">
+        <div class="dt-filtros-cabecera">
+          <span>Filtros</span>
+          <button type="button" onclick="dtToggleFiltrosMovil(true)" aria-label="Cerrar filtros">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
         <div class="catalog-sidebar-title">
           <span class="material-symbols-outlined">keyboard_arrow_up</span>
           <span>Categorias</span>
@@ -422,9 +428,12 @@
           Elegi una categoria para explorar productos disponibles.
         </div>
 
+        <!-- Va fuera de #grid-wrapper: ese wrapper es flex en fila, y adentro
+             la linea quedaba como una columna al costado de los productos. -->
+        <p id="dt-resultados" class="dt-resultados"></p>
+
         <!-- Wrapper animado del grid -->
         <div id="grid-wrapper">
-          <p id="dt-resultados" class="dt-resultados"></p>
           <div id="categories-grid"
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-6 w-full">
             <!-- Las cards se renderizan con JS -->
@@ -2709,6 +2718,18 @@ var DT_FILTROS_MAPA = [
   { sel: 'cascade-secondary-select',  etiqueta: 'cascade-secondary-label', fn: 'secondary', wrap: 'cascade-secondary-wrap', cascada: true },
   { sel: 'cascade-capacity-select',   etiqueta: 'cascade-capacity-label',  fn: 'capacity',  wrap: 'cascade-capacity-wrap',  cascada: true }
 ];
+
+// En celular la barra lateral se comporta como panel deslizante.
+function dtToggleFiltrosMovil(forzarCerrado) {
+  var panel = document.getElementById('catalog-sidebar');
+  var fondo = document.getElementById('dt-filtros-fondo');
+  if (!panel) return;
+
+  var abrir = forzarCerrado === true ? false : !panel.classList.contains('is-open');
+  panel.classList.toggle('is-open', abrir);
+  if (fondo) fondo.classList.toggle('is-open', abrir);
+  document.body.style.overflow = abrir ? 'hidden' : '';
+}
 
 function dtRenderFiltrosPanel() {
   var panel = document.getElementById('dt-filtros-panel');

@@ -2099,3 +2099,80 @@ body::after {
   font-size: 0.85rem;
   color: #8f8e8d;
 }
+
+/* ============================================================
+   En celular la barra lateral es un panel deslizante.
+   Se reusa el mismo <aside> del escritorio en vez de duplicar
+   categorias, precio y filtros en un panel aparte: asi hay una
+   sola copia de todo y no se pueden desincronizar.
+   ============================================================ */
+
+.dt-filtros-cabecera { display: none; }
+
+.dt-filtros-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 79;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.dt-filtros-fondo.is-open { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 767px) {
+  .catalog-layout.has-sidebar .catalog-sidebar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    width: 88%;
+    max-width: 340px;
+    height: 100%;
+    padding: 0 1.1rem 2rem;
+    background: #0e0e0e;
+    border-right: 1px solid rgba(0, 240, 255, 0.12);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.55);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+  }
+
+  .catalog-layout.has-sidebar .catalog-sidebar.is-open { transform: translateX(0); }
+
+  .dt-filtros-cabecera {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 -1.1rem 0.5rem;
+    padding: 1rem 1.1rem;
+    background: #0e0e0e;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #e8e6e3;
+  }
+
+  .dt-filtros-cabecera button {
+    background: none;
+    border: 0;
+    color: #adaaaa;
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+  }
+
+  .dt-filtros-cabecera button:hover { color: #00f0ff; }
+
+  /* En el panel el arbol tiene toda la altura que quiera: aca no compite
+     con nada, a diferencia del escritorio donde tapaba el precio. */
+  .catalog-sidebar .category-tree { max-height: none; }
+}
