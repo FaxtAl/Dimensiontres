@@ -2177,3 +2177,19 @@ body::after {
      vista: habia que scrollear todo el arbol para encontrarlos. */
   .catalog-sidebar .category-tree { max-height: 38vh; }
 }
+
+/* Link "Todas las categorias" arriba del arbol enfocado */
+.category-tree-todas {
+  display: block;
+  padding: 0.6rem 0.5rem 0.7rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(72, 72, 71, 0.25);
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #adaaaa;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.category-tree-todas:hover { color: #00f0ff; }

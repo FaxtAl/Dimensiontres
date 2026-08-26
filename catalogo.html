@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=nav-categorias-20260826">
-<link rel="stylesheet" href="catalogo.css?v=filtros-movil-b-20260826">
+<link rel="stylesheet" href="catalogo.css?v=arbol-rama-b-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -1732,18 +1732,38 @@ function renderCategorySidebar() {
     });
   }
 
+  // El boton "Filtrar" solo tiene sentido donde hay productos. En la raiz
+  // se muestran tarjetas de categoria y el panel quedaria vacio.
+  var acciones = document.querySelector('.mobile-catalog-actions');
+
   if (currentRouteState.view === 'root') {
     if (tree) tree.innerHTML = '';
     if (layout) layout.classList.remove('has-sidebar');
+    if (acciones) acciones.style.display = 'none';
+    dtToggleFiltrosMovil(true);
     return;
   }
 
+  if (acciones) acciones.style.display = '';
   if (layout) layout.classList.add('has-sidebar');
 
   if (!tree) return;
   tree.innerHTML = '';
 
-  CATALOG.forEach(function(item) {
+  // Solo la rama donde estas. En la referencia el panel de filtros muestra
+  // las subcategorias de la categoria actual, no las 13 enteras: aca estas
+  // filtrando adentro de una categoria, no navegando entre todas. Para
+  // saltar de categoria esta el desplegable "Productos" del nav.
+  var raizActiva = activeIds.length ? activeIds[0] : '';
+  var rama = CATALOG.filter(function(item) { return item.id === raizActiva; });
+
+  var todas = document.createElement('a');
+  todas.href = 'catalogo.html';
+  todas.className = 'category-tree-todas';
+  todas.textContent = 'Todas las categorías';
+  tree.appendChild(todas);
+
+  (rama.length ? rama : CATALOG).forEach(function(item) {
     appendSidebarItem(tree, item, 0, activeIds);
   });
 }
