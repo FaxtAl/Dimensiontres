@@ -2,7 +2,7 @@
 var CONFIG = {
   // Contacto
   CONTACT_PHONE: "5493534019085",
-  STORE_LOCATION: "Villa María, CóC?rdoba, Argentina",
+  STORE_LOCATION: "Villa María, Córdoba, Argentina",
 
   // Impuestos y moneda
   TAX_RATE: 0.21, // IVA Argentina
@@ -31,7 +31,7 @@ var CONFIG = {
   MERCADO_LIBRE_AUTO_IMAGE_SEARCH: false,
 
   // Invid: precios del proveedor en USD -> venta web en ARS.
-  // Cambiar INVID_USD_RATE cuando actualicen la cotizaci?n interna.
+  // Cambiar INVID_USD_RATE cuando actualicen la cotización interna.
   INVID_USD_RATE: 1515,
   INVID_MARKUP_RATE: 0.30,
   INVID_MIN_WEB_PRICE: 30000,
@@ -40,7 +40,7 @@ var CONFIG = {
   SUPABASE_URL: 'https://api.dimensiontres.com',
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_ACJWLzQHlZjBrEguHvfOxg_3BJgxAaH',
 
-  // LíL?mites
+  // Límites
   MAX_SEARCH_LENGTH: 100,
   MAX_QUANTITY: 999,
   MIN_QUANTITY: 1,

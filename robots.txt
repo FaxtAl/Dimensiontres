@@ -1,81 +1,41 @@
-User-agent: *
-Disallow:
-Crawl-delay: 60 # 60 segundos entre cada request
-Visit-time: 0300-1200 # 00:00 AM a 09:00 AM (America/Argentina/Buenos_Aires)
-Request-rate: 6/60m # permite indexar 6 documentos cada 60 minutos
-Request-rate: 3/60m 1200-0300 # permite indexar 3 documentos cada 60 minutos entre las 09:00 AM a 00:00 AM (America/Argentina/Buenos_Aires)
+# DimensionTres - https://dimensiontres.com
+# El catalogo funciona con parametros (catalogo.html?catid=..., producto.html?id=...),
+# asi que NO se puede bloquear "/*?": eso dejaba fuera todas las fichas de producto.
 
-Disallow: /cgi-bin/
-Disallow: /admin/
+User-agent: *
+Allow: /
+
+# Paginas privadas o sin valor para buscadores
+Disallow: /admin.html
+Disallow: /admin-imagenes.html
+Disallow: /cuenta.html
+Disallow: /carrito.html
+Disallow: /pago-resultado.html
+Disallow: /api/
 Disallow: /*.sql$
 
-# Bloqueo de las URL dinamicas
-Disallow: /*?
+# Busquedas: generan URLs infinitas sin contenido propio
+Disallow: /catalogo.html?q=
+Disallow: /*&q=
 
-# Bloqueo de busquedas
-Disallow: /?s=
-Disallow: /search
-
-# Bloqueo de trackbacks
-Disallow: /trackback
-Disallow: /*trackback
-Disallow: /*trackback*
-Disallow: /*/trackback
-
-# Permitir Google Webmaster Tool
-User-agent: Googlebot
-Allow: /*.js$
-Allow: /*.css$
-
-# wordpress
-Disallow: /xmlrpc.php
+# WordPress residual en la raiz del hosting
 Disallow: /wp-admin/
 Disallow: /wp-includes/
-Disallow: /wp-content/plugins/
-Disallow: /wp-content/cache/
-Disallow: /wp-content/themes/
+Disallow: /wp-content/
+Disallow: /wp-login.php
+Disallow: /xmlrpc.php
 
-Disallow: /*/xmlrpc.php
-Disallow: /*/wp-admin/
-Disallow: /*/wp-includes/
-Disallow: /*/wp-content/plugins/
-Disallow: /*/wp-content/cache/
-Disallow: /*/wp-content/themes/
+# Los datos del catalogo salen de un Supabase propio, no de un datacenter.
+# Este limite frena a los rastreadores agresivos. Google lo ignora, que es lo que queremos.
+Crawl-delay: 10
 
-# joomla
-Disallow: /administrator/
-Disallow: /bin/
-Disallow: /cache/
-Disallow: /cli/
-Disallow: /components/
-Disallow: /images/
-Disallow: /includes/
-Disallow: /installation/
-Disallow: /language/
-Disallow: /layouts/
-Disallow: /libraries/
-Disallow: /logs/
-Disallow: /media/
-Disallow: /modules/
-Disallow: /plugins/
-Disallow: /templates/
-Disallow: /tmp/
+User-agent: Googlebot
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-imagenes.html
+Disallow: /cuenta.html
+Disallow: /carrito.html
+Disallow: /pago-resultado.html
+Disallow: /api/
 
-Disallow: /*/administrator/
-Disallow: /*/bin/
-Disallow: /*/cache/
-Disallow: /*/cli/
-Disallow: /*/components/
-Disallow: /*/images/
-Disallow: /*/includes/
-Disallow: /*/installation/
-Disallow: /*/language/
-Disallow: /*/layouts/
-Disallow: /*/libraries/
-Disallow: /*/logs/
-Disallow: /*/media/
-Disallow: /*/modules/
-Disallow: /*/plugins/
-Disallow: /*/templates/
-Disallow: /*/tmp/
-
+Sitemap: https://dimensiontres.com/sitemap.xml
