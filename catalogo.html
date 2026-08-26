@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=nav-categorias-20260826">
-<link rel="stylesheet" href="catalogo.css?v=links-catalogo-20260826">
+<link rel="stylesheet" href="catalogo.css?v=filtro-precio-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -322,6 +322,17 @@
         </div>
         <div id="category-tree" class="category-tree">
           <!-- El arbol se renderiza con JS -->
+        </div>
+
+        <!-- Rango de precio. Lo prepara dtBuildPriceFilter() con los precios reales
+             de lo que se esta mostrando; se oculta solo si no hay rango que elegir. -->
+        <div id="dt-precio-filtro" class="dt-precio" style="display:none;">
+          <div class="dt-precio-titulo">Precio</div>
+          <div class="dt-precio-slider">
+            <input id="dt-precio-desde" type="range" oninput="dtCambiarPrecio()" aria-label="Precio minimo"/>
+            <input id="dt-precio-hasta" type="range" oninput="dtCambiarPrecio()" aria-label="Precio maximo"/>
+          </div>
+          <div id="dt-precio-etiqueta" class="dt-precio-etiqueta"></div>
         </div>
       </aside>
 
@@ -700,7 +711,9 @@ var currentProductFilters = {
   cascadeMode: '',
   cascadePrimary: 'all',
   cascadeSecondary: 'all',
-  cascadeCapacity: 'all'
+  cascadeCapacity: 'all',
+  priceMin: null,
+  priceMax: null
 };
 var currentProductFilterPool = [];
 var productRenderToken = 0;
@@ -2670,6 +2683,9 @@ function resetProductFilters() {
   currentProductFilters.cascadePrimary = 'all';
   currentProductFilters.cascadeSecondary = 'all';
   currentProductFilters.cascadeCapacity = 'all';
+  currentProductFilters.priceMin = null;
+  currentProductFilters.priceMax = null;
+  dtSyncPriceInputs();
 }
 
 function syncProductFilterControls() {
@@ -2903,6 +2919,12 @@ function productCardMatchesFilters(card) {
   if (brand !== 'all' && card.dataset.brandKey !== brand) return false;
   if (fulfillment !== 'all' && card.dataset.fulfillment !== fulfillment) return false;
   if (spec !== 'all' && card.dataset.specKey !== spec) return false;
+  // Rango de precio: card.dataset.price ya lo escribe appendProductCard.
+  if (currentProductFilters.priceMin !== null || currentProductFilters.priceMax !== null) {
+    var precio = Number(card.dataset.price || 0);
+    if (currentProductFilters.priceMin !== null && precio < currentProductFilters.priceMin) return false;
+    if (currentProductFilters.priceMax !== null && precio > currentProductFilters.priceMax) return false;
+  }
   var hasCascadeSelection = currentProductFilters.cascadePrimary !== 'all'
     || currentProductFilters.cascadeSecondary !== 'all'
     || currentProductFilters.cascadeCapacity !== 'all';
@@ -2913,6 +2935,86 @@ function productCardMatchesFilters(card) {
     if (currentProductFilters.cascadeCapacity !== 'all' && card.dataset.cascadeCapacity !== currentProductFilters.cascadeCapacity) return false;
   }
   return true;
+}
+
+// ============================================================
+// Filtro por rango de precio.
+// El catalogo tenia "Precio: menor/mayor", que ordena pero no filtra.
+// Esto agrega el rango con dos manijas, como en la referencia.
+// ============================================================
+
+var dtPrecioTope = { min: 0, max: 0 };
+
+function dtFormatearPrecio(valor) {
+  return '$' + Math.round(Number(valor) || 0).toLocaleString('es-AR');
+}
+
+function dtBuildPriceFilter(products) {
+  var caja = document.getElementById('dt-precio-filtro');
+  if (!caja) return;
+
+  var precios = (products || []).map(getProductPrice).filter(function(v) {
+    return typeof v === 'number' && isFinite(v) && v > 0;
+  });
+
+  // Con menos de dos precios distintos el control no aporta nada.
+  var min = Math.min.apply(null, precios);
+  var max = Math.max.apply(null, precios);
+  if (!precios.length || min === max) {
+    caja.style.display = 'none';
+    currentProductFilters.priceMin = null;
+    currentProductFilters.priceMax = null;
+    return;
+  }
+
+  caja.style.display = '';
+  dtPrecioTope.min = Math.floor(min);
+  dtPrecioTope.max = Math.ceil(max);
+
+  var desde = document.getElementById('dt-precio-desde');
+  var hasta = document.getElementById('dt-precio-hasta');
+  [desde, hasta].forEach(function(input) {
+    input.min = dtPrecioTope.min;
+    input.max = dtPrecioTope.max;
+    input.step = Math.max(1, Math.round((dtPrecioTope.max - dtPrecioTope.min) / 200));
+  });
+  desde.value = dtPrecioTope.min;
+  hasta.value = dtPrecioTope.max;
+
+  currentProductFilters.priceMin = null;
+  currentProductFilters.priceMax = null;
+  dtSyncPriceInputs();
+}
+
+function dtSyncPriceInputs() {
+  var caja = document.getElementById('dt-precio-filtro');
+  if (!caja) return;
+  var desde = document.getElementById('dt-precio-desde');
+  var hasta = document.getElementById('dt-precio-hasta');
+  var etiqueta = document.getElementById('dt-precio-etiqueta');
+  if (!desde || !hasta || !etiqueta) return;
+
+  if (currentProductFilters.priceMin === null) desde.value = dtPrecioTope.min;
+  if (currentProductFilters.priceMax === null) hasta.value = dtPrecioTope.max;
+
+  etiqueta.textContent = dtFormatearPrecio(desde.value) + '  -  ' + dtFormatearPrecio(hasta.value);
+}
+
+function dtCambiarPrecio() {
+  var desde = document.getElementById('dt-precio-desde');
+  var hasta = document.getElementById('dt-precio-hasta');
+  if (!desde || !hasta) return;
+
+  var a = Number(desde.value);
+  var b = Number(hasta.value);
+  // Si el usuario cruza las manijas, se las devuelve al lugar correcto.
+  if (a > b) { var t = a; a = b; b = t; desde.value = a; hasta.value = b; }
+
+  currentProductFilters.priceMin = a <= dtPrecioTope.min ? null : a;
+  currentProductFilters.priceMax = b >= dtPrecioTope.max ? null : b;
+
+  dtSyncPriceInputs();
+  applyProductFilters();
 }
 
 function applyProductFilters() {
@@ -3056,6 +3158,7 @@ function renderProductCards(products, options) {
   setProductSortVisible(products.length > 0);
   setProductFiltersVisible(products.length > 0);
   buildProductFilterOptions(products);
+  dtBuildPriceFilter(products);
   syncProductFilterControls();
   resetEmptyState();
   var empty = document.getElementById('empty-state');
