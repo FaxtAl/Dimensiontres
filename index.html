@@ -34,17 +34,39 @@
      - Mobile:  logo | íconos | hamburguesa 
      barra de navegacin entre 
      ======================================= -->
-<nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/90 backdrop-blur-xl" style="border-bottom: 1px solid rgba(0,240,255,0.08);">
+<nav class="fixed top-0 w-full z-50" style="background:#0e0e0e; border-bottom: 1px solid rgba(0,240,255,0.08);">
 
   <!-- Contenedor principal del nav -->
-  <div class="flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
+  <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
 
-    <!-- Logo -->
-    <a href="index.html" class="text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">
+    <!-- IZQUIERDA (solo celular): hamburguesa + lupa -->
+    <div class="dt-nav-side">
+      <button
+        id="menu-btn"
+        onclick="toggleMenu()"
+        class="flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
+        aria-label="Abrir menú"
+      >
+        <span id="ham-1" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-2" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+        <span id="ham-3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+      </button>
+      <button
+        id="dt-search-toggle"
+        type="button"
+        onclick="dtToggleMobileSearch()"
+        class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]"
+        aria-label="Buscar"
+        aria-expanded="false"
+      >search</button>
+    </div>
+
+    <!-- Logo: centrado en celular, a la izquierda en escritorio -->
+    <a href="index.html" class="dt-nav-logo text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">
       DimensionTres
     </a>
 
-    <!-- Links de secciones ? solo visibles en desktop (md+) -->
+    <!-- Links de secciones: solo en escritorio (md+) -->
     <div class="hidden md:flex items-center space-x-6 lg:space-x-8 font-headline tracking-tight uppercase font-bold text-sm lg:text-base">
       <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 transition-all" href="#inicio">Inicio</a>
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#categorias">Categorías</a>
@@ -53,7 +75,7 @@
       <a data-admin-link class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="admin.html" style="display:none;">Admin</a>
     </div>
 
-    <!-- Search bar ? visible solo en desktop (md+) -->
+    <!-- Buscador: solo en escritorio (md+) -->
     <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
       <div class="relative w-full flex items-center">
         <input
@@ -62,7 +84,7 @@
           placeholder="Buscar productos..."
           class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none"
           style="border-radius: 6px;"
-          onkeydown="if(event.key==='Enter') handleSearch()"
+          onkeydown="if(event.key===&#39;Enter&#39;) handleSearch()"
         />
         <button
           onclick="handleSearch()"
@@ -75,37 +97,22 @@
       </div>
     </div>
 
-    <!-- íconos derecha (siempre visibles) + botón hamburguesa (solo mobile) -->
+    <!-- DERECHA: carrito y cuenta, en ese orden como en la referencia -->
     <div class="flex items-center gap-3 md:gap-4">
 
-      <!-- ícono cuenta -->
-       <a href="cuenta.html">
-      <button class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">person</button>
-      </a>
-
-      <!-- ícono carrito con badge -->
       <div class="relative">
-        <button data-cart-btn class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px] relative" onclick="window.location.href='carrito.html'">shopping_cart</button>
-        <!--<span class="absolute -top-1.5 -right-1.5 bg-secondary text-on-secondary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full"></span>-->
+        <button data-cart-btn class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px] relative" onclick="window.location.href=&#39;carrito.html&#39;">shopping_cart</button>
       </div>
 
-      <!-- Botón hamburguesa ? solo visible en mobile -->
-      <button
-        id="menu-btn"
-        onclick="toggleMenu()"
-        class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
-        aria-label="Abrir menú" 
-      >
-        <span id="ham-1" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
-        <span id="ham-2" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
-        <span id="ham-3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
-      </button>
+      <a href="cuenta.html">
+        <button class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">person</button>
+      </a>
 
     </div>
   </div>
 
-  <!-- Buscador mobile de Inicio: usa la misma logica global que el catalogo. -->
-  <div class="md:hidden px-5 pb-3">
+  <!-- Buscador de celular: lo despliega la lupa. Mismo motor global que el catalogo. -->
+  <div id="dt-mobile-search" class="dt-mobile-search md:hidden px-5 pb-3">
     <div class="relative w-full flex items-center global-search-host">
       <input
         data-global-search

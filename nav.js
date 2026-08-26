@@ -62,3 +62,22 @@ window.addEventListener('scroll', function() {
     closeMenu();
   }
 });
+
+/**
+ * Buscador de celular: lo despliega la lupa del nav.
+ * El input lleva data-global-search, asi que search-global.js le
+ * engancha solo las sugerencias.
+ */
+function dtToggleMobileSearch() {
+  var box = document.getElementById('dt-mobile-search');
+  var toggle = document.getElementById('dt-search-toggle');
+  if (!box) return;
+
+  var isOpen = box.classList.toggle('is-open');
+  if (toggle) toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+  if (isOpen) {
+    var input = box.querySelector('input');
+    if (input) input.focus();
+  }
+}
