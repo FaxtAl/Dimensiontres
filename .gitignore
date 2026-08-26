@@ -54,3 +54,6 @@ wp-content/
 wp-includes/
 wp-*.php
 xmlrpc.php
+
+# Config local de Claude Code
+.claude/

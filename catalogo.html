@@ -3025,8 +3025,16 @@ function renderProductCards(products, options) {
     var needsConsult = catalogNeedsWhatsAppConsult(p, stockState);
     var hasStockValue = p.stock !== undefined && p.stock !== null && p.stock !== '';
     var cascadeFacets = getProductCascadeFacets(p);
-    var card = document.createElement('div');
+    // Link real: asi Google puede entrar a cada ficha y el cliente puede copiar
+    // la direccion del producto. Se mantiene la pestana nueva para no perder
+    // el catalogo filtrado, igual que antes.
+    var card = document.createElement('a');
     card.className = 'product-card' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '') + (needsConsult ? ' is-consult' : '');
+    if (p.slug && !needsConsult) {
+      card.href = 'producto.html?id=' + encodeURIComponent(p.slug);
+      card.target = '_blank';
+      card.rel = 'noopener';
+    }
     card.dataset.name = p.name || '';
     card.dataset.category = p.rootCategory || p.category || '';
     card.dataset.brandKey = getProductBrandKey(p);
@@ -3047,12 +3055,14 @@ function renderProductCards(products, options) {
     if (outOfStock) {
       card.setAttribute('aria-disabled', 'true');
     }
-    card.onclick = function() {
+    card.onclick = function(event) {
       if (needsConsult) {
+        if (event) event.preventDefault();
         openProductWhatsApp(p);
         return;
       }
-      openCatalogProduct(p);
+      // Con href el propio link navega; esto cubre las tarjetas sin slug.
+      if (!card.getAttribute('href')) openCatalogProduct(p);
     };
 
     var media = document.createElement('div');

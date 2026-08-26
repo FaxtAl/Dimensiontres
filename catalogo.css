@@ -1132,6 +1132,9 @@ body::after {
 }
 
 .product-card {
+  /* Ahora la tarjeta es un <a>: hay que anular el subrayado y el color de link. */
+  text-decoration: none;
+  color: inherit;
   min-height: 320px;
   display: flex;
   flex-direction: column;
