@@ -748,8 +748,12 @@ body.dt-modal-open .dt-whatsapp-float {
 .dt-nav-buscador {
   display: flex;
   align-items: center;
-  flex: 1 1 auto;
+  /* Acotado y centrado entre el logo y las redes. A ancho completo se comia
+     toda la fila y quedaba desproporcionado. */
+  flex: 0 1 auto;
+  width: min(50%, 540px);
   min-width: 0;
+  margin: 0 auto;
 }
 
 .dt-nav-redes {
