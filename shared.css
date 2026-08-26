@@ -480,3 +480,97 @@ body.dt-modal-open .dt-whatsapp-float {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ============================================================
+   Menu de categorias del drawer.
+   Reemplaza el recorrido "tarjeta -> tarjeta -> productos" por
+   un desplegable con todo a la vista, como gorilagames.com.
+   ============================================================ */
+
+/* El drawer pasa a columna: cabecera y pie fijos, el medio scrollea.
+   Sin esto, con 13 categorias abiertas el pie tapaba el contenido. */
+.dt-drawer-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dt-drawer-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dt-drawer-foot { flex: 0 0 auto; }
+
+.dt-menu-titulo {
+  padding: 1rem 1.25rem 0.5rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8f8e8d;
+}
+
+.dt-cat { border-bottom: 1px solid rgba(72, 72, 71, 0.18); }
+
+.dt-cat-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.25rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e8e6e3;
+  transition: color 0.2s, background 0.2s;
+}
+
+.dt-cat-head:hover { color: #00f0ff; background: #1a1919; }
+
+.dt-cat-chevron {
+  font-size: 20px;
+  color: #8f8e8d;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dt-cat-head[aria-expanded="true"] .dt-cat-chevron {
+  transform: rotate(180deg);
+  color: #00f0ff;
+}
+
+.dt-cat-body { display: none; padding-bottom: 0.5rem; }
+.dt-cat-body.is-open { display: block; }
+
+.dt-cat-link {
+  display: block;
+  padding: 0.65rem 1.25rem 0.65rem 2.25rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #adaaaa;
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.dt-cat-link:hover { color: #00f0ff; background: #1a1919; }
+
+/* "Ver todo" arranca la lista: entrar a la categoria entera es un toque. */
+.dt-cat-link-todo {
+  color: #00f0ff;
+  font-weight: 600;
+}
+
+.dt-cat-link.is-active {
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.07);
+  box-shadow: inset 2px 0 0 #00f0ff;
+}

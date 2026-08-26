@@ -141,27 +141,42 @@
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
 
-  <!-- Header del drawer -->
-  <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)]">
-    <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">DimensionTres</a>
-    <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
-  </div>
+  <div class="dt-drawer-shell">
 
-  <!-- Navegación -->
-  <nav class="flex flex-col gap-1 p-5">
-    <a onclick="closeMenu()" href="index.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#00f0ff] bg-[#1a1919] transition-all rounded-lg">Inicio</a>
-    <a onclick="closeMenu()" href="catalogo.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Catálogo</a>
-    <a onclick="closeMenu()" href="index.html#categorias" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Categorías</a>
-    <a onclick="closeMenu()" href="index.html#destacados" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Destacados</a>
-    <a onclick="closeMenu()" href="index.html#servicios" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Servicios</a>
-    <a data-admin-link onclick="closeMenu()" href="admin.html" class="py-3.5 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg" style="display:none;">Admin</a>
-  </nav>
+    <!-- Cabecera del drawer -->
+    <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)] shrink-0">
+      <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">DimensionTres</a>
+      <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]" aria-label="Cerrar menú">close</button>
+    </div>
 
-  <!-- Footer del drawer -->
-  <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-[rgba(72,72,71,0.15)]">
-    <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
-      <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
-    </a>
+    <!-- Cuerpo scrolleable: links sueltos + todas las categorias -->
+    <div class="dt-drawer-body">
+
+      <nav class="flex flex-col gap-1 px-5 pt-4 pb-2">
+        <a onclick="closeMenu()" href="index.html" class="py-3 px-4 font-headline text-sm uppercase tracking-widest text-[#00f0ff] bg-[#1a1919] transition-all rounded-lg">Inicio</a>
+        <a onclick="closeMenu()" href="catalogo.html" class="py-3 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Ver todo el catálogo</a>
+        <a data-admin-link onclick="closeMenu()" href="admin.html" class="py-3 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg" style="display:none;">Admin</a>
+      </nav>
+
+      <p class="dt-menu-titulo">Categorías</p>
+
+      <!-- Lo llena menu-categorias.js -->
+      <div id="dt-menu-categorias"></div>
+
+      <nav class="flex flex-col gap-1 px-5 pt-3 pb-5">
+        <a onclick="closeMenu()" href="index.html#destacados" class="py-3 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Destacados</a>
+        <a onclick="closeMenu()" href="index.html#servicios" class="py-3 px-4 font-headline text-sm uppercase tracking-widest text-[#adaaaa] hover:text-[#00f0ff] hover:bg-[#1a1919] transition-all rounded-lg">Servicios</a>
+      </nav>
+
+    </div>
+
+    <!-- Pie fijo -->
+    <div class="dt-drawer-foot p-5 border-t border-[rgba(72,72,71,0.15)]">
+      <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
+        <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
+      </a>
+    </div>
+
   </div>
 </div>
 
@@ -920,6 +935,7 @@ Ver todo
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
 <script src="search-global.js?v=search-ranking-20260805b"></script>
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
+<script src="menu-categorias.js?v=menu-categorias-20260826"></script>
   <script src="cart.js?v=stock-real-sin-pedido-20260715"></script>
   <script src="index.js?v=horarios-lun-sab-feriados-20260814"></script>
 

@@ -24,6 +24,7 @@ function toggleMenu() {
     document.body.style.overflow = '';
     document.body.classList.remove('dt-mobile-menu-open');
   } else {
+    dtScrollAlAbrir = window.scrollY;
     drawer.setAttribute('data-open', 'true');
     drawer.style.transform = 'translateX(0)';
     backdrop.style.opacity = '1';
@@ -56,11 +57,17 @@ function closeMenu() {
   document.body.classList.remove('dt-mobile-menu-open');
 }
 
+// Al abrir el menu se bloquea el scroll del body, y ese bloqueo salta la
+// pagina al tope. Eso disparaba este mismo listener y cerraba el menu de
+// inmediato: si estabas scrolleado, el menu no abria. Ahora se guarda la
+// posicion al abrir y solo se cierra si el scroll se movio de verdad.
+var dtScrollAlAbrir = 0;
+
 window.addEventListener('scroll', function() {
   var drawer = document.getElementById('mobile-drawer');
-  if (drawer && drawer.getAttribute('data-open') === 'true') {
-    closeMenu();
-  }
+  if (!drawer || drawer.getAttribute('data-open') !== 'true') return;
+  if (Math.abs(window.scrollY - dtScrollAlAbrir) < 40) return;
+  closeMenu();
 });
 
 /**
