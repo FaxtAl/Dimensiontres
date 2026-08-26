@@ -574,3 +574,124 @@ body.dt-modal-open .dt-whatsapp-float {
   background: rgba(0, 240, 255, 0.07);
   box-shadow: inset 2px 0 0 #00f0ff;
 }
+
+/* ============================================================
+   Desplegable "Productos" del nav de escritorio.
+   ============================================================ */
+
+.dt-mega-wrap { position: relative; display: none; }
+
+@media (min-width: 768px) {
+  .dt-mega-wrap { display: block; }
+}
+
+.dt-mega-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: #1a1919;
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e8e6e3;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.dt-mega-toggle:hover,
+.dt-mega-toggle[aria-expanded="true"] {
+  color: #00f0ff;
+  border-color: rgba(0, 240, 255, 0.45);
+  background: #131313;
+}
+
+.dt-mega-toggle .dt-mega-caret { font-size: 18px; transition: transform 0.2s; }
+.dt-mega-toggle[aria-expanded="true"] .dt-mega-caret { transform: rotate(180deg); }
+
+.dt-mega-panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 0;
+  z-index: 60;
+  display: none;
+  background: #131313;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+}
+
+.dt-mega-panel.is-open { display: block; }
+
+.dt-mega-cols { display: grid; grid-template-columns: 230px 260px; }
+
+.dt-mega-cats {
+  border-right: 1px solid rgba(72, 72, 71, 0.25);
+  padding: 0.5rem 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.dt-mega-cat {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #adaaaa;
+  transition: color 0.15s, background 0.15s;
+}
+
+.dt-mega-cat:hover,
+.dt-mega-cat.is-active {
+  color: #00f0ff;
+  background: #1a1919;
+}
+
+.dt-mega-arrow { font-size: 18px; opacity: 0.5; }
+.dt-mega-cat.is-active .dt-mega-arrow { opacity: 1; }
+
+.dt-mega-subs {
+  padding: 0.5rem 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.dt-mega-sub {
+  display: block;
+  padding: 0.55rem 1.1rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.83rem;
+  color: #adaaaa;
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.dt-mega-sub:hover { color: #00f0ff; background: #1a1919; }
+
+.dt-mega-sub-todo {
+  color: #00f0ff;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(72, 72, 71, 0.25);
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.6rem;
+}
+
+.dt-mega-sub.is-active {
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.07);
+  box-shadow: inset 2px 0 0 #00f0ff;
+}

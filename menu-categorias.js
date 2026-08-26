@@ -165,3 +165,107 @@ function dtRenderMenuCategorias() {
 }
 
 document.addEventListener('DOMContentLoaded', dtRenderMenuCategorias);
+
+/* ============================================================
+   Desplegable "Productos" del nav de escritorio.
+   Dos columnas: categorias a la izquierda, subcategorias de la
+   que estas señalando a la derecha. Se eligio esto en vez de
+   submenus anidados porque con 13 categorias los anidados
+   obligan a pasar el mouse por un pasillo muy fino.
+   Usa el mismo DT_CATEGORIAS que el drawer de celular.
+   ============================================================ */
+
+function dtRenderMegaMenu() {
+  var panel = document.getElementById('dt-mega-menu');
+  if (!panel || panel.dataset.listo === '1') return;
+
+  var activo = dtCategoriaActiva();
+  var cols = document.createElement('div');
+  cols.className = 'dt-mega-cols';
+
+  var listaCats = document.createElement('div');
+  listaCats.className = 'dt-mega-cats';
+
+  var listaSubs = document.createElement('div');
+  listaSubs.className = 'dt-mega-subs';
+
+  function pintarSubs(cat) {
+    listaSubs.innerHTML = '';
+
+    var todo = document.createElement('a');
+    todo.href = 'catalogo.html?catid=' + encodeURIComponent(cat.id);
+    todo.className = 'dt-mega-sub dt-mega-sub-todo';
+    todo.textContent = 'Ver todo en ' + cat.name;
+    listaSubs.appendChild(todo);
+
+    (cat.children || []).forEach(function(hijo) {
+      var a = document.createElement('a');
+      a.href = 'catalogo.html?sub=' + encodeURIComponent(hijo.id);
+      a.className = 'dt-mega-sub' + (activo.sub === hijo.id ? ' is-active' : '');
+      a.textContent = hijo.name;
+      listaSubs.appendChild(a);
+    });
+  }
+
+  var seleccionada = null;
+
+  DT_CATEGORIAS.forEach(function(cat, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dt-mega-cat';
+    b.innerHTML = '<span>' + cat.name + '</span>' +
+      '<span class="material-symbols-outlined dt-mega-arrow">chevron_right</span>';
+
+    function elegir() {
+      if (seleccionada === b) return;
+      if (seleccionada) seleccionada.classList.remove('is-active');
+      b.classList.add('is-active');
+      seleccionada = b;
+      pintarSubs(cat);
+    }
+
+    b.addEventListener('mouseenter', elegir);
+    b.addEventListener('focus', elegir);
+    // En pantallas tactiles con teclado/mouse el hover no siempre llega.
+    b.addEventListener('click', function() {
+      elegir();
+      window.location.href = 'catalogo.html?catid=' + encodeURIComponent(cat.id);
+    });
+
+    listaCats.appendChild(b);
+
+    var esLaDelUrl = activo.cat === cat.id ||
+      (cat.children || []).some(function(h) { return h.id === activo.sub; });
+    if (esLaDelUrl || (!seleccionada && i === 0)) elegir();
+  });
+
+  cols.appendChild(listaCats);
+  cols.appendChild(listaSubs);
+  panel.appendChild(cols);
+  panel.dataset.listo = '1';
+}
+
+function dtToggleMegaMenu(forzarCerrado) {
+  var panel = document.getElementById('dt-mega-menu');
+  var boton = document.getElementById('dt-mega-toggle');
+  if (!panel) return;
+
+  var abrir = forzarCerrado === true ? false : !panel.classList.contains('is-open');
+  panel.classList.toggle('is-open', abrir);
+  if (boton) boton.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  dtRenderMegaMenu();
+
+  // Cerrar al hacer clic afuera o con Escape.
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#dt-mega-menu') && !e.target.closest('#dt-mega-toggle')) {
+      dtToggleMegaMenu(true);
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') dtToggleMegaMenu(true);
+  });
+});
