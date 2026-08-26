@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=nav-categorias-20260826">
-<link rel="stylesheet" href="catalogo.css?v=filtro-precio-20260826">
+<link rel="stylesheet" href="catalogo.css?v=filtros-migas-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -194,6 +194,7 @@
           <div class="flex items-center gap-3 mb-2">
             <div style="width:3px; height:26px; background:linear-gradient(180deg,#8ff5ff,#00deec); border-radius:2px;"></div>
             <div>
+              <nav id="dt-migas" class="dt-migas" aria-label="Ruta de navegacion"></nav>
               <div id="level-label"></div>
               <h1 id="page-title" class="font-headline text-3xl md:text-4xl font-black uppercase tracking-tight text-on-surface">
                 Todo el Catálogo
@@ -334,6 +335,10 @@
           </div>
           <div id="dt-precio-etiqueta" class="dt-precio-etiqueta"></div>
         </div>
+
+        <!-- Grupos de filtros como radios. Son un espejo de los <select> de
+             arriba: la logica de filtrado no cambia, solo la presentacion. -->
+        <div id="dt-filtros-panel" class="dt-filtros"></div>
       </aside>
 
       <div class="catalog-results">
@@ -419,6 +424,7 @@
 
         <!-- Wrapper animado del grid -->
         <div id="grid-wrapper">
+          <p id="dt-resultados" class="dt-resultados"></p>
           <div id="categories-grid"
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-6 w-full">
             <!-- Las cards se renderizan con JS -->
@@ -2688,6 +2694,86 @@ function resetProductFilters() {
   dtSyncPriceInputs();
 }
 
+// ============================================================
+// Panel de filtros como radios en la barra lateral.
+// Es un espejo de los <select> que ya existian: se leen sus opciones y su
+// valor, y al elegir un radio se llama al mismo setter de siempre. Asi la
+// logica de filtrado queda intacta y solo cambia como se ve.
+// ============================================================
+
+var DT_FILTROS_MAPA = [
+  { sel: 'brand-filter-select',       titulo: 'Marca',   fn: 'setProductBrandFilter' },
+  { sel: 'fulfillment-filter-select', titulo: 'Entrega', fn: 'setProductFulfillmentFilter' },
+  { sel: 'spec-filter-select',        titulo: 'Tipo',    fn: 'setProductSpecFilter',  wrap: 'spec-filter-wrap' },
+  { sel: 'cascade-primary-select',    etiqueta: 'cascade-primary-label',   fn: 'primary',   wrap: 'cascade-primary-wrap',   cascada: true },
+  { sel: 'cascade-secondary-select',  etiqueta: 'cascade-secondary-label', fn: 'secondary', wrap: 'cascade-secondary-wrap', cascada: true },
+  { sel: 'cascade-capacity-select',   etiqueta: 'cascade-capacity-label',  fn: 'capacity',  wrap: 'cascade-capacity-wrap',  cascada: true }
+];
+
+function dtRenderFiltrosPanel() {
+  var panel = document.getElementById('dt-filtros-panel');
+  if (!panel) return;
+
+  panel.innerHTML = '';
+
+  DT_FILTROS_MAPA.forEach(function(f) {
+    var select = document.getElementById(f.sel);
+    if (!select) return;
+
+    // Si el filtro esta oculto arriba, tampoco va aca.
+    if (f.wrap) {
+      var wrap = document.getElementById(f.wrap);
+      if (!wrap || wrap.classList.contains('is-hidden')) return;
+    }
+
+    var opciones = Array.prototype.slice.call(select.options);
+    // Con una sola opcion no hay nada que elegir.
+    if (opciones.length < 2) return;
+
+    var titulo = f.titulo;
+    if (!titulo && f.etiqueta) {
+      var el = document.getElementById(f.etiqueta);
+      titulo = el ? el.textContent.trim() : '';
+    }
+    if (!titulo) return;
+
+    var grupo = document.createElement('div');
+    grupo.className = 'dt-filtro-grupo';
+
+    var h = document.createElement('div');
+    h.className = 'dt-filtro-titulo';
+    h.textContent = titulo;
+    grupo.appendChild(h);
+
+    opciones.forEach(function(op) {
+      var id = 'dtf-' + f.sel + '-' + op.value.replace(/[^a-z0-9-]/gi, '');
+      var fila = document.createElement('label');
+      fila.className = 'dt-filtro-opcion';
+      fila.setAttribute('for', id);
+
+      var radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'dtf-' + f.sel;
+      radio.id = id;
+      radio.value = op.value;
+      radio.checked = (select.value === op.value);
+      radio.addEventListener('change', function() {
+        if (f.cascada) setProductCascadeFilter(f.fn, op.value);
+        else window[f.fn](op.value);
+      });
+
+      var texto = document.createElement('span');
+      texto.textContent = op.textContent;
+
+      fila.appendChild(radio);
+      fila.appendChild(texto);
+      grupo.appendChild(fila);
+    });
+
+    panel.appendChild(grupo);
+  });
+}
+
 function syncProductFilterControls() {
   ['brand-filter-select', 'mobile-brand-filter-select'].forEach(function(id) {
     var select = document.getElementById(id);
@@ -2708,6 +2794,8 @@ function syncProductFilterControls() {
       if (select) select.value = currentProductFilters[stateKey] || 'all';
     });
   });
+  // Los radios se rearman al final: los <select> ya tienen el valor correcto.
+  dtRenderFiltrosPanel();
 }
 
 function fillSelectOptions(select, options, currentValue) {
@@ -3017,6 +3105,54 @@ function dtCambiarPrecio() {
   applyProductFilters();
 }
 
+// ============================================================
+// Migas de pan: Inicio > Categoria > Subcategoria.
+// Sale de leer catid/sub de la URL contra DT_CATEGORIAS, el mismo arbol
+// que usa el menu. Si no hay nada seleccionado no se dibuja.
+// ============================================================
+
+function dtRenderMigas() {
+  var caja = document.getElementById('dt-migas');
+  if (!caja || typeof DT_CATEGORIAS === 'undefined') return;
+
+  var params = new URLSearchParams(window.location.search);
+  var catId = params.get('catid') || '';
+  var subId = params.get('sub') || '';
+
+  var cat = null, sub = null;
+  DT_CATEGORIAS.forEach(function(c) {
+    if (c.id === catId) cat = c;
+    (c.children || []).forEach(function(h) {
+      if (h.id === subId) { cat = c; sub = h; }
+    });
+  });
+
+  caja.innerHTML = '';
+  if (!cat) { caja.style.display = 'none'; return; }
+  caja.style.display = '';
+
+  function agregar(texto, href, esUltimo) {
+    if (caja.children.length) {
+      var sep = document.createElement('span');
+      sep.className = 'dt-miga-sep';
+      sep.textContent = '/';
+      caja.appendChild(sep);
+    }
+    var el = document.createElement(esUltimo ? 'span' : 'a');
+    el.className = 'dt-miga' + (esUltimo ? ' is-actual' : '');
+    el.textContent = texto;
+    if (!esUltimo) el.href = href;
+    caja.appendChild(el);
+  }
+
+  agregar('Inicio', 'index.html', false);
+  agregar('Catalogo', 'catalogo.html', false);
+  agregar(cat.name, 'catalogo.html?catid=' + encodeURIComponent(cat.id), !sub);
+  if (sub) agregar(sub.name, '', true);
+}
+
+document.addEventListener('DOMContentLoaded', dtRenderMigas);
+
 function applyProductFilters() {
   var grid = document.getElementById('categories-grid');
   if (!grid) return;
@@ -3031,6 +3167,13 @@ function applyProductFilters() {
 
   document.getElementById('visible-count').textContent = visibleCount;
   document.getElementById('count-label').textContent = 'productos';
+
+  var linea = document.getElementById('dt-resultados');
+  if (linea) {
+    linea.textContent = cards.length
+      ? 'Mostrando ' + visibleCount + ' de ' + cards.length + ' resultados'
+      : '';
+  }
 
   var empty = document.getElementById('empty-state');
   if (!empty) return;

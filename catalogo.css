@@ -2005,3 +2005,97 @@ body::after {
   border-radius: 3px;
 }
 .catalog-sidebar .category-tree::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.4); }
+
+/* ============================================================
+   Grupos de filtros como radios en la barra lateral.
+   ============================================================ */
+
+.dt-filtros { margin-top: 0.5rem; }
+
+.dt-filtro-grupo {
+  padding: 1.1rem 0;
+  border-top: 1px solid rgba(72, 72, 71, 0.25);
+}
+
+.dt-filtro-titulo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8f8e8d;
+  margin-bottom: 0.7rem;
+}
+
+.dt-filtro-opcion {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.83rem;
+  color: #adaaaa;
+  transition: color 0.15s;
+}
+
+.dt-filtro-opcion:hover { color: #e8e6e3; }
+
+.dt-filtro-opcion input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(143, 142, 141, 0.7);
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s;
+}
+
+.dt-filtro-opcion input[type="radio"]:hover { border-color: #00f0ff; }
+
+.dt-filtro-opcion input[type="radio"]:checked {
+  border-color: #00f0ff;
+}
+
+.dt-filtro-opcion input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #00f0ff;
+}
+
+.dt-filtro-opcion:has(input:checked) { color: #00f0ff; }
+
+/* Los select de arriba quedan solo para celular: en escritorio los
+   reemplaza el panel lateral y tenerlos dos veces confunde. */
+@media (min-width: 768px) {
+  .catalog-results-toolbar .product-filter-controls { display: none; }
+}
+
+/* Migas de pan y contador de resultados */
+.dt-migas {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+}
+
+.dt-miga { color: #8f8e8d; text-decoration: none; transition: color 0.15s; }
+.dt-miga:hover { color: #00f0ff; }
+.dt-miga.is-actual { color: #e8e6e3; font-weight: 600; }
+.dt-miga-sep { color: #484847; }
+
+.dt-resultados {
+  margin: 0 0 1.1rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #8f8e8d;
+}
