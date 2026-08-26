@@ -3,10 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="translation-guard.js?v=20260821"></script>
 <title>Producto | DimensionTres</title>
+<meta name="description" content="Consultá precio, stock y detalles de productos en DimensionTres."/>
+<link id="canonical-url" rel="canonical" href="https://dimensiontres.com/producto.html"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link rel="stylesheet" href="shared.css?v=mobile-polish-20260623">
+<link rel="stylesheet" href="shared.css?v=cursor-global-20260724">
 <style>
 body::after {
   content:'';position:fixed;inset:0;
@@ -80,7 +83,10 @@ body::after {
 .mobile-sticky-cta {
   position:fixed;bottom:0;left:0;right:0;z-index:100;
   background:rgba(14,14,14,.95);backdrop-filter:blur(20px);
-  border-top:1px solid rgba(0,240,255,.1);padding:12px 16px;display:flex;gap:10px;
+  border-top:1px solid rgba(0,240,255,.1);padding:12px 16px;display:flex;align-items:center;gap:10px;
+}
+.mobile-sticky-price {
+  min-width:0;min-height:48px;display:flex;align-items:center;
 }
 
 .acc-card {
@@ -407,8 +413,7 @@ body::after {
 /* Not found state */
 #not-found { display:none; }
 </style>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script src="tailwind.config.js"></script>
+<link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-[#0e0e0e] text-white" style="font-family:'Manrope',sans-serif;">
 
@@ -421,6 +426,14 @@ body::after {
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#categorias">Categorías</a>
       <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1" href="catalogo.html">Catálogo</a>
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#servicios">Servicios</a>
+    </div>
+    <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
+      <div class="relative w-full flex items-center">
+        <input id="search-input" type="text" placeholder="Buscar productos..." class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none" style="border-radius:6px;"/>
+        <button type="button" class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors" style="border-radius:0 6px 6px 0;" aria-label="Buscar">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </button>
+      </div>
     </div>
     <div class="flex items-center gap-3 md:gap-4">
       <a href="cuenta.html">
@@ -435,6 +448,14 @@ body::after {
         <span id="ham-1" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
         <span id="ham-2" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
         <span id="ham-3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+  <div class="md:hidden px-5 pb-3">
+    <div class="relative w-full flex items-center global-search-host">
+      <input data-global-search type="text" placeholder="Buscar productos..." class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none" style="border-radius:6px;"/>
+      <button type="button" class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors" style="border-radius:0 6px 6px 0;" aria-label="Buscar">
+        <span class="material-symbols-outlined text-[20px]">search</span>
       </button>
     </div>
   </div>
@@ -471,12 +492,12 @@ body::after {
 </div>
 
 <!-- MAIN -->
-<main class="pt-20 md:pt-24 pb-32 md:pb-20 max-w-[1920px] mx-auto">
+<main class="pt-32 md:pt-24 pb-32 md:pb-20 max-w-[1920px] mx-auto">
 
   <!-- Not Found -->
   <div id="not-found" class="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-8">
     <span class="material-symbols-outlined text-[80px] text-[#262626]">search_off</span>
-    <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:2rem;text-transform:uppercase;">Producto no encontrado</h1>
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:2rem;text-transform:uppercase;">Producto no encontrado</h2>
     <p style="color:#767575;font-size:.9rem;">El producto que buscás no existe o fue removido.</p>
     <a href="catalogo.html" class="btn-primary px-8 py-4 inline-block">Ver Catálogo</a>
   </div>
@@ -595,7 +616,7 @@ body::after {
 
 <!-- Mobile sticky CTA -->
 <div class="mobile-sticky-cta md:hidden fade-up-4" id="mobile-cta" style="display:none!important;">
-  <div class="flex flex-col" style="min-width:0;">
+  <div class="mobile-sticky-price">
     <span id="mob-price" style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;color:#fff;line-height:1;"></span>
   </div>
   <button id="add-btn-mobile" onclick="handleAddToCart(this)" class="btn-primary flex-1 py-4 flex items-center justify-center gap-2" style="min-height:48px;">
@@ -611,15 +632,17 @@ body::after {
 
 <script src="shared.js"></script>
 <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
-<script src="config.js?v=img-fast-20260611"></script>
+<script src="config.js?v=invid-1515-30-20260810"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
-<script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
-<script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
-<script src="img/producto-imagenes-local.js?v=local-product-images-20260629-imgsync3"></script>
-<script src="img/invid-imagenes-local.js?v=invid-images-local-20260629-fast"></script>
-<script src="supabase-client.js?v=invid-image-map-progress2-20260629"></script>
-<script src="cart.js?v=cart-add-fix-20260622"></script>
+<script src="img/producto-imagenes-dixgamer.js?v=dixgamer-gta5-foto-20260710"></script>
+<script src="img/producto-imagenes-juegos-extra.js?v=map-juegos-ps4-hitman-20260812"></script>
+<script src="img/producto-imagenes-local.js?v=local-images-20260810c"></script>
+<script src="img/invid-imagenes-local.js?v=invid-images-local-20260805a"></script>
+<script src="supabase-client.js?v=dolar-invid-automatico-20260810"></script>
+<script src="search-ranking.js?v=search-ranking-20260805b"></script>
+<script src="search-global.js?v=search-ranking-20260805b"></script>
+<script src="cart.js?v=stock-real-sin-pedido-20260715"></script>
 
 <script>
 // -------------------------------------------------------
@@ -827,9 +850,9 @@ function getProductStockStateForView(p) {
 
   var stock = p && p.stock !== undefined && p.stock !== null && p.stock !== '' ? Number(p.stock) : null;
   if (!Number.isFinite(stock)) stock = null;
+  if (stock !== null && stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (productIsByOrder(p)) return { status: 'by-order', label: 'A pedido', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock <= 3) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
@@ -1111,6 +1134,12 @@ async function hydrateProductPageImage(product) {
 function renderProduct(p) {
   PRODUCT = p;
   document.title = cleanText(p.name) + ' | DimensionTres';
+  var canonical = document.getElementById('canonical-url');
+  if (canonical) {
+    var canonicalUrl = new URL('https://dimensiontres.com/producto.html');
+    canonicalUrl.searchParams.set('slug', p.slug || p.id || '');
+    canonical.href = canonicalUrl.toString();
+  }
   var byOrder = productIsByOrder(p);
   var simpleDetail = useSimpleProductDetail(p);
 
@@ -1503,6 +1532,9 @@ function handleAddToCart(btn) {
   var prod = {
     id: PRODUCT.slug,
     accessId: PRODUCT.accessId || PRODUCT.id || '',
+    productId: PRODUCT.productId || '',
+    source: PRODUCT.source || '',
+    sourceIntegration: PRODUCT.sourceIntegration || '',
     name: PRODUCT.name,
     price: PRODUCT.price,
     image: PRODUCT.image || '',
@@ -1565,6 +1597,9 @@ function addToCart(name, price, image, product) {
   var item = {
     id: id,
     accessId: product && (product.accessId || product.id) || '',
+    productId: product && product.productId || '',
+    source: product && product.source || '',
+    sourceIntegration: product && product.sourceIntegration || '',
     name: name,
     price: price,
     image: image || '',
@@ -1620,9 +1655,5 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 </body>
 </html>
-
-
-
-
 
 

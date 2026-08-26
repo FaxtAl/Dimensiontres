@@ -13,6 +13,65 @@ function handleViewCatalog() {
   window.location.href = 'catalogo.html';
 }
 
+// Carrusel de imagenes para el fondo de Inicio. El texto y los botones se
+// mantienen fijos para que la portada siga siendo clara y facil de usar.
+var HOME_HERO_IMAGES = [
+  { src: 'img/Inicio.jpg?v=hero-20260730', alt: 'Setup gamer con iluminacion cian' },
+  { src: 'img/inicio/hero-hardware-cian.png?v=hero-20260730', alt: 'Detalle de hardware gamer con iluminacion cian' },
+  { src: 'img/inicio/hero-teclado-rgb.png?v=hero-20260730', alt: 'Teclado mecanico gamer con iluminacion azul' }
+];
+
+function initHomeHeroCarousel() {
+  var image = document.getElementById('home-hero-image');
+  var dots = Array.from(document.querySelectorAll('[data-home-hero-dot]'));
+  if (!image || HOME_HERO_IMAGES.length < 2) return;
+
+  var currentIndex = 0;
+  function setActiveDot() {
+    dots.forEach(function(dot, index) {
+      dot.classList.toggle('is-active', index === currentIndex);
+    });
+  }
+  function applyNextImage(nextIndex, next) {
+    image.classList.add('is-switching');
+    window.setTimeout(function() {
+      image.src = next.src;
+      image.alt = next.alt;
+      currentIndex = nextIndex;
+      setActiveDot();
+      image.classList.remove('is-switching');
+    }, 430);
+  }
+  function showNextImage() {
+    if (document.hidden) return;
+    var nextIndex = (currentIndex + 1) % HOME_HERO_IMAGES.length;
+    var next = HOME_HERO_IMAGES[nextIndex];
+    var preload = new Image();
+    var handled = false;
+    var fallbackTimer = window.setTimeout(function() {
+      if (handled) return;
+      handled = true;
+      applyNextImage(nextIndex, next);
+    }, 900);
+    preload.onload = function() {
+      if (handled) return;
+      handled = true;
+      window.clearTimeout(fallbackTimer);
+      applyNextImage(nextIndex, next);
+    };
+    preload.onerror = function() {
+      if (handled) return;
+      handled = true;
+      window.clearTimeout(fallbackTimer);
+      applyNextImage(nextIndex, next);
+    };
+    preload.src = next.src;
+  }
+
+  setActiveDot();
+  window.setInterval(showNextImage, 3000);
+}
+
 (function initDestCarousel() {
   var track;
   var cards = [];
@@ -106,29 +165,85 @@ function handleViewCatalog() {
   });
 })();
 
+var STORE_HOLIDAYS = new Set([
+  '2026-01-01',
+  '2026-02-16', '2026-02-17',
+  '2026-03-23', '2026-03-24',
+  '2026-04-02', '2026-04-03',
+  '2026-05-01', '2026-05-25',
+  '2026-06-15', '2026-06-20',
+  '2026-07-09', '2026-07-10',
+  '2026-08-17',
+  '2026-10-12',
+  '2026-11-23',
+  '2026-12-07', '2026-12-08', '2026-12-25'
+]);
+
+function getStoreClock(date) {
+  var parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Cordoba',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23'
+  }).formatToParts(date || new Date());
+  var values = {};
+  parts.forEach(function(part) {
+    if (part.type !== 'literal') values[part.type] = part.value;
+  });
+  return {
+    dateKey: values.year + '-' + values.month + '-' + values.day,
+    weekday: values.weekday,
+    totalMinutes: Number(values.hour) * 60 + Number(values.minute)
+  };
+}
+
+function getStoreStatus(date) {
+  var clock = getStoreClock(date);
+  var isHoliday = STORE_HOLIDAYS.has(clock.dateKey);
+  var isSunday = clock.weekday === 'Sun';
+  var isBusinessDay = !isSunday && !isHoliday;
+  var isWithinHours = (clock.totalMinutes >= 540 && clock.totalMinutes < 780) ||
+                      (clock.totalMinutes >= 990 && clock.totalMinutes < 1230);
+
+  return {
+    isOpen: isBusinessDay && isWithinHours,
+    reason: isHoliday ? 'holiday' : (isSunday ? 'sunday' : 'hours'),
+    dateKey: clock.dateKey
+  };
+}
+
 function checkStoreStatus() {
-  var now = new Date();
-  var utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  var argTime = new Date(utc + (-3 * 60 * 60000));
-  var totalMinutes = argTime.getHours() * 60 + argTime.getMinutes();
-  var isOpen = (totalMinutes >= 540 && totalMinutes < 780) ||
-               (totalMinutes >= 990 && totalMinutes < 1230);
+  var status = getStoreStatus(new Date());
 
   var badge = document.getElementById('store-status');
   if (!badge) return;
 
-  if (isOpen) {
+  badge.dataset.state = status.isOpen ? 'open' : 'closed';
+  badge.dataset.reason = status.reason;
+
+  if (status.isOpen) {
     badge.innerHTML = '<span style="color:#00f0e0">&bull;</span> Abierto ahora';
     badge.style.color = '#00f0e0';
     badge.style.borderColor = '#00f0e0';
     badge.style.background = 'rgba(0,240,224,0.07)';
   } else {
-    badge.innerHTML = '<span style="color:#ff716c">&bull;</span> Cerrado ahora';
+    var closedText = status.reason === 'holiday' ? 'Cerrado por feriado' :
+                     (status.reason === 'sunday' ? 'Cerrado hoy' : 'Cerrado ahora');
+    badge.innerHTML = '<span style="color:#ff716c">&bull;</span> ' + closedText;
     badge.style.color = '#ff716c';
     badge.style.borderColor = '#ff716c';
     badge.style.background = 'rgba(255,113,108,0.07)';
   }
 }
+
+window.DT_STORE_SCHEDULE = {
+  getStatus: getStoreStatus,
+  holidays: Array.from(STORE_HOLIDAYS)
+};
 
 function formatHomeMoney(value) {
   var amount = Number(value || 0);
@@ -549,6 +664,9 @@ function createFeaturedProductCard(product) {
       image: product.image || '',
       stock: product.stock,
       accessId: product.accessId || product.id || '',
+      productId: product.productId || '',
+      source: product.source || '',
+      sourceIntegration: product.sourceIntegration || '',
       sourceLabel: product.sourceLabel || '',
       byOrder: byOrder
     });
@@ -698,6 +816,7 @@ function wireStaticSetupLinks() {
   Array.from(grid.querySelectorAll('.featured-card')).forEach(function(card, index) {
     if (card.dataset.productCard) return;
     var target = links[index] || { href: 'catalogo.html', label: 'Ver catalogo' };
+    card.removeAttribute('aria-hidden');
     card.setAttribute('role', 'link');
     card.setAttribute('tabindex', '0');
     card.onclick = function() { window.location.href = target.href; };
@@ -792,10 +911,48 @@ async function loadHomeCatalogSections() {
   }
 }
 
+function setHomeAdminLinksVisible(visible) {
+  document.querySelectorAll('[data-admin-link]').forEach(function(link) {
+    link.style.display = visible ? '' : 'none';
+  });
+}
+
+async function checkHomeAdminAccess() {
+  setHomeAdminLinksVisible(false);
+
+  var cfg = window.CONFIG || {};
+  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) return;
+  if (!window.SupabaseStore || !window.SupabaseStore.getAccessToken) return;
+
+  try {
+    var token = await window.SupabaseStore.getAccessToken();
+    if (!token) return;
+
+    // El boton interno solo se muestra si la base confirma que la sesion es admin.
+    var response = await fetch(cfg.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/admin_current_user', {
+      method: 'POST',
+      headers: {
+        apikey: cfg.SUPABASE_PUBLISHABLE_KEY,
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: '{}'
+    });
+    if (!response.ok) return;
+
+    var admin = await response.json();
+    setHomeAdminLinksVisible(Boolean(admin && admin.is_admin));
+  } catch (error) {
+    setHomeAdminLinksVisible(false);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   updateCartBadge();
   checkStoreStatus();
   setInterval(checkStoreStatus, 60000);
   wireStaticSetupLinks();
+  initHomeHeroCarousel();
   loadHomeCatalogSections();
+  checkHomeAdminAccess();
 });

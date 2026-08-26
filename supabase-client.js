@@ -7,10 +7,90 @@
     return Boolean(cfg.SUPABASE_URL && cfg.SUPABASE_PUBLISHABLE_KEY && window.supabase);
   }
 
+  var authMemoryStorage = {};
+
+  function isStorageQuotaError(error) {
+    var name = String(error && error.name || '').toLowerCase();
+    var message = String(error && error.message || '').toLowerCase();
+    return name.indexOf('quota') !== -1 ||
+      message.indexOf('quota') !== -1 ||
+      message.indexOf('exceeded the quota') !== -1 ||
+      message.indexOf('storage') !== -1;
+  }
+
+  function clearOptionalBrowserCaches() {
+    var removed = 0;
+    try {
+      if (!window.localStorage) return removed;
+      for (var i = window.localStorage.length - 1; i >= 0; i--) {
+        var key = window.localStorage.key(i) || '';
+        if (
+          key.indexOf('dt-public-catalog-') === 0 ||
+          key.indexOf('dt-ml-image-') === 0
+        ) {
+          window.localStorage.removeItem(key);
+          removed++;
+        }
+      }
+    } catch (error) {}
+    return removed;
+  }
+
+  function createSupabaseAuthStorage() {
+    return {
+      getItem: function(key) {
+        try {
+          var localValue = window.localStorage ? window.localStorage.getItem(key) : null;
+          if (localValue !== null && localValue !== undefined) return localValue;
+        } catch (error) {}
+        try {
+          var sessionValue = window.sessionStorage ? window.sessionStorage.getItem(key) : null;
+          if (sessionValue !== null && sessionValue !== undefined) return sessionValue;
+        } catch (error) {}
+        return authMemoryStorage[key] || null;
+      },
+      setItem: function(key, value) {
+        authMemoryStorage[key] = value;
+        try {
+          if (window.localStorage) {
+            window.localStorage.setItem(key, value);
+            try { if (window.sessionStorage) window.sessionStorage.removeItem(key); } catch (error) {}
+            return;
+          }
+        } catch (error) {
+          if (isStorageQuotaError(error)) clearOptionalBrowserCaches();
+          try {
+            if (window.localStorage) {
+              window.localStorage.setItem(key, value);
+              try { if (window.sessionStorage) window.sessionStorage.removeItem(key); } catch (innerError) {}
+              return;
+            }
+          } catch (innerError) {}
+        }
+        try {
+          if (window.sessionStorage) window.sessionStorage.setItem(key, value);
+        } catch (error) {}
+      },
+      removeItem: function(key) {
+        delete authMemoryStorage[key];
+        try { if (window.localStorage) window.localStorage.removeItem(key); } catch (error) {}
+        try { if (window.sessionStorage) window.sessionStorage.removeItem(key); } catch (error) {}
+      }
+    };
+  }
+
   function getClient() {
     if (!isReady()) return null;
     if (!client) {
-      client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
+      client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
+        auth: {
+          storageKey: 'sb-api-auth-token',
+          storage: createSupabaseAuthStorage(),
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
     }
     return client;
   }
@@ -29,6 +109,7 @@
     'Auriculares Noga Voice NGV-400.webp',
     'Adaptador inalambrico tp link 150 Mbps.webp',
     'Base cargadora joystick ps5.webp',
+    'Base de carga PS4 slim.webp',
     'Base de carga joystick ps5.png',
     'Cable miniplug a miniplug + microfono.webp',
     'Joystick Dualsense Ps5 Blanco.webp',
@@ -48,6 +129,7 @@
     'Consola Game TV Stick Your Name Gamer.webp',
     'Consola portatil Pop It electronico.webp',
     'Consola portatil X6.webp',
+    'Conversor de video AV a HDMI.webp',
     'Conversor HDMI a VGA.webp',
     'Cubre grip x4.webp',
     'D_Q_NP_831147-MLA79987574616_102024-F.webp',
@@ -58,6 +140,7 @@
     'Inova Cable de Datos.webp',
     'Joystick Ps3 Alternativos.webp',
     'Kit Gabinete Kelyx LC727-14 Fuente 500w.jpg',
+    'Kotion Each Auriculares Gamin FS400 Ultra.webp',
     'Micrófono Noga Vintage MIC-2030 PC Cardioide color plateado.webp',
     'Mini Consola 2 joystick inalambricos Extreme Mini Game Box.jpg',
     'MOUSE GAMER RAPTOR STORM GRIP 4 BOTONES 3600DPI 7 COLORES.webp',
@@ -79,6 +162,9 @@
     'tranyoo cable Tipo Ca C 1M 3A.webp'
   ];
   var LOCAL_PRODUCT_IMAGE_ALIASES = {
+    'conversor de video av a hdmi': 'Conversor de video AV a HDMI.webp',
+    'conversor video av a hdmi': 'Conversor de video AV a HDMI.webp',
+    'convertidor av a hdmi': 'Conversor de video AV a HDMI.webp',
     'convertidor hdmi a vga': 'Conversor HDMI a VGA.webp',
     'conversor hdmi a vga': 'Conversor HDMI a VGA.webp',
     'cable tipo c a c 1m 3a': 'tranyoo cable Tipo Ca C 1M 3A.webp',
@@ -89,6 +175,14 @@
     'pendrive 64gb hiksemi pully': 'Pendrive 64GB Hiksemi 3.2 Pully.webp',
     'adaptador inalambrico tplink 150 mbps': 'Adaptador inalambrico tp link 150 Mbps.webp',
     'adaptador inalambrico tp link 150 mbps': 'Adaptador inalambrico tp link 150 Mbps.webp',
+    'adaptador kotion each gamer': 'Kotion Each Auriculares Gamin FS400 Ultra.webp',
+    'adaptador audio kotion each gamer para consolas': 'Kotion Each Auriculares Gamin FS400 Ultra.webp',
+    'kotion each fs400 ultra': 'Kotion Each Auriculares Gamin FS400 Ultra.webp',
+    '6935358001222': 'Kotion Each Auriculares Gamin FS400 Ultra.webp',
+    'base de carga ps4 slim': 'Base de carga PS4 slim.webp',
+    'base cargadora ps4 slim': 'Base de carga PS4 slim.webp',
+    'base cargadora doble ps4 slim': 'Base de carga PS4 slim.webp',
+    'base cargadora doble ps4 slim pro': 'Base de carga PS4 slim.webp',
     'playstation 5 consola con lectora': 'ps5 con lectora.webp',
     'playstation 5 con lectora': 'ps5 con lectora.webp',
     'ps5 con lectora': 'ps5 con lectora.webp',
@@ -97,6 +191,10 @@
     'playstation 5 digital': 'ps5 digital.webp',
     'ps5 digital': 'ps5 digital.webp',
     'consola de juego digital': 'ps5 digital.webp',
+    '1027': 'PlayStation 4 Pro 1TB.png',
+    'mf958181295': 'PlayStation 4 Pro 1TB.png',
+    'playstation 4 pro 1tb': 'PlayStation 4 Pro 1TB.png',
+    'ps4 pro 1tb': 'PlayStation 4 Pro 1TB.png',
     'playstation 4 slim 1tb usada': 'PlayStation 4 Slim 1TB Usada.webp',
     'ps4 slim 1tb usada': 'PlayStation 4 Slim 1TB Usada.webp',
     'playstation 3 slim usada': 'PlayStation 3 Slim Usada.webp',
@@ -113,7 +211,26 @@
     'little nighmares ii ps4': 'Little Nighmares II Ps4.jpg',
     'tom clancys ghost recon juego original ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg',
     'tom clancy ghost recon ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg',
-    'ghost recon juego original ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg'
+    'ghost recon juego original ps4': 'Tom Clancys GhosterRecon Juego Original PS4.jpg',
+    'assassins creed black flag resynced ps5': 'Assassins Creed Black Flag Resynced PS5.jpg',
+    'assassin s creed black flag resynced ps5': 'Assassins Creed Black Flag Resynced PS5.jpg',
+    'assasins creed black flag resynced ps5': 'Assassins Creed Black Flag Resynced PS5.jpg',
+    'assasin s creed black flag resynced ps5': 'Assassins Creed Black Flag Resynced PS5.jpg',
+    'assassins creed shadows': 'Assassins Creed Shadows PS5.jpg',
+    'assassin s creed shadows': 'Assassins Creed Shadows PS5.jpg',
+    'assasins creed shadows': 'Assassins Creed Shadows PS5.jpg',
+    'assasin s creed shadows': 'Assassins Creed Shadows PS5.jpg',
+    'uncharted coleccion legado de ladrones ps5': 'Uncharted Colección Legado de Ladrones Ps5.webp',
+    '711719547006': 'Uncharted Colección Legado de Ladrones Ps5.webp',
+    'volante genius speed master vibracion 270': 'Volante Genius Speed Master Vibración 270°.webp',
+    '4710268261285': 'Volante Genius Speed Master Vibración 270°.webp',
+    'noga gaming auriculares st 238': 'Auriculares Gamer Noga ST-238.jpg',
+    '7798137718983': 'Auriculares Gamer Noga ST-238.jpg',
+    'seisa gamer auriculares e 7005a': 'Seisa Gamer Auriculares E-7005A.jpg',
+    'auriculares gamer seisa e 7005a': 'Seisa Gamer Auriculares E-7005A.jpg',
+    '6290132596357': 'Seisa Gamer Auriculares E-7005A.jpg',
+    'auriculares raptor inferno pro x 7 1 wireless negro': 'Auriculares Raptor Inferno Pro X 7.1 Wireless Negro.jpg',
+    '9344458317176': 'Auriculares Raptor Inferno Pro X 7.1 Wireless Negro.jpg'
   };
   var LOCAL_PRODUCT_IMAGES = buildLocalProductImageIndex();
   var LOCAL_PRODUCT_IMAGE_KEYS = Object.keys(LOCAL_PRODUCT_IMAGES);
@@ -199,16 +316,43 @@
 
   function findMappedProductImageById(value, byId) {
     var id = String(value || '').trim();
-    return id && byId && byId[id] ? byId[id] : '';
+    return id && byId && byId[id] ? normalizeMappedProductImageEntry(byId[id]) : '';
   }
 
   function findMappedProductImageByCode(value, byCode) {
     if (!byCode) return '';
     var codes = splitProductImageCodes(value);
     for (var i = 0; i < codes.length; i++) {
-      if (byCode[codes[i]]) return byCode[codes[i]];
+      if (byCode[codes[i]]) return normalizeMappedProductImageEntry(byCode[codes[i]]);
     }
     return '';
+  }
+
+  function findMappedProductImageByName(value, byName) {
+    if (!byName) return '';
+    var key = normalizeImageKey(value);
+    if (!key) return '';
+    if (byName[key]) return normalizeMappedProductImageEntry(byName[key]);
+
+    var keys = Object.keys(byName);
+    for (var i = 0; i < keys.length; i++) {
+      var mappedKey = normalizeImageKey(keys[i]);
+      if (mappedKey && (key.indexOf(mappedKey) !== -1 || mappedKey.indexOf(key) !== -1)) {
+        return normalizeMappedProductImageEntry(byName[keys[i]]);
+      }
+    }
+    return '';
+  }
+
+  function normalizeMappedProductImageEntry(entry) {
+    if (!entry) return '';
+    if (typeof entry === 'string') return entry;
+    return entry.image || entry.imagen || entry.url || '';
+  }
+
+  function isLocalCatalogImageUrl(url) {
+    url = String(url || '').trim().replace(/^["']|["']$/g, '');
+    return /^\.?\/?img\//i.test(url);
   }
 
   function imageRowText(row) {
@@ -230,6 +374,7 @@
   function trustedGameImageUrl(url) {
     url = String(url || '').toLowerCase();
     return url.indexOf('img/productos/') === 0
+      || url.indexOf('img/juegos-dixgamer/') === 0
       || url.indexOf('img/invid/') === 0
       || url.indexOf('dixgamer.com') !== -1
       || url.indexOf('image.api.playstation.com') !== -1
@@ -256,8 +401,10 @@
 
   function findMappedProductImage(row) {
     var map = window.DT_PRODUCT_IMAGE_MAP || {};
-    var byId = Object.assign({}, map.ids || {}, map.byId || {});
-    var byCode = Object.assign({}, map.codes || {}, map.byCode || {});
+    var dixgamerMap = window.DT_DIXGAMER_GAME_IMAGES || {};
+    var byId = Object.assign({}, dixgamerMap.byId || {}, map.ids || {}, map.byId || {});
+    var byCode = Object.assign({}, dixgamerMap.byCode || {}, map.codes || {}, map.byCode || {});
+    var byName = Object.assign({}, dixgamerMap.byName || {}, map.names || {}, map.byName || {});
     var idFields = [
       row && row.id_productos,
       row && row.id_viejo,
@@ -282,6 +429,16 @@
       if (byCodeMatch && isAllowedMappedGameImage(row, byCodeMatch)) return byCodeMatch;
     }
 
+    var nameFields = [
+      row && row.producto,
+      row && row.nombre,
+      row && row.descripcion
+    ];
+    for (var k = 0; k < nameFields.length; k++) {
+      var byNameMatch = findMappedProductImageByName(nameFields[k], byName);
+      if (byNameMatch && isAllowedMappedGameImage(row, byNameMatch)) return byNameMatch;
+    }
+
     return '';
   }
 
@@ -291,10 +448,21 @@
       if (found) return found;
     }
     var mappedImage = findMappedProductImage(row);
-    if (mappedImage) return mappedImage;
+
+    // Para juegos fisicos preferimos la copia local descargada. Asi la web no
+    // depende de que DixGamer u otra fuente externa responda justo en ese momento.
+    if (mappedImage && isPhysicalGameImageRow(row)) {
+      if (row && row.imagen_url && isLocalCatalogImageUrl(row.imagen_url) && isAllowedMappedGameImage(row, row.imagen_url)) return row.imagen_url;
+      if (row && row.image_url && isLocalCatalogImageUrl(row.image_url) && isAllowedMappedGameImage(row, row.image_url)) return row.image_url;
+      return mappedImage;
+    }
+
+    // La imagen cargada desde admin-imagenes queda en Supabase y debe ganar
+    // sobre mapas viejos generados por CSV/DixGamer para productos no juego.
     if (row && row.imagen_url && isAllowedMappedGameImage(row, row.imagen_url)) return row.imagen_url;
     if (row && row.image_url && isAllowedMappedGameImage(row, row.image_url)) return row.image_url;
     if (row && row.invid_imagen_url && isAllowedMappedGameImage(row, row.invid_imagen_url)) return row.invid_imagen_url;
+    if (mappedImage) return mappedImage;
     return '';
   }
 
@@ -321,24 +489,19 @@
       return ['img/invid/' + encodeURIComponent(exactLocalFile).replace(/%2F/g, '/')];
     }
 
-    var exts = [];
-    function addExt(ext) {
-      ext = String(ext || '').toLowerCase().replace(/^\./, '');
-      if (ext && exts.indexOf(ext) === -1) exts.push(ext);
-    }
+    // El manifiesto se genera desde los archivos que existen realmente.
+    // Si el ID no esta ahi, no inventamos extensiones: continuamos con la
+    // URL explicita del proveedor y, si falla, la interfaz usa el placeholder.
+    return [];
+  }
 
-    var remoteUrl = String(row && (row.invid_imagen_url || row.invid_image_url || row.imagen_url || row.image_url) || '').split('?')[0];
-    var match = remoteUrl.match(/\.([a-z0-9]+)$/i);
-    if (match) {
-      var ext = match[1].toLowerCase();
-      if (ext === 'jpeg') ext = 'jpg';
-      if (['png', 'jpg', 'webp', 'gif', 'avif'].indexOf(ext) !== -1) addExt(ext);
-    }
-
-    ['png', 'jpg', 'jpeg', 'webp', 'gif', 'avif'].forEach(addExt);
-    return exts.map(function(ext) {
-      return 'img/invid/' + id + '.' + ext;
-    });
+  function isKnownUnavailableInvidImage(row, url) {
+    var rawId = row && (row.id_productos || row.invid_id || row.productId || row.id);
+    var id = String(rawId || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!id || !window.DT_INVID_UNAVAILABLE_IMAGES) return false;
+    var blocked = window.DT_INVID_UNAVAILABLE_IMAGES[id];
+    if (!blocked) return false;
+    return normalizeRemoteImageUrl(blocked) === normalizeRemoteImageUrl(url);
   }
 
   function pushInvidImageCandidate(row, candidates, value) {
@@ -368,10 +531,11 @@
 
     raw.split(/[|,;]/).forEach(function(part) {
       part = String(part || '').trim().replace(/\\/g, '/');
-      var isLocalAsset = /^img\/(productos|invid)\//i.test(part);
+      var isLocalAsset = /^img\/(productos|invid|juegos-dixgamer)\//i.test(part);
       var url = isLocalAsset ? part : normalizeRemoteImageUrl(part);
       if (!url || candidates.indexOf(url) !== -1) return;
-      if (!/^https?:\/\//i.test(url) && url.indexOf('img/productos/') !== 0 && url.indexOf('img/invid/') !== 0) return;
+      if (!isLocalAsset && isKnownUnavailableInvidImage(row, url)) return;
+      if (!/^https?:\/\//i.test(url) && url.indexOf('img/productos/') !== 0 && url.indexOf('img/invid/') !== 0 && url.indexOf('img/juegos-dixgamer/') !== 0) return;
       if (isAllowedMappedGameImage(row, url)) candidates.push(url);
     });
   }
@@ -400,11 +564,83 @@
   var ML_IMAGE_CACHE_PREFIX = 'dt-ml-image-';
   // Cache corto porque stock/precios cambian desde Access durante el dia.
   // Cambiar el prefijo fuerza al navegador a ignorar caches viejos.
-  var PUBLIC_CATALOG_CACHE_PREFIX = 'dt-public-catalog-v20260629-img-local-progress2-';
+  var PUBLIC_CATALOG_CACHE_PREFIX = 'dt-public-catalog-v20260630-batch-catalog-';
   var PUBLIC_CATALOG_CACHE_TTL_MS = Math.max(1, Number(cfg.PUBLIC_CATALOG_CACHE_MINUTES || 1)) * 60 * 1000;
+  var PUBLIC_CATALOG_LOCAL_CACHE_MAX_BYTES = Math.max(0, Number(cfg.PUBLIC_CATALOG_CACHE_MAX_KB || 220)) * 1024;
+  var PUBLIC_CATALOG_LOCAL_CACHE_MAX_ITEMS = Math.max(2, Number(cfg.PUBLIC_CATALOG_CACHE_MAX_ITEMS || 8));
+  var ML_IMAGE_LOCAL_CACHE_MAX_ITEMS = Math.max(20, Number(cfg.ML_IMAGE_CACHE_MAX_ITEMS || 120));
   var publicCatalogMemoryCache = {};
   var publicCatalogPending = {};
   var mlImageRequests = {};
+  var invidMultiProductsRpcAvailable = true;
+
+  function approximateStorageBytes(value) {
+    return String(value === undefined || value === null ? '' : value).length * 2;
+  }
+
+  function isOptionalCacheKey(key) {
+    key = String(key || '');
+    return key.indexOf('dt-public-catalog-') === 0 || key.indexOf(ML_IMAGE_CACHE_PREFIX) === 0;
+  }
+
+  function pruneCacheGroup(entries, maxItems) {
+    entries.sort(function(a, b) {
+      return (b.expiresAt || 0) - (a.expiresAt || 0) || b.key.localeCompare(a.key);
+    });
+
+    for (var i = maxItems; i < entries.length; i++) {
+      try {
+        window.localStorage.removeItem(entries[i].key);
+      } catch (error) {}
+    }
+  }
+
+  function pruneOptionalBrowserCaches() {
+    try {
+      if (!window.localStorage) return;
+
+      var now = Date.now();
+      var catalogEntries = [];
+      var mlEntries = [];
+
+      for (var i = window.localStorage.length - 1; i >= 0; i--) {
+        var key = window.localStorage.key(i) || '';
+
+        if (key.indexOf('dt-public-catalog-') === 0 && key.indexOf(PUBLIC_CATALOG_CACHE_PREFIX) !== 0) {
+          window.localStorage.removeItem(key);
+          continue;
+        }
+
+        if (key.indexOf(PUBLIC_CATALOG_CACHE_PREFIX) === 0) {
+          var raw = window.localStorage.getItem(key) || '';
+          var expiresAt = 0;
+          try {
+            var parsed = JSON.parse(raw);
+            expiresAt = Number(parsed && parsed.expiresAt || 0);
+          } catch (error) {}
+
+          if (expiresAt && expiresAt < now) {
+            window.localStorage.removeItem(key);
+            continue;
+          }
+
+          catalogEntries.push({ key: key, expiresAt: expiresAt, size: raw.length });
+          continue;
+        }
+
+        if (key.indexOf(ML_IMAGE_CACHE_PREFIX) === 0) {
+          mlEntries.push({ key: key, expiresAt: 0, size: 0 });
+        }
+      }
+
+      pruneCacheGroup(catalogEntries, PUBLIC_CATALOG_LOCAL_CACHE_MAX_ITEMS);
+      pruneCacheGroup(mlEntries, ML_IMAGE_LOCAL_CACHE_MAX_ITEMS);
+    } catch (error) {}
+  }
+
+  try {
+    window.setTimeout(pruneOptionalBrowserCaches, 0);
+  } catch (error) {}
 
   function safeLocalStorageGet(key) {
     try {
@@ -414,12 +650,28 @@
     }
   }
 
-  function safeLocalStorageSet(key, value) {
+  function safeLocalStorageSet(key, value, options) {
+    options = options || {};
+    if (options.maxBytes && approximateStorageBytes(value) > options.maxBytes) {
+      return false;
+    }
+
+    if (isOptionalCacheKey(key)) pruneOptionalBrowserCaches();
+
     try {
       if (window.localStorage) window.localStorage.setItem(key, value);
+      return true;
     } catch (error) {
+      if (isStorageQuotaError(error)) {
+        clearOptionalBrowserCaches();
+        try {
+          if (window.localStorage) window.localStorage.setItem(key, value);
+          return true;
+        } catch (innerError) {}
+      }
       // El cache es opcional; si el navegador lo bloquea seguimos igual.
     }
+    return false;
   }
 
   function safeLocalStorageRemove(key) {
@@ -464,10 +716,14 @@
       expiresAt: Date.now() + PUBLIC_CATALOG_CACHE_TTL_MS,
       value: value
     };
-    safeLocalStorageSet(publicCatalogCacheKey(key), JSON.stringify({
+
+    var payload = JSON.stringify({
       expiresAt: Date.now() + PUBLIC_CATALOG_CACHE_TTL_MS,
       value: value
-    }));
+    });
+    safeLocalStorageSet(publicCatalogCacheKey(key), payload, {
+      maxBytes: PUBLIC_CATALOG_LOCAL_CACHE_MAX_BYTES
+    });
   }
 
   async function withPublicCatalogTimeout(promise, key) {
@@ -1131,6 +1387,36 @@
     return 0;
   }
 
+  var activeInvidUsdRate = Number(cfg.INVID_USD_RATE || 0);
+  var invidUsdRatePromise = null;
+
+  async function ensureInvidUsdRate() {
+    if (invidUsdRatePromise) return invidUsdRatePromise;
+
+    invidUsdRatePromise = (async function() {
+      var fallback = Number(cfg.INVID_USD_RATE || 0);
+      var sb = getClient();
+      if (!sb) return activeInvidUsdRate || fallback;
+
+      try {
+        var result = await sb.rpc('catalogo_ultimo_dolar_access');
+        var value = Array.isArray(result.data) ? result.data[0] : result.data;
+        value = Number(value);
+        if (!result.error && Number.isFinite(value) && value > 0) {
+          activeInvidUsdRate = value;
+          return activeInvidUsdRate;
+        }
+        if (result.error) console.warn('Supabase dolar actual error:', result.error.message);
+      } catch (error) {
+        console.warn('No se pudo obtener el dolar actual; se usa el valor de respaldo.', error);
+      }
+
+      return activeInvidUsdRate || fallback;
+    })();
+
+    return invidUsdRatePromise;
+  }
+
   function getInvidSalePrice(price, currency) {
     var amount = Number(price || 0);
     if (!Number.isFinite(amount) || amount <= 0) return 0;
@@ -1138,7 +1424,7 @@
     var sourceCurrency = String(currency || 'USD').toUpperCase();
     if (sourceCurrency !== 'USD') return amount;
 
-    var usdRate = Number(cfg.INVID_USD_RATE || 0);
+    var usdRate = Number(activeInvidUsdRate || cfg.INVID_USD_RATE || 0);
     if (!Number.isFinite(usdRate) || usdRate <= 0) return 0;
 
     var markup = Number(cfg.INVID_MARKUP_RATE || 0);
@@ -1575,6 +1861,9 @@
     'Juegos Xbox one original',
     'Juegos Digitales Ps3 Ps4 Ps5',
     '701179990048',
+    // Duplicados de joystick PS5: se conserva publicada la ficha anterior.
+    '711719023197',
+    '711719023227',
     'Seña Dolares'
   ].map(compactCatalogText);
 
@@ -1696,8 +1985,7 @@
     } else if (cat.indexOf('juegos fisicos') !== -1 || cat.indexOf('juegos originales') !== -1) {
       order = [
         'Juegos Ps5',
-        'Juegos Ps4',
-        'Juegos Ps3'
+        'Juegos Ps4'
       ];
     } else if (cat.indexOf('hardware') !== -1 || cat.indexOf('pc y componentes') !== -1) {
       order = [
@@ -1787,8 +2075,7 @@
 
   var PHYSICAL_GAMES_SUBCATEGORIES = [
     { id: '69', name: 'Juegos Ps5' },
-    { id: '10', name: 'Juegos Ps4' },
-    { id: '9', name: 'Juegos Ps3' }
+    { id: '10', name: 'Juegos Ps4' }
   ];
   var PHYSICAL_GAMES_ALLOWED_IDS = PHYSICAL_GAMES_SUBCATEGORIES.reduce(function(acc, item) {
     acc[item.id] = true;
@@ -1890,7 +2177,10 @@
     }
 
     if (categoryText === 'juegos fisicos') {
-      return id === '18' || id === '19' || subcategoryText === 'juegos nintendo' || subcategoryText === 'juegos xbox one';
+      return id === '9' || id === '18' || id === '19' ||
+        subcategoryText === 'juegos ps3' ||
+        subcategoryText === 'juegos nintendo' ||
+        subcategoryText === 'juegos xbox one';
     }
 
     if (categoryText === 'auriculares') {
@@ -2069,6 +2359,16 @@
     return value;
   }
 
+  function safeAccessWebPrice(row, category, subcategory, name) {
+    var price = parseMoney(row && row.precio_de_venta);
+    var text = normalizeCatalogText([category, subcategory, name].filter(Boolean).join(' '));
+    var isProcessor = text.indexOf('procesador') !== -1 ||
+      text.indexOf('intel core') !== -1 ||
+      /(^|\s)cpu(\s|$)/.test(text);
+    if (isProcessor && price > 0 && price < 30000) return 0;
+    return price;
+  }
+
   function mapAccessProduct(row) {
     var id = String(row.id_productos || '').trim();
     var name = row.producto || row.descripcion || ('Producto #' + id);
@@ -2090,7 +2390,7 @@
       id: id,
       accessId: id,
       name: name,
-      price: parseMoney(row.precio_de_venta),
+      price: safeAccessWebPrice(row, category, subcategory, name),
       currency: formatCurrency('ARS'),
       category: group,
       rootCategory: group,
@@ -2318,7 +2618,9 @@
     var sb = getClient();
     if (!sb || !categoryName) return [];
 
-    return withPublicCatalogCache('invid-pc-category-' + catalogSlug(categoryName) + '-all-stock', async function() {
+    await ensureInvidUsdRate();
+
+    return withPublicCatalogCache('invid-pc-category-' + catalogSlug(categoryName) + '-all-stock-usd-' + activeInvidUsdRate, async function() {
       var result = await sb.rpc('catalogo_invid_pc_productos', {
         categoria_nombre: String(categoryName),
         limite_por_categoria: 0
@@ -2336,11 +2638,69 @@
     });
   }
 
+  async function fetchInvidPcProductsByCategories(categoryNames) {
+    var sb = getClient();
+    if (!sb || !Array.isArray(categoryNames) || !categoryNames.length) return [];
+
+    await ensureInvidUsdRate();
+
+    var names = [];
+    categoryNames.forEach(function(name) {
+      name = String(name || '').trim();
+      if (name && names.indexOf(name) === -1) names.push(name);
+    });
+    if (!names.length) return [];
+
+    var cacheKey = 'invid-pc-categories-' + names
+      .map(catalogSlug)
+      .sort()
+      .join('__') + '-all-stock-usd-' + activeInvidUsdRate;
+
+    return withPublicCatalogCache(cacheKey, async function() {
+      if (invidMultiProductsRpcAvailable) {
+        var result = await sb.rpc('catalogo_invid_pc_productos_multi', {
+          categorias_nombre: names,
+          limite_por_categoria: 0
+        });
+
+        if (!result.error) {
+          return uniqueInvidProducts((result.data || [])
+            .map(mapInvidProduct)
+            .filter(function(product) {
+              return Number(product.stock || 0) > 0 && isInvidWebPriceAllowed(product.price);
+            }));
+        }
+
+        invidMultiProductsRpcAvailable = false;
+        console.warn('Supabase Invid multi no disponible, usando modo compatible:', result.error.message);
+      }
+
+      var groups = await Promise.all(names.map(function(name) {
+        return fetchInvidPcProductsByCategory(name);
+      }));
+      return uniqueInvidProducts(groups.reduce(function(all, group) {
+        return all.concat(group || []);
+      }, []));
+    });
+  }
+
+  function uniqueInvidProducts(products) {
+    var seen = {};
+    return (products || []).filter(function(product) {
+      var key = product && (product.slug || product.productId || product.id || product.name);
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
   async function fetchInvidProductById(productId) {
     var sb = getClient();
     if (!sb || !productId) return null;
 
-    return withPublicCatalogCache('invid-product-' + String(productId), async function() {
+    await ensureInvidUsdRate();
+
+    return withPublicCatalogCache('invid-product-' + String(productId) + '-usd-' + activeInvidUsdRate, async function() {
       var result = await sb.rpc('catalogo_invid_producto', { invid_id: String(productId) });
       if (result.error) {
         console.warn('Supabase producto Invid error:', result.error.message);
@@ -2463,6 +2823,7 @@
     var rows = result.data || [];
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
+      if (!row.pedido_items || row.pedido_items.length !== itemRows.length) continue;
       var items = (row.pedido_items || []).map(function(item) {
         return {
           productId: item.id_productos || '',
@@ -2504,81 +2865,48 @@
       console.warn('No se pudo completar la cuenta antes de crear pedido:', error);
     }
 
-    var totals = (data && data.totals) || {};
-    var itemRows = items.map(mapOrderItem);
-    var fallbackSubtotal = itemRows.reduce(function(sum, item) { return sum + Number(item.subtotal || 0); }, 0);
-    var subtotal = Number(totals.subtotal);
-    var iva = Number(totals.iva);
-    var total = Number(totals.total);
-    if (!Number.isFinite(subtotal)) subtotal = fallbackSubtotal;
-    if (!Number.isFinite(iva)) iva = 0;
-    if (!Number.isFinite(total)) total = subtotal + iva;
-
-    var method = (data && data.method) || 'whatsapp';
-    var buyerNotes = [
-      account.name ? 'Cliente: ' + account.name : '',
-      account.email || session.user.email ? 'Email: ' + (account.email || session.user.email) : '',
-      normalizeDni(account.dni) ? 'DNI: ' + normalizeDni(account.dni) : ''
-    ].filter(Boolean).join(' | ');
-    var notes = [(data && data.notes) || '', buyerNotes].filter(Boolean).join(' - ');
-
-    var existingPending = await findMatchingPendingOrder(sb, session.user.id, method, itemRows, total);
-    if (existingPending) {
+    try {
+      var response = await fetch('api/order-create.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+          'X-Authorization': 'Bearer ' + session.access_token
+        },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          items: items,
+          account: account,
+          method: (data && data.method) || 'whatsapp',
+          promo_code: (data && data.promoCode) || '',
+          notes: (data && data.notes) || 'Pedido creado desde carrito web.'
+        })
+      });
+      var payload = await response.json().catch(function() { return null; });
+      if (!response.ok || !payload || !payload.ok || !payload.order) {
+        return {
+          order: null,
+          error: {
+            message: payload && payload.error ? payload.error : 'No se pudo verificar y guardar el pedido.',
+            code: payload && payload.code ? payload.code : 'order_create_failed',
+            status: response.status
+          }
+        };
+      }
       return {
-        order: existingPending,
-        reused: true,
+        order: payload.order,
+        reused: payload.reused === true,
         error: null
       };
-    }
-
-    var orderPayload = {
-      user_id: session.user.id,
-      cliente_id: account.clienteId || null,
-      dni: normalizeDni(account.dni) || null,
-      nombre: account.firstName || account.name || '',
-      apellido: account.lastName || '',
-      email: account.email || session.user.email || '',
-      telefono: account.phone || '',
-      direccion: account.address || '',
-      estado: 'pendiente',
-      metodo_pago: method,
-      subtotal: subtotal,
-      iva: iva,
-      total: total,
-      moneda: cfg.CURRENCY || 'ARS',
-      notas: notes || null
-    };
-
-    var orderResult = await sb
-      .from('pedidos')
-      .insert(orderPayload)
-      .select('id,external_reference,estado,metodo_pago,subtotal,iva,total,created_at')
-      .single();
-
-    if (orderResult.error) return { order: null, error: orderResult.error };
-
-    var rows = itemRows.map(function(item) {
-      return Object.assign({}, item, { pedido_id: orderResult.data.id });
-    });
-
-    var itemsResult = await sb
-      .from('pedido_items')
-      .insert(rows)
-      .select('id,pedido_id,id_productos,nombre,cantidad,subtotal');
-
-    if (itemsResult.error) {
+    } catch (error) {
       return {
-        order: orderResult.data,
+        order: null,
         error: {
-          message: 'El pedido se creo, pero no se pudieron guardar los productos: ' + itemsResult.error.message
+          message: 'No se pudo conectar con el servidor para validar el pedido.',
+          code: 'order_create_unavailable'
         }
       };
     }
-
-    return {
-      order: Object.assign({}, orderResult.data, { items: itemsResult.data || [] }),
-      error: null
-    };
   }
 
   async function deletePendingWebOrder(orderId) {
@@ -2595,35 +2923,27 @@
       return { ok: false, error: { message: 'Inicia sesion para eliminar el pedido.' } };
     }
 
-    var paymentsDelete = await sb
-      .from('pagos')
-      .delete()
-      .eq('pedido_id', cleanId);
-
-    if (paymentsDelete.error) return { ok: false, error: paymentsDelete.error };
-
-    var itemsDelete = await sb
-      .from('pedido_items')
-      .delete()
-      .eq('pedido_id', cleanId);
-
-    if (itemsDelete.error) return { ok: false, error: itemsDelete.error };
-
-    var result = await sb
-      .from('pedidos')
-      .delete()
-      .eq('id', cleanId)
-      .eq('user_id', session.user.id)
-      .eq('estado', 'pendiente')
-      .select('id');
-
-    if (result.error) return { ok: false, error: result.error };
-
-    return {
-      ok: true,
-      deleted: (result.data || []).length,
-      error: null
-    };
+    try {
+      var response = await fetch('api/order-delete.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+          'X-Authorization': 'Bearer ' + session.access_token
+        },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          order_id: cleanId
+        })
+      });
+      var payload = await response.json().catch(function() { return null; });
+      if (!response.ok || !payload || !payload.ok) {
+        return { ok: false, error: { message: payload && payload.error ? payload.error : 'No se pudo eliminar el pedido.' } };
+      }
+      return { ok: true, deleted: payload.deleted ? 1 : 0, error: null };
+    } catch (error) {
+      return { ok: false, error: { message: 'No se pudo conectar con el servidor para eliminar el pedido.' } };
+    }
   }
 
   window.SupabaseStore = {
@@ -2649,6 +2969,7 @@
     fetchAccessProductById: fetchAccessProductById,
     fetchInvidPcCatalogTree: fetchInvidPcCatalogTree,
     fetchInvidPcProductsByCategory: fetchInvidPcProductsByCategory,
+    fetchInvidPcProductsByCategories: fetchInvidPcProductsByCategories,
     fetchInvidProductById: fetchInvidProductById,
     fetchProductBySlug: fetchProductBySlug,
     findMercadoLibreImage: findMercadoLibreImage,

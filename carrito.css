@@ -133,6 +133,11 @@
   flex: 0 0 auto;
 }
 
+.payment-method-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .payment-method strong,
 .payment-method small {
   display: block;
@@ -155,6 +160,142 @@
   opacity: .68;
 }
 
+.payment-method-price {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 900;
+  font-size: .98rem;
+  color: currentColor;
+  white-space: nowrap;
+}
+
+.transfer-panel {
+  margin-top: 6px;
+  padding: 14px;
+  border: 1px solid rgba(143,245,255,.14);
+  background:
+    linear-gradient(180deg, rgba(143,245,255,.055), rgba(19,19,19,.9)),
+    rgba(19,19,19,.86);
+}
+
+.transfer-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #8ff5ff;
+  margin-bottom: 12px;
+}
+
+.transfer-panel-head .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.transfer-data {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.transfer-data div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(143,245,255,.08);
+}
+
+.transfer-data dt,
+.transfer-data dd {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  font-size: .82rem;
+}
+
+.transfer-data dt {
+  color: #adaaaa;
+}
+
+.transfer-data dd {
+  color: #f5f3f0;
+  font-weight: 800;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.transfer-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.transfer-action {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(143,245,255,.2);
+  background: rgba(143,245,255,.08);
+  color: #8ff5ff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+.transfer-action:hover {
+  border-color: rgba(143,245,255,.48);
+  background: rgba(143,245,255,.15);
+  color: #f5f3f0;
+}
+
+.transfer-action .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.transfer-proof-name {
+  margin: 10px 0 0;
+  font-family: "Manrope", sans-serif;
+  font-size: .72rem;
+  line-height: 1.45;
+  color: #adaaaa;
+}
+
+.transfer-confirm {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg,#8ff5ff 0%,#00eefc 100%);
+  border-color: transparent;
+  color: #003f43;
+  box-shadow: 0 0 16px rgba(0,240,255,.2);
+}
+
+.transfer-confirm:hover {
+  background: linear-gradient(135deg,#a8f8ff 0%,#17f2ff 100%);
+  color: #003f43;
+}
+
+.transfer-important {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,208,76,.22);
+  background: rgba(255,208,76,.08);
+  color: #f4d985;
+  font-family: "Manrope", sans-serif;
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
 @media (max-width: 767px) {
   main {
     padding-left: 14px !important;
@@ -163,6 +304,19 @@
 
   #cart-grid {
     gap: 18px;
+  }
+
+  .payment-method {
+    align-items: flex-start;
+  }
+
+  .payment-method-price {
+    font-size: .85rem;
+    padding-top: 2px;
+  }
+
+  .transfer-actions {
+    grid-template-columns: 1fr;
   }
 
   #cart-grid .overflow-x-auto {

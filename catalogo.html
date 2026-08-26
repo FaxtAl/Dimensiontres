@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="translation-guard.js?v=20260821"></script>
 <title>Catálogo | DimensionTres</title>
+<meta name="description" content="Explorá el catálogo de hardware, gaming, consolas y accesorios de DimensionTres.">
+<link rel="canonical" href="https://dimensiontres.com/catalogo.html">
 <script>
 (function() {
   var params = new URLSearchParams(window.location.search);
@@ -33,10 +36,9 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="shared.css?v=mobile-polish-20260623">
-<link rel="stylesheet" href="catalogo.css?v=mobile-context-header-20260623">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script src="tailwind.config.js"></script>
+<link rel="stylesheet" href="shared.css?v=cursor-global-20260724">
+<link rel="stylesheet" href="catalogo.css?v=cards-lineas-celestes-20260730">
+<link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
 
@@ -53,12 +55,12 @@
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#servicios">Servicios</a>
     </div>
     <div class="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-6 lg:mx-10">
-      <div class="relative w-full flex items-center">
+      <div class="relative w-full flex items-center catalog-search-shell">
         <input id="search-input" type="text" placeholder="Buscar productos..."
           class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 outline-none transition-all"
           style="border-radius:6px;"
           oninput="handleSearchLive(this.value)"/>
-        <button class="absolute right-0 h-full px-3.5 flex items-center justify-center text-outline hover:text-primary transition-colors"
+        <button class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors"
           style="border-radius:0 6px 6px 0;" aria-label="Buscar">
           <span class="material-symbols-outlined text-[20px]">search</span>
         </button>
@@ -159,6 +161,13 @@
   <!-- Filter Bar (mobile) - solo en nivel raíz -->
   <section id="filter-bar-mobile" class="catalog-mobile-bar">
     <div class="container mx-auto px-5 max-w-[1920px]">
+      <div class="mobile-catalog-search catalog-search-shell">
+        <input id="search-mobile-catalog" type="text" placeholder="Buscar productos..."
+          autocomplete="off" oninput="filterBySearch(this.value)"/>
+        <button type="button" onclick="submitCatalogSearch('search-mobile-catalog')" aria-label="Buscar">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+      </div>
       <div class="mobile-catalog-actions">
         <button type="button" class="mobile-catalog-action" onclick="openCatalogPanel('categories')" aria-controls="catalog-category-panel">
           <span class="material-symbols-outlined">more_vert</span>
@@ -198,23 +207,6 @@
       </button>
     </div>
     <div class="catalog-filter-content">
-      <label class="catalog-filter-label" for="search-filter-mobile">Buscar</label>
-      <div class="catalog-filter-search">
-        <input id="search-filter-mobile" type="text" placeholder="Buscar productos..." oninput="filterBySearch(this.value)"/>
-        <span class="material-symbols-outlined">search</span>
-      </div>
-
-      <div class="catalog-filter-label">Categoría</div>
-      <div class="mobile-filter-options">
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="all" onclick="setFilter('all', this)">Todo</button>
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="hardware" onclick="setFilter('hardware', this)">Hardware</button>
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="consolas" onclick="setFilter('consolas', this)">Consolas</button>
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="juegos" onclick="setFilter('juegos', this)">Juegos</button>
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="perifericos" onclick="setFilter('perifericos', this)">Periféricos</button>
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="audio" onclick="setFilter('audio', this)">Audio</button>
-        <button type="button" class="filter-pill mobile-filter-option" data-filter="accesorios" onclick="setFilter('accesorios', this)">Accesorios</button>
-      </div>
-
       <div id="mobile-product-filters" class="mobile-product-filters">
         <label class="catalog-filter-label" for="mobile-brand-filter-select">Marca</label>
         <select id="mobile-brand-filter-select" class="mobile-sort-select" onchange="setProductBrandFilter(this.value)">
@@ -231,6 +223,25 @@
         <div id="mobile-spec-filter-wrap" class="product-spec-filter-wrap">
           <label class="catalog-filter-label" for="mobile-spec-filter-select">Tipo</label>
           <select id="mobile-spec-filter-select" class="mobile-sort-select" onchange="setProductSpecFilter(this.value)">
+            <option value="all">Todo</option>
+          </select>
+        </div>
+
+        <div id="mobile-cascade-primary-wrap" class="product-cascade-filter-wrap is-hidden">
+          <label id="mobile-cascade-primary-label" class="catalog-filter-label" for="mobile-cascade-primary-select">Tecnología</label>
+          <select id="mobile-cascade-primary-select" class="mobile-sort-select" onchange="setProductCascadeFilter('primary', this.value)">
+            <option value="all">Todo</option>
+          </select>
+        </div>
+        <div id="mobile-cascade-secondary-wrap" class="product-cascade-filter-wrap is-hidden">
+          <label id="mobile-cascade-secondary-label" class="catalog-filter-label" for="mobile-cascade-secondary-select">Equipo</label>
+          <select id="mobile-cascade-secondary-select" class="mobile-sort-select" onchange="setProductCascadeFilter('secondary', this.value)">
+            <option value="all">Todo</option>
+          </select>
+        </div>
+        <div id="mobile-cascade-capacity-wrap" class="product-cascade-filter-wrap is-hidden">
+          <label id="mobile-cascade-capacity-label" class="catalog-filter-label" for="mobile-cascade-capacity-select">Capacidad</label>
+          <select id="mobile-cascade-capacity-select" class="mobile-sort-select" onchange="setProductCascadeFilter('capacity', this.value)">
             <option value="all">Todo</option>
           </select>
         </div>
@@ -261,16 +272,16 @@
       <div class="catalog-results">
         <!-- Desktop search + sort (solo en nivel raiz) -->
         <div id="desktop-controls" class="hidden md:flex items-center justify-between mb-8 gap-4">
-          <div class="relative flex items-center max-w-xs w-full">
+          <div class="relative flex items-center max-w-xs w-full catalog-search-shell">
             <input id="search-catalog" type="text" placeholder="Buscar productos..."
               class="w-full bg-[#131313] border border-outline-variant/20 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-10 outline-none transition-all"
               style="border-radius:6px;"
               oninput="filterBySearch(this.value)"/>
-            <span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">search</span>
+            <span class="material-symbols-outlined absolute right-3 text-[#8f8e8d] text-[20px]">search</span>
           </div>
           <div id="root-price-sort-controls" class="flex items-center gap-3">
-            <span class="font-headline text-xs uppercase tracking-widest text-[#484847]">Precio:</span>
-            <select class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
+            <span class="font-headline text-xs uppercase tracking-widest text-[#8f8e8d]">Precio:</span>
+            <select aria-label="Ordenar productos por precio" class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
               data-sort-select
               style="border-radius:6px;"
               onchange="sortCards(this.value)">
@@ -308,9 +319,27 @@
                   <option value="all">Todo</option>
                 </select>
               </label>
+              <label id="cascade-primary-wrap" class="product-filter-control product-cascade-filter-wrap is-hidden">
+                <span id="cascade-primary-label">Tecnología</span>
+                <select id="cascade-primary-select" class="custom-select" onchange="setProductCascadeFilter('primary', this.value)">
+                  <option value="all">Todo</option>
+                </select>
+              </label>
+              <label id="cascade-secondary-wrap" class="product-filter-control product-cascade-filter-wrap is-hidden">
+                <span id="cascade-secondary-label">Equipo</span>
+                <select id="cascade-secondary-select" class="custom-select" onchange="setProductCascadeFilter('secondary', this.value)">
+                  <option value="all">Todo</option>
+                </select>
+              </label>
+              <label id="cascade-capacity-wrap" class="product-filter-control product-cascade-filter-wrap is-hidden">
+                <span id="cascade-capacity-label">Capacidad</span>
+                <select id="cascade-capacity-select" class="custom-select" onchange="setProductCascadeFilter('capacity', this.value)">
+                  <option value="all">Todo</option>
+                </select>
+              </label>
             </div>
             <span>Precio</span>
-            <select class="custom-select" data-sort-select onchange="sortCards(this.value)">
+            <select aria-label="Ordenar productos por precio" class="custom-select" data-sort-select onchange="sortCards(this.value)">
               <option value="price-low">Menor precio</option>
               <option value="price-high">Mayor precio</option>
             </select>
@@ -348,15 +377,16 @@
 
 <script src="shared.js"></script>
 <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
-<script src="config.js?v=catalogo-restaurado-20260616"></script>
+<script src="config.js?v=invid-1515-30-20260810"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
-<script src="img/producto-imagenes-dixgamer.js?v=dixgamer-juegos-20260608"></script>
-<script src="img/producto-imagenes-juegos-extra.js?v=juegos-extra-final-20260608"></script>
-<script src="img/producto-imagenes-local.js?v=local-product-images-20260629-imgsync3"></script>
-<script src="img/invid-imagenes-local.js?v=invid-images-local-20260629-fast"></script>
-<script src="supabase-client.js?v=invid-image-map-progress2-20260629"></script>
-<script src="cart.js?v=cart-add-fix-20260622"></script>
+<script src="img/producto-imagenes-dixgamer.js?v=dixgamer-gta5-foto-20260710"></script>
+<script src="img/producto-imagenes-juegos-extra.js?v=map-juegos-ps4-hitman-20260812"></script>
+<script src="img/producto-imagenes-local.js?v=local-images-20260810c"></script>
+<script src="img/invid-imagenes-local.js?v=invid-images-local-20260805a"></script>
+<script src="supabase-client.js?v=dolar-invid-automatico-20260810"></script>
+<script src="search-ranking.js?v=search-ranking-20260805b"></script>
+<script src="cart.js?v=stock-real-sin-pedido-20260715"></script>
 
 <script>
 /* ======================================================
@@ -393,8 +423,7 @@ var CATALOG = [
     useChildrenForProducts: true,
     children: [
       { id: 'subcat-69', accessSubcategoryId: '69', name: 'Juegos Ps5', icon: 'sports_esports',   subtitle: 'Fisicos originales PS5', image: 'img/Consolas_Accesorios.jpg', children: null },
-      { id: 'subcat-10', accessSubcategoryId: '10', name: 'Juegos Ps4', icon: 'sports_esports',   subtitle: 'Fisicos originales PS4', image: 'img/Consolas_Accesorios.jpg', children: null },
-      { id: 'subcat-9',  accessSubcategoryId: '9',  name: 'Juegos Ps3', icon: 'videogame_asset',  subtitle: 'Fisicos originales PS3', image: 'img/Consolas_Accesorios.jpg', children: null }
+      { id: 'subcat-10', accessSubcategoryId: '10', name: 'Juegos Ps4', icon: 'sports_esports',   subtitle: 'Fisicos originales PS4', image: 'img/Consolas_Accesorios.jpg', children: null }
     ]
   },
   {
@@ -598,6 +627,7 @@ var currentLevel = 'root';       // 'root' | id de categoría padre
 var currentParent = null;        // objeto del nivel actual
 var currentFilter = 'all';
 var currentSearch = '';
+var currentSearchDisplay = '';
 var currentRouteState = { view: 'root', filter: 'all', q: '' };
 var productsRequestId = 0;
 var catalogLoadedFromSupabase = false;
@@ -609,12 +639,17 @@ var currentSortOrder = 'price-low';
 var currentProductFilters = {
   brand: 'all',
   fulfillment: 'all',
-  spec: 'all'
+  spec: 'all',
+  cascadeMode: '',
+  cascadePrimary: 'all',
+  cascadeSecondary: 'all',
+  cascadeCapacity: 'all'
 };
 var currentProductFilterPool = [];
 var productRenderToken = 0;
 var PRODUCT_FIRST_PAINT_LIMIT = 24;
 var PRODUCT_RENDER_BATCH_SIZE = 48;
+var PRODUCT_SKELETON_COUNT = 24;
 
 function setProductSortVisible(visible) {
   var sortControls = document.getElementById('product-sort-controls');
@@ -827,7 +862,8 @@ function getExampleProductsForView() {
       item.category,
       item.rootCategory
     ].join(' ').toLowerCase();
-    var matchSearch = currentSearch === '' || haystack.indexOf(currentSearch) !== -1;
+    haystack = normalizeSearchValue(haystack);
+    var matchSearch = currentSearch === '' || smartSearchScore([haystack], currentSearch) > 0;
     return matchCategory && matchSection && matchSearch;
   }
 
@@ -936,6 +972,10 @@ var INVID_MONITOR_NAMES = [
   'Monitor Consumo',
   'Monitor Corporativo',
   'Monitor Gamer'
+];
+
+var INVID_CHAIR_NAMES = [
+  'Sillas y Escritorios'
 ];
 
 var INVID_PC_BUILD_NAMES = [
@@ -1217,7 +1257,6 @@ var CATALOG_CHILD_NAME_ORDER = [
   'Consola Xbox 360',
   'Juegos PS5',
   'Juegos PS4',
-  'Juegos PS3',
   'Joysticks PS5',
   'Joysticks PS4',
   'Joysticks PS3',
@@ -1435,6 +1474,7 @@ function ensureInvidCatalogSubcategories(meta) {
   ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'gabinetes', name: 'Gabinetes', icon: 'desktop_windows', invidNames: INVID_CASE_NAMES });
   ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'refrigeracion-coolers', name: 'Refrigeracion / Coolers', matchNames: ['Coolers', 'Refrigeracion'], icon: 'ac_unit', invidNames: INVID_COOLING_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC', 'PC y Componentes', 'Hardware'], id: 'monitores', name: 'Monitores', matchNames: ['Monitor'], icon: 'desktop_windows', invidNames: INVID_MONITOR_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Silla Gamer'], id: 'subcat-16', name: 'Silla Gamer', matchNames: ['Sillas Gamer'], icon: 'chair', image: 'img/silla-gamer.jpg', invidNames: INVID_CHAIR_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'mouse', name: 'Mouse', icon: 'mouse', invidNames: INVID_MOUSE_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'teclados', name: 'Teclados', icon: 'keyboard', invidNames: INVID_KEYBOARD_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'combos-teclado-mouse', name: 'Combos Teclado + Mouse', matchNames: ['Teclado + Mouse', 'Combos'], icon: 'keyboard', invidNames: INVID_KEYBOARD_MOUSE_COMBO_NAMES });
@@ -1472,19 +1512,24 @@ async function loadAccessCatalog() {
     return;
   }
 
-  var accessCatalog = await window.SupabaseStore.fetchAccessCatalogTree();
+  // Pedimos Access e Invid juntos. Antes era secuencial y una fuente lenta
+  // retrasaba toda la pantalla del catalogo.
+  var accessCatalogPromise = window.SupabaseStore.fetchAccessCatalogTree();
+  var invidCatalogPromise = window.SupabaseStore.fetchInvidPcCatalogTree
+    ? window.SupabaseStore.fetchInvidPcCatalogTree()
+    : Promise.resolve([]);
+
+  var accessCatalog = await accessCatalogPromise;
   if (accessCatalog && accessCatalog.length) {
     CATALOG = accessCatalog;
     catalogLoadedFromSupabase = true;
   }
   CATALOG = splitPcAccessoryCatalog(CATALOG);
 
-  if (window.SupabaseStore.fetchInvidPcCatalogTree) {
-    var invidCatalog = await window.SupabaseStore.fetchInvidPcCatalogTree();
-    if (invidCatalog && invidCatalog.length) {
-      applyInvidCatalogToExistingTree(invidCatalog);
-      catalogLoadedFromSupabase = true;
-    }
+  var invidCatalog = await invidCatalogPromise;
+  if (invidCatalog && invidCatalog.length) {
+    applyInvidCatalogToExistingTree(invidCatalog);
+    catalogLoadedFromSupabase = true;
   }
 
   sortCatalogTree(CATALOG, 'root');
@@ -1535,17 +1580,38 @@ function setBackAction(label, handler) {
   }
 }
 
+function getCatalogSearchInputIds() {
+  return ['search-input', 'search-catalog', 'search-mobile-catalog'];
+}
+
+function syncSearchInputs(value) {
+  getCatalogSearchInputIds().forEach(function(id) {
+    var input = document.getElementById(id);
+    if (input && document.activeElement !== input) input.value = value || '';
+  });
+}
+
+function setCatalogSearchQuery(query) {
+  currentSearchDisplay = String(query || '').trim();
+  currentSearch = normalizeSearchValue(currentSearchDisplay);
+  syncSearchInputs(currentSearchDisplay);
+}
+
+function submitCatalogSearch(inputId) {
+  var input = document.getElementById(inputId);
+  if (input) {
+    filterBySearch(input.value);
+    hideSearchSuggestions(input);
+    input.blur();
+  }
+}
+
 function syncRootControls() {
   document.querySelectorAll('.filter-pill').forEach(function(p) {
     var active = p.getAttribute('data-filter') === currentFilter;
     p.classList.toggle('active', active);
   });
-  var mobileSelect = document.getElementById('category-mobile-select');
-  if (mobileSelect) mobileSelect.value = currentFilter || 'all';
-  ['search-input', 'search-catalog', 'search-filter-mobile'].forEach(function(id) {
-    var input = document.getElementById(id);
-    if (input) input.value = currentSearch;
-  });
+  syncSearchInputs(currentSearchDisplay || currentSearch);
 }
 
 function getActivePathIds() {
@@ -1670,31 +1736,19 @@ function closeCatalogPanel(unlockBody) {
 }
 
 function catalogIsByOrderProduct(product) {
-  if (!product) return false;
-  if (typeof isByOrderProduct === 'function') return isByOrderProduct(product);
-
-  var keys = ['byOrder', 'aPedido', 'producto_sinstock', 'prodcuto_sinstock', 'isByOrder'];
-  for (var i = 0; i < keys.length; i++) {
-    var value = product[keys[i]];
-    if (value === true || value === 1 || value === -1) return true;
-    var textValue = String(value || '').trim().toLowerCase();
-    if (['true', 'si', 's', '1', '-1', 'pedido', 'a pedido', 'checked'].indexOf(textValue) !== -1) return true;
-    if (['false', 'no', 'n', '0', 'disponible', 'stock', 'unchecked'].indexOf(textValue) !== -1) return false;
-  }
+  // Compatibilidad: la web ya no muestra ni aplica el estado "A pedido".
   return false;
 }
 
 function catalogGetStockState(product) {
   if (typeof getProductStockState === 'function') return getProductStockState(product);
 
-  var byOrder = catalogIsByOrderProduct(product);
   var rawStock = product && product.stock;
   var hasStockValue = rawStock !== undefined && rawStock !== null && rawStock !== '';
   var stock = hasStockValue ? Number(rawStock) : null;
   if (!Number.isFinite(stock)) stock = null;
-  if (byOrder) return { status: 'by-order', label: 'A pedido', stock: stock };
+  if (stock !== null && stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock <= 3) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
@@ -1874,10 +1928,26 @@ function getProductFilterSearchText(product) {
   ].filter(Boolean).join(' '));
 }
 
+function getProductCoreSpecText(product) {
+  product = product || {};
+  return normalizeSearchValue([
+    product.name,
+    product.title,
+    product.description,
+    product.descripcion,
+    product.detalle,
+    product.model,
+    product.modelo,
+    product.brand,
+    product.marca
+  ].filter(Boolean).join(' '));
+}
+
 // Detecta filtros tecnicos utiles desde el texto del producto.
-// Ejemplos: Ryzen 5, Intel Core Ultra 7, DDR4/DDR5, 550W, monitor 24 pulgadas.
+// Ejemplos: Ryzen 5, Intel Core Ultra 7, DDR4/DDR5, 550W, SSD SATA 2.5, monitor 24 pulgadas.
 function getProductSpecOption(product) {
   var text = getProductFilterSearchText(product);
+  var coreText = getProductCoreSpecText(product);
   if (!text) return null;
 
   var ryzenModel = text.match(/\bryzen\s*(3[1243]00|4[135]00|5[3456]00|6[456]00|7[456]00|8[456]00|9[5679]00)\w*\b/);
@@ -1929,6 +1999,42 @@ function getProductSpecOption(product) {
     }
   }
 
+  var storageContext = /\b(almacenamiento|disco|ssd|hdd|rigido|solido|solid|nvme|m\.?\s*2|m2|sata|carry\s*disk)\b/.test(text);
+  if (storageContext) {
+    var storageText = coreText || text;
+    var isHdd = /\b(hdd|rigido|disco\s*rigido|hard\s*disk|disco\s*duro)\b/.test(storageText);
+    var isM2 = /\b(m\.?\s*2|m2|nvme|pcie|pci\s*e)\b/.test(storageText);
+    var isSata = /\bsata\b/.test(storageText);
+    var isSsd = /\b(ssd|solido|solid|solid\s*state)\b/.test(storageText) || (!isHdd && /\bssd\b/.test(text));
+    var is25 = /\b2[\.,]5\b/.test(storageText)
+      || /\b2\s*5\b/.test(storageText)
+      || /\b2\s*1\/2\b/.test(storageText)
+      || /\b7\s*mm\b/.test(storageText)
+      || (isSsd && isSata && !isM2);
+    var is35 = /\b3[\.,]5\b/.test(storageText)
+      || /\b3\s*5\b/.test(storageText)
+      || /\b3\s*1\/2\b/.test(storageText);
+
+    if (isSsd && isM2) {
+      return { value: 'storage-ssd-m2-nvme', label: 'SSD M.2 / NVMe' };
+    }
+    if (isSsd && is25) {
+      return { value: 'storage-ssd-sata-25', label: 'SSD SATA 2.5"' };
+    }
+    if (isSsd) {
+      return { value: 'storage-ssd-solido', label: 'SSD / Solido' };
+    }
+    if (isHdd && is25) {
+      return { value: 'storage-hdd-25', label: 'HDD 2.5"' };
+    }
+    if (isHdd && is35) {
+      return { value: 'storage-hdd-35', label: 'HDD 3.5"' };
+    }
+    if (isHdd) {
+      return { value: 'storage-hdd-rigido', label: 'HDD / Rigido' };
+    }
+  }
+
   var ramContext = /\b(memoria|ram|ddr[345]|sodimm|so dimm)\b/.test(text);
   if (ramContext) {
     var ramCapacity = text.match(/\b(4|8|16|24|32|48|64|128)\s*(gb|g)\b/);
@@ -1974,6 +2080,496 @@ function getProductSpecKey(product) {
   return option ? option.value : '';
 }
 
+function getRamCapacityFacet(text) {
+  var match = String(text || '').match(/\b(2|4|8|12|16|24|32|48|64|96|128)\s*(gb|g)\b/);
+  if (!match) return null;
+  var amount = Number(match[1]);
+  return {
+    value: 'ram-cap-' + amount + 'gb',
+    label: amount + ' GB RAM',
+    sortValue: amount
+  };
+}
+
+function getStorageCapacityFacet(text) {
+  var match = String(text || '').match(/\b(\d+(?:[\.,]\d+)?)\s*(tb|gb)\b/);
+  if (!match) return null;
+  var amount = Number(String(match[1]).replace(',', '.'));
+  var unit = match[2];
+  if (!Number.isFinite(amount) || amount <= 0) return null;
+  return {
+    value: 'storage-cap-' + String(amount).replace('.', '-') + unit,
+    label: String(amount).replace('.', ',') + ' ' + unit.toUpperCase(),
+    sortValue: unit === 'tb' ? amount * 1000 : amount
+  };
+}
+
+function getCascadeColorFacet(text, prefix) {
+  text = String(text || '');
+  var colors = [
+    { pattern: /\b(white|blanco|blanca|snow)\b/, key: 'white', label: 'Blanco', sortValue: 1 },
+    { pattern: /\b(black|negro|negra)\b/, key: 'black', label: 'Negro', sortValue: 2 },
+    { pattern: /\b(matcha|green|verde)\b/, key: 'green', label: 'Verde', sortValue: 3 },
+    { pattern: /\b(hydrangea|blue|azul)\b/, key: 'blue', label: 'Azul', sortValue: 4 }
+  ];
+  for (var i = 0; i < colors.length; i++) {
+    if (colors[i].pattern.test(text)) {
+      return {
+        value: prefix + '-' + colors[i].key,
+        label: colors[i].label,
+        sortValue: colors[i].sortValue
+      };
+    }
+  }
+  return null;
+}
+
+function getCascadeModeConfig(mode) {
+  var configs = {
+    ram: {
+      labels: { primary: 'Tecnología', secondary: 'Equipo', capacity: 'Capacidad' },
+      all: { primary: 'Todas las tecnologías', secondary: 'Todos los equipos', capacity: 'Todas las capacidades' }
+    },
+    storage: {
+      labels: { primary: 'Tipo de disco', secondary: 'Formato', capacity: 'Capacidad' },
+      all: { primary: 'Todos los tipos', secondary: 'Todos los formatos', capacity: 'Todas las capacidades' }
+    },
+    cpu: {
+      labels: { primary: 'Fabricante', secondary: 'Familia', capacity: 'Socket' },
+      all: { primary: 'Todos los fabricantes', secondary: 'Todas las familias', capacity: 'Todos los sockets' }
+    },
+    gpu: {
+      labels: { primary: 'Chip gráfico', secondary: 'Modelo', capacity: 'Memoria de video' },
+      all: { primary: 'Todos los chips', secondary: 'Todos los modelos', capacity: 'Todas las memorias' }
+    },
+    motherboard: {
+      labels: { primary: 'Plataforma', secondary: 'Socket', capacity: 'Chipset' },
+      all: { primary: 'Todas las plataformas', secondary: 'Todos los sockets', capacity: 'Todos los chipsets' }
+    },
+    monitor: {
+      labels: { primary: 'Tamaño', secondary: 'Resolución', capacity: 'Frecuencia' },
+      all: { primary: 'Todos los tamaños', secondary: 'Todas las resoluciones', capacity: 'Todas las frecuencias' }
+    },
+    psu: {
+      labels: { primary: 'Potencia', secondary: 'Certificación', capacity: 'Modularidad' },
+      all: { primary: 'Todas las potencias', secondary: 'Todas las certificaciones', capacity: 'Todas las opciones' }
+    },
+    case: {
+      labels: { primary: 'Formato', secondary: 'Fuente incluida', capacity: 'Color' },
+      all: { primary: 'Todos los formatos', secondary: 'Con o sin fuente', capacity: 'Todos los colores' }
+    },
+    cooler: {
+      labels: { primary: 'Tipo', secondary: 'Tamaño', capacity: 'Color' },
+      all: { primary: 'Todos los tipos', secondary: 'Todos los tamaños', capacity: 'Todos los colores' }
+    },
+    peripheral: {
+      labels: { primary: 'Conectividad', secondary: 'Periférico', capacity: 'Interfaz' },
+      all: { primary: 'Toda la conectividad', secondary: 'Todos los periféricos', capacity: 'Todas las interfaces' }
+    }
+  };
+  return configs[mode] || configs.ram;
+}
+
+// Extrae las tres facetas que alimentan los filtros en cascada de cada rubro técnico.
+function getProductCascadeFacets(product) {
+  var text = getProductFilterSearchText(product);
+  var coreText = getProductCoreSpecText(product) || text;
+  var identityText = normalizeSearchValue([
+    product && product.name,
+    product && product.title,
+    product && product.model,
+    product && product.modelo,
+    product && product.sourceLabel,
+    product && product.category,
+    product && product.subcategory,
+    product && product.rootCategory,
+    product && product.originalCategory,
+    product && product.originalSubcategory
+  ].filter(Boolean).join(' '));
+  var result = { mode: '', primary: null, secondary: null, capacity: null };
+
+  // Refrigeración se evalúa antes que CPU porque varios nombres incluyen "CPU Cooler".
+  var coolerContext = /\b(water\s+cooling|cpu\s+cooler|fan\s+cooler|swafan|coreliquid|aio)\b/.test(identityText);
+  if (coolerContext) {
+    result.mode = 'cooler';
+    if (/\b(water\s+cooling|coreliquid|aio)\b/.test(text)) {
+      result.primary = { value: 'cooler-liquid', label: 'Refrigeración líquida', sortValue: 1 };
+    } else if (/\b(fan\s+cooler|swafan)\b/.test(text)) {
+      result.primary = { value: 'cooler-case-fan', label: 'Fan para gabinete', sortValue: 3 };
+    } else {
+      result.primary = { value: 'cooler-air-cpu', label: 'Cooler de CPU', sortValue: 2 };
+    }
+    var coolerSize = coreText.match(/\b(80|92|120|140|240|280|360|420)\s*mm\b/);
+    var coolerSizeAmount = coolerSize ? Number(coolerSize[1]) : 0;
+    if (!coolerSizeAmount) {
+      var coolerModelSize = coreText.match(/\b(?:ct|rx)\s*(120|140)\b/);
+      if (coolerModelSize) coolerSizeAmount = Number(coolerModelSize[1]);
+    }
+    if (!coolerSizeAmount) {
+      var coolerShortSize = coreText.match(/\bex\s*(12|14)\b/);
+      if (coolerShortSize) coolerSizeAmount = Number(coolerShortSize[1]) * 10;
+    }
+    if (coolerSizeAmount) {
+      result.secondary = {
+        value: 'cooler-size-' + coolerSizeAmount,
+        label: coolerSizeAmount + ' mm',
+        sortValue: coolerSizeAmount
+      };
+    }
+    result.capacity = getCascadeColorFacet(coreText, 'cooler-color');
+    return result;
+  }
+
+  // Monitores se evalúan antes que GPU para no confundir Radeon FreeSync o NVIDIA G-Sync.
+  var monitorContext = /\bmonitor\b/.test(identityText);
+  if (monitorContext) {
+    result.mode = 'monitor';
+    var sizePattern = '(19|20|21|22|23|24|25|26|27|28|29|30|31|32|34|38|40|43|45|49|55)';
+    var monitorSize = coreText.match(new RegExp('\\bmonitor(?:\\s+[a-z]+){0,3}\\s+' + sizePattern + '\\b'))
+      || coreText.match(new RegExp('\\b' + sizePattern + '(?=[a-z])'));
+    if (monitorSize) {
+      result.primary = {
+        value: 'monitor-size-' + monitorSize[1],
+        label: monitorSize[1] + ' pulgadas',
+        sortValue: Number(monitorSize[1])
+      };
+    }
+
+    var resolutions = [
+      { pattern: /\bsdqhd\b/, key: 'sdqhd', label: 'SDQHD', sortValue: 5 },
+      { pattern: /\bdqhd\b/, key: 'dqhd', label: 'DQHD', sortValue: 6 },
+      { pattern: /\buwqhd\b/, key: 'uwqhd', label: 'UWQHD', sortValue: 4 },
+      { pattern: /\bqhd\b|\b2560\s*1440\b/, key: 'qhd', label: 'QHD', sortValue: 3 },
+      { pattern: /\bwfhd\b/, key: 'wfhd', label: 'WFHD', sortValue: 2.5 },
+      { pattern: /\b(full\s*hd|fhd|1920\s*1080)\b/, key: 'fhd', label: 'Full HD', sortValue: 2 },
+      { pattern: /\b(4k|uhd|3840\s*2160)\b/, key: '4k', label: '4K / UHD', sortValue: 7 },
+      { pattern: /\bhd\b|\b1366\s*768\b/, key: 'hd', label: 'HD', sortValue: 1 }
+    ];
+    for (var resolutionIndex = 0; resolutionIndex < resolutions.length; resolutionIndex++) {
+      if (resolutions[resolutionIndex].pattern.test(coreText)) {
+        result.secondary = {
+          value: 'monitor-resolution-' + resolutions[resolutionIndex].key,
+          label: resolutions[resolutionIndex].label,
+          sortValue: resolutions[resolutionIndex].sortValue
+        };
+        break;
+      }
+    }
+    var refreshRate = coreText.match(/\b(50|60|75|90|100|120|135|144|165|170|175|180|200|240|280|360|480)\s*hz\b/);
+    if (refreshRate) {
+      result.capacity = {
+        value: 'monitor-hz-' + refreshRate[1],
+        label: refreshRate[1] + ' Hz',
+        sortValue: Number(refreshRate[1])
+      };
+    }
+    return result;
+  }
+
+  // Periféricos: primero se separan por conectividad y luego por tipo de equipo.
+  // Los productos sin una conectividad clara siguen visibles en "Toda la conectividad".
+  var peripheralContext = /\b(teclados?|keyboard|mouse|mouses|raton|padmouse|mouse\s*pad|combos?\s+(?:pc|teclado|periferico)|joysticks?|gamepads?|web\s*cam|webcams?|microfonos?|headsets?|auriculares?)\b/.test(identityText);
+  if (peripheralContext) {
+    result.mode = 'peripheral';
+
+    var isBluetoothPeripheral = /\bbluetooth\b|\bbt\s*[345](?:\s*\d)?\b|\bbt\b/.test(text);
+    var is24GhzPeripheral = /\b2\s*4\s*(?:ghz|g)\b|\b2g4\b|\bwireless\s*2\s*4\b/.test(text);
+    var isWirelessPeripheral = /\b(inalambricos?|wireless|wir|cordless|sin\s+cable|lightspeed)\b/.test(text);
+    var isWiredPeripheral = /\b(cableados?|wired|con\s+cable|usb|tipo\s*c|3\s*5\s*mm)\b/.test(text);
+
+    if (isBluetoothPeripheral && is24GhzPeripheral) {
+      result.primary = { value: 'peripheral-dual-wireless', label: 'Bluetooth + 2.4 GHz', sortValue: 1 };
+    } else if (isBluetoothPeripheral) {
+      result.primary = { value: 'peripheral-bluetooth', label: 'Bluetooth', sortValue: 2 };
+    } else if (is24GhzPeripheral) {
+      result.primary = { value: 'peripheral-wireless-24', label: 'Inalámbrico 2.4 GHz', sortValue: 3 };
+    } else if (isWirelessPeripheral) {
+      result.primary = { value: 'peripheral-wireless', label: 'Inalámbrico', sortValue: 4 };
+    } else if (isWiredPeripheral) {
+      result.primary = { value: 'peripheral-wired', label: 'Cableado / USB', sortValue: 5 };
+    }
+
+    if (/\b(combos?\s+(?:pc|teclado|periferico)|teclado\s+(?:y|mas)\s+mouse|teclado\s+mouse)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-combo', label: 'Combo teclado + mouse', sortValue: 1 };
+    } else if (/\b(teclados?|keyboard)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-keyboard', label: 'Teclado', sortValue: 2 };
+    } else if (/\b(padmouse|mouse\s*pad)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-mousepad', label: 'Mouse pad', sortValue: 4 };
+    } else if (/\b(mouse|mouses|raton)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-mouse', label: 'Mouse', sortValue: 3 };
+    } else if (/\b(joysticks?|gamepads?)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-joystick', label: 'Joystick', sortValue: 5 };
+    } else if (/\b(web\s*cam|webcams?)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-webcam', label: 'Webcam', sortValue: 6 };
+    } else if (/\bmicrofonos?\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-microphone', label: 'Micrófono', sortValue: 7 };
+    } else if (/\b(headsets?|auriculares?)\b/.test(identityText)) {
+      result.secondary = { value: 'peripheral-headset', label: 'Auricular / Headset', sortValue: 8 };
+    }
+    return result;
+  }
+
+  var caseContext = /\b(gabinete|chassis)\b/.test(identityText);
+
+  // Placas madre se evalúan antes que RAM porque sus nombres suelen incluir DDR4 o DDR5.
+  // Si el producto es un gabinete, una compatibilidad Micro ATX no debe reclasificarlo.
+  var motherboardContext = /\b(mother|motherboard|placa\s+madre)\b/.test(identityText);
+  if (motherboardContext && !caseContext) {
+    result.mode = 'motherboard';
+    var amdSocket = coreText.match(/\bam\s*([45])\b/);
+    var intelSocket = coreText.match(/\b(?:lga|s)?\s*(1700|1851)\b/);
+    if (amdSocket) {
+      result.primary = { value: 'motherboard-amd', label: 'AMD', sortValue: 1 };
+      result.secondary = { value: 'motherboard-am' + amdSocket[1], label: 'AM' + amdSocket[1], sortValue: Number(amdSocket[1]) };
+    } else if (intelSocket) {
+      result.primary = { value: 'motherboard-intel', label: 'Intel', sortValue: 2 };
+      result.secondary = { value: 'motherboard-lga-' + intelSocket[1], label: 'LGA ' + intelSocket[1], sortValue: Number(intelSocket[1]) };
+    }
+    var chipset = coreText.match(/\b(a320|a520|b450|b550|x570|a620|a820|b650|b840|b850|x670e?|x870e?|h610|b660|h670|z690|h710|b760|h770|z790|h810|b860|h870|z890)m?\b/);
+    if (chipset) {
+      var chipsetLabel = chipset[1].toUpperCase();
+      result.capacity = {
+        value: 'motherboard-chipset-' + chipset[1],
+        label: chipsetLabel,
+        sortValue: Number(chipset[1].replace(/\D/g, ''))
+      };
+      if (!result.primary && /^(a320|a520|b450|b550|x570)$/.test(chipset[1])) {
+        result.primary = { value: 'motherboard-amd', label: 'AMD', sortValue: 1 };
+        result.secondary = { value: 'motherboard-am4', label: 'AM4', sortValue: 4 };
+      } else if (!result.primary && /^(a620|a820|b650|b840|b850|x670e?|x870e?)$/.test(chipset[1])) {
+        result.primary = { value: 'motherboard-amd', label: 'AMD', sortValue: 1 };
+        result.secondary = { value: 'motherboard-am5', label: 'AM5', sortValue: 5 };
+      } else if (!result.primary && /^(h610|b660|h670|z690|h710|b760|h770|z790)$/.test(chipset[1])) {
+        result.primary = { value: 'motherboard-intel', label: 'Intel', sortValue: 2 };
+        result.secondary = { value: 'motherboard-lga-1700', label: 'LGA 1700', sortValue: 1700 };
+      } else if (!result.primary && /^(h810|b860|h870|z890)$/.test(chipset[1])) {
+        result.primary = { value: 'motherboard-intel', label: 'Intel', sortValue: 2 };
+        result.secondary = { value: 'motherboard-lga-1851', label: 'LGA 1851', sortValue: 1851 };
+      }
+    }
+    return result;
+  }
+
+  // Placas de video se evalúan antes que RAM por modelos antiguos con DDR3/GDDR4.
+  // Un procesador con video integrado puede mencionar Radeon, pero debe seguir siendo CPU.
+  var cpuContext = /\b(procesadores?|proces|microprocesador|cpu)\b/.test(identityText)
+    || /\b(amd\s+ryzen|intel\s+core(?:\s+ultra)?|ryzen\s*[3579])\b/.test(identityText);
+  var powerContext = /\b(fuente|fuentes|psu|power\s+supply|alimentacion)\b/.test(identityText);
+  var gpuContext = /\b(placa\s+de\s+video|geforce|radeon|quadro|vga|gpu|intel\s+arc)\b/.test(identityText);
+  if (gpuContext && !cpuContext && !caseContext && !powerContext) {
+    result.mode = 'gpu';
+    if (/\b(radeon|\brx\s*\d)\b/.test(text)) {
+      result.primary = { value: 'gpu-amd-radeon', label: 'AMD Radeon', sortValue: 2 };
+    } else if (/\bintel\s+arc\b|\barc\s+[ab]\d{3}\b/.test(text)) {
+      result.primary = { value: 'gpu-intel-arc', label: 'Intel Arc', sortValue: 3 };
+    } else if (/\b(geforce|quadro|rtx|gtx|gt)\b/.test(text)) {
+      result.primary = { value: 'gpu-nvidia', label: 'NVIDIA', sortValue: 1 };
+    }
+    var gpuModel = coreText.match(/\b(rtx|gtx|gt|rx|arc)\s*([a-z]?\d{3,4})(?:\s*(ti|super|xt))?\b/);
+    if (gpuModel) {
+      var gpuSuffix = gpuModel[3] ? ' ' + gpuModel[3].toUpperCase() : '';
+      var gpuModelLabel = gpuModel[1].toUpperCase() + ' ' + gpuModel[2].toUpperCase() + gpuSuffix;
+      result.secondary = {
+        value: 'gpu-model-' + gpuModelLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        label: gpuModelLabel,
+        sortValue: Number(gpuModel[2].replace(/\D/g, ''))
+      };
+    }
+    var videoMemory = coreText.match(/\b(1|2|3|4|6|8|10|11|12|16|20|24|32)\s*(gb|g)\b/);
+    if (videoMemory) {
+      result.capacity = {
+        value: 'gpu-vram-' + videoMemory[1] + 'gb',
+        label: videoMemory[1] + ' GB',
+        sortValue: Number(videoMemory[1])
+      };
+    }
+    return result;
+  }
+
+  if (cpuContext) {
+    result.mode = 'cpu';
+    if (/\bamd\b/.test(text)) {
+      result.primary = { value: 'cpu-amd', label: 'AMD', sortValue: 1 };
+    } else if (/\bintel\b/.test(text)) {
+      result.primary = { value: 'cpu-intel', label: 'Intel', sortValue: 2 };
+    }
+    var ryzenFamily = coreText.match(/\bryzen\s*([3579])\b/);
+    var ultraFamily = coreText.match(/\bcore\s+ultra\s*([3579])\b/);
+    var intelFamily = coreText.match(/\bcore\s+i\s*([3579])\b|\bi\s*([3579])\b/);
+    if (ryzenFamily) {
+      result.secondary = { value: 'cpu-ryzen-' + ryzenFamily[1], label: 'Ryzen ' + ryzenFamily[1], sortValue: Number(ryzenFamily[1]) };
+    } else if (ultraFamily) {
+      result.secondary = { value: 'cpu-core-ultra-' + ultraFamily[1], label: 'Core Ultra ' + ultraFamily[1], sortValue: 20 + Number(ultraFamily[1]) };
+    } else if (intelFamily) {
+      var intelTier = intelFamily[1] || intelFamily[2];
+      result.secondary = { value: 'cpu-core-i' + intelTier, label: 'Core i' + intelTier, sortValue: 10 + Number(intelTier) };
+    }
+    var cpuAmdSocket = coreText.match(/\bam\s*([45])\b/);
+    var cpuIntelSocket = coreText.match(/\b(?:lga|s)\s*(1700|1851)\b/);
+    if (cpuAmdSocket) {
+      result.capacity = { value: 'cpu-socket-am' + cpuAmdSocket[1], label: 'AM' + cpuAmdSocket[1], sortValue: Number(cpuAmdSocket[1]) };
+    } else if (cpuIntelSocket) {
+      result.capacity = { value: 'cpu-socket-lga-' + cpuIntelSocket[1], label: 'LGA ' + cpuIntelSocket[1], sortValue: Number(cpuIntelSocket[1]) };
+    } else if (ryzenFamily) {
+      var ryzenModelNumber = coreText.match(/\bryzen\s+(?:[3579]\s+)?([3-9]\d{3})/);
+      if (ryzenModelNumber && /^[345]/.test(ryzenModelNumber[1])) {
+        result.capacity = { value: 'cpu-socket-am4', label: 'AM4', sortValue: 4 };
+      } else if (ryzenModelNumber && /^[789]/.test(ryzenModelNumber[1])) {
+        result.capacity = { value: 'cpu-socket-am5', label: 'AM5', sortValue: 5 };
+      }
+    } else if (ultraFamily) {
+      result.capacity = { value: 'cpu-socket-lga-1851', label: 'LGA 1851', sortValue: 1851 };
+    } else if (intelFamily) {
+      var intelModelNumber = coreText.match(/\bi\s*[3579]\s*(1[234]\d{3})/);
+      if (intelModelNumber) {
+        result.capacity = { value: 'cpu-socket-lga-1700', label: 'LGA 1700', sortValue: 1700 };
+      }
+    }
+    return result;
+  }
+
+  // Gabinetes se evalúan antes que fuentes para los modelos que ya incluyen una PSU.
+  if (caseContext) {
+    result.mode = 'case';
+    if (/\b(micro\s+atx|micro\s+chassis|matx)\b/.test(text)) {
+      result.primary = { value: 'case-micro-atx', label: 'Micro ATX', sortValue: 2 };
+    } else if (/\bmini\s+tower\b/.test(text)) {
+      result.primary = { value: 'case-mini-tower', label: 'Mini Tower', sortValue: 1 };
+    } else if (/\bmid\s+tower\b/.test(text)) {
+      result.primary = { value: 'case-mid-tower', label: 'Mid Tower', sortValue: 3 };
+    } else if (/\bfull\s+tower\b/.test(text)) {
+      result.primary = { value: 'case-full-tower', label: 'Full Tower', sortValue: 4 };
+    }
+    var caseHasPower = /\b(c|con)\s+fuente\b|\bfuente\s+\d{3,4}\s*w\b/.test(coreText);
+    result.secondary = caseHasPower
+      ? { value: 'case-with-psu', label: 'Con fuente', sortValue: 1 }
+      : { value: 'case-without-psu', label: 'Sin fuente', sortValue: 2 };
+    result.capacity = getCascadeColorFacet(coreText, 'case-color');
+    return result;
+  }
+
+  if (powerContext) {
+    result.mode = 'psu';
+    var watts = coreText.match(/\b([3-9]\d{2}|1[0-6]\d{2})\s*(w|watts?)\b/);
+    if (watts) {
+      result.primary = { value: 'psu-' + watts[1] + 'w', label: watts[1] + 'W', sortValue: Number(watts[1]) };
+    }
+    var certification = coreText.match(/\b(?:80\s*plus|cybernetics)\s*(white|bronze|silver|gold|platinum|titanium)?\b/);
+    if (certification) {
+      var certificationKey = certification[1] || 'standard';
+      var certificationLabel = certificationKey === 'standard'
+        ? '80 Plus Standard'
+        : certificationKey.charAt(0).toUpperCase() + certificationKey.slice(1);
+      var certificationOrder = { standard: 1, white: 2, bronze: 3, silver: 4, gold: 5, platinum: 6, titanium: 7 };
+      result.secondary = {
+        value: 'psu-cert-' + certificationKey,
+        label: certificationLabel,
+        sortValue: certificationOrder[certificationKey] || 99
+      };
+    }
+    if (/\b(full\s+modular|fully\s+modular)\b/.test(coreText)) {
+      result.capacity = { value: 'psu-full-modular', label: 'Full modular', sortValue: 1 };
+    } else if (/\bsemi\s+modular\b/.test(coreText)) {
+      result.capacity = { value: 'psu-semi-modular', label: 'Semi modular', sortValue: 2 };
+    } else if (/\bmodular\b/.test(coreText)) {
+      result.capacity = { value: 'psu-modular', label: 'Modular', sortValue: 3 };
+    } else {
+      result.capacity = { value: 'psu-not-modular', label: 'No modular', sortValue: 4 };
+    }
+    return result;
+  }
+
+  var ramContext = /\b(ram|(?:lp)?ddr\s*[2345]|sodimm|so\s*dimm|memoria\s+ram)\b/.test(identityText);
+
+  if (ramContext) {
+    result.mode = 'ram';
+    var ramType = text.match(/\b(lp)?ddr\s*([2345])\b/);
+    if (ramType) {
+      var ramPrefix = ramType[1] ? 'LPDDR' : 'DDR';
+      result.primary = {
+        value: 'ram-' + ramPrefix.toLowerCase() + ramType[2],
+        label: ramPrefix + ramType[2],
+        sortValue: Number(ramType[2]) + (ramType[1] ? 0.1 : 0)
+      };
+    }
+
+    if (/\b(sodimm|so\s*dimm|notebook|netbook|laptop|portatil|204\s*pines?|260\s*pines?)\b/.test(text)) {
+      result.secondary = { value: 'ram-notebook', label: 'Notebook / Netbook', sortValue: 2 };
+    } else if (/\b(udimm|dimm|desktop|escritorio|pc\s+de\s+escritorio|240\s*pines?|288\s*pines?)\b/.test(text) || (ramType && !ramType[1])) {
+      result.secondary = { value: 'ram-desktop', label: 'PC de escritorio', sortValue: 1 };
+    }
+    result.capacity = getRamCapacityFacet(coreText);
+    return result;
+  }
+
+  var storageContext = /\b(disco|ssd|hdd|rigido|duro|solido|solid\s*state|nvme|m\.?\s*2|sata|carry\s*disk)\b/.test(identityText);
+  if (storageContext) {
+    result.mode = 'storage';
+    var storageSpecText = coreText || identityText;
+    var isNvme = /\b(nvme|pcie|pci\s*e)\b/.test(storageSpecText);
+    var isHdd = /\b(hdd|rigido|disco\s+duro|hard\s*disk)\b/.test(storageSpecText);
+    var isSsd = /\b(ssd|solido|solid\s*state)\b/.test(storageSpecText) || (!isHdd && isNvme);
+    if (isNvme) {
+      result.primary = { value: 'storage-nvme', label: 'NVMe', sortValue: 1 };
+    } else if (isSsd) {
+      result.primary = { value: 'storage-ssd', label: 'SSD', sortValue: 2 };
+    } else if (isHdd) {
+      result.primary = { value: 'storage-hdd', label: 'HDD', sortValue: 3 };
+    }
+
+    if (/\b(externo|externa|external|portable|portatil|carry\s*disk)\b/.test(storageSpecText)) {
+      result.secondary = { value: 'storage-external', label: 'Externo', sortValue: 4 };
+    } else if (/\b(m\.?\s*2|m2|nvme)\b/.test(storageSpecText)) {
+      result.secondary = { value: 'storage-m2', label: 'M.2', sortValue: 1 };
+    } else if (/\b2\s+5\b|\b2\s+1\s+2\b|\b7\s*mm\b/.test(storageSpecText)) {
+      result.secondary = { value: 'storage-25', label: '2.5 pulgadas', sortValue: 2 };
+    } else if (/\b3\s+5\b|\b3\s+1\s+2\b/.test(storageSpecText)) {
+      result.secondary = { value: 'storage-35', label: '3.5 pulgadas', sortValue: 3 };
+    } else if (/\bsata\b/.test(storageSpecText) && isSsd) {
+      result.secondary = { value: 'storage-25', label: '2.5 pulgadas', sortValue: 2 };
+    } else if (/\bsata\b/.test(storageSpecText)) {
+      result.secondary = { value: 'storage-sata', label: 'SATA', sortValue: 5 };
+    }
+    result.capacity = getStorageCapacityFacet(coreText);
+  }
+
+  return result;
+}
+
+function detectProductCascadeMode(products) {
+  products = products || [];
+  var counts = { ram: 0, storage: 0, cpu: 0, gpu: 0, motherboard: 0, monitor: 0, psu: 0, case: 0, cooler: 0, peripheral: 0 };
+  products.forEach(function(product) {
+    var mode = getProductCascadeFacets(product).mode;
+    if (counts[mode] !== undefined) counts[mode]++;
+  });
+
+  var context = normalizeSearchValue(typeof getActiveCatalogContextLabel === 'function' ? getActiveCatalogContextLabel() : '');
+  var contextRules = [
+    { mode: 'peripheral', pattern: /\b(perifericos?|teclados?|mouse|mouses|mousepads?|padmouse|microfonos?|web\s*cams?|webcams?|joysticks?|gamepads?|combos?\s+(?:pc|teclado|periferico))\b/ },
+    { mode: 'cooler', pattern: /\b(refrigeracion|coolers?|water\s+cooling)\b/ },
+    { mode: 'case', pattern: /\b(gabinetes?|chassis)\b/ },
+    { mode: 'monitor', pattern: /\bmonitores?\b/ },
+    { mode: 'motherboard', pattern: /\b(placas?\s+madre|motherboards?)\b/ },
+    { mode: 'gpu', pattern: /\b(placas?\s+de\s+video|video\s+cards?|gpu)\b/ },
+    { mode: 'cpu', pattern: /\b(procesadores?|cpu)\b/ },
+    { mode: 'psu', pattern: /\b(fuentes?|power\s+supply|psu)\b/ },
+    { mode: 'ram', pattern: /\b(ram|memorias?\s+ram|ddr|sodimm)\b/ },
+    { mode: 'storage', pattern: /\b(almacenamiento|discos?|ssd|hdd|nvme|m\s*2)\b/ }
+  ];
+  for (var ruleIndex = 0; ruleIndex < contextRules.length; ruleIndex++) {
+    var rule = contextRules[ruleIndex];
+    if (rule.pattern.test(context) && counts[rule.mode]) return rule.mode;
+  }
+
+  var threshold = Math.max(2, Math.ceil(products.length * 0.65));
+  for (var modeIndex = 0; modeIndex < contextRules.length; modeIndex++) {
+    var dominantMode = contextRules[modeIndex].mode;
+    if (counts[dominantMode] >= threshold) return dominantMode;
+  }
+  return '';
+}
+
 // Abre la ficha de producto en otra pestana para no perder el catalogo filtrado.
 function openCatalogProduct(product) {
   if (!product || !product.slug) return;
@@ -1987,6 +2583,23 @@ function setSpecFilterVisible(visible) {
   });
 }
 
+function setCascadeFilterLevelVisible(level, visible) {
+  ['cascade-' + level + '-wrap', 'mobile-cascade-' + level + '-wrap'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('is-hidden', !visible);
+  });
+}
+
+function setCascadeFilterLabels(mode) {
+  var labels = getCascadeModeConfig(mode).labels;
+  ['primary', 'secondary', 'capacity'].forEach(function(level) {
+    ['cascade-' + level + '-label', 'mobile-cascade-' + level + '-label'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = labels[level];
+    });
+  });
+}
+
 function setProductFiltersVisible(visible) {
   var mobileFilters = document.getElementById('mobile-product-filters');
   if (mobileFilters) mobileFilters.classList.toggle('visible', !!visible);
@@ -1996,6 +2609,10 @@ function resetProductFilters() {
   currentProductFilters.brand = 'all';
   currentProductFilters.fulfillment = 'all';
   currentProductFilters.spec = 'all';
+  currentProductFilters.cascadeMode = '';
+  currentProductFilters.cascadePrimary = 'all';
+  currentProductFilters.cascadeSecondary = 'all';
+  currentProductFilters.cascadeCapacity = 'all';
 }
 
 function syncProductFilterControls() {
@@ -2011,6 +2628,13 @@ function syncProductFilterControls() {
     var select = document.getElementById(id);
     if (select) select.value = currentProductFilters.spec || 'all';
   });
+  ['primary', 'secondary', 'capacity'].forEach(function(level) {
+    var stateKey = 'cascade' + level.charAt(0).toUpperCase() + level.slice(1);
+    ['cascade-' + level + '-select', 'mobile-cascade-' + level + '-select'].forEach(function(id) {
+      var select = document.getElementById(id);
+      if (select) select.value = currentProductFilters[stateKey] || 'all';
+    });
+  });
 }
 
 function fillSelectOptions(select, options, currentValue) {
@@ -2025,6 +2649,99 @@ function fillSelectOptions(select, options, currentValue) {
   select.value = currentValue || 'all';
 }
 
+function productMatchesCascadeBaseFilters(product) {
+  if (!product) return false;
+  if (currentProductFilters.brand !== 'all' && getProductBrandKey(product) !== currentProductFilters.brand) return false;
+  if (currentProductFilters.fulfillment !== 'all' && getProductFulfillmentKey(product) !== currentProductFilters.fulfillment) return false;
+  return true;
+}
+
+function buildCascadeLevelOptions(products, facetName, allLabel) {
+  var optionMap = {};
+  (products || []).forEach(function(product) {
+    var facets = getProductCascadeFacets(product);
+    var facet = facets[facetName];
+    if (!facet) return;
+    if (!optionMap[facet.value]) {
+      optionMap[facet.value] = {
+        value: facet.value,
+        label: facet.label,
+        count: 0,
+        sortValue: facet.sortValue || 9999
+      };
+    }
+    optionMap[facet.value].count++;
+  });
+  return [{ value: 'all', label: allLabel }].concat(Object.keys(optionMap)
+    .map(function(key) { return optionMap[key]; })
+    .sort(function(a, b) {
+      if (a.sortValue !== b.sortValue) return a.sortValue - b.sortValue;
+      return a.label.localeCompare(b.label, 'es', { numeric: true });
+    })
+    .map(function(item) {
+      return { value: item.value, label: item.label + ' (' + item.count + ')' };
+    }));
+}
+
+function cascadeOptionsContain(options, value) {
+  return options.some(function(option) { return option.value === value; });
+}
+
+function fillCascadeControlPair(level, options, currentValue) {
+  fillSelectOptions(document.getElementById('cascade-' + level + '-select'), options, currentValue);
+  fillSelectOptions(document.getElementById('mobile-cascade-' + level + '-select'), options, currentValue);
+  setCascadeFilterLevelVisible(level, options.length > 1);
+}
+
+function buildCascadeFilterOptions(products) {
+  products = products || currentProductFilterPool || [];
+  var mode = currentProductFilters.cascadeMode || '';
+  if (!mode) {
+    ['primary', 'secondary', 'capacity'].forEach(function(level) {
+      setCascadeFilterLevelVisible(level, false);
+    });
+    return;
+  }
+
+  setCascadeFilterLabels(mode);
+  var baseProducts = products.filter(function(product) {
+    return productMatchesCascadeBaseFilters(product) && getProductCascadeFacets(product).mode === mode;
+  });
+  var allLabels = getCascadeModeConfig(mode).all;
+
+  var primaryOptions = buildCascadeLevelOptions(baseProducts, 'primary', allLabels.primary);
+  if (!cascadeOptionsContain(primaryOptions, currentProductFilters.cascadePrimary)) {
+    currentProductFilters.cascadePrimary = 'all';
+    currentProductFilters.cascadeSecondary = 'all';
+    currentProductFilters.cascadeCapacity = 'all';
+  }
+
+  var secondaryPool = baseProducts.filter(function(product) {
+    var facets = getProductCascadeFacets(product);
+    return currentProductFilters.cascadePrimary === 'all'
+      || (facets.primary && facets.primary.value === currentProductFilters.cascadePrimary);
+  });
+  var secondaryOptions = buildCascadeLevelOptions(secondaryPool, 'secondary', allLabels.secondary);
+  if (!cascadeOptionsContain(secondaryOptions, currentProductFilters.cascadeSecondary)) {
+    currentProductFilters.cascadeSecondary = 'all';
+    currentProductFilters.cascadeCapacity = 'all';
+  }
+
+  var capacityPool = secondaryPool.filter(function(product) {
+    var facets = getProductCascadeFacets(product);
+    return currentProductFilters.cascadeSecondary === 'all'
+      || (facets.secondary && facets.secondary.value === currentProductFilters.cascadeSecondary);
+  });
+  var capacityOptions = buildCascadeLevelOptions(capacityPool, 'capacity', allLabels.capacity);
+  if (!cascadeOptionsContain(capacityOptions, currentProductFilters.cascadeCapacity)) {
+    currentProductFilters.cascadeCapacity = 'all';
+  }
+
+  fillCascadeControlPair('primary', primaryOptions, currentProductFilters.cascadePrimary);
+  fillCascadeControlPair('secondary', secondaryOptions, currentProductFilters.cascadeSecondary);
+  fillCascadeControlPair('capacity', capacityOptions, currentProductFilters.cascadeCapacity);
+}
+
 // Arma los selectores de filtros del catalogo segun los productos visibles.
 // "SINMARCA" y variantes no se muestran como marca, pero esos productos siguen en "Todas".
 function buildProductFilterOptions(products) {
@@ -2032,6 +2749,13 @@ function buildProductFilterOptions(products) {
   var brandMap = {};
   var specMap = {};
   var fulfillmentCounts = { local: 0, provider: 0 };
+  var nextCascadeMode = detectProductCascadeMode(products);
+  if (currentProductFilters.cascadeMode !== nextCascadeMode) {
+    currentProductFilters.cascadePrimary = 'all';
+    currentProductFilters.cascadeSecondary = 'all';
+    currentProductFilters.cascadeCapacity = 'all';
+  }
+  currentProductFilters.cascadeMode = nextCascadeMode;
 
   products.forEach(function(product) {
     var brandKey = getProductBrandKey(product);
@@ -2093,7 +2817,7 @@ function buildProductFilterOptions(products) {
           label: item.label + ' (' + item.count + ')'
         };
       }));
-  var hasSpecFilter = specOptions.length > 2;
+  var hasSpecFilter = !currentProductFilters.cascadeMode && specOptions.length > 2;
   if (!brandOptions.some(function(option) { return option.value === currentProductFilters.brand; })) {
     currentProductFilters.brand = 'all';
   }
@@ -2111,6 +2835,7 @@ function buildProductFilterOptions(products) {
   fillSelectOptions(document.getElementById('spec-filter-select'), specOptions, currentProductFilters.spec);
   fillSelectOptions(document.getElementById('mobile-spec-filter-select'), specOptions, currentProductFilters.spec);
   setSpecFilterVisible(hasSpecFilter);
+  buildCascadeFilterOptions(products);
 }
 
 function productCardMatchesFilters(card) {
@@ -2121,6 +2846,15 @@ function productCardMatchesFilters(card) {
   if (brand !== 'all' && card.dataset.brandKey !== brand) return false;
   if (fulfillment !== 'all' && card.dataset.fulfillment !== fulfillment) return false;
   if (spec !== 'all' && card.dataset.specKey !== spec) return false;
+  var hasCascadeSelection = currentProductFilters.cascadePrimary !== 'all'
+    || currentProductFilters.cascadeSecondary !== 'all'
+    || currentProductFilters.cascadeCapacity !== 'all';
+  if (currentProductFilters.cascadeMode && hasCascadeSelection) {
+    if (card.dataset.cascadeMode !== currentProductFilters.cascadeMode) return false;
+    if (currentProductFilters.cascadePrimary !== 'all' && card.dataset.cascadePrimary !== currentProductFilters.cascadePrimary) return false;
+    if (currentProductFilters.cascadeSecondary !== 'all' && card.dataset.cascadeSecondary !== currentProductFilters.cascadeSecondary) return false;
+    if (currentProductFilters.cascadeCapacity !== 'all' && card.dataset.cascadeCapacity !== currentProductFilters.cascadeCapacity) return false;
+  }
   return true;
 }
 
@@ -2158,6 +2892,7 @@ function applyProductFilters() {
 
 function setProductBrandFilter(value) {
   currentProductFilters.brand = value || 'all';
+  buildCascadeFilterOptions(currentProductFilterPool);
   syncProductFilterControls();
   applyProductFilters();
   closeCatalogPanel();
@@ -2165,6 +2900,7 @@ function setProductBrandFilter(value) {
 
 function setProductFulfillmentFilter(value) {
   currentProductFilters.fulfillment = value || 'all';
+  buildCascadeFilterOptions(currentProductFilterPool);
   syncProductFilterControls();
   applyProductFilters();
   closeCatalogPanel();
@@ -2177,10 +2913,76 @@ function setProductSpecFilter(value) {
   closeCatalogPanel();
 }
 
-function clearProductFilters() {
-  resetProductFilters();
+function setProductCascadeFilter(level, value) {
+  value = value || 'all';
+  if (level === 'primary') {
+    currentProductFilters.cascadePrimary = value;
+    currentProductFilters.cascadeSecondary = 'all';
+    currentProductFilters.cascadeCapacity = 'all';
+  } else if (level === 'secondary') {
+    currentProductFilters.cascadeSecondary = value;
+    currentProductFilters.cascadeCapacity = 'all';
+  } else if (level === 'capacity') {
+    currentProductFilters.cascadeCapacity = value;
+  }
+  buildCascadeFilterOptions(currentProductFilterPool);
   syncProductFilterControls();
   applyProductFilters();
+}
+
+function clearProductFilters() {
+  var cascadeMode = currentProductFilters.cascadeMode;
+  resetProductFilters();
+  currentProductFilters.cascadeMode = cascadeMode;
+  buildCascadeFilterOptions(currentProductFilterPool);
+  syncProductFilterControls();
+  applyProductFilters();
+}
+
+function renderProductLoadingSkeleton() {
+  var grid = document.getElementById('categories-grid');
+  if (!grid) return;
+  ++productRenderToken;
+  resetProductFilters();
+  currentProductFilterPool = [];
+  grid.innerHTML = '';
+  grid.style.display = '';
+  setProductSortVisible(false);
+  setProductFiltersVisible(false);
+  resetEmptyState();
+  var empty = document.getElementById('empty-state');
+  if (empty) empty.classList.add('hidden');
+
+  document.getElementById('visible-count').textContent = 'Cargando';
+  document.getElementById('count-label').textContent = 'productos';
+
+  for (var i = 0; i < PRODUCT_SKELETON_COUNT; i++) {
+    var card = document.createElement('div');
+    card.className = 'product-card product-card-skeleton';
+    card.setAttribute('aria-hidden', 'true');
+
+    var media = document.createElement('div');
+    media.className = 'product-card-media product-skeleton-media';
+    card.appendChild(media);
+
+    var body = document.createElement('div');
+    body.className = 'product-card-body product-skeleton-body';
+    ['short', 'chip', 'title', 'title small', 'stock', 'price'].forEach(function(kind) {
+      var line = document.createElement('span');
+      line.className = 'product-skeleton-line product-skeleton-' + kind.replace(/\s+/g, '-');
+      body.appendChild(line);
+    });
+    card.appendChild(body);
+    grid.appendChild(card);
+  }
+}
+
+function prepareInitialCatalogRouteLoading() {
+  var params = new URLSearchParams(window.location.search || '');
+  if (!params.has('catid') && !params.has('sub') && !params.has('q')) return;
+  setCatalogHeaderContext('', 'Cargando catalogo', '');
+  updateGridHelper('');
+  renderProductLoadingSkeleton();
 }
 
 // Renderiza productos en tandas: primero lo visible, despues el resto.
@@ -2201,7 +3003,8 @@ function renderProductCards(products, options) {
   resetEmptyState();
   var empty = document.getElementById('empty-state');
 
-  document.getElementById('visible-count').textContent = products.length;
+  var rendersInBatches = products.length > PRODUCT_FIRST_PAINT_LIMIT;
+  document.getElementById('visible-count').textContent = rendersInBatches ? 'Cargando' : products.length;
   document.getElementById('count-label').textContent = 'productos';
   if (!products.length) {
     grid.style.display = 'none';
@@ -2221,6 +3024,7 @@ function renderProductCards(products, options) {
     var outOfStock = stockState.status === 'out';
     var needsConsult = catalogNeedsWhatsAppConsult(p, stockState);
     var hasStockValue = p.stock !== undefined && p.stock !== null && p.stock !== '';
+    var cascadeFacets = getProductCascadeFacets(p);
     var card = document.createElement('div');
     card.className = 'product-card' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '') + (needsConsult ? ' is-consult' : '');
     card.dataset.name = p.name || '';
@@ -2229,6 +3033,10 @@ function renderProductCards(products, options) {
     card.dataset.brandLabel = getProductBrandLabel(p);
     card.dataset.fulfillment = getProductFulfillmentKey(p);
     card.dataset.specKey = getProductSpecKey(p);
+    card.dataset.cascadeMode = cascadeFacets.mode || '';
+    card.dataset.cascadePrimary = cascadeFacets.primary ? cascadeFacets.primary.value : '';
+    card.dataset.cascadeSecondary = cascadeFacets.secondary ? cascadeFacets.secondary.value : '';
+    card.dataset.cascadeCapacity = cascadeFacets.capacity ? cascadeFacets.capacity.value : '';
     // sourceText se usa solo para ordenar por seccion real; no usar subtitulo
     // porque textos como "Switch Red" no significan que el producto sea de Red.
     card.dataset.sourceText = normalizeSearchValue([p.sourceLabel, p.category, p.subcategory, p.originalCategory, p.originalSubcategory].filter(Boolean).join(' '));
@@ -2337,10 +3145,12 @@ function renderProductCards(products, options) {
       appendProductCard(products[i], i);
     }
     sortCards(currentSortOrder || 'price-low');
-    applyProductFilters();
     if (end < products.length) {
+      document.getElementById('visible-count').textContent = 'Cargando';
       var schedule = window.requestIdleCallback || function(cb) { return setTimeout(cb, 30); };
       schedule(function() { appendBatch(end); }, { timeout: 160 });
+    } else {
+      applyProductFilters();
     }
   }
 
@@ -2944,6 +3754,18 @@ async function fetchInvidProductsForItem(item, includeChildren, onChunk) {
   var names = collectInvidCategoryNames(item, includeChildren);
   if (!names.length) return [];
 
+  if (window.SupabaseStore.fetchInvidPcProductsByCategories) {
+    var batchProducts = await window.SupabaseStore.fetchInvidPcProductsByCategories(names);
+    batchProducts = uniqueProducts((batchProducts || []).map(function(product) {
+      if (!product || !item || !item.name) return product;
+      return Object.assign({}, product, {
+        sourceFile: 'catalogo.html?sub=' + encodeURIComponent(item.id || '')
+      });
+    }));
+    if (typeof onChunk === 'function' && batchProducts.length) onChunk(batchProducts);
+    return batchProducts;
+  }
+
   var groups = [];
   for (var i = 0; i < names.length; i += 6) {
     var chunk = names.slice(i, i + 6);
@@ -3057,9 +3879,11 @@ async function getProductPoolForSearch(filter) {
 
       if (window.SupabaseStore.fetchInvidPcProductsByCategory) {
         var invidCategories = collectInvidCategoryNamesForSearch(filter);
-        var invidProducts = await runInChunks(invidCategories, 6, function(name) {
-          return window.SupabaseStore.fetchInvidPcProductsByCategory(name);
-        });
+        var invidProducts = window.SupabaseStore.fetchInvidPcProductsByCategories
+          ? await window.SupabaseStore.fetchInvidPcProductsByCategories(invidCategories)
+          : await runInChunks(invidCategories, 6, function(name) {
+              return window.SupabaseStore.fetchInvidPcProductsByCategory(name);
+            });
         products = products.concat(invidProducts || []);
       }
     }
@@ -3083,6 +3907,7 @@ async function getProductPoolForSearch(filter) {
 }
 
 function normalizeSearchValue(value) {
+  if (window.DimensionTresSearch) return window.DimensionTresSearch.normalize(value);
   return String(value || '')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -3092,119 +3917,10 @@ function normalizeSearchValue(value) {
     .trim();
 }
 
-var SEARCH_ALIASES = [
-  ['placa video', ['placa de video', 'placas de video', 'gpu', 'vga', 'rtx', 'radeon', 'nvidia']],
-  ['joystick', ['joystic', 'joistick', 'joy', 'gamepad', 'control', 'dualsense', 'dualshock']],
-  ['auricular', ['auriculares', 'auri', 'headset', 'headphone', 'audio']],
-  ['teclado', ['teclados', 'teclado mecanico', 'keyboard']],
-  ['mouse', ['mause', 'raton']],
-  ['monitor', ['monitores', 'pantalla', 'display']],
-  ['playstation', ['ps5', 'ps4', 'ps3', 'ps2', 'play', 'pley', 'sony']],
-  ['xbox', ['x box', 'series x', 'series s']],
-  ['nintendo', ['switch', 'oled']],
-  ['memoria ram', ['ram', 'ddr4', 'ddr5', 'memorias']],
-  ['almacenamiento', ['ssd', 'hdd', 'disco', 'disco rigido', 'pendrive', 'nvme']],
-  ['motherboard', ['mother', 'placa madre', 'mainboard']],
-  ['procesador', ['cpu', 'micro', 'ryzen', 'intel']],
-  ['fuente', ['psu', 'fuente gamer']],
-  ['gabinete', ['case', 'pc gamer', 'pc gamers']]
-];
-
-function expandSearchAliases(text) {
-  var normalized = normalizeSearchValue(text);
-  if (!normalized) return '';
-  var extra = [];
-  SEARCH_ALIASES.forEach(function(group) {
-    var canonical = group[0];
-    var words = [canonical].concat(group[1] || []);
-    var matched = words.some(function(word) {
-      return normalized.indexOf(normalizeSearchValue(word)) !== -1;
-    });
-    if (matched) extra.push.apply(extra, words);
-  });
-  return normalizeSearchValue(normalized + ' ' + extra.join(' '));
-}
-
-function searchTokens(value) {
-  return expandSearchAliases(value)
-    .split(' ')
-    .map(function(token) { return token.trim(); })
-    .filter(function(token) { return token.length >= 2; });
-}
-
-function singularSearchToken(token) {
-  token = String(token || '');
-  if (token.length > 4 && token.endsWith('es')) return token.slice(0, -2);
-  if (token.length > 3 && token.endsWith('s')) return token.slice(0, -1);
-  return token;
-}
-
-function levenshteinDistance(a, b, max) {
-  a = singularSearchToken(a);
-  b = singularSearchToken(b);
-  if (a === b) return 0;
-  if (!a || !b) return Math.max(a.length, b.length);
-  if (Math.abs(a.length - b.length) > max) return max + 1;
-  var previous = [];
-  for (var j = 0; j <= b.length; j++) previous[j] = j;
-  for (var i = 1; i <= a.length; i++) {
-    var current = [i];
-    var rowMin = i;
-    for (j = 1; j <= b.length; j++) {
-      var cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      current[j] = Math.min(current[j - 1] + 1, previous[j] + 1, previous[j - 1] + cost);
-      rowMin = Math.min(rowMin, current[j]);
-    }
-    if (rowMin > max) return max + 1;
-    previous = current;
-  }
-  return previous[b.length];
-}
-
-function tokenMatchScore(queryToken, targetTokens, targetText) {
-  var token = singularSearchToken(queryToken);
-  if (!token) return 0;
-  if (targetText.indexOf(token) !== -1) return token.length >= 4 ? 5 : 3;
-
-  var best = 0;
-  targetTokens.forEach(function(target) {
-    var cleanTarget = singularSearchToken(target);
-    if (!cleanTarget) return;
-    if (cleanTarget === token) best = Math.max(best, 6);
-    else if (cleanTarget.indexOf(token) === 0 || token.indexOf(cleanTarget) === 0) best = Math.max(best, 4);
-    else if (token.length >= 4 && cleanTarget.length >= 4) {
-      var maxDistance = token.length >= 7 ? 2 : 1;
-      if (levenshteinDistance(token, cleanTarget, maxDistance) <= maxDistance) best = Math.max(best, 2);
-    }
-  });
-  return best;
-}
-
 function smartSearchScore(fields, query) {
-  var queryText = expandSearchAliases(query);
-  if (queryText.length < 2) return 0;
-  var targetText = expandSearchAliases(fields.filter(Boolean).join(' '));
-  if (!targetText) return 0;
-  if (targetText === queryText) return 1000;
-  if (targetText.indexOf(queryText) !== -1) return 850;
-
-  var queryTokens = searchTokens(queryText);
-  var targetTokens = searchTokens(targetText);
-  if (!queryTokens.length) return 0;
-
-  var total = 0;
-  var matched = 0;
-  queryTokens.forEach(function(token) {
-    var score = tokenMatchScore(token, targetTokens, targetText);
-    if (score > 0) {
-      total += score;
-      matched++;
-    }
-  });
-
-  if (!matched) return 0;
-  if (queryTokens.length > 1 && matched < Math.ceil(queryTokens.length * 0.6)) return 0;
-  return total + matched * 10;
+  return window.DimensionTresSearch
+    ? window.DimensionTresSearch.scoreFields(fields, query)
+    : 0;
 }
 
 function displayCatalogText(value) {
@@ -3217,34 +3933,50 @@ function displayCatalogText(value) {
     .replace(/\bCodigo\b/gi, 'Código');
 }
 
+function getSuggestionProductName(product) {
+  return displayCatalogText(
+    product && (
+      product.name ||
+      product.nombre ||
+      product.title ||
+      product.titulo ||
+      product.producto ||
+      product.descripcion ||
+      product.description ||
+      product.codigo ||
+      product.code ||
+      product.id ||
+      'Producto'
+    )
+  );
+}
+
+function getSuggestionProductMeta(product) {
+  return displayCatalogText(
+    product && (
+      product.sourceLabel ||
+      product.subtitle ||
+      product.subcategory ||
+      product.subcategoria ||
+      product.category ||
+      product.categoria ||
+      product.brand ||
+      product.marca ||
+      'Catálogo'
+    )
+  );
+}
+
 function productMatchesSearch(product, query) {
-  return smartSearchScore([
-    product.name,
-    product.subtitle,
-    product.description,
-    product.brand,
-    product.model,
-    product.sourceLabel,
-    product.category,
-    product.rootCategory,
-    product.id,
-    product.accessId
-  ], query) > 0;
+  return window.DimensionTresSearch
+    ? window.DimensionTresSearch.scoreProduct(product, query) > 0
+    : false;
 }
 
 function scoreSearchSuggestion(product, query) {
-  return smartSearchScore([
-    product.name,
-    product.subtitle,
-    product.description,
-    product.brand,
-    product.model,
-    product.sourceLabel,
-    product.category,
-    product.rootCategory,
-    product.id,
-    product.accessId
-  ], query);
+  return window.DimensionTresSearch
+    ? window.DimensionTresSearch.scoreProduct(product, query)
+    : 0;
 }
 
 function hideSearchSuggestions(input) {
@@ -3258,6 +3990,49 @@ function hideAllSearchSuggestions() {
   });
 }
 
+function openAllCatalogSearchResults(input, query) {
+  var searchQuery = String((input && input.value) || query || '').trim();
+  if (!searchQuery) return;
+  hideAllSearchSuggestions();
+  window.location.href = 'catalogo.html?q=' + encodeURIComponent(searchQuery);
+}
+
+function renderCatalogViewAll(input, query, box) {
+  if (!box) return;
+  var item = document.createElement('button');
+  item.type = 'button';
+  item.className = 'search-suggestion-item search-suggestion-view-all';
+  item.setAttribute('aria-label', 'Ver todos los resultados para ' + String(query || '').trim());
+
+  var media = document.createElement('span');
+  media.className = 'search-suggestion-media';
+  var icon = document.createElement('span');
+  icon.className = 'material-symbols-outlined';
+  icon.textContent = 'search';
+  media.appendChild(icon);
+
+  var copy = document.createElement('span');
+  copy.className = 'search-suggestion-copy';
+  var name = document.createElement('span');
+  name.className = 'search-suggestion-name';
+  name.textContent = 'Ver todos los resultados';
+  var meta = document.createElement('span');
+  meta.className = 'search-suggestion-meta';
+  meta.textContent = String(query || '').trim();
+  copy.appendChild(name);
+  copy.appendChild(meta);
+
+  item.appendChild(media);
+  item.appendChild(copy);
+  item.addEventListener('mousedown', function(event) {
+    event.preventDefault();
+  });
+  item.addEventListener('click', function() {
+    openAllCatalogSearchResults(input, query);
+  });
+  box.appendChild(item);
+}
+
 function renderSearchSuggestions(input, products, query) {
   if (!input || !input._suggestionsBox) return;
 
@@ -3269,6 +4044,7 @@ function renderSearchSuggestions(input, products, query) {
     empty.className = 'search-suggestion-empty';
     empty.textContent = 'Sin productos para "' + query + '"';
     box.appendChild(empty);
+    renderCatalogViewAll(input, query, box);
     box.classList.add('active');
     return;
   }
@@ -3280,10 +4056,13 @@ function renderSearchSuggestions(input, products, query) {
 
     var media = document.createElement('span');
     media.className = 'search-suggestion-media';
+    var suggestionName = getSuggestionProductName(product);
+    var suggestionMeta = getSuggestionProductMeta(product);
+
     if (product.image) {
       var img = document.createElement('img');
       img.src = product.image;
-      img.alt = product.name || 'Producto';
+      img.alt = suggestionName || 'Producto';
       img.referrerPolicy = 'no-referrer';
       attachCatalogImageFallback(img, product, media);
       media.appendChild(img);
@@ -3298,10 +4077,10 @@ function renderSearchSuggestions(input, products, query) {
     copy.className = 'search-suggestion-copy';
     var name = document.createElement('span');
     name.className = 'search-suggestion-name';
-    name.textContent = displayCatalogText(product.name || 'Producto');
+    name.textContent = suggestionName || 'Producto';
     var meta = document.createElement('span');
     meta.className = 'search-suggestion-meta';
-    meta.textContent = displayCatalogText(product.sourceLabel || product.subtitle || 'Producto');
+    meta.textContent = suggestionMeta || 'Catálogo';
     copy.appendChild(name);
     copy.appendChild(meta);
 
@@ -3323,6 +4102,7 @@ function renderSearchSuggestions(input, products, query) {
     box.appendChild(item);
   });
 
+  renderCatalogViewAll(input, query, box);
   box.classList.add('active');
 }
 
@@ -3384,12 +4164,12 @@ function attachSearchSuggestions(input) {
 }
 
 function initSearchSuggestions() {
-  ['search-input', 'search-catalog', 'search-filter-mobile'].forEach(function(id) {
+  getCatalogSearchInputIds().forEach(function(id) {
     attachSearchSuggestions(document.getElementById(id));
   });
 
   document.addEventListener('click', function(event) {
-    if (!event.target.closest('.search-suggestions') && !event.target.closest('#search-input') && !event.target.closest('#search-catalog') && !event.target.closest('#search-filter-mobile')) {
+    if (!event.target.closest('.search-suggestions') && !event.target.closest('.catalog-search-shell')) {
       hideAllSearchSuggestions();
     }
   });
@@ -3407,10 +4187,11 @@ async function renderProductSearchResults(query, options) {
   }
 
   var contextLabel = getActiveCatalogContextLabel();
+  var displayQuery = currentSearchDisplay || query;
   setCatalogHeaderContext(
     contextLabel ? 'Resultados en categoría' : '',
     contextLabel || 'Resultados',
-    'Productos encontrados para "' + query.trim() + '".'
+    'Productos encontrados para "' + displayQuery.trim() + '".'
   );
   updateGridHelper('Tocá un producto para ver el detalle.');
 
@@ -3475,6 +4256,7 @@ async function showSubcategoryComingSoon(found, options) {
   currentLevel = 'products';
   currentParent = found.parent;
   currentSearch = '';
+  currentSearchDisplay = '';
   currentRouteState = { view: 'products', id: found.child.id };
   renderCategorySidebar();
   if (options.updateHistory !== false) {
@@ -3506,17 +4288,9 @@ async function showSubcategoryComingSoon(found, options) {
   if (mobileBar) mobileBar.style.display = '';
 
   setBackAction(found.parent && found.parent !== found.child ? 'Volver a ' + found.parent.name : 'Volver al catalogo', goBackOneLevel);
-  setProductSortVisible(false);
-  setProductFiltersVisible(false);
-  document.getElementById('categories-grid').style.display = 'none';
-  document.getElementById('visible-count').textContent = '...';
-  document.getElementById('count-label').textContent = 'productos';
+  renderProductLoadingSkeleton();
 
   var empty = document.getElementById('empty-state');
-  empty.classList.remove('hidden');
-  empty.querySelector('.material-symbols-outlined').textContent = 'hourglass_top';
-  empty.querySelector('p.font-headline').textContent = 'Cargando productos';
-  empty.querySelector('p.font-body').textContent = 'Estamos consultando Supabase.';
   var emptyBtn = empty.querySelector('button');
   if (emptyBtn) {
     emptyBtn.textContent = found.parent && found.parent !== found.child ? 'Volver a ' + found.parent.name : 'Volver al catalogo';
@@ -3526,21 +4300,19 @@ async function showSubcategoryComingSoon(found, options) {
 
   var products = [];
   var usingParentFallback = false;
-  var renderedProgress = false;
-  function renderProgress(latestProducts) {
-    if (requestId !== productsRequestId || !latestProducts || !latestProducts.length) return;
-    empty.classList.add('hidden');
-    renderProductCards(latestProducts, { keepFilters: renderedProgress });
-    renderedProgress = true;
-  }
   if (window.SupabaseStore && window.SupabaseStore.isReady()) {
-    products = await fetchProductsForCatalogItemProgressive(found.child, false, renderProgress);
-    if (!products.length && shouldUseParentFallbackForCatalogItem(found.child) && found.parent && found.parent !== found.child) {
-      var parentProducts = await fetchProductsForCatalogItemProgressive(found.parent, true, renderProgress);
-      if (parentProducts.length) {
-        products = parentProducts;
-        usingParentFallback = true;
+    try {
+      products = await fetchProductsForCatalogItem(found.child, false);
+      if (!products.length && shouldUseParentFallbackForCatalogItem(found.child) && found.parent && found.parent !== found.child) {
+        var parentProducts = await fetchProductsForCatalogItem(found.parent, true);
+        if (parentProducts.length) {
+          products = parentProducts;
+          usingParentFallback = true;
+        }
       }
+    } catch (error) {
+      console.warn('Catalogo: no pude cargar productos de subcategoria:', error);
+      products = [];
     }
   }
   if (requestId !== productsRequestId) return;
@@ -3556,8 +4328,11 @@ async function showSubcategoryComingSoon(found, options) {
   document.getElementById('visible-count').textContent = products.length;
   if (products.length) {
     empty.classList.add('hidden');
-    if (!renderedProgress) renderProductCards(products);
+    renderProductCards(products);
   } else {
+    var grid = document.getElementById('categories-grid');
+    if (grid) grid.style.display = 'none';
+    if (empty) empty.classList.remove('hidden');
     empty.querySelector('.material-symbols-outlined').textContent = 'inventory_2';
     empty.querySelector('p.font-headline').textContent = 'Sin productos cargados';
     empty.querySelector('p.font-body').textContent = window.SupabaseStore && window.SupabaseStore.isReady()
@@ -3567,17 +4342,9 @@ async function showSubcategoryComingSoon(found, options) {
 }
 
 async function showCategoryProducts(item, requestId) {
-  setProductSortVisible(false);
-  setProductFiltersVisible(false);
-  document.getElementById('categories-grid').style.display = 'none';
-  document.getElementById('visible-count').textContent = '...';
-  document.getElementById('count-label').textContent = 'productos';
+  renderProductLoadingSkeleton();
 
   var empty = document.getElementById('empty-state');
-  empty.classList.remove('hidden');
-  empty.querySelector('.material-symbols-outlined').textContent = 'hourglass_top';
-  empty.querySelector('p.font-headline').textContent = 'Cargando productos';
-  empty.querySelector('p.font-body').textContent = 'Estamos consultando Supabase.';
 
   var emptyBtn = empty.querySelector('button');
   if (emptyBtn) {
@@ -3586,23 +4353,24 @@ async function showCategoryProducts(item, requestId) {
   }
 
   var products = [];
-  var renderedProgress = false;
-  function renderProgress(latestProducts) {
-    if (requestId !== productsRequestId || !latestProducts || !latestProducts.length) return;
-    empty.classList.add('hidden');
-    renderProductCards(latestProducts, { keepFilters: renderedProgress });
-    renderedProgress = true;
-  }
   if (window.SupabaseStore && window.SupabaseStore.isReady()) {
-    products = await fetchProductsForCatalogItemProgressive(item, true, renderProgress);
+    try {
+      products = await fetchProductsForCatalogItem(item, true);
+    } catch (error) {
+      console.warn('Catalogo: no pude cargar productos de categoria:', error);
+      products = [];
+    }
   }
   if (requestId !== productsRequestId) return;
 
   document.getElementById('visible-count').textContent = products.length;
   if (products.length) {
     empty.classList.add('hidden');
-    if (!renderedProgress) renderProductCards(products);
+    renderProductCards(products);
   } else {
+    var grid = document.getElementById('categories-grid');
+    if (grid) grid.style.display = 'none';
+    if (empty) empty.classList.remove('hidden');
     empty.querySelector('.material-symbols-outlined').textContent = 'inventory_2';
     empty.querySelector('p.font-headline').textContent = 'Sin productos cargados';
     empty.querySelector('p.font-body').textContent = window.SupabaseStore && window.SupabaseStore.isReady()
@@ -3661,7 +4429,7 @@ function buildCard(item, delay) {
   imgArea.appendChild(badge);
 
   var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.85))';
+  overlay.className = 'cat-image-overlay';
   imgArea.appendChild(overlay);
 
 
@@ -3744,7 +4512,12 @@ function renderGrid(items, animate) {
 
   var visible = items.filter(function(item) {
     var matchFilter = currentFilter === 'all' || item.category === currentFilter || currentLevel !== 'root';
-    var matchSearch = currentSearch === '' || item.name.toLowerCase().includes(currentSearch);
+    var matchSearch = currentSearch === '' || smartSearchScore([
+      item.name,
+      item.subtitle,
+      item.category,
+      item.id
+    ], currentSearch) > 0;
     return matchFilter && matchSearch;
   });
 
@@ -3803,6 +4576,7 @@ function drillInto(item, options) {
     currentLevel = item.id;
     currentParent = item;
     currentSearch = '';
+    currentSearchDisplay = '';
     currentRouteState = { view: 'category', id: item.id };
     renderCategorySidebar();
     if (options.updateHistory !== false) {
@@ -3880,6 +4654,7 @@ function goToRoot(options) {
     currentLevel = 'root';
     currentParent = null;
     currentSearch = '';
+    currentSearchDisplay = '';
     currentFilter = 'all';
     currentRouteState = { view: 'root', filter: 'all', q: '' };
     renderCategorySidebar();
@@ -3938,8 +4713,6 @@ function setFilter(filter, btn) {
   currentFilter = filter;
   document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
   if (btn && btn.classList) btn.classList.add('active');
-  var mobileSelect = document.getElementById('category-mobile-select');
-  if (mobileSelect) mobileSelect.value = filter;
 
   if (currentLevel !== 'root') {
     closeCatalogPanel();
@@ -3960,7 +4733,7 @@ function setFilter(filter, btn) {
 }
 
 function filterBySearch(query) {
-  currentSearch = query.toLowerCase().trim();
+  setCatalogSearchQuery(query);
   if (currentLevel === 'root') {
     currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
     updateCatalogHistory(currentRouteState, true);
@@ -3974,7 +4747,7 @@ function filterBySearch(query) {
 }
 
 function handleSearchLive(query) {
-  currentSearch = query.toLowerCase().trim();
+  setCatalogSearchQuery(query);
   if (currentLevel === 'root') {
     currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
     updateCatalogHistory(currentRouteState, true);
@@ -4020,7 +4793,30 @@ function compareCardCategoryPriority(a, b) {
   return getCardCategoryPriority(a) - getCardCategoryPriority(b);
 }
 
-// Ordena tarjetas respetando: prioridad visual, disponibilidad, precio o nombre.
+function compareCardsByPrice(a, b, descending) {
+  var outOfStockA = (a.dataset.stockStatus || '') === 'out';
+  var outOfStockB = (b.dataset.stockStatus || '') === 'out';
+
+  // Sin stock siempre al final, sin importar su precio.
+  if (outOfStockA !== outOfStockB) return outOfStockA ? 1 : -1;
+
+  var priceA = Number(a.dataset.price || 0);
+  var priceB = Number(b.dataset.price || 0);
+  var hasPriceA = Number.isFinite(priceA) && priceA > 0;
+  var hasPriceB = Number.isFinite(priceB) && priceB > 0;
+
+  // Los productos sin precio web muestran "Consultar" y siempre van al final.
+  if (hasPriceA !== hasPriceB) return hasPriceA ? -1 : 1;
+  if (!hasPriceA && !hasPriceB) {
+    return (a.dataset.name || '').localeCompare(b.dataset.name || '', 'es', { numeric: true });
+  }
+
+  var priceDiff = descending ? priceB - priceA : priceA - priceB;
+  if (priceDiff !== 0) return priceDiff;
+  return (a.dataset.name || '').localeCompare(b.dataset.name || '', 'es', { numeric: true });
+}
+
+// El orden predeterminado prioriza disponibilidad; los órdenes de precio son estrictos.
 function sortCards(order) {
   currentSortOrder = order || 'price-low';
   document.querySelectorAll('[data-sort-select]').forEach(function(select) {
@@ -4034,23 +4830,11 @@ function sortCards(order) {
     });
   } else if (order === 'price-low') {
     cards.sort(function(a, b) {
-      var categoryDiff = compareCardCategoryPriority(a, b);
-      if (categoryDiff !== 0) return categoryDiff;
-      var availabilityDiff = compareCardAvailability(a, b);
-      if (availabilityDiff !== 0) return availabilityDiff;
-      var priceA = Number(a.dataset.price || 0);
-      var priceB = Number(b.dataset.price || 0);
-      return priceA - priceB;
+      return compareCardsByPrice(a, b, false);
     });
   } else if (order === 'price-high') {
     cards.sort(function(a, b) {
-      var categoryDiff = compareCardCategoryPriority(a, b);
-      if (categoryDiff !== 0) return categoryDiff;
-      var availabilityDiff = compareCardAvailability(a, b);
-      if (availabilityDiff !== 0) return availabilityDiff;
-      var priceA = Number(a.dataset.price || 0);
-      var priceB = Number(b.dataset.price || 0);
-      return priceB - priceA;
+      return compareCardsByPrice(a, b, true);
     });
   } else {
     cards.sort(function(a, b) {
@@ -4065,6 +4849,7 @@ function sortCards(order) {
 function resetFilters() {
   currentFilter = 'all';
   currentSearch = '';
+  currentSearchDisplay = '';
   currentRouteState = { view: 'root', filter: 'all', q: '' };
   updateCatalogHistory(currentRouteState, true);
   syncRootControls();
@@ -4078,7 +4863,7 @@ function showRootRoute(filter, query, options) {
   currentLevel = 'root';
   currentParent = null;
   currentFilter = filter || 'all';
-  currentSearch = query || '';
+  setCatalogSearchQuery(query || '');
   currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
   renderCategorySidebar();
   if (options.updateHistory !== false) {
@@ -4192,6 +4977,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
   }
+  prepareInitialCatalogRouteLoading();
   await loadAccessCatalog();
   CATALOG = splitPcAccessoryCatalog(CATALOG);
   sortCatalogTree(CATALOG, 'root');
@@ -4207,7 +4993,5 @@ window.addEventListener('popstate', function() {
 
 </body>
 </html>
-
-
 
 

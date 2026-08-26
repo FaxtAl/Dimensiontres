@@ -246,7 +246,7 @@
         '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="px-5 md:px-8 py-5 border-t border-[#1a1919] flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-[#484847] font-headline">' +
+    '<div class="px-5 md:px-8 py-5 border-t border-[#1a1919] flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-[#8f8e8d] font-headline">' +
       '<p>© 2026 DIMENSIONTRES. HARDWARE, GAMING Y SERVICIO TÉCNICO.</p>' +
       '<div class="flex gap-8">' +
         '<a class="hover:text-white transition-colors" href="cuenta.html">PRIVACIDAD</a>' +

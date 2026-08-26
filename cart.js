@@ -63,16 +63,15 @@ function readByOrderFlag(item) {
 }
 
 function isByOrderProduct(item) {
-  if (!item) return false;
-  var explicitFlag = readByOrderFlag(item);
-  return explicitFlag === true;
+  // La marca historica "A pedido" ya no se usa en la web.
+  // Disponibilidad y compra dependen unicamente del stock real.
+  return false;
 }
 
 function getProductStockState(item) {
   var stock = getCartItemStock(item);
-  if (isByOrderProduct(item)) return { status: 'by-order', label: 'A pedido', stock: stock };
+  if (stock !== null && stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock <= LOW_STOCK_LIMIT) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
@@ -91,17 +90,139 @@ window.isOutOfStockProduct = isOutOfStockProduct;
 
 function mergeCartItemData(target, source) {
   if (!target || !source) return;
-  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'sourceLabel', 'description', 'subtitle', 'byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si'].forEach(function(key) {
+  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'productId', 'source', 'sourceIntegration', 'supplierId', 'sourceLabel', 'description', 'subtitle', 'byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si'].forEach(function(key) {
     if (source[key] !== undefined && source[key] !== null && source[key] !== '') target[key] = source[key];
   });
   var stock = getCartItemStock(source);
   if (stock !== null) target.stock = stock;
 }
 
+function trimCartText(value, maxLength) {
+  var text = String(value === undefined || value === null ? '' : value);
+  text = text.replace(/\s+/g, ' ').trim();
+  return text.length > maxLength ? text.slice(0, maxLength) : text;
+}
+
+function compactCartItem(item) {
+  if (!item) return null;
+  var stock = getCartItemStock(item);
+  var compact = {
+    id: trimCartText(item.id || item.slug || item.accessId || item.name, 180),
+    name: trimCartText(item.name || item.title || 'Producto', 180),
+    price: Number(item.price || 0),
+    image: trimCartText(item.image || item.img || '', 260),
+    qty: Math.max(1, Math.floor(Number(item.qty || 1)))
+  };
+
+  [
+    'ref',
+    'category',
+    'code',
+    'codigo',
+    'accessId',
+    'productId',
+    'source',
+    'sourceIntegration',
+    'supplierId',
+    'sourceLabel',
+    'byOrder',
+    'aPedido',
+    'pedido',
+    'producto_sinstock',
+    'prodcuto_sinstock',
+    'producto_si'
+  ].forEach(function(key) {
+    if (item[key] !== undefined && item[key] !== null && item[key] !== '') {
+      compact[key] = typeof item[key] === 'string' ? trimCartText(item[key], 180) : item[key];
+    }
+  });
+
+  if (item.description || item.subtitle) {
+    compact.description = trimCartText(item.description || item.subtitle, 160);
+  }
+  if (stock !== null) compact.stock = stock;
+  return compact.id ? compact : null;
+}
+
+function compactCartItems(items) {
+  return (Array.isArray(items) ? items : []).map(compactCartItem).filter(Boolean);
+}
+
+function isCartQuotaError(error) {
+  var name = String(error && error.name || '').toLowerCase();
+  var message = String(error && error.message || '').toLowerCase();
+  return name.indexOf('quota') !== -1 ||
+    message.indexOf('quota') !== -1 ||
+    message.indexOf('exceeded the quota') !== -1 ||
+    message.indexOf('storage') !== -1;
+}
+
+function clearCartOptionalCaches() {
+  var removed = 0;
+  try {
+    if (!window.localStorage) return removed;
+    for (var i = window.localStorage.length - 1; i >= 0; i--) {
+      var key = window.localStorage.key(i) || '';
+      if (
+        key.indexOf('dt-public-catalog-') === 0 ||
+        key.indexOf('dt-ml-image-') === 0
+      ) {
+        window.localStorage.removeItem(key);
+        removed++;
+      }
+    }
+  } catch (error) {}
+  return removed;
+}
+
 const CartStore = (() => {
   const KEY = 'dt_cart_v1';
-  const get = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
-  const save = items => { localStorage.setItem(KEY, JSON.stringify(items)); window.dispatchEvent(new CustomEvent('cart:updated')); };
+  const SESSION_KEY = KEY + '_session';
+  let memoryCart = [];
+  const get = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(KEY)) || [];
+      if (stored.length) return compactCartItems(stored);
+    } catch {}
+    try {
+      const stored = JSON.parse(sessionStorage.getItem(SESSION_KEY)) || [];
+      if (stored.length) return compactCartItems(stored);
+    } catch {}
+    return compactCartItems(memoryCart);
+  };
+  const save = items => {
+    const compacted = compactCartItems(items);
+    const payload = JSON.stringify(compacted);
+    memoryCart = compacted;
+
+    try {
+      localStorage.setItem(KEY, payload);
+      try { sessionStorage.removeItem(SESSION_KEY); } catch {}
+      window.dispatchEvent(new CustomEvent('cart:updated'));
+      return;
+    } catch (error) {
+      if (!isCartQuotaError(error)) throw error;
+    }
+
+    clearCartOptionalCaches();
+    try {
+      localStorage.setItem(KEY, payload);
+      try { sessionStorage.removeItem(SESSION_KEY); } catch {}
+      window.dispatchEvent(new CustomEvent('cart:updated'));
+      return;
+    } catch (error) {}
+
+    try {
+      sessionStorage.setItem(SESSION_KEY, payload);
+      window.dispatchEvent(new CustomEvent('cart:updated'));
+      return;
+    } catch (error) {
+      if (typeof cartToastMessage === 'function') {
+        cartToastMessage('El navegador no tiene espacio para guardar el carrito. Borra datos del sitio y volve a intentar.', 'error');
+      }
+      throw error;
+    }
+  };
   return {
     getAll:     get,
     add(item, qty)  {

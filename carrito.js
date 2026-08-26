@@ -7,12 +7,113 @@
 // Los precios que llegan desde Access ya incluyen IVA, asi que el carrito no suma impuesto extra.
 var TAX         = 0;
 var discountPct = 0; // porcentaje de descuento aplicado (0–1)
-var mercadoPagoInstallments = 1;
+var mercadoPagoInstallments = 12;
+var transferProofFileName = '';
+var TRANSFER_PAYMENT = {
+  alias: 'dimension3',
+  holder: 'Carlos Priarollo',
+  email: 'carlos_p4525@hotmail.com'
+};
 
 function selectMercadoPagoInstallments() {
-  mercadoPagoInstallments = 1;
+  mercadoPagoInstallments = 12;
   var label = document.getElementById('mp-selected-label');
-  if (label) label.textContent = 'Checkout directo - 1 cuota';
+  if (label) label.textContent = 'Hasta 12 cuotas en Mercado Pago';
+}
+
+function updatePaymentMethodAmounts(totals) {
+  var totalText = formatMoney(totals && totals.total ? totals.total : 0);
+  var transferPrice = document.getElementById('transfer-selected-price');
+  var mercadoPagoPrice = document.getElementById('mp-selected-price');
+  var transferDetail = document.getElementById('transfer-total-detail');
+  if (transferPrice) transferPrice.textContent = totalText;
+  if (mercadoPagoPrice) mercadoPagoPrice.textContent = totalText;
+  if (transferDetail) transferDetail.textContent = totalText;
+}
+
+function fallbackCopy(text) {
+  var input = document.createElement('textarea');
+  input.value = text;
+  input.setAttribute('readonly', 'readonly');
+  input.style.position = 'fixed';
+  input.style.left = '-9999px';
+  document.body.appendChild(input);
+  input.select();
+  try { document.execCommand('copy'); } catch (error) {}
+  document.body.removeChild(input);
+}
+
+function copyTransferAlias() {
+  var alias = TRANSFER_PAYMENT.alias;
+  function done() { alert('Alias copiado: ' + alias); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(alias).then(done).catch(function() {
+      fallbackCopy(alias);
+      done();
+    });
+    return;
+  }
+  fallbackCopy(alias);
+  done();
+}
+
+function handleTransferProof(input) {
+  var file = input && input.files && input.files[0] ? input.files[0] : null;
+  transferProofFileName = file ? file.name : '';
+  var label = document.getElementById('transfer-proof-name');
+  if (!label) return;
+  label.textContent = transferProofFileName
+    ? 'Comprobante seleccionado: ' + transferProofFileName + '. Al abrir WhatsApp, adjuntalo en el chat.'
+    : 'Cuando termines, mandamos el pedido por WhatsApp para adjuntar el comprobante.';
+}
+
+function focusTransferPanel() {
+  var panel = document.querySelector('.transfer-panel');
+  if (panel && panel.scrollIntoView) {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+async function uploadTransferProof(orderId) {
+  var input = document.getElementById('transfer-proof-input');
+  var file = input && input.files && input.files[0] ? input.files[0] : null;
+  if (!file) {
+    return { ok: false, error: 'Falta cargar el comprobante.' };
+  }
+
+  var token = '';
+  if (window.SupabaseStore && window.SupabaseStore.getAccessToken) {
+    token = await window.SupabaseStore.getAccessToken();
+  }
+  if (!token) {
+    return { ok: false, code: 'session_required', error: 'Inicia sesion para subir el comprobante.' };
+  }
+
+  var form = new FormData();
+  form.append('order_id', orderId);
+  form.append('access_token', token);
+  form.append('proof', file);
+
+  var response = await fetch('api/transfer-proof-upload.php', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'X-Authorization': 'Bearer ' + token
+    },
+    body: form
+  });
+
+  var raw = await response.text();
+  var data = null;
+  try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
+  if (!response.ok || !data || !data.ok) {
+    return {
+      ok: false,
+      code: data && data.code,
+      error: (data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status)
+    };
+  }
+  return data;
 }
 
 function formatMoney(value) {
@@ -382,6 +483,7 @@ function updateTotals() {
     void elTotal.offsetWidth;
     elTotal.classList.add('total-flash');
   }
+  updatePaymentMethodAmounts(totals);
 }
 
 /* ─── CAMBIAR CANTIDAD ───────────────────── */
@@ -639,10 +741,81 @@ async function checkoutSavedOrder(button, method) {
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 
+// Flujo de transferencia: guarda el pedido y abre WhatsApp para enviar el comprobante.
+async function checkoutBankTransfer(button) {
+  if (!transferProofFileName) {
+    showCartNotice('Primero cargá el comprobante de transferencia para mandarlo por WhatsApp.');
+    var input = document.getElementById('transfer-proof-input');
+    if (input) input.click();
+    return;
+  }
+
+  var originalHtml = setCheckoutButtonLoading(button, 'Guardando transferencia...');
+
+  var result = await createSavedOrder(
+    'transferencia',
+    'Pedido creado desde carrito web para transferencia bancaria. Alias: ' + TRANSFER_PAYMENT.alias + '.'
+  );
+  restoreCheckoutButton(button, originalHtml);
+
+  if (!result || result.cancelled) return;
+  if (result.error || !result.saved) {
+    if (isPaymentSessionExpiredError(result.error)) {
+      await resetCheckoutSessionAndRedirect('Inicia sesion para guardar el pedido y comprar.');
+      return;
+    }
+    alert((result.error && result.error.message) || 'No se pudo guardar el pedido.');
+    return;
+  }
+
+  var saved = result.saved;
+  if (saved.error) {
+    alert(saved.error.message || 'No se pudo guardar el pedido.');
+    return;
+  }
+
+  var proofResult = await uploadTransferProof(saved.order.id);
+  if (!proofResult || !proofResult.ok) {
+    if (isPaymentSessionExpiredError(proofResult)) {
+      await resetCheckoutSessionAndRedirect('Tu sesion vencio. Inicia sesion de nuevo para subir el comprobante.');
+      return;
+    }
+    alert((proofResult && proofResult.error) || 'No se pudo guardar el comprobante.');
+    return;
+  }
+
+  notifyStoreOrder(saved, 'created');
+
+  var items = result.items;
+  var totals = result.totals;
+  var orderRef = saved.order && saved.order.external_reference ? saved.order.external_reference : '';
+  var lines = items.map(function(i) {
+    return '- ' + i.name + ' x' + i.qty + ' - ' + formatMoney(i.price * i.qty);
+  });
+
+  lines.push('');
+  if (orderRef) lines.push('Pedido: ' + orderRef);
+  lines.push('Pago: Transferencia bancaria');
+  lines.push('Transferir a:');
+  lines.push('Alias: ' + TRANSFER_PAYMENT.alias);
+  lines.push('Titular: ' + TRANSFER_PAYMENT.holder);
+  lines.push('Email: ' + TRANSFER_PAYMENT.email);
+  if (discountPct > 0) lines.push('Descuento: -' + formatMoney(totals.discount));
+  lines.push('*Total a transferir: ' + formatMoney(totals.total) + '*');
+  lines.push('');
+  lines.push('Comprobante: ' + (proofResult.proof_name || transferProofFileName));
+  lines.push('Te lo adjunto aca por WhatsApp para revisarlo.');
+
+  var text = 'Hola! Hice este pedido por transferencia en DimensionTres:\n\n' + lines.join('\n');
+  var phone = CONFIG.CONTACT_PHONE || '5493534019085';
+  localStorage.setItem('dt_last_order_reference', orderRef || '');
+  window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+}
+
 // Flujo de Mercado Pago: guarda pedido primero, valida sesion y recien ahi crea preferencia de pago.
 async function checkoutMercadoPago(button) {
   var originalHtml = setCheckoutButtonLoading(button, 'Preparando pago...');
-  var selectedInstallments = 1;
+  var selectedInstallments = 12;
 
   try {
     var items = CartStore.getAll();
@@ -654,7 +827,7 @@ async function checkoutMercadoPago(button) {
 
     var orderResult = await createSavedOrder(
       'mercadopago',
-      'Pedido creado desde carrito web para Mercado Pago en 1 cuota.'
+      'Pedido creado desde carrito web para Mercado Pago hasta en 12 cuotas.'
     );
     if (!orderResult || orderResult.cancelled) return;
     if (orderResult.error || !orderResult.saved || !orderResult.saved.order || !orderResult.saved.order.id) {

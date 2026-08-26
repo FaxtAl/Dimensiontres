@@ -9,6 +9,14 @@
   --dt-product-image-border: rgba(255, 255, 255, 0.92);
 }
 
+/* La flecha se mantiene sobre texto y zonas visuales. El cursor de escritura
+   queda reservado exclusivamente para campos en los que realmente se puede escribir. */
+body, body * { cursor: default; }
+a, button, [role="button"], label[for], summary,
+select, input[type="checkbox"], input[type="radio"], input[type="range"] { cursor: pointer; }
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea, [contenteditable="true"] { cursor: text; }
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
@@ -29,7 +37,8 @@
   right: 0;
   z-index: 90;
   display: none;
-  overflow: hidden;
+  max-height: min(72vh, 560px);
+  overflow-y: auto;
   background: rgba(14, 14, 14, 0.98);
   border: 1px solid rgba(143, 245, 255, 0.22);
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45), 0 0 22px rgba(0, 240, 255, 0.08);
@@ -125,6 +134,98 @@
   color: #8f8f8f;
   font-family: "Manrope", sans-serif;
   font-size: 12px;
+}
+
+.global-search-view-all {
+  background: rgba(143, 245, 255, 0.06);
+}
+
+.global-search-view-all .global-search-name {
+  color: #8ff5ff;
+}
+
+@media (max-width: 640px) {
+  .global-search-suggestions {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-height: min(70vh, 430px);
+    overflow-y: auto;
+  }
+
+  .global-search-suggestion {
+    display: grid !important;
+    grid-template-columns: 54px minmax(0, 1fr) !important;
+    grid-template-areas:
+      "thumb copy"
+      "thumb price";
+    align-items: center;
+    justify-items: stretch;
+    column-gap: 0.7rem;
+    row-gap: 0.18rem;
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    inline-size: 100% !important;
+    min-height: 68px;
+    padding: 0.68rem 0.72rem;
+  }
+
+  .global-search-thumb {
+    grid-area: thumb;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+  }
+
+  .global-search-copy {
+    display: block !important;
+    grid-area: copy;
+    justify-self: stretch;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .global-search-name,
+  .global-search-meta {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .global-search-name {
+    color: #fff !important;
+    line-height: 1.16;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden !important;
+  }
+
+  .global-search-meta {
+    color: #9a9999 !important;
+    line-height: 1.2;
+  }
+
+  .global-search-price {
+    display: block !important;
+    grid-area: price;
+    justify-self: start;
+    margin: 0;
+    font-size: 13px;
+  }
 }
 
 .dt-whatsapp-float {

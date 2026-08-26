@@ -32,7 +32,7 @@ var CONFIG = {
 
   // Invid: precios del proveedor en USD -> venta web en ARS.
   // Cambiar INVID_USD_RATE cuando actualicen la cotizaci?n interna.
-  INVID_USD_RATE: 1300,
+  INVID_USD_RATE: 1515,
   INVID_MARKUP_RATE: 0.30,
   INVID_MIN_WEB_PRICE: 30000,
 

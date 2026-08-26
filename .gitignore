@@ -47,3 +47,10 @@ api/ml-config.php
 api/ml-tokens.json
 api/ml-state.json
 api/payment-config.php
+
+# WordPress residual en la raiz del hosting (no es codigo del sitio)
+wp-admin/
+wp-content/
+wp-includes/
+wp-*.php
+xmlrpc.php

@@ -1,62 +1,96 @@
 // producto-imagenes-juegos-extra.js - portadas extra para juegos fisicos sin match en DixGamer.
+// Las URLs externas se descargan como archivos locales para que el catalogo no dependa de servidores externos.
 (function() {
   var existing = window.DT_PRODUCT_IMAGE_MAP || {};
-  var extraById = {
-    "891": "https://assets.nintendo.com/image/upload/q_auto/f_auto/store/software/switch/70010000072954/00eac347ef3029bfe156b030be64c0274cd5dea1df4df57b12855c823ef7deb4",
-    "763": "https://image.api.playstation.com/cdn/EP0001/CUSA03440_00/lmeQAO0LG340rl1NmwXyEOuiPCaoOCj1.png",
-    "187": "https://cdn.akamai.steamstatic.com/steam/apps/394230/library_600x900.jpg",
-    "217": "https://cdn.akamai.steamstatic.com/steam/apps/584350/header.jpg",
-    "179": "https://cdn.akamai.steamstatic.com/steam/apps/273350/library_600x900.jpg",
-    "233": "https://image.api.playstation.com/vulcan/ap/rnd/202010/0205/Pa3yRhSR9PXB5ZsENapb3K5X.png",
-    "677": "https://cdn.akamai.steamstatic.com/steam/apps/370240/library_600x900.jpg",
-    "786": "https://image.api.playstation.com/cdn/UP0700/CUSA07345_00/dy6Mq84S7NaFMzxjkR5csaqn11doB2Bt.png",
-    "742": "https://image.api.playstation.com/cdn/UP9000/CUSA01047_00/XUMI7tohtY97NG57Aj6UAvrYKxFA9e2C.png",
-    "209": "https://image.api.playstation.com/cdn/UP9000/CUSA01047_00/XUMI7tohtY97NG57Aj6UAvrYKxFA9e2C.png",
-    "723": "https://image.api.playstation.com/cdn/UP4321/CUSA04868_00/EaRZc15UUFs2f9jeKSu6bN2y91YMu62w.png",
-    "207": "https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08097_00/2/i_a37599017b2c621f9669719d9efe342c56b844920803e908951a129701b2c851/i/icon0.png",
-    "787": "https://image.api.playstation.com/vulcan/img/cfn/11307bGedQyeRZJAkHGHtYZLIpSgyRXqcbip4_mK_jjQzpIwzvoKgkEHfQfa-6Mn7hZKQwxm_dKBzN8vgabBUX4jq9IU_qMk.png",
-    "225": "https://image.api.playstation.com/vulcan/ap/rnd/202602/1216/e1b7ea35e5dc8d563f7c778c57055528b31eb9763ff0391e.png",
-    "975": "https://image.api.playstation.com/vulcan/ap/rnd/202107/3100/HO8vkO9pfXhwbHi5WHECQJdN.png",
-    "976": "https://image.api.playstation.com/vulcan/img/rnd/202107/0508/wg0gD2XINJXeJox3mrYSRoqA.png",
-    "977": "https://image.api.playstation.com/vulcan/ap/rnd/202008/1020/T45iRN1bhiWcJUzST6UFGBvO.png",
-    "973": "https://image.api.playstation.com/vulcan/ap/rnd/202111/2000/B3Xbu6aW10scvc4SE7yXA1lZ.png",
-    "970": "https://image.api.playstation.com/vulcan/ap/rnd/202007/0217/OX5mEmwgRPeSQrhGFU3n4moZ.png",
-    "971": "https://image.api.playstation.com/cdn/UP1004/CUSA03041_00/Hpl5MtwQgOVF9vJqlfui6SDB5Jl4oBSq.png",
-    "972": "https://image.api.playstation.com/vulcan/ap/rnd/202202/2816/mYn2ETBKFct26V9mJnZi4aSS.png"
+  var extraById =   {
+      "157": "img/juegos-dixgamer/ps4-157-juegos-digitales-ps3-ps4-ps5.jpg",
+      "179": "img/juegos-dixgamer/ps4-179-evolve-ultimate-edition-ps4.jpg",
+      "187": "img/juegos-dixgamer/ps4-187-battleborn-ps4-juego-fisico.jpg",
+      "207": "img/juegos-dixgamer/ps4-207-starblood-arena-ps4.webp",
+      "209": "img/juegos-dixgamer/ps4-209-ratchet-and-clank-playstation-hit-ps4.webp",
+      "217": "img/juegos-dixgamer/ps4-217-dead-alliance-day-one-edition-ps4.jpg",
+      "225": "img/juegos-dixgamer/ps4-225-tom-clancy-rainbow-six-siege-ps4.webp",
+      "233": "img/juegos-dixgamer/ps4-233-metal-gear-survive-ps4.jpg",
+      "677": "img/juegos-dixgamer/ps4-677-nba-2k16-ps4-orignal.jpg",
+      "723": "img/juegos-dixgamer/ps4-723-sniper-ghost-warrior-3-ps4-fisico.jpg",
+      "742": "img/juegos-dixgamer/ps4-742-ratchet-and-clank-playstation-4-fisico.webp",
+      "763": "img/juegos-dixgamer/ps4-763-assassins-creed-chronicles-ps4-original.jpg",
+      "786": "img/juegos-dixgamer/ps4-786-ni-no-kuni-ii-revenant-kingdom-ps4.webp",
+      "787": "img/juegos-dixgamer/ps4-787-tales-of-berseria-ps4-fisico.jpg",
+      "891": "img/juegos-dixgamer/ps4-891-producto-891.webp",
+      "970": "img/juegos-dixgamer/ps4-970-whatch-dogs-legion-ps4-original.webp",
+      "971": "img/juegos-dixgamer/ps4-971-red-dead-redemption-2-ps4-original.jpg",
+      "972": "img/juegos-dixgamer/ps4-972-grand-theft-auto-5-ps4-original.jpg",
+      "973": "img/juegos-dixgamer/ps4-973-producto-973.jpg",
+      "975": "img/juegos-dixgamer/ps4-975-producto-975.webp",
+      "976": "img/juegos-dixgamer/ps4-976-producto-976.webp",
+      "977": "img/juegos-dixgamer/ps4-977-producto-977.webp",
+      "1010": "img/juegos-dixgamer/ps4-1010-the-old-blood.jpg",
+      "1013": "img/juegos-dixgamer/ps4-1013-fifa-2016.jpg",
+      "1038": "img/juegos-dixgamer/ps4-1038-resident-evil-5.jpg",
+      "1039": "img/juegos-dixgamer/ps4-1039-minecraft.jpg",
+      "1040": "img/juegos-dixgamer/ps4-1040-need-for-speed-payback.jpg",
+      "1041": "img/juegos-dixgamer/ps4-1041-valentino-rossi.jpg",
+      "1042": "img/juegos-dixgamer/ps4-1042-dragon-ball-xenoverse-2.jpg",
+      "1043": "img/juegos-dixgamer/ps4-1043-hitman-2.jpg"
   };
-  var extraByCode = {
-    "4902370552171": extraById["891"],
-    "887256019525": extraById["763"],
-    "710425474798": extraById["187"],
-    "814290013868": extraById["217"],
-    "710425476983": extraById["179"],
-    "083717203292": extraById["233"],
-    "5026555421232": extraById["677"],
-    "722674122139": extraById["786"],
-    "711719512455": extraById["742"],
-    "711719526346": extraById["209"],
-    "816293016143": extraById["723"],
-    "711719509172": extraById["207"],
-    "722674120906": extraById["787"],
-    "3004374AC": extraById["225"],
-    "711719548034": extraById["975"],
-    "884095202125": extraById["976"],
-    "711719542292": extraById["977"],
-    "711719547006": extraById["973"],
-    "887256090708": extraById["970"],
-    "710425478901": extraById["971"],
-    "710425570360": extraById["972"]
+  var extraByCode =   {
+      "4902370552171": "img/juegos-dixgamer/ps4-891-producto-891.webp",
+      "887256019525": "img/juegos-dixgamer/ps4-763-assassins-creed-chronicles-ps4-original.jpg",
+      "710425474798": "img/juegos-dixgamer/ps4-187-battleborn-ps4-juego-fisico.jpg",
+      "814290013868": "img/juegos-dixgamer/ps4-217-dead-alliance-day-one-edition-ps4.jpg",
+      "710425476983": "img/juegos-dixgamer/ps4-179-evolve-ultimate-edition-ps4.jpg",
+      "083717203292": "img/juegos-dixgamer/ps4-233-metal-gear-survive-ps4.jpg",
+      "5026555421232": "img/juegos-dixgamer/ps4-677-nba-2k16-ps4-orignal.jpg",
+      "722674122139": "img/juegos-dixgamer/ps4-786-ni-no-kuni-ii-revenant-kingdom-ps4.webp",
+      "711719512455": "img/juegos-dixgamer/ps4-742-ratchet-and-clank-playstation-4-fisico.webp",
+      "711719526346": "img/juegos-dixgamer/ps4-209-ratchet-and-clank-playstation-hit-ps4.webp",
+      "816293016143": "img/juegos-dixgamer/ps4-723-sniper-ghost-warrior-3-ps4-fisico.jpg",
+      "711719509172": "img/juegos-dixgamer/ps4-207-starblood-arena-ps4.webp",
+      "722674120906": "img/juegos-dixgamer/ps4-787-tales-of-berseria-ps4-fisico.jpg",
+      "3004374AC": "img/juegos-dixgamer/ps4-225-tom-clancy-rainbow-six-siege-ps4.webp",
+      "711719548034": "img/juegos-dixgamer/ps4-975-producto-975.webp",
+      "884095202125": "img/juegos-dixgamer/ps4-976-producto-976.webp",
+      "711719542292": "img/juegos-dixgamer/ps4-977-producto-977.webp",
+      "711719547006": "img/juegos-dixgamer/ps4-973-producto-973.jpg",
+      "887256090708": "img/juegos-dixgamer/ps4-970-whatch-dogs-legion-ps4-original.webp",
+      "710425478901": "img/juegos-dixgamer/ps4-971-red-dead-redemption-2-ps4-original.jpg",
+      "710425570360": "img/juegos-dixgamer/ps4-972-grand-theft-auto-5-ps4-original.jpg",
+      "JD34": "img/juegos-dixgamer/ps4-157-juegos-digitales-ps3-ps4-ps5.jpg",
+      "3004374-AC": "img/juegos-dixgamer/ps4-225-tom-clancy-rainbow-six-siege-ps4.webp",
+      "093155170889": "img/juegos-dixgamer/ps4-1010-the-old-blood.jpg",
+      "014633734546": "img/juegos-dixgamer/ps4-1013-fifa-2016.jpg",
+      "013388560301": "img/juegos-dixgamer/ps4-1038-resident-evil-5.jpg",
+      "711719549246": "img/juegos-dixgamer/ps4-1039-minecraft.jpg",
+      "014633735222": "img/juegos-dixgamer/ps4-1040-need-for-speed-payback.jpg",
+      "662248918655": "img/juegos-dixgamer/ps4-1041-valentino-rossi.jpg",
+      "722674120425": "img/juegos-dixgamer/ps4-1042-dragon-ball-xenoverse-2.jpg",
+      "883929639571": "img/juegos-dixgamer/ps4-1043-hitman-2.jpg"
+  };
+  var extraByName = {
+      "grand theft auto 5 ps4 original": "img/juegos-dixgamer/ps4-972-grand-theft-auto-5-ps4-original.jpg",
+      "grand theft auto v ps4 original": "img/juegos-dixgamer/ps4-972-grand-theft-auto-5-ps4-original.jpg",
+      "gta 5 ps4 original": "img/juegos-dixgamer/ps4-972-grand-theft-auto-5-ps4-original.jpg",
+      "gta v ps4 original": "img/juegos-dixgamer/ps4-972-grand-theft-auto-5-ps4-original.jpg",
+      "resident evil 5": "img/juegos-dixgamer/ps4-1038-resident-evil-5.jpg",
+      "minecraft": "img/juegos-dixgamer/ps4-1039-minecraft.jpg",
+      "need for speed payback": "img/juegos-dixgamer/ps4-1040-need-for-speed-payback.jpg",
+      "need fpr speed payback": "img/juegos-dixgamer/ps4-1040-need-for-speed-payback.jpg",
+      "valentino rossi": "img/juegos-dixgamer/ps4-1041-valentino-rossi.jpg",
+      "dragon ball xenoverse 2": "img/juegos-dixgamer/ps4-1042-dragon-ball-xenoverse-2.jpg",
+      "hitman 2": "img/juegos-dixgamer/ps4-1043-hitman-2.jpg"
   };
 
   window.DT_PRODUCT_IMAGE_MAP = Object.assign({}, existing, {
     meta: Object.assign({}, existing.meta || {}, {
       juegosExtra: {
-        generatedAt: "2026-06-08T00:00:00.000Z",
-        source: "official-playstation-nintendo-steam",
+        generatedAt: "2026-08-12T16:00:00.000Z",
+        source: "dixgamer-local-plus-official-fallbacks",
         totalItems: Object.keys(extraById).length
       }
     }),
     byId: Object.assign({}, existing.byId || {}, extraById),
-    byCode: Object.assign({}, existing.byCode || {}, extraByCode)
+    byCode: Object.assign({}, existing.byCode || {}, extraByCode),
+    byName: Object.assign({}, existing.byName || {}, extraByName)
   });
 }());
