@@ -328,3 +328,15 @@
       rgba(14, 14, 14, 0.88) 100%);
   }
 }
+
+/* El contenedor del hero estaba topado en 1920px y centrado, asi que en un
+   monitor mas ancho quedaban margenes grandes a los lados y el texto se iba
+   al centro. En la portada se suelta a todo el ancho: el texto se apoya
+   siempre cerca del borde izquierdo, como en los banners. */
+@media (min-width: 768px) {
+  #inicio > .relative.z-10 {
+    max-width: none;
+    padding-left: clamp(2rem, 4vw, 5rem);
+    padding-right: clamp(2rem, 4vw, 5rem);
+  }
+}
