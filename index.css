@@ -328,33 +328,81 @@
 
 /* Boton de la portada, en el hueco que dejo el boton dibujado del banner.
    Toma los colores del contorno neon que ya traen los banners. */
-/* Va posicionado, no en el flujo: tiene que caer justo debajo de la bajada
-   que el banner trae dibujada, y no al pie del hero. El 68% es donde estaba
-   el boton en las imagenes originales. */
-.home-hero-cta {
+
+
+
+/* ============================================================
+   Texto del sitio en la portada.
+   Va en el hueco que dejo el boton dibujado del banner: al 62%
+   del alto y alineado con el texto que el banner trae adentro.
+   Se posiciona contra la seccion y no contra el contenedor de
+   abajo, que vive pegado al piso del hero.
+   ============================================================ */
+
+#inicio.es-banner .home-hero-texto {
   position: absolute;
-  z-index: 12;
-  top: 66%;
+  top: 62%;
   left: 4.5%;
-  display: inline-block;
-  padding: 0.85rem 2.4rem;
-  border: 1.5px solid #00eefc;
-  border-radius: 4px;
-  background: rgba(0, 238, 252, 0.08);
-  color: #eaf9ff;
-  text-decoration: none;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  box-shadow: 0 0 22px rgba(0, 238, 252, 0.25), inset 0 0 22px rgba(0, 238, 252, 0.06);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  right: auto;
+  max-width: 46%;
+  z-index: 12;
 }
 
-.home-hero-cta:hover {
-  background: rgba(0, 238, 252, 0.2);
-  box-shadow: 0 0 34px rgba(0, 238, 252, 0.45);
-  transform: translateY(-1px);
+/* Ojo con el ">": sin el, esto tambien agarraba el primer <span> del <h1>
+   (el que dice "Dimension") y el titulo quedaba en "Tres" solo. Solo se
+   quiere ocultar la etiqueta "TECNOLOGIA Y SERVICIOS", que es hija directa. */
+#inicio.es-banner .home-hero-texto > span:first-child { display: none; }
+
+#inicio.es-banner .home-hero-texto h1 {
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  line-height: 0.95;
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.9);
 }
 
+/* El titulo viene partido en dos <span> con "block" para el celular. Aca los
+   necesito en una sola linea: si no, "Dimension" cae fuera del recorte y solo
+   se lee "Tres". */
+#inicio.es-banner .home-hero-texto h1 span { display: inline; }
+
+#inicio.es-banner .home-hero-texto p {
+  font-size: clamp(0.75rem, 1vw, 0.95rem);
+  line-height: 1.45;
+  margin-bottom: 0;
+  max-width: 32ch;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
+}
+
+@media (max-width: 767px) {
+  /* En celular el banner ocupa todo el ancho y su bajada queda justo donde
+     caia el texto del sitio. Se manda al piso, con margenes propios: el
+     bloque ya no vive dentro del contenedor que se los daba. */
+  #inicio.es-banner {
+    min-height: calc(100vw / 1.28);
+  }
+
+  #inicio.es-banner .home-hero-texto {
+    top: auto;
+    bottom: 1.4rem;
+    left: 1.25rem;
+    right: 1.25rem;
+    max-width: none;
+  }
+
+  /* Un banner de 2,1:1 en una pantalla angosta se recorta a los costados si
+     o si. Anclado a la izquierda, el recorte se come el lado derecho y no el
+     titulo del banner, que vive a la izquierda. */
+  #inicio.es-banner .home-hero-rotating-image { object-position: left center; }
+
+  #inicio.es-banner .home-hero-texto h1 { font-size: 1.7rem; }
+  #inicio.es-banner .home-hero-texto p { font-size: 0.85rem; max-width: 30ch; }
+
+  /* Mas velo abajo, que ahi apoya el texto. */
+  #inicio.es-banner .home-hero-velo-abajo {
+    background: linear-gradient(180deg,
+      rgba(14, 14, 14, 0) 40%,
+      rgba(14, 14, 14, 0.75) 68%,
+      rgba(14, 14, 14, 0.97) 100%);
+  }
+}

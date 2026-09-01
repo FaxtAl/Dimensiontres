@@ -26,11 +26,11 @@ function handleViewCatalog() {
 // texto grande de DimensionTres.
 var HOME_HERO_IMAGES = [
   { src: 'img/banners/proximos-estrenos.webp?v=banners-b-20260826', alt: 'Proximos estrenos de juegos para PS5',
-    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-juegos-fisicos', cta: 'Reservar ahora' },
+    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-juegos-fisicos' },
   { src: 'img/banners/perifericos-logitech.webp?v=banners-b-20260826', alt: 'Perifericos Logitech G',
-    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-perifericos-pc', cta: 'Ver productos' },
+    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-perifericos-pc' },
   { src: 'img/banners/arma-tu-pc.webp?v=banners-b-20260826', alt: 'Arma tu PC ideal con componentes seleccionados',
-    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-pc-y-componentes', cta: 'Armar mi PC' }
+    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-pc-y-componentes' }
 ];
 
 function initHomeHeroCarousel() {
@@ -52,26 +52,15 @@ function initHomeHeroCarousel() {
   function aplicarModoBanner(item) {
     if (!seccion) return;
     var esBanner = item.banner === true;
-    var tapaElTexto = item.tituloPropio === true;
     seccion.classList.toggle('es-banner', esBanner);
 
     // La opacidad se toca desde aca y no solo por CSS: asi no depende de que
     // regla gane la cascada entre index.css y tailwind.generated.css.
+    // El texto del sitio se muestra siempre: va en el hueco que antes tenia
+    // el boton dibujado dentro de la imagen.
     if (textoHero) {
-      textoHero.style.opacity = tapaElTexto ? '0' : '1';
-      textoHero.style.pointerEvents = tapaElTexto ? 'none' : '';
-    }
-
-    // El boton ocupa el hueco que antes tenia el boton dibujado en la imagen.
-    var boton = document.getElementById('home-hero-cta');
-    if (boton) {
-      if (tapaElTexto && item.cta) {
-        boton.textContent = item.cta;
-        boton.href = item.href || 'catalogo.html';
-        boton.style.display = '';
-      } else {
-        boton.style.display = 'none';
-      }
+      textoHero.style.opacity = '1';
+      textoHero.style.pointerEvents = '';
     }
 
     if (enlace) {
