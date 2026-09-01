@@ -432,3 +432,26 @@
     gap: 9px !important;
   }
 }
+
+/* ============================================================
+   Resumen de orden.
+   El sticky estaba en top:112px, heredado de cuando el nav media
+   80px. Con el nav de dos filas mide 153, asi que al scrollear el
+   resumen se metia abajo de la barra. Se ata al alto real del nav
+   en vez de a un numero suelto.
+   ============================================================ */
+
+@media (min-width: 1024px) {
+  .dt-resumen {
+    /* fila 1 (72) + fila 2 (80) + aire */
+    top: calc(var(--dt-nav-fila1, 72px) + 80px + 1rem);
+  }
+}
+
+/* Aire entre el bloque del total y los medios de pago. Al compactar el
+   resumen quedaron pegados y "TOTAL" se leia como parte de "Elegi como pagar". */
+.dt-resumen .payment-methods {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(72, 72, 71, 0.2);
+}

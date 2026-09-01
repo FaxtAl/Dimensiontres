@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link rel="stylesheet" href="shared.css?v=nav-buscador-20260826">
-<link rel="stylesheet" href="carrito.css?v=transferencia-mp-20260701">
+<link rel="stylesheet" href="carrito.css?v=resumen-b-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body">
@@ -179,12 +179,19 @@
       </div>
     </div>
 
-    <div class="lg:col-span-4 space-y-4 lg:sticky lg:top-28">
+    <div class="dt-resumen lg:col-span-4 space-y-4 lg:sticky">
 
-      <div class="bg-surface-container-low p-8 relative overflow-hidden shadow-2xl">
+      <div class="bg-surface-container-low relative overflow-hidden shadow-2xl">
         <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/5 blur-3xl -z-10"></div>
-        <h2 class="font-headline text-2xl font-black uppercase tracking-tight mb-8">Resumen de Orden</h2>
-        <div class="space-y-5 mb-10">
+
+        <!-- Cabecera con el mismo alto y estilo que el <thead> de la tabla de
+             al lado, para que las dos columnas arranquen alineadas. -->
+        <div class="bg-surface-container px-6 py-5">
+          <h2 class="font-headline uppercase text-xs tracking-widest font-semibold text-on-surface-variant">Resumen de Orden</h2>
+        </div>
+
+        <div class="p-6">
+        <div class="space-y-4 mb-7">
           <div class="flex justify-between items-center text-on-surface-variant">
             <span class="font-label uppercase tracking-widest text-xs">Productos</span>
             <span id="sum-sub" class="font-headline font-bold text-lg text-on-surface">$0.00</span>
@@ -259,6 +266,7 @@
             <p id="transfer-proof-name" class="transfer-proof-name">Cuando termines, mandamos el pedido por WhatsApp para adjuntar el comprobante.</p>
             <p class="transfer-important">Preparamos el pedido cuando confirmemos el pago. Te avisamos por WhatsApp cuando esté listo para retirar.</p>
           </div>
+        </div>
         </div>
       </div>
 
