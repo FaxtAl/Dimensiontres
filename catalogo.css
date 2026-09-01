@@ -2223,3 +2223,17 @@ body::after {
 .product-card-add:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .product-card-add:active { transform: scale(0.98); }
 .product-card-add:disabled { opacity: 0.75; cursor: default; transform: none; }
+
+/* El contador "104 PRODUCTOS" del encabezado sale de la vista: ocupaba una
+   fila entera y la misma cuenta la da "Mostrando X de Y resultados" arriba
+   de la grilla. Se oculta en lugar de borrarlo porque el JS le escribe desde
+   once lugares distintos y quitarlo del DOM los romperia. */
+/* Doble clase: tailwind.generated.css carga despues y su .flex le gana a
+   una sola clase. */
+.dt-contador-viejo.dt-contador-viejo { display: none; }
+
+/* Menos aire entre el encabezado y la grilla en escritorio. */
+@media (min-width: 768px) {
+  .catalog-results-toolbar { margin-bottom: 0.5rem; }
+  .dt-resultados { margin-bottom: 0.6rem; }
+}
