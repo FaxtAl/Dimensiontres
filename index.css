@@ -302,3 +302,26 @@
   opacity: 1;
   transition: opacity 0.35s ease;
 }
+
+/* ============================================================
+   Banner limpio (sin titulo dibujado adentro).
+   Ahi el texto del sitio es el protagonista: va mas grande y con
+   sombra para que se lea sobre cualquier imagen.
+   ============================================================ */
+
+#inicio.es-banner .home-hero-texto h1 {
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+  line-height: 0.9;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.85);
+}
+
+#inicio.es-banner .home-hero-texto p {
+  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  max-width: 34ch;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+#inicio.es-banner .home-hero-texto span:first-child {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+}

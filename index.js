@@ -15,15 +15,17 @@ function handleViewCatalog() {
 
 // Carrusel de imagenes para el fondo de Inicio. El texto y los botones se
 // mantienen fijos para que la portada siga siendo clara y facil de usar.
-// Los que tienen "banner: true" traen su propio titulo y boton dibujados en
-// la imagen. Cuando toca uno de esos, el hero baja el velo y achica el texto
-// del sitio para no encimarle otro titulo arriba.
+// Solo banners en la portada. Las fotos sueltas salieron a pedido del usuario.
+//
+// "tituloPropio: true" marca los banners que ya traen titulo, bajada y boton
+// dibujados en la imagen. En esos el hero esconde el texto del sitio, porque
+// si no quedan dos titulos peleando en el mismo rincon.
+//
+// Para un banner limpio, sin texto adentro, no hace falta esa marca: el hero
+// muestra "DimensionTres" grande encima, que es como se ve mejor.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/proximos-estrenos.webp?v=banners-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true, href: 'catalogo.html?catid=cat-juegos-fisicos' },
-  { src: 'img/banners/perifericos-logitech.webp?v=banners-20260826', alt: 'Perifericos Logitech G', banner: true, href: 'catalogo.html?catid=cat-perifericos-pc' },
-  { src: 'img/Inicio.jpg?v=hero-20260730', alt: 'Setup gamer con iluminacion cian' },
-  { src: 'img/inicio/hero-hardware-cian.png?v=hero-20260730', alt: 'Detalle de hardware gamer con iluminacion cian' },
-  { src: 'img/inicio/hero-teclado-rgb.png?v=hero-20260730', alt: 'Teclado mecanico gamer con iluminacion azul' }
+  { src: 'img/banners/proximos-estrenos.webp?v=banners-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-juegos-fisicos' },
+  { src: 'img/banners/perifericos-logitech.webp?v=banners-20260826', alt: 'Perifericos Logitech G', banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-perifericos-pc' }
 ];
 
 function initHomeHeroCarousel() {
@@ -45,13 +47,14 @@ function initHomeHeroCarousel() {
   function aplicarModoBanner(item) {
     if (!seccion) return;
     var esBanner = item.banner === true;
+    var tapaElTexto = item.tituloPropio === true;
     seccion.classList.toggle('es-banner', esBanner);
 
     // La opacidad se toca desde aca y no solo por CSS: asi no depende de que
     // regla gane la cascada entre index.css y tailwind.generated.css.
     if (textoHero) {
-      textoHero.style.opacity = esBanner ? '0' : '1';
-      textoHero.style.pointerEvents = esBanner ? 'none' : '';
+      textoHero.style.opacity = tapaElTexto ? '0' : '1';
+      textoHero.style.pointerEvents = tapaElTexto ? 'none' : '';
     }
 
     if (enlace) {
