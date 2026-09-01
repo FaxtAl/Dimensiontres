@@ -2193,3 +2193,11 @@ body::after {
 }
 
 .category-tree-todas:hover { color: #00f0ff; }
+
+/* Las tarjetas de categoria ahora son <a>: hay que anular el subrayado y el
+   color de link que el navegador aplica por defecto. Mismo ajuste que
+   necesito .product-card al dejar de ser un div. */
+.cat-card {
+  text-decoration: none;
+  color: inherit;
+}

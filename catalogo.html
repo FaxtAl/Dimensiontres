@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=nav-buscador-20260826">
-<link rel="stylesheet" href="catalogo.css?v=arbol-rama-b-20260826">
+<link rel="stylesheet" href="catalogo.css?v=cards-categoria-link-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -4749,18 +4749,32 @@ function buildCard(item, delay) {
   var visual = getCatalogVisualMeta(item);
   var displayImage = item.image || visual.image;
   var displayIcon = visual.icon || item.icon || 'category';
-  var card = document.createElement('div');
+  // Link real, igual que las fichas de producto. catalogo.html esta en el
+  // sitemap y hasta ahora Google entraba y no encontraba una sola forma de
+  // llegar a una categoria: las 13 tarjetas eran divs con onclick.
+  // El href se arma con catalogUrl(), la misma funcion que usa el historial.
+  var card = document.createElement('a');
+  card.href = catalogUrl(hasChildren
+    ? { view: 'category', id: item.id }
+    : { view: 'products', id: item.id });
   card.className = 'cat-card ' + (currentLevel === 'root' ? 'cat-card-root' : 'cat-card-sub') + (hasChildren ? ' has-children' : ' is-leaf');
   card.dataset.category = item.category || 'sub';
   card.dataset.name = item.name;
   card.dataset.order = String(delay || 0);
   card.style.animationDelay = delay + 's';
 
-  if (hasChildren) {
-    card.onclick = function() { drillInto(item); };
-  } else {
-    card.onclick = function() { openSubcategory(item); };
-  }
+  // Se conserva la navegacion interna animada: el href queda de respaldo para
+  // el rastreador, el clic con rueda y "copiar direccion del enlace".
+  // En captura, para que corra antes que cualquier otro handler y no lo pise
+  // una asignacion posterior de onclick.
+  card.addEventListener('click', function(event) {
+    // Ctrl/Cmd/rueda: que el navegador abra la pestana nueva como siempre.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (hasChildren) drillInto(item);
+    else openSubcategory(item);
+  }, true);
 
   // Imagen o placeholder
   var imgArea = document.createElement('div');
