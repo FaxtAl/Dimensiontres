@@ -512,3 +512,49 @@
   #cart-grid table th:nth-child(5),
   #cart-grid table td:nth-child(5) { width: 8%; }
 }
+
+/* ============================================================
+   Resumen compacto en escritorio.
+   El bloque medía 1217px contra 900 de pantalla, asi que el
+   cliente nunca veia el total y los medios de pago juntos.
+   Se recorta el aire sin sacar informacion ni cambiar como
+   funciona: los mismos elementos, mas juntos.
+   ============================================================ */
+
+@media (min-width: 1024px) {
+  .dt-resumen .payment-method {
+    min-height: 0;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .dt-resumen .payment-method small { line-height: 1.35; }
+
+  .dt-resumen .transfer-panel {
+    margin-top: 6px;
+    padding: 12px;
+  }
+
+  .dt-resumen .transfer-panel-head { margin-bottom: 8px; }
+
+  .dt-resumen .transfer-data { gap: 5px; }
+  .dt-resumen .transfer-data div { padding-bottom: 5px; }
+
+  .dt-resumen .transfer-actions { gap: 6px; }
+
+  .dt-resumen .transfer-proof-name,
+  .dt-resumen .transfer-important {
+    font-size: .68rem;
+    line-height: 1.4;
+    margin-top: 8px;
+  }
+
+  /* La tira de medios de pago pierde una linea: la de cuotas ya la dice
+     el boton de Mercado Pago justo arriba. */
+  .dt-resumen .dt-medios-pago { padding: 0.85rem 1.1rem; }
+  .dt-resumen .dt-medios-pago small:last-child { display: none; }
+}
+
+/* Datos para transferir: plegados hasta que se elige el metodo. */
+.transfer-panel { display: none; }
+.transfer-panel.is-open { display: block; }

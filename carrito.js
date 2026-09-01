@@ -67,9 +67,19 @@ function handleTransferProof(input) {
     : 'Cuando termines, mandamos el pedido por WhatsApp para adjuntar el comprobante.';
 }
 
+// Los datos para transferir arrancan plegados y se abren al elegir el metodo.
+// Desplegados de entrada estiraban el resumen a 1217px contra 900 de pantalla,
+// asi que el total y los medios de pago nunca se veian juntos.
 function focusTransferPanel() {
   var panel = document.querySelector('.transfer-panel');
-  if (panel && panel.scrollIntoView) {
+  if (!panel) return;
+
+  panel.classList.add('is-open');
+
+  var boton = document.querySelector('.payment-method.is-active');
+  if (boton) boton.setAttribute('aria-expanded', 'true');
+
+  if (panel.scrollIntoView) {
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
