@@ -772,3 +772,187 @@ body.dt-modal-open .dt-whatsapp-float {
 
 .dt-nav-redes a:hover { color: #00f0ff; }
 .dt-nav-redes .material-symbols-outlined { font-size: 22px; }
+
+/* ============================================================
+   Mini carrito lateral. El markup lo arma cart.js, asi que
+   existe en todas las paginas sin repetirlo en cada HTML.
+   ============================================================ */
+
+.dt-minicart-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.dt-minicart-fondo.is-open { opacity: 1; pointer-events: auto; }
+
+.dt-minicart {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 380px;
+  height: 100%;
+  background: #0e0e0e;
+  border-left: 1px solid rgba(0, 240, 255, 0.14);
+  box-shadow: -6px 0 34px rgba(0, 0, 0, 0.6);
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+}
+
+.dt-minicart.is-open { transform: translateX(0); }
+
+.dt-minicart-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.35rem;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #e8e6e3;
+}
+
+.dt-minicart-head button {
+  background: none;
+  border: 0;
+  padding: 0;
+  display: flex;
+  color: #adaaaa;
+  cursor: pointer;
+}
+
+.dt-minicart-head button:hover { color: #00f0ff; }
+
+.dt-minicart-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem 0;
+}
+
+.dt-minicart-vacio {
+  padding: 2.5rem 1.35rem;
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #8f8e8d;
+}
+
+.dt-minicart-item {
+  display: grid;
+  grid-template-columns: 52px 1fr 24px;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1.35rem;
+  border-bottom: 1px solid rgba(72, 72, 71, 0.18);
+}
+
+.dt-minicart-item img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 4px;
+  padding: 3px;
+}
+
+.dt-minicart-item strong {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #e8e6e3;
+  margin-bottom: 0.25rem;
+}
+
+/* Solo el span del detalle, no cualquier span: el de adentro del boton de
+   quitar es el icono, y con esta fuente encima mostraba la palabra "close". */
+.dt-minicart-item > div > span {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #00f0ff;
+}
+
+.dt-minicart-quitar {
+  background: none;
+  border: 0;
+  padding: 0;
+  display: flex;
+  color: #484847;
+  cursor: pointer;
+}
+
+.dt-minicart-quitar:hover { color: #ff716c; }
+.dt-minicart-quitar .material-symbols-outlined { font-size: 18px; }
+
+.dt-minicart-foot {
+  flex: 0 0 auto;
+  padding: 1.2rem 1.35rem 1.5rem;
+  border-top: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+.dt-minicart-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #adaaaa;
+}
+
+.dt-minicart-linea strong {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: #e8e6e3;
+}
+
+.dt-minicart-total { margin-bottom: 1.1rem; }
+.dt-minicart-total strong { font-size: 1.35rem; color: #00f0ff; }
+
+.dt-minicart-botones { display: flex; gap: 0.6rem; }
+
+.dt-minicart-ver,
+.dt-minicart-pagar {
+  flex: 1 1 0;
+  padding: 0.8rem 0.5rem;
+  border-radius: 6px;
+  text-align: center;
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: filter 0.18s, background 0.18s, color 0.18s;
+}
+
+.dt-minicart-ver {
+  background: #1a1919;
+  border: 1px solid rgba(72, 72, 71, 0.4);
+  color: #adaaaa;
+}
+
+.dt-minicart-ver:hover { color: #00f0ff; border-color: rgba(0, 240, 255, 0.4); }
+
+.dt-minicart-pagar {
+  background: linear-gradient(135deg, #8ff5ff 0%, #00eefc 100%);
+  color: #003f43;
+}
+
+.dt-minicart-pagar:hover { filter: brightness(1.08); }

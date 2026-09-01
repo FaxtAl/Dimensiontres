@@ -534,3 +534,133 @@ function addToCartUI(btn, product) {
   setTimeout(() => { btn.innerHTML=orig; btn.style.background=''; btn.style.color=''; btn.disabled=false; }, 1800);
   cartToast(product.name);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MINI CARRITO LATERAL
+   Se arma por JS y no en el HTML porque el nav esta repetido en
+   cinco paginas: asi hay una sola copia y no se pueden
+   desincronizar. Se abre con el icono del carrito del nav.
+   ═══════════════════════════════════════════════════════════ */
+
+// formatMoney vive en carrito.js, que solo se carga en la pagina del carrito.
+// El mini carrito corre en todas, asi que trae el suyo.
+function dtPlata(valor) {
+  return '$' + Math.round(Number(valor) || 0).toLocaleString('es-AR');
+}
+
+function dtMiniCartHost() {
+  var host = document.getElementById('dt-minicart');
+  if (host) return host;
+
+  var fondo = document.createElement('div');
+  fondo.id = 'dt-minicart-fondo';
+  fondo.className = 'dt-minicart-fondo';
+  fondo.addEventListener('click', function() { dtToggleMiniCart(true); });
+  document.body.appendChild(fondo);
+
+  host = document.createElement('aside');
+  host.id = 'dt-minicart';
+  host.className = 'dt-minicart';
+  host.setAttribute('aria-label', 'Tu carrito');
+  host.innerHTML =
+    '<div class="dt-minicart-head">' +
+      '<span>Mi carrito</span>' +
+      '<button type="button" aria-label="Cerrar carrito"><span class="material-symbols-outlined">close</span></button>' +
+    '</div>' +
+    '<div class="dt-minicart-body" id="dt-minicart-body"></div>' +
+    '<div class="dt-minicart-foot">' +
+      '<div class="dt-minicart-linea"><span>Subtotal</span><strong id="dt-minicart-sub">$0</strong></div>' +
+      '<div class="dt-minicart-linea dt-minicart-total"><span>Total</span><strong id="dt-minicart-total">$0</strong></div>' +
+      '<div class="dt-minicart-botones">' +
+        '<a href="carrito.html" class="dt-minicart-ver">Ver carrito</a>' +
+        '<a href="carrito.html" class="dt-minicart-pagar">Continuar con el pago</a>' +
+      '</div>' +
+    '</div>';
+  host.querySelector('.dt-minicart-head button')
+      .addEventListener('click', function() { dtToggleMiniCart(true); });
+  document.body.appendChild(host);
+  return host;
+}
+
+function dtRenderMiniCart() {
+  var host = dtMiniCartHost();
+  var body = host.querySelector('#dt-minicart-body');
+  var items = CartStore.getAll();
+
+  body.innerHTML = '';
+
+  if (!items.length) {
+    var vacio = document.createElement('p');
+    vacio.className = 'dt-minicart-vacio';
+    vacio.textContent = 'Tu carrito está vacío.';
+    body.appendChild(vacio);
+  } else {
+    items.forEach(function(item) {
+      var fila = document.createElement('div');
+      fila.className = 'dt-minicart-item';
+
+      var img = document.createElement('img');
+      img.src = item.image || '';
+      img.alt = item.name || '';
+      img.onerror = function() { this.style.visibility = 'hidden'; };
+
+      var info = document.createElement('div');
+      var nombre = document.createElement('strong');
+      nombre.textContent = item.name || 'Producto';
+      var detalle = document.createElement('span');
+      detalle.textContent = item.qty + ' × ' + dtPlata(item.price);
+      info.appendChild(nombre);
+      info.appendChild(detalle);
+
+      var quitar = document.createElement('button');
+      quitar.type = 'button';
+      quitar.className = 'dt-minicart-quitar';
+      quitar.setAttribute('aria-label', 'Quitar ' + (item.name || 'producto'));
+      quitar.innerHTML = '<span class="material-symbols-outlined">close</span>';
+      quitar.addEventListener('click', function() {
+        CartStore.remove(item.id);
+        dtRenderMiniCart();
+        if (typeof renderCart === 'function') renderCart();
+      });
+
+      fila.appendChild(img);
+      fila.appendChild(info);
+      fila.appendChild(quitar);
+      body.appendChild(fila);
+    });
+  }
+
+  var total = items.reduce(function(acc, i) { return acc + i.price * i.qty; }, 0);
+  host.querySelector('#dt-minicart-sub').textContent = dtPlata(total);
+  host.querySelector('#dt-minicart-total').textContent = dtPlata(total);
+}
+
+function dtToggleMiniCart(forzarCerrado) {
+  var host = dtMiniCartHost();
+  var fondo = document.getElementById('dt-minicart-fondo');
+
+  var abrir = forzarCerrado === true ? false : !host.classList.contains('is-open');
+  if (abrir) dtRenderMiniCart();
+
+  host.classList.toggle('is-open', abrir);
+  if (fondo) fondo.classList.toggle('is-open', abrir);
+  document.body.style.overflow = abrir ? 'hidden' : '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // En carrito.html el icono no abre el panel: ya estas viendo el carrito.
+  var enCarrito = /carrito\.html$/i.test(window.location.pathname);
+
+  document.querySelectorAll('[data-cart-btn]').forEach(function(btn) {
+    btn.onclick = null;
+    btn.addEventListener('click', function(event) {
+      event.preventDefault();
+      if (enCarrito) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      dtToggleMiniCart();
+    });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') dtToggleMiniCart(true);
+  });
+});

@@ -2201,3 +2201,25 @@ body::after {
   text-decoration: none;
   color: inherit;
 }
+
+/* Boton de agregar al carrito en la tarjeta del catalogo. */
+.product-card-add {
+  width: 100%;
+  margin-top: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #8ff5ff 0%, #00eefc 100%);
+  color: #003f43;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: filter 0.18s, transform 0.18s;
+}
+
+.product-card-add:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.product-card-add:active { transform: scale(0.98); }
+.product-card-add:disabled { opacity: 0.75; cursor: default; transform: none; }
