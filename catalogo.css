@@ -2237,3 +2237,28 @@ body::after {
   .catalog-results-toolbar { margin-bottom: 0.5rem; }
   .dt-resultados { margin-bottom: 0.6rem; }
 }
+
+/* Banner de categoria. Los archivos tienen transparencia arriba y abajo, asi
+   que sobre el fondo oscuro solo se ve la franja con arte. */
+.dt-banner { display: none; }
+
+.dt-banner.is-visible {
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 0 0.9rem;
+  /* Los archivos son 1080x537 pero solo unos 215px del medio tienen arte:
+     el resto es transparente. Sin recortar, esos ~320px vacios empujaban el
+     titulo y toda la pagina hacia abajo. */
+  aspect-ratio: 1080 / 215;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.dt-banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}

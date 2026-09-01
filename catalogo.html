@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
-<link rel="stylesheet" href="catalogo.css?v=mas-arriba-20260826">
+<link rel="stylesheet" href="catalogo.css?v=banners-b-20260826">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -199,6 +199,10 @@
         <span id="bc-catalog" class="bc-item text-[#8ff5ff]" onclick="goToRoot()">Catálogo</span>
         <!-- Los niveles extra se insertan aquí dinámicamente -->
       </div>
+
+      <!-- Banner de la categoria. Lo llena dtRenderBanner() y solo aparece
+           en las categorias que tienen uno asignado. -->
+      <div id="dt-banner" class="dt-banner"></div>
 
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -3162,6 +3166,51 @@ function dtCambiarPrecio() {
 // Sale de leer catid/sub de la URL contra DT_CATEGORIAS, el mismo arbol
 // que usa el menu. Si no hay nada seleccionado no se dibuja.
 // ============================================================
+
+// ============================================================
+// Banner por categoria.
+// Solo se muestra donde tiene sentido: los banners son de PlayStation, asi
+// que en Cables o Adaptadores quedarian fuera de lugar. Para sumar mas,
+// alcanza con agregar la linea al mapa.
+// ============================================================
+
+var DT_BANNERS = {
+  'cat-consolas-de-juegos': 'img/banners/banner1.webp',
+  'cat-juegos-fisicos': 'img/banners/banner2.webp',
+  'cat-accesorios-consolas': 'img/banners/banner1.webp'
+};
+
+function dtRenderBanner() {
+  var caja = document.getElementById('dt-banner');
+  if (!caja) return;
+
+  var params = new URLSearchParams(window.location.search);
+  var catId = params.get('catid') || '';
+  var subId = params.get('sub') || '';
+
+  // Una subcategoria hereda el banner de su categoria madre.
+  if (!catId && subId && typeof DT_CATEGORIAS !== 'undefined') {
+    DT_CATEGORIAS.forEach(function(c) {
+      (c.children || []).forEach(function(h) {
+        if (h.id === subId) catId = c.id;
+      });
+    });
+  }
+
+  var src = DT_BANNERS[catId];
+  caja.innerHTML = '';
+  if (!src) { caja.classList.remove('is-visible'); return; }
+
+  var img = document.createElement('img');
+  img.src = src;
+  img.alt = '';
+  img.loading = 'lazy';
+  img.onerror = function() { caja.classList.remove('is-visible'); };
+  caja.appendChild(img);
+  caja.classList.add('is-visible');
+}
+
+document.addEventListener('DOMContentLoaded', dtRenderBanner);
 
 function dtRenderMigas() {
   var caja = document.getElementById('dt-migas');
