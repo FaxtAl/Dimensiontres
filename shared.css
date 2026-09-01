@@ -956,3 +956,19 @@ body.dt-modal-open .dt-whatsapp-float {
 }
 
 .dt-minicart-pagar:hover { filter: brightness(1.08); }
+
+/* ============================================================
+   HUECO NEGRO BAJO EL NAV EN CELULAR
+   index.html tiene <main class="pt-28 md:pt-20">, o sea 112px
+   reservados arriba. En celular el nav mide 65px, asi que
+   sobraban 47px de fondo negro entre la barra y el banner del
+   inicio. Se veia como un rectangulo pegado abajo del nav.
+   En escritorio pt-20 (80px) si corresponde con la fila 2, y la
+   fila 1 ya se compensa con el padding del body de mas arriba.
+   El selector lleva el tag delante (main.pt-28) para ganarle a
+   la utilidad .pt-28 de tailwind.generated.css, que se carga
+   despues de esta hoja.
+   ============================================================ */
+@media (max-width: 767px) {
+  main.pt-28 { padding-top: 64px; }
+}

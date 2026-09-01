@@ -374,18 +374,32 @@ function cartToast(name) {
   let wrap = document.getElementById('dt-toast-wrap');
   if (!wrap) { wrap = document.createElement('div'); wrap.id='dt-toast-wrap'; wrap.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none'; document.body.appendChild(wrap); }
   const t = document.createElement('div');
-  t.style.cssText = 'background:#1a1919;border-left:2px solid #8ff5ff;border:1px solid rgba(143,245,255,.2);color:#fff;font-family:"Space Grotesk",sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:11px 18px;display:flex;align-items:center;gap:8px;white-space:nowrap;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s';
+  t.style.cssText = 'background:#1a1919;border-left:2px solid #8ff5ff;border:1px solid rgba(143,245,255,.2);color:#fff;font-family:"Space Grotesk",sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:11px 18px;display:flex;align-items:center;gap:8px;max-width:min(90vw,420px);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s';
   
   // Crear elementos seguros en lugar de innerHTML
   const iconSpan = document.createElement('span');
   iconSpan.style.cssText = "color:#8ff5ff;font-family:'Material Symbols Outlined';font-size:15px;vertical-align:middle";
   iconSpan.textContent = 'check_circle';
   
+  // El nombre del producto puede ser larguisimo ("PROCESADOR INTEL CORE
+  // ULTRA 7 265KF 20 CORES S/VIDEO S/COOLER S1851..."). Con nowrap y sin
+  // ancho maximo el cartel se estiraba mas que la pantalla del celular.
+  // Ahora se corta con puntos suspensivos en una sola linea; el min-width
+  // en 0 es lo que habilita el recorte dentro de un flex.
   const textSpan = document.createElement('span');
-  textSpan.textContent = ` ${name} agregado`;
-  
+  textSpan.style.cssText = 'min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+  textSpan.textContent = ` ${name}`;
+
+  // "agregado" va en su propio span que no se encoge: si fuera parte del
+  // mismo texto, los puntos suspensivos se lo comerian y el cartel quedaria
+  // sin decir que paso.
+  const accionSpan = document.createElement('span');
+  accionSpan.style.cssText = 'flex-shrink:0';
+  accionSpan.textContent = 'agregado';
+
   t.appendChild(iconSpan);
   t.appendChild(textSpan);
+  t.appendChild(accionSpan);
   
   wrap.appendChild(t);
   requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateY(0)'; });
