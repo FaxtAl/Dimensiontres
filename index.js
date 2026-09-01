@@ -15,17 +15,22 @@ function handleViewCatalog() {
 
 // Carrusel de imagenes para el fondo de Inicio. El texto y los botones se
 // mantienen fijos para que la portada siga siendo clara y facil de usar.
-// Solo banners en la portada. Las fotos sueltas salieron a pedido del usuario.
+// Solo banners en la portada.
 //
-// "tituloPropio: true" marca los banners que ya traen titulo, bajada y boton
-// dibujados en la imagen. En esos el hero esconde el texto del sitio, porque
-// si no quedan dos titulos peleando en el mismo rincon.
+// Los tres traen titulo y bajada dibujados en la imagen, pero ya no el boton:
+// ese lo pone el sitio en HTML, en el mismo hueco. Asi es clickeable de
+// verdad, se puede navegar con teclado y el texto se cambia sin rehacer la
+// imagen.
 //
-// Para un banner limpio, sin texto adentro, no hace falta esa marca: el hero
-// muestra "DimensionTres" grande encima, que es como se ve mejor.
+// Un banner sin titulo propio (sin "tituloPropio") muestra en su lugar el
+// texto grande de DimensionTres.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/proximos-estrenos.webp?v=banners-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-juegos-fisicos' },
-  { src: 'img/banners/perifericos-logitech.webp?v=banners-20260826', alt: 'Perifericos Logitech G', banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-perifericos-pc' }
+  { src: 'img/banners/proximos-estrenos.webp?v=banners-b-20260826', alt: 'Proximos estrenos de juegos para PS5',
+    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-juegos-fisicos', cta: 'Reservar ahora' },
+  { src: 'img/banners/perifericos-logitech.webp?v=banners-b-20260826', alt: 'Perifericos Logitech G',
+    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-perifericos-pc', cta: 'Ver productos' },
+  { src: 'img/banners/arma-tu-pc.webp?v=banners-b-20260826', alt: 'Arma tu PC ideal con componentes seleccionados',
+    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-pc-y-componentes', cta: 'Armar mi PC' }
 ];
 
 function initHomeHeroCarousel() {
@@ -55,6 +60,18 @@ function initHomeHeroCarousel() {
     if (textoHero) {
       textoHero.style.opacity = tapaElTexto ? '0' : '1';
       textoHero.style.pointerEvents = tapaElTexto ? 'none' : '';
+    }
+
+    // El boton ocupa el hueco que antes tenia el boton dibujado en la imagen.
+    var boton = document.getElementById('home-hero-cta');
+    if (boton) {
+      if (tapaElTexto && item.cta) {
+        boton.textContent = item.cta;
+        boton.href = item.href || 'catalogo.html';
+        boton.style.display = '';
+      } else {
+        boton.style.display = 'none';
+      }
     }
 
     if (enlace) {

@@ -24,7 +24,7 @@
 
 
   <link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
-  <link rel="stylesheet" href="index.css?v=hero-solo-banners-20260826">
+  <link rel="stylesheet" href="index.css?v=hero-cta-c-20260826">
   <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" data-mode="connect" style="scroll-padding-top:5rem; overflow-x:hidden;">
@@ -213,13 +213,17 @@
 <div class="absolute inset-0 home-hero-velo-lat"></div>
 <div class="absolute inset-0 home-hero-velo-abajo"></div>
 <div class="home-hero-carousel-dots" aria-hidden="true">
-  <span data-home-hero-dot></span><span data-home-hero-dot></span>
+  <span data-home-hero-dot></span><span data-home-hero-dot></span><span data-home-hero-dot></span>
 </div>
 </div>
 
 <!-- Cuando toca un banner, toda la portada lleva a su categoria. Va debajo
      del texto para no robarle los clics a los links. -->
 <a id="home-hero-link" href="catalogo.html" class="absolute inset-0 z-[5]" aria-label="Ver productos del banner"></a>
+
+<!-- Hijo directo de la seccion: se posiciona contra el hero entero y no
+     contra el bloque de texto, que vive pegado al piso. -->
+<a id="home-hero-cta" href="catalogo.html" class="home-hero-cta" style="display:none;">Ver productos</a>
 
 <div class="relative z-10 w-full container mx-auto px-5 md:px-8 pb-10 md:pb-14 pt-8">
 <div class="home-hero-texto max-w-3xl select-none cursor-default">
@@ -229,6 +233,7 @@
                         Hardware, periféricos, consolas y servicio técnico para armar, reparar y mejorar tu setup.
                     </p>
 </div>
+
 </div>
 </section>
 <!-- Brand Carousel (Static for UI) -->
@@ -959,7 +964,7 @@ Ver todo
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
   <script src="cart.js?v=minicarrito-20260826"></script>
-  <script src="index.js?v=hero-solo-banners-20260826"></script>
+  <script src="index.js?v=hero-cta-20260826"></script>
 
 </body>
 </html>

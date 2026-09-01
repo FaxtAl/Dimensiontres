@@ -325,3 +325,36 @@
 #inicio.es-banner .home-hero-texto span:first-child {
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
+
+/* Boton de la portada, en el hueco que dejo el boton dibujado del banner.
+   Toma los colores del contorno neon que ya traen los banners. */
+/* Va posicionado, no en el flujo: tiene que caer justo debajo de la bajada
+   que el banner trae dibujada, y no al pie del hero. El 68% es donde estaba
+   el boton en las imagenes originales. */
+.home-hero-cta {
+  position: absolute;
+  z-index: 12;
+  top: 66%;
+  left: 4.5%;
+  display: inline-block;
+  padding: 0.85rem 2.4rem;
+  border: 1.5px solid #00eefc;
+  border-radius: 4px;
+  background: rgba(0, 238, 252, 0.08);
+  color: #eaf9ff;
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 0 22px rgba(0, 238, 252, 0.25), inset 0 0 22px rgba(0, 238, 252, 0.06);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.home-hero-cta:hover {
+  background: rgba(0, 238, 252, 0.2);
+  box-shadow: 0 0 34px rgba(0, 238, 252, 0.45);
+  transform: translateY(-1px);
+}
+
