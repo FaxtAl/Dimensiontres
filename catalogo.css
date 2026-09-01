@@ -2238,21 +2238,23 @@ body::after {
   .dt-resultados { margin-bottom: 0.6rem; }
 }
 
-/* Banner de categoria. Los archivos tienen transparencia arriba y abajo, asi
-   que sobre el fondo oscuro solo se ve la franja con arte. */
+/* ============================================================
+   Banner de categoria como portada: la imagen es el fondo de la
+   cabecera y las migas y el titulo van encima. Asi el banner se
+   ve grande sin sumar alto propio, que era el problema de
+   ponerlo arriba del texto.
+   ============================================================ */
+
+.dt-cabecera { position: relative; }
+
 .dt-banner { display: none; }
 
 .dt-banner.is-visible {
   display: block;
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 0 0.9rem;
-  /* Los archivos son 1080x537 pero solo unos 215px del medio tienen arte:
-     el resto es transparente. Sin recortar, esos ~320px vacios empujaban el
-     titulo y toda la pagina hacia abajo. */
-  aspect-ratio: 1080 / 215;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
-  border-radius: 8px;
 }
 
 .dt-banner img {
@@ -2262,3 +2264,45 @@ body::after {
   object-fit: cover;
   object-position: center;
 }
+
+/* Velo oscuro para que el texto se lea sobre cualquier parte del arte.
+   En celular va vertical: con el degradado horizontal, en 375px de ancho el
+   velo tapaba casi todo el arte y no se veia nada del banner. */
+.dt-banner.is-visible::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(14, 14, 14, 0.15) 0%,
+    rgba(14, 14, 14, 0.72) 55%,
+    rgba(14, 14, 14, 0.94) 100%);
+}
+
+@media (min-width: 768px) {
+  .dt-banner.is-visible::after {
+    background: linear-gradient(90deg,
+      rgba(14, 14, 14, 0.92) 0%,
+      rgba(14, 14, 14, 0.78) 45%,
+      rgba(14, 14, 14, 0.35) 100%);
+  }
+}
+
+/* Con banner la cabecera crece para que la imagen respire. */
+.dt-cabecera.con-banner {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  .dt-cabecera.con-banner { min-height: 230px; }
+}
+
+.dt-cabecera > #dt-migas,
+.dt-cabecera-texto {
+  position: relative;
+  z-index: 1;
+}
+
+.dt-cabecera.con-banner #dt-migas { margin-bottom: 0.5rem; }
