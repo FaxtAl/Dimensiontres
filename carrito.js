@@ -400,6 +400,17 @@ function buildRow(item) {
   mainCell.appendChild(flexDiv);
   tr.appendChild(mainCell);
 
+  /* ── Celda precio unitario (escritorio) ──
+     Antes solo se mostraba el total de la linea, asi que con cantidad
+     mayor a 1 no se veia cuanto vale la unidad. */
+  var unitCell = document.createElement('td');
+  unitCell.className = 'cart-unit-cell px-6 py-6 text-right hidden md:table-cell';
+  var unitSpan = document.createElement('span');
+  unitSpan.className = 'font-headline font-semibold text-base text-on-surface-variant';
+  unitSpan.textContent = formatMoney(item.price);
+  unitCell.appendChild(unitSpan);
+  tr.appendChild(unitCell);
+
   /* ── Celda cantidad desktop ── */
   var qtyCell = document.createElement('td');
   qtyCell.className = 'cart-qty-cell px-6 py-6 hidden md:table-cell';
