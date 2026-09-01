@@ -289,120 +289,16 @@
     rgba(14, 14, 14, 0.92) 100%);
 }
 
-/* Con banner, el texto del sitio se esconde: el banner ya trae su propio
-   titulo, bajada y boton dibujados, y superponerle "DimensionTres" encima
-   deja dos titulos peleando en el mismo rincon. En las fotos del carrusel
-   el texto vuelve, abajo a la izquierda. */
-#inicio.es-banner .home-hero-texto {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.home-hero-texto {
-  opacity: 1;
-  transition: opacity 0.35s ease;
-}
-
 /* ============================================================
-   Banner limpio (sin titulo dibujado adentro).
-   Ahi el texto del sitio es el protagonista: va mas grande y con
-   sombra para que se lea sobre cualquier imagen.
+   Texto de la portada sobre el banner.
+   Los banners van sin palabras adentro, asi que el titulo, la
+   bajada y los botones del sitio se dibujan encima a su tamaño
+   normal. Solo se agrega sombra para asegurar contraste sobre
+   cualquier imagen.
    ============================================================ */
 
-#inicio.es-banner .home-hero-texto h1 {
-  font-size: clamp(2.6rem, 7vw, 5.5rem);
-  line-height: 0.9;
-  margin-bottom: 0.6rem;
-  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.85);
-}
-
-#inicio.es-banner .home-hero-texto p {
-  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
-  max-width: 34ch;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
-}
-
-#inicio.es-banner .home-hero-texto span:first-child {
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
-}
-
-/* Boton de la portada, en el hueco que dejo el boton dibujado del banner.
-   Toma los colores del contorno neon que ya traen los banners. */
-
-
-
-/* ============================================================
-   Texto del sitio en la portada.
-   Va en el hueco que dejo el boton dibujado del banner: al 62%
-   del alto y alineado con el texto que el banner trae adentro.
-   Se posiciona contra la seccion y no contra el contenedor de
-   abajo, que vive pegado al piso del hero.
-   ============================================================ */
-
-#inicio.es-banner .home-hero-texto {
-  position: absolute;
-  top: 62%;
-  left: 4.5%;
-  right: auto;
-  max-width: 46%;
-  z-index: 12;
-}
-
-/* Ojo con el ">": sin el, esto tambien agarraba el primer <span> del <h1>
-   (el que dice "Dimension") y el titulo quedaba en "Tres" solo. Solo se
-   quiere ocultar la etiqueta "TECNOLOGIA Y SERVICIOS", que es hija directa. */
-#inicio.es-banner .home-hero-texto > span:first-child { display: none; }
-
-#inicio.es-banner .home-hero-texto h1 {
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
-  line-height: 0.95;
-  margin-bottom: 0.4rem;
-  white-space: nowrap;
-  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.9);
-}
-
-/* El titulo viene partido en dos <span> con "block" para el celular. Aca los
-   necesito en una sola linea: si no, "Dimension" cae fuera del recorte y solo
-   se lee "Tres". */
-#inicio.es-banner .home-hero-texto h1 span { display: inline; }
-
-#inicio.es-banner .home-hero-texto p {
-  font-size: clamp(0.75rem, 1vw, 0.95rem);
-  line-height: 1.45;
-  margin-bottom: 0;
-  max-width: 32ch;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
-}
-
-@media (max-width: 767px) {
-  /* En celular el banner ocupa todo el ancho y su bajada queda justo donde
-     caia el texto del sitio. Se manda al piso, con margenes propios: el
-     bloque ya no vive dentro del contenedor que se los daba. */
-  #inicio.es-banner {
-    min-height: calc(100vw / 1.28);
-  }
-
-  #inicio.es-banner .home-hero-texto {
-    top: auto;
-    bottom: 1.4rem;
-    left: 1.25rem;
-    right: 1.25rem;
-    max-width: none;
-  }
-
-  /* Un banner de 2,1:1 en una pantalla angosta se recorta a los costados si
-     o si. Anclado a la izquierda, el recorte se come el lado derecho y no el
-     titulo del banner, que vive a la izquierda. */
-  #inicio.es-banner .home-hero-rotating-image { object-position: left center; }
-
-  #inicio.es-banner .home-hero-texto h1 { font-size: 1.7rem; }
-  #inicio.es-banner .home-hero-texto p { font-size: 0.85rem; max-width: 30ch; }
-
-  /* Mas velo abajo, que ahi apoya el texto. */
-  #inicio.es-banner .home-hero-velo-abajo {
-    background: linear-gradient(180deg,
-      rgba(14, 14, 14, 0) 40%,
-      rgba(14, 14, 14, 0.75) 68%,
-      rgba(14, 14, 14, 0.97) 100%);
-  }
+#inicio.es-banner .home-hero-texto h1,
+#inicio.es-banner .home-hero-texto p,
+#inicio.es-banner .home-hero-texto > span {
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.85);
 }

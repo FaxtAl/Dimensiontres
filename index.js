@@ -15,22 +15,12 @@ function handleViewCatalog() {
 
 // Carrusel de imagenes para el fondo de Inicio. El texto y los botones se
 // mantienen fijos para que la portada siga siendo clara y facil de usar.
-// Solo banners en la portada.
-//
-// Los tres traen titulo y bajada dibujados en la imagen, pero ya no el boton:
-// ese lo pone el sitio en HTML, en el mismo hueco. Asi es clickeable de
-// verdad, se puede navegar con teclado y el texto se cambia sin rehacer la
-// imagen.
-//
-// Un banner sin titulo propio (sin "tituloPropio") muestra en su lugar el
-// texto grande de DimensionTres.
+// Solo banners en la portada. Van sin palabras adentro: el titulo, la bajada
+// y los botones son HTML del sitio y se dibujan encima.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/proximos-estrenos.webp?v=banners-b-20260826', alt: 'Proximos estrenos de juegos para PS5',
-    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-juegos-fisicos' },
-  { src: 'img/banners/perifericos-logitech.webp?v=banners-b-20260826', alt: 'Perifericos Logitech G',
-    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-perifericos-pc' },
-  { src: 'img/banners/arma-tu-pc.webp?v=banners-b-20260826', alt: 'Arma tu PC ideal con componentes seleccionados',
-    banner: true, tituloPropio: true, href: 'catalogo.html?catid=cat-pc-y-componentes' }
+  { src: 'img/banners/proximos-estrenos.webp?v=banners-b-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true },
+  { src: 'img/banners/perifericos-logitech.webp?v=banners-b-20260826', alt: 'Perifericos Logitech G', banner: true },
+  { src: 'img/banners/arma-tu-pc.webp?v=banners-b-20260826', alt: 'Arma tu PC ideal con componentes seleccionados', banner: true }
 ];
 
 function initHomeHeroCarousel() {
@@ -45,32 +35,12 @@ function initHomeHeroCarousel() {
     });
   }
   var seccion = document.getElementById('inicio');
-  var enlace = document.getElementById('home-hero-link');
 
-  var textoHero = seccion ? seccion.querySelector('.home-hero-texto') : null;
-
+  // El texto del sitio se muestra siempre: los banners van sin palabras y el
+  // titulo, la bajada y los botones viven en HTML encima.
   function aplicarModoBanner(item) {
     if (!seccion) return;
-    var esBanner = item.banner === true;
-    seccion.classList.toggle('es-banner', esBanner);
-
-    // La opacidad se toca desde aca y no solo por CSS: asi no depende de que
-    // regla gane la cascada entre index.css y tailwind.generated.css.
-    // El texto del sitio se muestra siempre: va en el hueco que antes tenia
-    // el boton dibujado dentro de la imagen.
-    if (textoHero) {
-      textoHero.style.opacity = '1';
-      textoHero.style.pointerEvents = '';
-    }
-
-    if (enlace) {
-      if (esBanner && item.href) {
-        enlace.href = item.href;
-        enlace.style.display = '';
-      } else {
-        enlace.style.display = 'none';
-      }
-    }
+    seccion.classList.toggle('es-banner', item.banner === true);
   }
 
   function applyNextImage(nextIndex, next) {
