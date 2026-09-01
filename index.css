@@ -340,3 +340,10 @@
     padding-right: clamp(2rem, 4vw, 5rem);
   }
 }
+
+@media (max-width: 767px) {
+  /* En celular el ancho es chico, asi que atar el alto a la relacion del
+     banner (2,2:1) dejaba una portada de apenas 170px. Se le da altura
+     propia: casi cuadrada, topada para que no tape la pantalla entera. */
+  #inicio.es-banner { min-height: min(72svh, calc(100vw / 0.88)); }
+}

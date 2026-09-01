@@ -84,7 +84,9 @@ function initHomeHeroCarousel() {
   }
 
   setActiveDot();
-  window.setInterval(showNextImage, 3000);
+  // 3 segundos era muy poco: no daba tiempo a mirar el banner ni a leer el
+  // texto de encima antes de que cambiara.
+  window.setInterval(showNextImage, 7000);
 }
 
 (function initDestCarousel() {
