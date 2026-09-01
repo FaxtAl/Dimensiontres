@@ -345,5 +345,103 @@
   /* En celular el ancho es chico, asi que atar el alto a la relacion del
      banner (2,2:1) dejaba una portada de apenas 170px. Se le da altura
      propia: casi cuadrada, topada para que no tape la pantalla entera. */
-  #inicio.es-banner { min-height: min(72svh, calc(100vw / 0.88)); }
+  #inicio.es-banner { min-height: min(84svh, calc(100vw / 0.68)); }
+
+  /* Mas aire entre etiqueta, titulo, bajada y botones: apretados se leian
+     como un bloque solo. */
+  #inicio.es-banner .home-hero-texto > span:first-child { margin-bottom: 1.5rem; }
+  #inicio.es-banner .home-hero-texto h1 { margin-bottom: 1.4rem; }
+  #inicio.es-banner .home-hero-texto p { margin-bottom: 2rem; line-height: 1.6; }
+}
+
+/* ============================================================
+   EFECTOS DE SECCION
+   Toman el motivo que ya traen los banners: lineas finas en
+   escuadra, cyan arriba a la izquierda y violeta abajo a la
+   derecha. Es CSS puro, sin imagenes ni animacion continua:
+   no cuesta bateria ni se cansa a los diez segundos.
+   ============================================================ */
+
+.dt-seccion {
+  position: relative;
+  isolation: isolate;
+}
+
+.dt-seccion::before,
+.dt-seccion::after {
+  content: '';
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.55;
+}
+
+/* Escuadra cyan, arriba a la izquierda */
+.dt-seccion::before {
+  top: 0;
+  left: 0;
+  border-top: 1px solid #00d5ea;
+  border-left: 1px solid #00d5ea;
+  -webkit-mask-image: linear-gradient(135deg, #000 0%, transparent 62%);
+  mask-image: linear-gradient(135deg, #000 0%, transparent 62%);
+}
+
+/* Escuadra violeta, abajo a la derecha */
+.dt-seccion::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1px solid #8b3dff;
+  border-right: 1px solid #8b3dff;
+  -webkit-mask-image: linear-gradient(315deg, #000 0%, transparent 62%);
+  mask-image: linear-gradient(315deg, #000 0%, transparent 62%);
+}
+
+/* Halo suave detras del titulo de cada seccion, para dar profundidad al
+   fondo plano sin ensuciarlo. */
+.dt-seccion > .dt-halo {
+  position: absolute;
+  top: -80px;
+  left: 12%;
+  width: 520px;
+  height: 340px;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(0, 213, 234, 0.07) 0%, transparent 68%);
+}
+
+@media (max-width: 767px) {
+  .dt-seccion::before,
+  .dt-seccion::after { width: 110px; height: 110px; }
+  .dt-seccion > .dt-halo { width: 320px; height: 240px; left: 0; }
+}
+
+/* ============================================================
+   APARICION AL SCROLLEAR
+   El bloque entra con un fade y una subida corta. Lo enciende
+   un IntersectionObserver desde index.js.
+   ============================================================ */
+
+.dt-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s cubic-bezier(.22,.61,.36,1),
+              transform 0.6s cubic-bezier(.22,.61,.36,1);
+  will-change: opacity, transform;
+}
+
+.dt-reveal.dt-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Quien pidio menos movimiento en su sistema no ve la animacion: el
+   contenido aparece directo. */
+@media (prefers-reduced-motion: reduce) {
+  .dt-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

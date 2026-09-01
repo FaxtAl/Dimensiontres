@@ -973,3 +973,67 @@ document.addEventListener('DOMContentLoaded', function() {
   loadHomeCatalogSections();
   checkHomeAdminAccess();
 });
+
+/* ═══════════════════════════════════════════════════════════
+   APARICION AL SCROLLEAR
+   Marca los bloques principales y los enciende cuando entran en
+   pantalla. Con IntersectionObserver, que no cuesta nada: no hay
+   un listener de scroll corriendo todo el tiempo.
+   ═══════════════════════════════════════════════════════════ */
+
+(function initRevelado() {
+  function arrancar() {
+    // El hero queda afuera a proposito: es lo primero que se ve y no
+    // corresponde que aparezca con retardo.
+    var selectores = [
+      '#categorias > .container > *',
+      '#categorias > *:not(.dt-halo)',
+      '#destacados > *:not(.dt-halo)',
+      '#servicios > *:not(.dt-halo)',
+      '#contacto > *:not(.dt-halo)'
+    ];
+
+    var bloques = [];
+    selectores.forEach(function(sel) {
+      try {
+        [].forEach.call(document.querySelectorAll(sel), function(el) {
+          if (bloques.indexOf(el) === -1) bloques.push(el);
+        });
+      } catch (e) {}
+    });
+
+    if (!bloques.length) return;
+
+    // Sin soporte, se muestra todo y listo.
+    if (!('IntersectionObserver' in window)) return;
+
+    bloques.forEach(function(el, i) {
+      el.classList.add('dt-reveal');
+      // Escalonado corto: los de mas abajo entran apenas despues.
+      el.style.transitionDelay = Math.min(i % 4, 3) * 70 + 'ms';
+    });
+
+    var obs = new IntersectionObserver(function(entradas) {
+      entradas.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('dt-visible');
+        obs.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+    bloques.forEach(function(el) { obs.observe(el); });
+
+    // Red de seguridad: si por lo que sea el observador no dispara (pestaña en
+    // segundo plano, navegador raro, un error mas arriba), a los 2 segundos se
+    // muestra todo igual. Un efecto lindo no puede dejar la pagina en blanco.
+    window.setTimeout(function() {
+      bloques.forEach(function(el) { el.classList.add('dt-visible'); });
+    }, 2000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancar);
+  } else {
+    arrancar();
+  }
+})();
