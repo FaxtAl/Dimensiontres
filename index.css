@@ -242,3 +242,63 @@
     line-height: 1.45;
   }
 }
+
+/* ============================================================
+   Portada con banners.
+   Cuando toca un banner de los que traen su propio titulo y
+   boton dibujados, el hero se achica, aclara el velo y reduce
+   el texto del sitio: si no, quedaban dos titulos encimados.
+   ============================================================ */
+
+.home-hero-velo-lat {
+  background: linear-gradient(90deg,
+    rgba(14, 14, 14, 0.95) 0%,
+    rgba(14, 14, 14, 0.55) 40%,
+    rgba(14, 14, 14, 0) 75%);
+}
+
+.home-hero-velo-abajo {
+  background: linear-gradient(180deg,
+    rgba(14, 14, 14, 0) 45%,
+    rgba(14, 14, 14, 0.85) 100%);
+}
+
+/* --- Modo banner --- */
+
+/* El alto vivia en el atributo style del HTML, que le gana a cualquier clase:
+   por eso el modo banner no lograba achicarlo. Ahora vive aca. */
+#inicio { min-height: 92svh; }
+
+#inicio.es-banner {
+  /* Con 92svh el alto sobraba tanto que el recorte se comia los costados y
+     se perdia la primera letra del titulo del banner. */
+  min-height: min(70svh, calc(100vw / 2.2));
+}
+
+#inicio.es-banner .home-hero-tinte { opacity: 0; }
+
+#inicio.es-banner .home-hero-velo-lat {
+  background: linear-gradient(90deg,
+    rgba(14, 14, 14, 0.35) 0%,
+    rgba(14, 14, 14, 0) 45%);
+}
+
+#inicio.es-banner .home-hero-velo-abajo {
+  background: linear-gradient(180deg,
+    rgba(14, 14, 14, 0) 55%,
+    rgba(14, 14, 14, 0.92) 100%);
+}
+
+/* Con banner, el texto del sitio se esconde: el banner ya trae su propio
+   titulo, bajada y boton dibujados, y superponerle "DimensionTres" encima
+   deja dos titulos peleando en el mismo rincon. En las fotos del carrusel
+   el texto vuelve, abajo a la izquierda. */
+#inicio.es-banner .home-hero-texto {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.home-hero-texto {
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}

@@ -15,7 +15,12 @@ function handleViewCatalog() {
 
 // Carrusel de imagenes para el fondo de Inicio. El texto y los botones se
 // mantienen fijos para que la portada siga siendo clara y facil de usar.
+// Los que tienen "banner: true" traen su propio titulo y boton dibujados en
+// la imagen. Cuando toca uno de esos, el hero baja el velo y achica el texto
+// del sitio para no encimarle otro titulo arriba.
 var HOME_HERO_IMAGES = [
+  { src: 'img/banners/proximos-estrenos.webp?v=banners-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true, href: 'catalogo.html?catid=cat-juegos-fisicos' },
+  { src: 'img/banners/perifericos-logitech.webp?v=banners-20260826', alt: 'Perifericos Logitech G', banner: true, href: 'catalogo.html?catid=cat-perifericos-pc' },
   { src: 'img/Inicio.jpg?v=hero-20260730', alt: 'Setup gamer con iluminacion cian' },
   { src: 'img/inicio/hero-hardware-cian.png?v=hero-20260730', alt: 'Detalle de hardware gamer con iluminacion cian' },
   { src: 'img/inicio/hero-teclado-rgb.png?v=hero-20260730', alt: 'Teclado mecanico gamer con iluminacion azul' }
@@ -32,6 +37,33 @@ function initHomeHeroCarousel() {
       dot.classList.toggle('is-active', index === currentIndex);
     });
   }
+  var seccion = document.getElementById('inicio');
+  var enlace = document.getElementById('home-hero-link');
+
+  var textoHero = seccion ? seccion.querySelector('.home-hero-texto') : null;
+
+  function aplicarModoBanner(item) {
+    if (!seccion) return;
+    var esBanner = item.banner === true;
+    seccion.classList.toggle('es-banner', esBanner);
+
+    // La opacidad se toca desde aca y no solo por CSS: asi no depende de que
+    // regla gane la cascada entre index.css y tailwind.generated.css.
+    if (textoHero) {
+      textoHero.style.opacity = esBanner ? '0' : '1';
+      textoHero.style.pointerEvents = esBanner ? 'none' : '';
+    }
+
+    if (enlace) {
+      if (esBanner && item.href) {
+        enlace.href = item.href;
+        enlace.style.display = '';
+      } else {
+        enlace.style.display = 'none';
+      }
+    }
+  }
+
   function applyNextImage(nextIndex, next) {
     image.classList.add('is-switching');
     window.setTimeout(function() {
@@ -39,9 +71,13 @@ function initHomeHeroCarousel() {
       image.alt = next.alt;
       currentIndex = nextIndex;
       setActiveDot();
+      aplicarModoBanner(next);
       image.classList.remove('is-switching');
     }, 430);
   }
+
+  // El primero del arreglo es un banner, asi que el modo se aplica de entrada.
+  aplicarModoBanner(HOME_HERO_IMAGES[0]);
   function showNextImage() {
     if (document.hidden) return;
     var nextIndex = (currentIndex + 1) % HOME_HERO_IMAGES.length;
