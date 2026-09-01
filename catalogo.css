@@ -2262,7 +2262,11 @@ body::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  /* El arte solido de los dos archivos va de y=160 a y=363 sobre 537, o sea
+     centrado en el 48,8%. Medido pixel por pixel sobre el canal alfa, no a
+     ojo: con "center" (50%) el encuadre quedaba corrido unos 7px y se comia
+     un poco del borde de arriba. */
+  object-position: center 48.8%;
 }
 
 /* Velo oscuro para que el texto se lea sobre cualquier parte del arte.
@@ -2279,24 +2283,32 @@ body::after {
 }
 
 @media (min-width: 768px) {
+  /* Menos velo que antes: el texto ocupa el tercio izquierdo, asi que solo
+     ahi hace falta oscurecer. El resto del arte se ve limpio. */
   .dt-banner.is-visible::after {
     background: linear-gradient(90deg,
-      rgba(14, 14, 14, 0.92) 0%,
-      rgba(14, 14, 14, 0.78) 45%,
-      rgba(14, 14, 14, 0.35) 100%);
+      rgba(14, 14, 14, 0.88) 0%,
+      rgba(14, 14, 14, 0.55) 38%,
+      rgba(14, 14, 14, 0.08) 72%,
+      rgba(14, 14, 14, 0) 100%);
   }
 }
 
-/* Con banner la cabecera crece para que la imagen respire. */
+/* El alto sale de la franja de arte: 1080x203 es 5.32:1. Asi la imagen
+   entra completa y no quedan bandas oscuras arriba y abajo. Se limita el
+   maximo porque el archivo tiene 1080px de ancho: mas alla de eso se estira
+   y se nota. */
 .dt-cabecera.con-banner {
-  min-height: 190px;
+  min-height: 175px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 
 @media (min-width: 768px) {
-  .dt-cabecera.con-banner { min-height: 230px; }
+  .dt-cabecera.con-banner {
+    min-height: clamp(200px, calc(100vw / 5.32), 265px);
+  }
 }
 
 .dt-cabecera > #dt-migas,
