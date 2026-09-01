@@ -18,9 +18,9 @@ function handleViewCatalog() {
 // Solo banners en la portada. Van sin palabras adentro: el titulo, la bajada
 // y los botones son HTML del sitio y se dibujan encima.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/proximos-estrenos.webp?v=banners-b-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true },
-  { src: 'img/banners/perifericos-logitech.webp?v=banners-b-20260826', alt: 'Perifericos Logitech G', banner: true },
-  { src: 'img/banners/arma-tu-pc.webp?v=banners-b-20260826', alt: 'Arma tu PC ideal con componentes seleccionados', banner: true }
+  { src: 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true },
+  { src: 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826', alt: 'Perifericos Logitech G', banner: true },
+  { src: 'img/banners/arma-tu-pc.webp?v=banners-limpios-20260826', alt: 'Arma tu PC ideal con componentes seleccionados', banner: true }
 ];
 
 function initHomeHeroCarousel() {

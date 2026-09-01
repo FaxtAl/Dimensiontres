@@ -302,3 +302,29 @@
 #inicio.es-banner .home-hero-texto > span {
   text-shadow: 0 3px 20px rgba(0, 0, 0, 0.85);
 }
+
+/* En los tres banners los productos arrancan cerca del 35% del ancho, asi que
+   el texto se acota a la mitad izquierda para no montarse encima. El titulo
+   escala solo para entrar en ese ancho. */
+@media (min-width: 768px) {
+  #inicio.es-banner .home-hero-texto { max-width: 48%; }
+
+  #inicio.es-banner .home-hero-texto h1 {
+    font-size: clamp(2.4rem, 4.6vw, 4.4rem);
+    line-height: 0.92;
+  }
+
+  #inicio.es-banner .home-hero-texto p { font-size: clamp(0.9rem, 1.15vw, 1.05rem); }
+}
+
+@media (max-width: 767px) {
+  /* En celular el banner ocupa todo el ancho y no queda zona despejada, asi
+     que el texto cae sobre los productos. Se oscurece bastante mas para que
+     el titulo y los botones se lean sin pelear con el arte. */
+  #inicio.es-banner .home-hero-velo-lat {
+    background: linear-gradient(180deg,
+      rgba(14, 14, 14, 0.55) 0%,
+      rgba(14, 14, 14, 0.72) 55%,
+      rgba(14, 14, 14, 0.88) 100%);
+  }
+}
