@@ -2289,7 +2289,7 @@ body::after {
   /* Los banners nuevos son de cuadro completo, no una franja con fondo
      transparente como los anteriores. Se encuadra apenas abajo del centro:
      los productos se apoyan en la mitad inferior y asi entran enteros. */
-  object-position: center 58%;
+  object-position: center 50%;
 }
 
 /* Velo oscuro para que el texto se lea sobre cualquier parte del arte.
@@ -2336,7 +2336,7 @@ body::after {
        que pidio el usuario: "al tamaño del texto de ahi". En celular no
        se toca, por eso el cambio vive aca adentro. Cuarta vuelta de
        achique: de 155 a 120 de techo. */
-    min-height: clamp(95px, calc(100vw / 17), 120px);
+    min-height: clamp(110px, calc(100vw / 14), 140px);
 
     /* Quinta vuelta: bajar el min-height ya no achicaba nada mas, porque el
        contenido (padding + migas + titulo) necesitaba mas alto que ese
