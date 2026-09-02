@@ -2334,8 +2334,26 @@ body::after {
        productos abajo del pliegue. Se baja el techo de 340 a 250: el banner
        queda apenas mas alto que el bloque de migas + titulo, que es lo
        que pidio el usuario: "al tamaño del texto de ahi". En celular no
-       se toca, por eso el cambio vive aca adentro. */
-    min-height: clamp(120px, calc(100vw / 13), 155px);
+       se toca, por eso el cambio vive aca adentro. Cuarta vuelta de
+       achique: de 155 a 120 de techo. */
+    min-height: clamp(95px, calc(100vw / 17), 120px);
+
+    /* Quinta vuelta: bajar el min-height ya no achicaba nada mas, porque el
+       contenido (padding + migas + titulo) necesitaba mas alto que ese
+       techo y la caja crecia igual. .dt-cabecera trae py-4 de Tailwind
+       (1rem arriba y abajo); aca se pisa con menos, solo cuando hay banner.
+       .dt-cabecera.con-banner (2 clases) le gana en especificidad a .py-4
+       (1 clase) sin necesitar !important. */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* El titulo con font-headline + text-4xl era el que mas alto sumaba.
+     Un escalon mas chico (misma familia, mismo peso) alcanza para que se
+     siga leyendo bien y el banner baje otro tanto. */
+  .dt-cabecera.con-banner #page-title {
+    font-size: 1.875rem;
+    line-height: 1.15;
   }
 }
 
@@ -2345,4 +2363,4 @@ body::after {
   z-index: 1;
 }
 
-.dt-cabecera.con-banner #dt-migas { margin-bottom: 0.5rem; }
+.dt-cabecera.con-banner #dt-migas { margin-bottom: 0.3rem; }
