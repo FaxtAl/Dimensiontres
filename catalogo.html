@@ -3183,10 +3183,27 @@ function dtCambiarPrecio() {
 // alcanza con agregar la linea al mapa.
 // ============================================================
 
+// Todavia no hay una foto propia por categoria: mientras tanto se reusan
+// los 3 banners de la portada, repartidos por tema (componentes de PC,
+// perifericos Logitech, juegos de consola). Cuando lleguen fotos propias
+// de cada categoria, se reemplaza aca sin tocar nada mas.
 var DT_BANNERS = {
   'cat-consolas-de-juegos': 'img/banners/cat-consolas.webp?v=cat-20260826',
   'cat-juegos-fisicos': 'img/banners/cat-consolas.webp?v=cat-20260826',
-  'cat-accesorios-consolas': 'img/banners/cat-joysticks.webp?v=cat-20260826'
+  'cat-accesorios-consolas': 'img/banners/cat-joysticks.webp?v=cat-20260826',
+
+  'cat-pc-y-componentes': 'img/banners/arma-tu-pc.webp?v=banners-limpios-20260826',
+  'cat-almacenamiento': 'img/banners/arma-tu-pc.webp?v=banners-limpios-20260826',
+  'cat-cables': 'img/banners/arma-tu-pc.webp?v=banners-limpios-20260826',
+  'cat-adaptadores': 'img/banners/arma-tu-pc.webp?v=banners-limpios-20260826',
+
+  'cat-perifericos-pc': 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826',
+  'cat-accesorio-celular': 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826',
+  'cat-auriculares': 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826',
+  'cat-parlantes': 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826',
+
+  'cat-silla-gamer': 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826',
+  'cat-otros': 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826'
 };
 
 function dtRenderBanner() {

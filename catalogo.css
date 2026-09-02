@@ -2308,9 +2308,10 @@ body::after {
   .dt-cabecera.con-banner {
     /* En pantalla ancha la cabecera comia demasiado alto y empujaba los
        productos abajo del pliegue. Se baja el techo de 340 a 250: el banner
-       queda como una franja fina y la primera fila de productos entra sin
-       scrollear. En celular no se toca, por eso el cambio vive aca adentro. */
-    min-height: clamp(150px, calc(100vw / 8.5), 190px);
+       queda apenas mas alto que el bloque de migas + titulo, que es lo
+       que pidio el usuario: "al tamaño del texto de ahi". En celular no
+       se toca, por eso el cambio vive aca adentro. */
+    min-height: clamp(120px, calc(100vw / 13), 155px);
   }
 }
 
