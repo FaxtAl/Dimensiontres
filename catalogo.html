@@ -1670,6 +1670,13 @@ function updateCatalogHistory(state, replace) {
   } else {
     window.history.pushState(payload, '', catalogUrl(state));
   }
+
+  // La cabecera (banner + migas) se arma leyendo la URL, asi que se
+  // redibuja aca, despues de que la direccion quedo actualizada. Antes
+  // solo corria en DOMContentLoaded: al entrar a una categoria desde el
+  // catalogo la navegacion es interna, no recarga, y el banner no
+  // aparecia hasta apretar F5.
+  dtActualizarCabecera();
 }
 
 function setBackAction(label, handler) {
@@ -3218,6 +3225,13 @@ function dtRenderBanner() {
 
   var cabecera = document.getElementById('dt-cabecera');
   if (cabecera) cabecera.classList.add('con-banner');
+}
+
+// Todo lo de la cabecera que depende de la URL, junto: si se agrega algo
+// mas que dependa de la categoria activa, va aca y se actualiza solo.
+function dtActualizarCabecera() {
+  dtRenderBanner();
+  if (typeof dtRenderMigas === 'function') dtRenderMigas();
 }
 
 document.addEventListener('DOMContentLoaded', dtRenderBanner);
@@ -5458,6 +5472,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 window.addEventListener('popstate', function() {
   applyCatalogRoute({ updateHistory: false, scroll: true });
+  // Con atras/adelante el navegador ya cambio la URL por su cuenta y no se
+  // pasa por updateCatalogHistory, asi que la cabecera se refresca aparte.
+  dtActualizarCabecera();
 });
 </script>
 
