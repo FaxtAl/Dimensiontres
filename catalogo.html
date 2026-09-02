@@ -2012,6 +2012,18 @@ function isProviderProduct(product) {
   return !!product && (product.sourceIntegration === 'invid' || product.source === 'invid');
 }
 
+// No hay un campo aparte para condicion (usado/nuevo) en Access: el local
+// carga la palabra directo en el nombre del producto ("PlayStation 3 Slim
+// Usada", "Joystick original usado Ps4"). Se detecta ahi mismo. Mismo
+// criterio que dtProductoEsUsado en producto.html.
+function dtProductoEsUsado(product) {
+  if (!product) return false;
+  var texto = (String(product.name || '') + ' ' + String(product.description || '') + ' ' + String(product.subtitle || '')).toLowerCase();
+  var palabras = texto.split(/[^a-z0-9]+/i);
+  return palabras.indexOf('usado') !== -1 || palabras.indexOf('usada') !== -1 ||
+         palabras.indexOf('usados') !== -1 || palabras.indexOf('usadas') !== -1;
+}
+
 function getProductAvailabilityLabel(product) {
   return isProviderProduct(product) ? '48 hs de demora' : 'En local';
 }
@@ -3543,10 +3555,24 @@ function renderProductCards(products, options) {
     source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
     body.appendChild(source);
 
+    // .product-card-body es flex-direction:column, asi que los chips van
+    // en una fila propia para no quedar uno arriba del otro cuando hay dos.
+    var chipsRow = document.createElement('div');
+    chipsRow.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;';
+
     var availability = document.createElement('span');
     availability.className = 'product-card-availability ' + (isProviderProduct(p) ? 'is-provider' : 'is-local');
     availability.textContent = getProductAvailabilityLabel(p);
-    body.appendChild(availability);
+    chipsRow.appendChild(availability);
+
+    if (dtProductoEsUsado(p)) {
+      var usado = document.createElement('span');
+      usado.className = 'product-card-used';
+      usado.textContent = 'Usado';
+      chipsRow.appendChild(usado);
+    }
+
+    body.appendChild(chipsRow);
 
     var title = document.createElement('h3');
     title.className = 'product-card-title';

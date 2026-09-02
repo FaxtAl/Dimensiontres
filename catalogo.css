@@ -1355,6 +1355,30 @@ body::after {
   color: #9ff0b3;
 }
 
+/* Mismo look que product-card-availability, en naranja, para marcar
+   productos usados. No hay campo aparte en Access: se detecta si el
+   nombre trae la palabra "usado/usada" (dtProductoEsUsado). */
+.product-card-used {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,148,60,0.32);
+  border-radius: 4px;
+  background: rgba(255,148,60,0.09);
+  padding: 0.32rem 0.58rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #ffb37a;
+  margin-left: 0.4rem;
+}
+
 .product-card-title {
   min-height: 3.24em;
   display: -webkit-box;

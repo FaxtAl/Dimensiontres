@@ -946,6 +946,19 @@ function productIsProvider(p) {
   return !!p && (p.sourceIntegration === 'invid' || p.source === 'invid' || p.fulfillment === 'provider');
 }
 
+// No hay un campo aparte para condicion (usado/nuevo) en Access: el local
+// carga la palabra directo en el nombre del producto ("PlayStation 3 Slim
+// Usada", "Joystick original usado Ps4"). Se compara palabra por palabra
+// (partiendo el texto en cualquier caracter que no sea letra/numero) para
+// no confundir con palabras que la contienen, como "reusado".
+function dtProductoEsUsado(p) {
+  if (!p) return false;
+  var texto = (String(p.name || '') + ' ' + String(p.description || '') + ' ' + String(p.subtitle || '')).toLowerCase();
+  var palabras = texto.split(/[^a-z0-9]+/i);
+  return palabras.indexOf('usado') !== -1 || palabras.indexOf('usada') !== -1 ||
+         palabras.indexOf('usados') !== -1 || palabras.indexOf('usadas') !== -1;
+}
+
 function getProductAvailabilityLabel(p) {
   if (p && (p.availabilityLabel || p.deliveryLabel)) return cleanText(p.availabilityLabel || p.deliveryLabel);
   return productIsProvider(p) ? '48 hs de demora' : 'En local';
@@ -1413,6 +1426,13 @@ function renderProduct(p) {
     badgesEl.innerHTML = '<span class="badge-new">' + p.badge + '</span>';
   } else {
     badgesEl.innerHTML = '<span class="badge-new" style="color:#9ff0b3;border-color:rgba(76,217,100,.28);background:rgba(76,217,100,.08);">En local</span>';
+  }
+  // No hay un campo aparte para "usado" en Access: el local carga la
+  // palabra directo en el nombre ("PlayStation 3 Slim Usada", "Joystick
+  // original usado Ps4"). Se detecta ahi mismo, asi que no hace falta
+  // que carguen nada nuevo para que aparezca el cartel.
+  if (dtProductoEsUsado(p)) {
+    badgesEl.innerHTML += '<span class="badge-new" style="color:#ffb37a;border-color:rgba(255,148,60,.32);background:rgba(255,148,60,.09);margin-left:6px;">Usado</span>';
   }
 
   // Category
