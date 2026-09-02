@@ -2306,9 +2306,11 @@ body::after {
 
 @media (min-width: 768px) {
   .dt-cabecera.con-banner {
-    /* Mas alto que antes: los banners nuevos son 2,2:1 en vez de una franja
-       de 5,3:1, asi que con la altura vieja se recortaba casi todo. */
-    min-height: clamp(250px, calc(100vw / 4.0), 340px);
+    /* En pantalla ancha la cabecera comia demasiado alto y empujaba los
+       productos abajo del pliegue. Se baja el techo de 340 a 250: el banner
+       queda como una franja y la primera fila de productos entra sin
+       scrollear. En celular no se toca, por eso el cambio vive aca adentro. */
+    min-height: clamp(190px, calc(100vw / 6.4), 250px);
   }
 }
 
