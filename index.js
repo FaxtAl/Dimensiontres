@@ -934,6 +934,46 @@ function setHomeAdminLinksVisible(visible) {
   });
 }
 
+// Cartelito rojo con la cantidad de pedidos pendientes al lado de "Admin",
+// mismo estilo que el .dt-badge del carrito (cart.js). Solo se llama
+// cuando ya se confirmo que el usuario es admin, asi que a un cliente
+// normal no le pega ni un solo pedido a la base por esto.
+function setHomeAdminBadge(cantidad) {
+  document.querySelectorAll('[data-admin-link]').forEach(function(link) {
+    link.style.position = 'relative';
+    var badge = link.querySelector('.dt-badge');
+    if (!cantidad) { badge && badge.remove(); return; }
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'dt-badge';
+      badge.style.cssText = 'position:absolute;top:-8px;right:-14px;background:#b90afc;color:#fff;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;z-index:10;border-radius:9px;';
+      link.appendChild(badge);
+    }
+    badge.textContent = cantidad > 99 ? '99+' : cantidad;
+  });
+}
+
+async function checkHomePendingOrders(token) {
+  var cfg = window.CONFIG || {};
+  try {
+    var response = await fetch(cfg.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/admin_list_orders', {
+      method: 'POST',
+      headers: {
+        apikey: cfg.SUPABASE_PUBLISHABLE_KEY,
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ limit_count: 80 })
+    });
+    if (!response.ok) return;
+    var orders = await response.json();
+    var pendientes = (orders || []).filter(function(o) { return o && o.estado === 'pendiente'; }).length;
+    setHomeAdminBadge(pendientes);
+  } catch (error) {
+    // Sin badge si algo falla; no es critico para el resto de la pagina.
+  }
+}
+
 async function checkHomeAdminAccess() {
   setHomeAdminLinksVisible(false);
 
@@ -958,7 +998,9 @@ async function checkHomeAdminAccess() {
     if (!response.ok) return;
 
     var admin = await response.json();
-    setHomeAdminLinksVisible(Boolean(admin && admin.is_admin));
+    var esAdmin = Boolean(admin && admin.is_admin);
+    setHomeAdminLinksVisible(esAdmin);
+    if (esAdmin) checkHomePendingOrders(token);
   } catch (error) {
     setHomeAdminLinksVisible(false);
   }
