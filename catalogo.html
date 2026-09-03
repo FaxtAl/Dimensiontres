@@ -4854,6 +4854,28 @@ async function showSubcategoryComingSoon(found, options) {
   }
 }
 
+// Tope para la vista general de una categoria (todo mezclado, con
+// subcategorias incluidas). "PC y Componentes" sola llega a 606
+// productos entre lo local y lo de Invid, y renderizar esa cantidad de
+// tarjetas de una sola vez es lo que hacia sentir lenta la pagina.
+// Pedido puntual: en esta vista los productos de Invid van primero y
+// los del local (entrega inmediata) despues.
+var LIMITE_VISTA_GENERAL_CATEGORIA = 200;
+
+function ordenarParaVistaGeneralCategoria(products) {
+  var invid = [];
+  var locales = [];
+  (products || []).forEach(function(p) {
+    if (isProviderProduct(p)) invid.push(p); else locales.push(p);
+  });
+  // Los locales van garantizados: si Invid solo ya llena el tope (pasa en
+  // categorias grandes como PC y Componentes, con 587 de Invid contra 19
+  // locales), los locales quedaban afuera siempre. Se reserva su lugar y
+  // se completa el resto con Invid.
+  var lugarParaInvid = Math.max(0, LIMITE_VISTA_GENERAL_CATEGORIA - locales.length);
+  return invid.slice(0, lugarParaInvid).concat(locales).slice(0, LIMITE_VISTA_GENERAL_CATEGORIA);
+}
+
 async function showCategoryProducts(item, requestId) {
   renderProductLoadingSkeleton();
 
@@ -4876,10 +4898,16 @@ async function showCategoryProducts(item, requestId) {
   }
   if (requestId !== productsRequestId) return;
 
+  var totalReal = products.length;
+  products = ordenarParaVistaGeneralCategoria(products);
+
   document.getElementById('visible-count').textContent = products.length;
   if (products.length) {
     empty.classList.add('hidden');
     renderProductCards(products);
+    if (totalReal > products.length) {
+      updateGridHelper('Mostrando los primeros ' + products.length + ' de ' + totalReal + '. Usa los filtros para encontrar algo puntual.');
+    }
   } else {
     var grid = document.getElementById('categories-grid');
     if (grid) grid.style.display = 'none';
