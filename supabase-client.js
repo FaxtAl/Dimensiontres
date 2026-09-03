@@ -350,8 +350,26 @@
     return entry.image || entry.imagen || entry.url || '';
   }
 
+  // Las fotos manuales ahora se guardan como URL completa (con dominio),
+  // porque la base exige que imagen_url empiece con http(s). Antes de esto
+  // se guardaban como ruta relativa ("img/productos/..."), que es el
+  // formato que estas dos funciones esperaban. Sin este ajuste, una foto
+  // recien subida para un juego fisico se rechazaba en silencio: pasaba el
+  // guardado en Supabase pero nunca se mostraba, porque quedaba fuera de
+  // la lista de fuentes "confiables" para juegos.
+  // No depende de window.location: compara por estructura de la URL, no
+  // por si coincide con el dominio donde se esta ejecutando. Asi funciona
+  // igual en produccion, en el servidor local o probando desde otra
+  // maquina. "https://cualquier-dominio/img/productos/x.webp" y
+  // "img/productos/x.webp" dan el mismo resultado: "img/productos/x.webp".
+  function stripSameOriginPrefix(url) {
+    url = String(url || '');
+    var m = url.match(/^https?:\/\/[^/]+(\/.*)$/i);
+    return m ? m[1].replace(/^\//, '') : url;
+  }
+
   function isLocalCatalogImageUrl(url) {
-    url = String(url || '').trim().replace(/^["']|["']$/g, '');
+    url = stripSameOriginPrefix(String(url || '').trim().replace(/^["']|["']$/g, ''));
     return /^\.?\/?img\//i.test(url);
   }
 
@@ -372,7 +390,7 @@
   }
 
   function trustedGameImageUrl(url) {
-    url = String(url || '').toLowerCase();
+    url = stripSameOriginPrefix(String(url || '')).toLowerCase();
     return url.indexOf('img/productos/') === 0
       || url.indexOf('img/juegos-dixgamer/') === 0
       || url.indexOf('img/invid/') === 0
