@@ -1549,6 +1549,33 @@ body::after {
   margin-bottom: 1rem;
 }
 
+/* Agrupa el boton volver + el aviso de usados como una sola unidad para
+   que el space-between del toolbar los reparta juntos, no separados. */
+.dt-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+/* Aviso chico junto al boton volver: se prende solo cuando al menos un
+   producto de la lista que se esta mostrando es usado. Mismo naranja que
+   el resto de las señales de "usado" en la tarjeta y en la ficha. */
+.dt-usados-hint {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.6rem;
+  border: 1px solid rgba(255, 148, 60, 0.32);
+  background: rgba(255, 148, 60, 0.09);
+  color: #ffb37a;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 #back-to-root {
   display: none;
   width: fit-content;

@@ -388,9 +388,12 @@
 
         <!-- Boton volver + label de nivel sub -->
         <div class="catalog-results-toolbar">
-          <div id="back-to-root" onclick="goToRoot()">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-            <span id="back-label">Volver al catalogo</span>
+          <div class="dt-toolbar-left">
+            <div id="back-to-root" onclick="goToRoot()">
+              <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+              <span id="back-label">Volver al catalogo</span>
+            </div>
+            <span id="dt-usados-hint" class="dt-usados-hint" style="display:none;">Hay productos usados</span>
           </div>
           <div id="product-sort-controls" class="product-sort-controls">
             <div class="product-filter-controls">
@@ -2022,6 +2025,17 @@ function dtProductoEsUsado(product) {
   var palabras = texto.split(/[^a-z0-9]+/i);
   return palabras.indexOf('usado') !== -1 || palabras.indexOf('usada') !== -1 ||
          palabras.indexOf('usados') !== -1 || palabras.indexOf('usadas') !== -1;
+}
+
+// Prende el aviso "Hay productos usados" al lado del boton volver cuando
+// al menos uno de los productos que se estan mostrando es usado. Se llama
+// desde las dos vistas que tienen ese boton (categoria completa y
+// subcategoria puntual).
+function dtActualizarAvisoUsados(products) {
+  var el = document.getElementById('dt-usados-hint');
+  if (!el) return;
+  var hay = (products || []).some(function(p) { return dtProductoEsUsado(p); });
+  el.style.display = hay ? '' : 'none';
 }
 
 function getProductAvailabilityLabel(product) {
@@ -4845,6 +4859,7 @@ async function showSubcategoryComingSoon(found, options) {
   }
 
   document.getElementById('visible-count').textContent = products.length;
+  dtActualizarAvisoUsados(products);
   if (products.length) {
     empty.classList.add('hidden');
     renderProductCards(products);
@@ -4908,6 +4923,7 @@ async function showCategoryProducts(item, requestId) {
   products = ordenarParaVistaGeneralCategoria(products);
 
   document.getElementById('visible-count').textContent = products.length;
+  dtActualizarAvisoUsados(products);
   if (products.length) {
     empty.classList.add('hidden');
     renderProductCards(products);
@@ -5226,6 +5242,7 @@ function goToRoot(options) {
     document.getElementById('page-title').textContent = 'Todo el Catálogo';
     document.getElementById('page-subtitle').textContent = 'Explorá todas las categorías disponibles en la tienda.';
     updateGridHelper('Elegi una categoria para explorar productos disponibles.');
+    dtActualizarAvisoUsados([]);
 
     var ll = document.getElementById('level-label');
     ll.textContent = '';
