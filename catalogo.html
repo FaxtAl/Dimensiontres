@@ -3553,6 +3553,12 @@ function renderProductCards(products, options) {
     var source = document.createElement('span');
     source.className = 'product-card-source';
     source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
+    if (dtProductoEsUsado(p)) {
+      var sourceUsado = document.createElement('span');
+      sourceUsado.className = 'product-card-source-usado';
+      sourceUsado.textContent = ' · Usado';
+      source.appendChild(sourceUsado);
+    }
     body.appendChild(source);
 
     // .product-card-body es flex-direction:column, asi que los chips van

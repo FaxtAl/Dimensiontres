@@ -1323,6 +1323,14 @@ body::after {
   color: #8ff5ff;
 }
 
+/* Sufijo "Usado" dentro de la misma etiqueta chica de categoria, ademas
+   del cartel de color aparte (.product-card-used) que ya se ve de lejos.
+   Mismo naranja que ese cartel para que se entienda que son la misma
+   señal en dos lugares. */
+.product-card-source-usado {
+  color: #ffb37a;
+}
+
 .product-card-availability {
   width: fit-content;
   max-width: 100%;
