@@ -479,7 +479,7 @@
     // sobre mapas viejos generados por CSV/DixGamer para productos no juego.
     if (row && row.imagen_url && isAllowedMappedGameImage(row, row.imagen_url)) return row.imagen_url;
     if (row && row.image_url && isAllowedMappedGameImage(row, row.image_url)) return row.image_url;
-    if (row && row.invid_imagen_url && isAllowedMappedGameImage(row, row.invid_imagen_url)) return row.invid_imagen_url;
+    if (row && row.invid_imagen_url && isAllowedMappedGameImage(row, row.invid_imagen_url)) return dtProxyInvidUrl(row.invid_imagen_url);
     if (mappedImage) return mappedImage;
     return '';
   }
@@ -577,6 +577,20 @@
   function resolveInvidApiImage(row) {
     var candidates = collectInvidApiImages(row);
     return candidates[0] || '';
+  }
+
+  // Las fotos de Invid llegan sin optimizar (200-240 KB, contra los
+  // 40-60 KB de las propias del sitio) porque viven en el servidor del
+  // proveedor, no en el nuestro. api/invid-image-proxy.php las baja una
+  // sola vez, las comprime y las guarda en el propio servidor; esta
+  // funcion arma esa URL en vez de la directa. Los visitantes siguientes
+  // (de cualquier categoria) ya la reciben liviana, sin volver a pedirle
+  // nada a Invid.
+  function dtProxyInvidUrl(url) {
+    url = String(url || '').trim();
+    if (!url) return url;
+    if (url.indexOf('invidcomputers.com/') === -1) return url;
+    return 'api/invid-image-proxy.php?u=' + encodeURIComponent(url);
   }
 
   var ML_IMAGE_CACHE_PREFIX = 'dt-ml-image-';
@@ -2400,9 +2414,9 @@
     var invidWebPrice = getInvidRowWebPrice(row);
     var hasAllowedSupplier = !!row.invid_id && isInvidWebPriceAllowed(invidWebPrice);
     var localImage = resolveProductImage(row, code, name, row.producto, row.descripcion);
-    var supplierImage = hasAllowedSupplier ? resolveInvidApiImage({
+    var supplierImage = hasAllowedSupplier ? dtProxyInvidUrl(resolveInvidApiImage({
       invid_imagen_url: row.invid_imagen_url
-    }) : '';
+    })) : '';
 
     return {
       id: id,
@@ -2453,7 +2467,7 @@
     var cleanName = cleanSupplierCodeText(rawName) || ('Invid #' + id);
     var cleanDescription = cleanSupplierCodeText(row.descripcion || row.subcategoria || '');
     var cleanSourceLabel = cleanSupplierCodeText(row.subcategoria || 'Invid PC');
-    var imageCandidates = collectInvidApiImages(row);
+    var imageCandidates = collectInvidApiImages(row).map(dtProxyInvidUrl);
     return {
       id: 'invid-' + id,
       accessId: '',
