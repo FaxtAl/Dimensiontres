@@ -423,15 +423,29 @@ Ver todo
   bottom: 1.5rem;
   z-index: 2;
 }
+/* Morado suelto antes: no significaba nada en el resto del sitio (el
+   morado ya se usa para el badge "Nuevo" en otro lado). Ahora es cyan,
+   el mismo tono que el subrayado del titulo de la seccion y el resto
+   de los acentos de esta zona -- y el texto pasa a ser un dato real
+   (cantidad de productos), no una etiqueta decorativa fija. */
 .setup-kicker {
   display: inline-flex;
-  color: #c579ff;
+  align-items: center;
+  gap: 0.4rem;
+  color: #8ff5ff;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-bottom: 0.7rem;
+}
+.setup-kicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #8ff5ff;
+  box-shadow: 0 0 8px rgba(143,245,255,.7);
 }
 .setup-promo-title {
   font-family: 'Space Grotesk', sans-serif;
@@ -538,6 +552,35 @@ Ver todo
   gap: 0.5rem;
   flex: 1;
 }
+/* Mismos colores que el chip de disponibilidad del catalogo (verde
+   local, ambar proveedor) para que signifique lo mismo en todo el
+   sitio. Antes esta info no se mostraba en el inicio, solo en el
+   catalogo: alguien mirando el inicio no tenia forma de saber si un
+   producto estaba a mano o tardaba 48hs hasta clickearlo. */
+.feat-availability {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.5rem;
+  margin-bottom: 0.35rem;
+  border: 1px solid rgba(143,245,255,0.18);
+  background: rgba(143,245,255,0.045);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.56rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.feat-availability.is-local {
+  border-color: rgba(76,217,100,0.28);
+  background: rgba(76,217,100,0.075);
+  color: #9ff0b3;
+}
+.feat-availability.is-provider {
+  border-color: rgba(255,198,0,0.38);
+  background: rgba(255,198,0,0.08);
+  color: #ffe38a;
+}
 .feat-tag {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.62rem;
@@ -566,6 +609,10 @@ Ver todo
   margin-top: auto;
   width: 100%;
   padding: 0.6rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   background: #00deec;
   color: #003f43;
   border: none;
@@ -577,6 +624,9 @@ Ver todo
   letter-spacing: 0.08em;
   cursor: pointer;
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.feat-btn .material-symbols-outlined {
+  font-size: 16px;
 }
 .feat-btn:hover {
   background: #8ff5ff;

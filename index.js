@@ -551,7 +551,16 @@ function renderHomePromo(tree) {
   var text = promo.querySelector('.setup-promo-text');
   var link = promo.querySelector('.setup-promo-link');
 
-  if (kicker) kicker.textContent = 'Productos del catalogo';
+  // Antes decia siempre "Productos del catalogo", un texto decorativo
+  // que no cambiaba nunca. Se reemplaza por un dato real: cuantos
+  // productos tiene esa categoria, que ya viene calculado en el arbol
+  // (item.productCount).
+  var cantidad = Number(item.productCount || 0);
+  if (kicker) {
+    kicker.textContent = cantidad > 0
+      ? cantidad.toLocaleString('es-AR') + ' productos disponibles'
+      : 'Productos del catalogo';
+  }
   if (title) title.textContent = meta.title;
   if (text) {
     text.textContent = '';
@@ -649,6 +658,12 @@ function createFeaturedProductCard(product) {
   var body = document.createElement('div');
   body.className = 'feat-body';
 
+  var esProveedor = product.fulfillment === 'provider' || product.sourceIntegration === 'invid';
+  var disponibilidad = document.createElement('span');
+  disponibilidad.className = 'feat-availability' + (esProveedor ? ' is-provider' : ' is-local');
+  disponibilidad.textContent = esProveedor ? '48 hs de demora' : 'En local';
+  body.appendChild(disponibilidad);
+
   var tag = document.createElement('p');
   tag.className = 'feat-tag';
   tag.textContent = product.sourceLabel || product.category || 'Catalogo';
@@ -668,7 +683,11 @@ function createFeaturedProductCard(product) {
   btn.className = 'feat-btn';
   btn.type = 'button';
   var byOrder = typeof isByOrderProduct === 'function' && isByOrderProduct(product);
-  btn.textContent = byOrder ? 'A pedido' : 'Agregar al carrito';
+  var btnIcon = document.createElement('span');
+  btnIcon.className = 'material-symbols-outlined';
+  btnIcon.textContent = byOrder ? 'schedule' : 'add_shopping_cart';
+  btn.appendChild(btnIcon);
+  btn.appendChild(document.createTextNode(byOrder ? 'A pedido' : 'Agregar al carrito'));
   btn.addEventListener('click', function(event) {
     event.stopPropagation();
     if (typeof addToCartUI !== 'function') return;
