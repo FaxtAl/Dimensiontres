@@ -4906,7 +4906,12 @@ async function showCategoryProducts(item, requestId) {
   products = ordenarParaVistaGeneralCategoria(products);
 
   document.getElementById('visible-count').textContent = products.length;
-  dtActualizarAvisoUsados(products);
+  // A pedido: en la vista general de la categoria (todo mezclado, ej.
+  // "Consolas de juegos" completa) NO se muestra el aviso de usados.
+  // Se apaga por si quedo prendido de una navegacion anterior. Solo
+  // queda en la vista puntual de una subcategoria (ej. Consola PS4),
+  // que sigue llamando a dtActualizarAvisoUsados como antes.
+  dtActualizarAvisoUsados([]);
   if (products.length) {
     empty.classList.add('hidden');
     renderProductCards(products);
