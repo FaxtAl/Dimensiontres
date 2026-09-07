@@ -2627,6 +2627,35 @@ async function saveProfile() {
   const phone = document.getElementById('pf-phone').value.trim();
   const address = document.getElementById('pf-address').value.trim();
 
+  // Antes se podia guardar con cualquier campo vacio -- nombre, telefono,
+  // lo que sea -- sin ningun aviso. El telefono en particular hace falta
+  // despues para armar el pedido y avisar por WhatsApp, asi que se
+  // valida aca, antes de guardar, en vez de descubrirlo recien en el
+  // checkout. La direccion sigue opcional (lo dice su propio campo).
+  const msgValidacion = document.getElementById('save-msg');
+  function mostrarErrorValidacion(texto) {
+    msgValidacion.classList.remove('visible', 'error');
+    msgValidacion.textContent = texto;
+    msgValidacion.classList.add('visible', 'error');
+    setTimeout(() => msgValidacion.classList.remove('visible'), 5000);
+  }
+  if (!firstName || !lastName) {
+    mostrarErrorValidacion('Completá tu nombre y apellido.');
+    return;
+  }
+  if (!dni || dni.length < 7) {
+    mostrarErrorValidacion('Ingresá un DNI válido.');
+    return;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    mostrarErrorValidacion('Ingresá un email válido.');
+    return;
+  }
+  if (!phone || phone.replace(/\D/g, '').length < 8) {
+    mostrarErrorValidacion('Ingresá un teléfono válido, lo necesitamos para avisarte por tu pedido.');
+    return;
+  }
+
   const data = {
     firstName: firstName,
     lastName: lastName,
