@@ -6,7 +6,6 @@
 // CONFIG viene de config.js cargado como script normal antes que este archivo.
 // Los precios que llegan desde Access ya incluyen IVA, asi que el carrito no suma impuesto extra.
 var TAX         = 0;
-var discountPct = 0; // porcentaje de descuento aplicado (0–1)
 var mercadoPagoInstallments = 12;
 var transferProofFileName = '';
 var TRANSFER_PAYMENT = {
@@ -135,35 +134,14 @@ function formatMoney(value) {
   });
 }
 
-// PROMOS unificado desde CONFIG — usa la propiedad discount del objeto
-var PROMOS = (function() {
-  var out = {};
-  Object.keys(CONFIG.PROMO_CODES).forEach(function(code) {
-    out[code] = CONFIG.PROMO_CODES[code];
-  });
-  return out;
-})();
-
-function promoIsValid(promo) {
-  if (!promo || promo.discount === undefined) return false;
-  if (!promo.validUntil) return true;
-  var expires = new Date(promo.validUntil + 'T23:59:59');
-  return !isNaN(expires.getTime()) && expires >= new Date();
-}
-
 function calculateCartTotals() {
   var sub = CartStore.getSubtotal();
-  var disc = sub * discountPct;
-  var base = sub - disc;
-  var tax = 0;
-  var total = base;
 
   return {
     subtotal: sub,
-    discount: disc,
-    base: base,
-    iva: tax,
-    total: total
+    base: sub,
+    iva: 0,
+    total: sub
   };
 }
 
@@ -484,20 +462,11 @@ function buildRow(item) {
 /* ─── UPDATE TOTALS (función propia, separada de buildRow) ── */
 function updateTotals() {
   var totals = calculateCartTotals();
-  var productsTotal = totals.subtotal;
-  var discountTotal = totals.discount;
 
   var elSub   = document.getElementById('sum-sub');
-  var elDiscountRow = document.getElementById('discount-row');
-  var elDiscount = document.getElementById('sum-discount');
   var elTotal = document.getElementById('sum-total');
 
-  if (elSub)   elSub.textContent   = formatMoney(productsTotal);
-  if (elDiscountRow && elDiscount) {
-    elDiscountRow.classList.toggle('hidden', discountTotal <= 0);
-    elDiscountRow.classList.toggle('flex', discountTotal > 0);
-    elDiscount.textContent = '-' + formatMoney(discountTotal);
-  }
+  if (elSub)   elSub.textContent   = formatMoney(totals.subtotal);
   if (elTotal) {
     elTotal.textContent = formatMoney(totals.total);
     elTotal.classList.remove('total-flash');
@@ -558,7 +527,12 @@ function animRemove(id) {
 }
 
 function removeItem(id) { CartStore.remove(id); animRemove(id); }
-function clearCartUI()  { CartStore.clear(); render(); updateCartBadge(); }
+function clearCartUI()  {
+  if (CartStore.getAll().length && !confirm('¿Vaciar el carrito? Se van a quitar todos los productos.')) return;
+  CartStore.clear();
+  render();
+  updateCartBadge();
+}
 
 function cartHasByOrderItems(items) {
   return (items || []).some(function(item) {
@@ -570,47 +544,17 @@ function warnByOrderCheckout() {
   showCartNotice('Tenes productos a pedido. Sacalos del carrito y consultanos por WhatsApp para reservarlos.');
 }
 
-/* ─── CÓDIGO PROMO ───────────────────────── */
-function applyPromo() {
-  var input = document.getElementById('promo-input');
-  var msg   = document.getElementById('promo-msg');
-  if (!input || !msg) return;
-
-  var code = input.value.trim().toUpperCase();
-  if (!code) return;
-
-  msg.classList.remove('hidden');
-  if (promoIsValid(PROMOS[code])) {
-    discountPct      = PROMOS[code].discount;
-    msg.textContent  = '✓ ' + (discountPct * 100) + '% de descuento aplicado';
-    msg.style.color  = '#8ff5ff';
-  } else if (PROMOS[code]) {
-    discountPct      = 0;
-    msg.textContent  = '✕ Código vencido';
-    msg.style.color  = '#ff716c';
-  } else {
-    discountPct      = 0;
-    msg.textContent  = '✕ Código inválido';
-    msg.style.color  = '#ff716c';
-  }
-  updateTotals();
-}
-
 /* ─── CHECKOUT WHATSAPP ──────────────────── */
 function checkoutWhatsApp() {
   var items = CartStore.getAll();
   if (!items.length) return;
 
-  var sub   = CartStore.getSubtotal();
-  var disc  = sub * discountPct;
-  var base  = sub - disc;
-  var total = base;
+  var total = CartStore.getSubtotal();
 
   var lines = items.map(function(i) {
     return '• ' + i.name + ' x' + i.qty + ' — ' + formatMoney(i.price * i.qty);
   });
   lines.push('');
-  if (discountPct > 0) lines.push('Descuento: -' + formatMoney(disc));
   lines.push('*TOTAL: ' + formatMoney(total) + '*');
 
   var text = '¡Hola! Quiero hacer un pedido en DimensionTres:\n\n' + lines.join('\n');
@@ -669,7 +613,7 @@ async function createSavedOrder(method, notes) {
       total: totals.total
     },
     method: method || 'whatsapp',
-    notes: notes || (discountPct > 0 ? 'Pedido con descuento aplicado desde carrito web.' : 'Pedido creado desde carrito web.')
+    notes: notes || 'Pedido creado desde carrito web.'
   });
 
   return { saved: saved, totals: totals, items: items };
@@ -753,7 +697,6 @@ async function checkoutSavedOrder(button, method) {
 
   lines.push('');
   if (orderRef) lines.push('Pedido: ' + orderRef);
-  if (discountPct > 0) lines.push('Descuento: -' + formatMoney(totals.discount));
   lines.push('*TOTAL: ' + formatMoney(totals.total) + '*');
 
   var text = 'Hola! Quiero hacer un pedido en DimensionTres:\n\n' + lines.join('\n');
@@ -821,7 +764,6 @@ async function checkoutBankTransfer(button) {
   lines.push('Alias: ' + TRANSFER_PAYMENT.alias);
   lines.push('Titular: ' + TRANSFER_PAYMENT.holder);
   lines.push('Email: ' + TRANSFER_PAYMENT.email);
-  if (discountPct > 0) lines.push('Descuento: -' + formatMoney(totals.discount));
   lines.push('*Total a transferir: ' + formatMoney(totals.total) + '*');
   lines.push('');
   lines.push('Comprobante: ' + (proofResult.proof_name || transferProofFileName));

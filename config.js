@@ -9,12 +9,6 @@ var CONFIG = {
   CURRENCY: 'ARS',
   CURRENCY_SYMBOL: '$',
 
-  // Promociones
-  PROMO_CODES: {
-    'NEXUS10': { discount: 0.10, validUntil: '2026-12-31' },
-    'SETUP15': { discount: 0.15, validUntil: '2026-08-31' }
-  },
-
   // UI
   ANIMATION_DURATION: 300,
   TOAST_DURATION: 3000,
