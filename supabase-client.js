@@ -296,10 +296,16 @@
     if (LOCAL_PRODUCT_IMAGES[key]) return LOCAL_PRODUCT_IMAGES[key];
     if (key.length < 6) return '';
 
+    // Que el nombre de un archivo contenga el texto del producto solo vale si el
+    // texto es especifico (3+ palabras). Si no, una descripcion de Access como
+    // "Adaptador" se quedaba con la primera foto que dijera "adaptador" (el cargador
+    // Samsung salia con la foto de un adaptador Bluetooth) y "PlayStation 5" con la
+    // de la lectora aunque fuera la digital.
+    var keyIsSpecific = key.split(' ').length >= 3;
     for (var i = 0; i < LOCAL_PRODUCT_IMAGE_KEYS.length; i++) {
       var localKey = LOCAL_PRODUCT_IMAGE_KEYS[i];
       if (localKey.length < 6) continue;
-      if (key.indexOf(localKey) !== -1 || localKey.indexOf(key) !== -1) {
+      if (key.indexOf(localKey) !== -1 || (keyIsSpecific && localKey.indexOf(key) !== -1)) {
         return LOCAL_PRODUCT_IMAGES[localKey];
       }
     }
@@ -460,7 +466,59 @@
     return '';
   }
 
+  // Fotos cargadas a mano desde admin-imagenes. Se guardaban bien en
+  // producto_imagenes, pero no siempre se veian: en Access la foto local que
+  // coincide por nombre ganaba ("Arcade Doble Multiconsola" seguia con la vieja)
+  // y los productos de Invid ni siquiera las leian (solo la foto del proveedor).
+  // Se traen una vez por pagina y ganan sobre cualquier otra foto.
+  var manualProductImages = { byId: {}, byCode: {} };
+  var manualProductImagesPromise = null;
+
+  async function ensureManualProductImages() {
+    if (manualProductImagesPromise) return manualProductImagesPromise;
+
+    manualProductImagesPromise = (async function() {
+      var sb = getClient();
+      if (!sb) return manualProductImages;
+      try {
+        var result = await sb.from('producto_imagenes')
+          .select('id_productos,codigo,imagen_url')
+          .eq('activo', true)
+          .in('fuente', ['manual', 'manual-upload'])
+          .order('created_at', { ascending: false });
+        if (result.error) {
+          console.warn('Supabase fotos manuales error:', result.error.message);
+          return manualProductImages;
+        }
+        // Vienen de la mas nueva a la mas vieja: se queda la primera de cada producto.
+        (result.data || []).forEach(function(row) {
+          var url = String(row.imagen_url || '').trim();
+          if (!url) return;
+          var id = String(row.id_productos || '').trim();
+          var code = normalizeProductImageCode(row.codigo);
+          if (id && !manualProductImages.byId[id]) manualProductImages.byId[id] = url;
+          if (code && !manualProductImages.byCode[code]) manualProductImages.byCode[code] = url;
+        });
+      } catch (error) {
+        console.warn('No se pudieron leer las fotos manuales.', error);
+      }
+      return manualProductImages;
+    })();
+
+    return manualProductImagesPromise;
+  }
+
+  function findManualProductImage(id, code) {
+    id = String(id || '').trim();
+    if (id && manualProductImages.byId[id]) return manualProductImages.byId[id];
+    code = normalizeProductImageCode(code);
+    return (code && manualProductImages.byCode[code]) || '';
+  }
+
   function resolveProductImage(row) {
+    var manualImage = findManualProductImage(row && row.id_productos, row && row.codigo);
+    if (manualImage) return manualImage;
+
     for (var i = 1; i < arguments.length; i++) {
       var found = findLocalProductImage(arguments[i]);
       if (found) return found;
@@ -778,6 +836,8 @@
     publicCatalogPending[key] = (async function() {
       var value;
       try {
+        // Los productos se arman adentro de loader() y ahi se elige la foto.
+        await ensureManualProductImages();
         value = await withPublicCatalogTimeout(loader(), key);
       } catch (error) {
         console.warn('Catalogo local: error de API, usando cache si existe:', key, error);
@@ -2468,6 +2528,8 @@
     var cleanDescription = cleanSupplierCodeText(row.descripcion || row.subcategoria || '');
     var cleanSourceLabel = cleanSupplierCodeText(row.subcategoria || 'Invid PC');
     var imageCandidates = collectInvidApiImages(row).map(dtProxyInvidUrl);
+    var manualImage = findManualProductImage('invid-' + id, row.codigo);
+    if (manualImage) imageCandidates.unshift(manualImage);
     return {
       id: 'invid-' + id,
       accessId: '',
