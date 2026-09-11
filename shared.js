@@ -217,10 +217,10 @@
       '<div>' +
         '<h4 class="text-white font-bold mb-5">Marcas</h4>' +
         '<div class="flex flex-col gap-3">' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html">Sony</a>' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html">Redragon</a>' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html">Razer</a>' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html">Intel</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html?q=Sony">Sony</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html?q=Redragon">Redragon</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html?q=Razer">Razer</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="catalogo.html?q=Intel">Intel</a>' +
         '</div>' +
       '</div>' +
       '<div>' +
@@ -240,16 +240,16 @@
           '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2" href="index.html#contacto"><span class="material-symbols-outlined text-[18px]">location_on</span> Villa María</a>' +
         '</div>' +
         '<div class="flex flex-col gap-3 mt-6">' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="index.html#servicios">Garantía</a>' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="cuenta.html">Privacidad</a>' +
-          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="cuenta.html">Términos</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="legales.html#garantia">Garantía</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="legales.html#privacidad">Privacidad</a>' +
+          '<a class="text-[#adaaaa] hover:text-white hover:translate-x-1 transition-all inline-block" href="legales.html#terminos">Términos</a>' +
         '</div>' +
       '</div>' +
     '</div>' +
     '<div class="px-5 md:px-8 py-5 border-t border-[#1a1919] flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-[#8f8e8d] font-headline">' +
       '<p>© 2026 DIMENSIONTRES. HARDWARE, GAMING Y SERVICIO TÉCNICO.</p>' +
       '<div class="flex gap-8">' +
-        '<a class="hover:text-white transition-colors" href="cuenta.html">PRIVACIDAD</a>' +
+        '<a class="hover:text-white transition-colors" href="legales.html#privacidad">PRIVACIDAD</a>' +
         '<a class="hover:text-white transition-colors" href="index.html#servicios">SOPORTE</a>' +
       '</div>' +
     '</div>';
