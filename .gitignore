@@ -1,5 +1,12 @@
 node_modules/
 
+# Cache de fotos de Invid generada por api/invid-image-proxy.php en runtime:
+# no es codigo, y en produccion puede llegar a miles de archivos.
+img/invid-cache/
+
+# Capturas y logs de las pruebas en navegador (Playwright).
+.playwright-mcp/
+
 # Local environment and secrets
 .env
 .env.*
