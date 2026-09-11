@@ -449,6 +449,13 @@
     color: var(--success);
   }
 
+  .status-msg.info {
+    display: block;
+    background: rgba(0,240,255,0.08);
+    border: 1px solid rgba(0,240,255,0.25);
+    color: #8ff5ff;
+  }
+
   /* ======================================
      DASHBOARD (logueado)
      ====================================== */
@@ -1423,9 +1430,9 @@
         </div>
         <div class="brand-feature">
           <div class="brand-feature-icon">
-            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">percent</span>
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--cyan)">bolt</span>
           </div>
-          <span>Acceso a ofertas exclusivas</span>
+          <span>Tus datos guardados para comprar más rápido</span>
         </div>
         <div class="brand-feature">
           <div class="brand-feature-icon">
@@ -1449,7 +1456,7 @@
       </div>
 
       <!-- -- LOGIN FORM -- -->
-      <div id="panel-login" class="form-card">
+      <form id="panel-login" class="form-card" onsubmit="event.preventDefault();handleDniLogin();">
         <h2 class="form-title">Iniciar sesión</h2>
         <p class="form-subtitle">Ingresá con tu DNI y contraseña. Si ya pasaste por el local, tus datos pueden estar cargados para activar la cuenta.</p>
 
@@ -1465,16 +1472,16 @@
           <input class="input-field" type="password" id="login-pass" placeholder="Tu contraseña" autocomplete="current-password"/>
         </div>
 
-        <button class="submit-btn" onclick="handleDniLogin()">Ingresar</button>
+        <button class="submit-btn" type="submit">Ingresar</button>
 
         <div class="form-links">
-          <button class="form-link" onclick="switchAuthTab('register')">Activar mi DNI</button>
-          <button class="form-link" style="color:var(--warning)">¿Olvidaste tu contraseña?</button>
+          <button class="form-link" type="button" onclick="switchAuthTab('register')">Activar mi DNI</button>
+          <button class="form-link" type="button" style="color:var(--warning)">¿Olvidaste tu contraseña?</button>
         </div>
-      </div>
+      </form>
 
       <!-- -- REGISTER FORM -- -->
-      <div id="panel-register" class="form-card" style="display:none;">
+      <form id="panel-register" class="form-card" style="display:none;" onsubmit="event.preventDefault();handleDniRegister();">
         <h2 class="form-title">Activar DNI</h2>
         <p class="form-subtitle">Si ya fuiste al local y te registraron, ingresá tu DNI para encontrar tus datos y crear tu contraseña.</p>
 
@@ -1495,16 +1502,16 @@
           <input class="input-field" type="password" id="reg-pass-confirm" placeholder="Repetí tu contraseña" autocomplete="new-password"/>
         </div>
 
-        <button class="submit-btn" onclick="handleDniRegister()">Crear contraseña</button>
+        <button class="submit-btn" type="submit">Crear contraseña</button>
 
         <div class="form-links">
-          <button class="form-link" onclick="switchAuthTab('login')">Ya tengo contraseña</button>
+          <button class="form-link" type="button" onclick="switchAuthTab('login')">Ya tengo contraseña</button>
           <span style="font-size:0.7rem;color:var(--text-dim)">Primero validamos tu DNI</span>
         </div>
-      </div>
+      </form>
 
       <!-- -- CREATE FORM -- -->
-      <div id="panel-create" class="form-card" style="display:none;">
+      <form id="panel-create" class="form-card" style="display:none;" onsubmit="event.preventDefault();handleNormalRegister();">
         <h2 class="form-title">Crear cuenta</h2>
         <p class="form-subtitle">Creá una cuenta nueva con tus datos. Si tu DNI ya está cargado, usá Activar DNI para vincularlo.</p>
 
@@ -1539,13 +1546,13 @@
 
         </div>
 
-        <button class="submit-btn" onclick="handleNormalRegister()">Crear cuenta</button>
+        <button class="submit-btn" type="submit">Crear cuenta</button>
 
         <div class="form-links">
-          <button class="form-link" onclick="switchAuthTab('login')">Iniciar sesión</button>
-          <button class="form-link" onclick="switchAuthTab('register')">Activar DNI</button>
+          <button class="form-link" type="button" onclick="switchAuthTab('login')">Iniciar sesión</button>
+          <button class="form-link" type="button" onclick="switchAuthTab('register')">Activar DNI</button>
         </div>
-      </div>
+      </form>
 
     </div>
   </div>
@@ -1671,25 +1678,27 @@
         </div>
       </div>
 
-      <div class="profile-form" style="margin-top:1.5rem;">
+      <form class="profile-form" style="margin-top:1.5rem;" onsubmit="event.preventDefault();changePassword();">
         <div class="profile-section-title">Seguridad</div>
+        <!-- Sin este campo el gestor de contraseñas no sabe a que cuenta pertenece la clave nueva. -->
+        <input type="text" id="pf-username" autocomplete="username" readonly tabindex="-1" aria-hidden="true" style="display:none"/>
         <div class="profile-form-grid">
           <div class="full-width">
             <label class="input-label">Nueva contraseña</label>
-            <input class="input-field" type="password" id="pf-new-pass" placeholder="Dejá vacío para no cambiar"/>
+            <input class="input-field" type="password" id="pf-new-pass" placeholder="Dejá vacío para no cambiar" autocomplete="new-password"/>
           </div>
           <div class="full-width">
             <label class="input-label">Confirmar nueva contraseña</label>
-            <input class="input-field" type="password" id="pf-new-pass-confirm" placeholder="Repetí la nueva contraseña"/>
+            <input class="input-field" type="password" id="pf-new-pass-confirm" placeholder="Repetí la nueva contraseña" autocomplete="new-password"/>
           </div>
         </div>
         <div class="profile-save-row">
-          <button class="change-pass-btn" onclick="changePassword()">
+          <button class="change-pass-btn" type="submit">
             <span class="material-symbols-outlined" style="font-size:14px">lock</span>
             Cambiar contraseña
           </button>
         </div>
-      </div>
+      </form>
     </div>
 
   </div>
@@ -2119,6 +2128,7 @@ function renderDashboard(user) {
   const dniInput = document.getElementById('pf-dni');
   dniInput.value = user.dni || '';
   dniInput.readOnly = user.provider === 'dni' && !!user.dni;
+  document.getElementById('pf-username').value = user.dni || user.email || '';
   document.getElementById('pf-email').value = user.email || '';
 
   // Load saved profile data
@@ -2777,6 +2787,11 @@ function showAuthView() {
   document.getElementById('auth-view').style.display = '';
   document.getElementById('dashboard').classList.remove('visible');
   switchAuthTab('login');
+  // Si llego rebotado del carrito, avisarle por que: si no, aterriza en un
+  // login sin explicacion en medio de la compra.
+  if (getAuthReturnUrl()) {
+    showStatus(document.getElementById('login-status'), 'Iniciá sesión para completar tu compra. Después te devolvemos al carrito.', 'info');
+  }
 }
 
 // -- INIT --
