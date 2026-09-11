@@ -34,8 +34,13 @@
     { queries: ['hdd', 'disco rigido'], alternatives: ['hdd', 'disco rigido', 'disco duro'] },
     { queries: ['almacenamiento'], alternatives: ['almacenamiento', 'ssd', 'hdd', 'disco rigido', 'pendrive', 'nvme'] },
     { queries: ['placa de video', 'placa video', 'gpu', 'vga'], alternatives: ['placa de video', 'placa video', 'gpu', 'vga', 'rtx', 'radeon', 'nvidia geforce'] },
-    { queries: ['joystick', 'joystic', 'joistick', 'gamepad'], alternatives: ['joystick', 'joystic', 'joistick', 'gamepad', 'dualsense', 'dualshock'] },
-    { queries: ['auricular', 'auriculares', 'auri', 'headset', 'headphone'], alternatives: ['auricular', 'auriculares', 'auri', 'headset', 'headphone'] },
+    { queries: ['joystick', 'joystic', 'joistick', 'gamepad', 'control', 'controles', 'mando', 'mandos'], alternatives: ['joystick', 'joystic', 'joistick', 'gamepad', 'control', 'mando', 'dualsense', 'dualshock'] },
+    { queries: ['auricular', 'auriculares', 'auri', 'headset', 'headphone', 'audifono', 'audifonos', 'audiffonos'], alternatives: ['auricular', 'auriculares', 'auri', 'headset', 'headphone', 'audifono', 'vincha'] },
+    { queries: ['webcam', 'camara web', 'camara'], alternatives: ['webcam', 'camara web', 'camara', 'web cam'] },
+    { queries: ['notebook', 'notebooks', 'laptop', 'portatil'], alternatives: ['notebook', 'laptop', 'portatil'] },
+    { queries: ['pendrive', 'pen drive'], alternatives: ['pendrive', 'pen drive', 'memoria usb'] },
+    { queries: ['cooler', 'ventilador', 'refrigeracion'], alternatives: ['cooler', 'ventilador', 'refrigeracion', 'fan'] },
+    { queries: ['silla gamer', 'silla'], alternatives: ['silla gamer', 'silla', 'sillon gamer'] },
     { queries: ['teclado', 'teclados', 'keyboard'], alternatives: ['teclado', 'teclados', 'keyboard'] },
     { queries: ['mouse', 'mause', 'raton'], alternatives: ['mouse', 'mause', 'raton'] },
     { queries: ['monitor', 'monitores', 'pantalla', 'display'], alternatives: ['monitor', 'monitores', 'pantalla', 'display'] },
@@ -112,6 +117,7 @@
     if (!a || !b) return Math.max(a.length, b.length);
     if (Math.abs(a.length - b.length) > max) return max + 1;
     var previous = [];
+    var beforePrevious = [];
     for (var j = 0; j <= b.length; j++) previous[j] = j;
     for (var i = 1; i <= a.length; i++) {
       var current = [i];
@@ -119,9 +125,15 @@
       for (j = 1; j <= b.length; j++) {
         var cost = a[i - 1] === b[j - 1] ? 0 : 1;
         current[j] = Math.min(current[j - 1] + 1, previous[j] + 1, previous[j - 1] + cost);
+        // Dos letras cambiadas de lugar cuentan como un solo error: "tecaldo"
+        // esta a distancia 1 de "teclado", no a 2. Es el typo mas comun al tipear rapido.
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          current[j] = Math.min(current[j], beforePrevious[j - 2] + 1);
+        }
         rowMin = Math.min(rowMin, current[j]);
       }
       if (rowMin > max) return max + 1;
+      beforePrevious = previous;
       previous = current;
     }
     return previous[b.length];
@@ -138,8 +150,16 @@
   });
   QUERY_ALIASES.sort(function(a, b) { return b.tokens.length - a.tokens.length; });
 
+  // Nexos que la gente escribe sin pensar ("control de play", "auricular con cable").
+  // Si se exigen como el resto de las palabras, dejan afuera a todos los productos
+  // que no las tengan en el nombre, que son casi todos.
+  var STOPWORDS = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'unos', 'unas',
+    'con', 'sin', 'para', 'por', 'y', 'o', 'a', 'en', 'al'];
+
   function queryRequirements(query) {
     var tokens = normalize(query).split(' ').filter(Boolean);
+    var utiles = tokens.filter(function(token) { return STOPWORDS.indexOf(token) === -1; });
+    if (utiles.length) tokens = utiles;
     var requirements = [];
     var index = 0;
     while (index < tokens.length) {
@@ -153,7 +173,8 @@
       }
       var token = tokens[index];
       if (token.length >= 2 || (/^\d+$/.test(token) && tokens.length > 1)) {
-        requirements.push({ alternatives: [token], fuzzy: /^[a-z]+$/.test(token) && token.length >= 5 });
+        // Desde 4 letras ya vale corregir typos: "mose" -> "mouse".
+        requirements.push({ alternatives: [token], fuzzy: /^[a-z]+$/.test(token) && token.length >= 4 });
       }
       index++;
     }
@@ -162,25 +183,37 @@
 
   function scoreRequirement(requirement, targetTokens) {
     var best = 0;
+    var hits = 0;
     requirement.alternatives.forEach(function(alternative) {
       var alternativeTokens = normalize(alternative).split(' ').filter(Boolean);
       if (!alternativeTokens.length) return;
       if (containsPhrase(targetTokens, alternative)) {
         best = Math.max(best, 150 + alternativeTokens.length * 10);
+        hits++;
         return;
       }
       if (alternativeTokens.length !== 1) return;
       var token = alternativeTokens[0];
       targetTokens.forEach(function(target) {
-        if (token.length >= 4 && (target.indexOf(token) === 0 || token.indexOf(target) === 0)) {
+        if (token.length >= 4 && target.indexOf(token) === 0) {
+          // El producto empieza con lo que escribio el cliente: "tecla" -> "teclado".
           best = Math.max(best, 80);
+          hits++;
+        } else if (target.length >= 5 && token.indexOf(target) === 0) {
+          // Escribio de mas y el producto usa la forma corta: "monitores" -> "monitor".
+          // El minimo de 5 letras en la palabra del producto es lo que evita que "red"
+          // (cable de red, placa de red) matchee con "redragon", o "cam" con "webcam".
+          best = Math.max(best, 60);
         } else if (requirement.fuzzy && target.length >= 5) {
           var maxDistance = token.length >= 10 ? 2 : 1;
           if (levenshtein(token, target, maxDistance) <= maxDistance) best = Math.max(best, 45);
         }
       });
     });
-    return best;
+    // "placa de video" abre en vga, radeon, geforce, rtx. Una "VGA Gigabyte Radeon"
+    // pega en varios de esos; un "Cable VGA" en uno solo. El que pega en mas es el
+    // que realmente es esa clase de producto, y no el que la nombra al pasar.
+    return best ? best + Math.min(Math.max(hits - 1, 0), 3) * 45 : 0;
   }
 
   function scoreText(text, query) {
@@ -221,6 +254,20 @@
     return /\d/.test(raw) && /^[a-z0-9._\/-]+$/i.test(raw) && normalizeCode(raw).length >= 4;
   }
 
+  // El producto se llama exactamente lo que se busco. Quien escribe "ps5" quiere la
+  // consola, no la funda para ps5 ni el juego de ps5, aunque los tres digan "ps5".
+  function exactNameBonus(normalizedName, normalizedQuery) {
+    if (!normalizedName) return 0;
+    if (normalizedName === normalizedQuery) return 1500;
+    var requirements = queryRequirements(normalizedQuery);
+    if (requirements.length !== 1) return 0;
+    var alternatives = requirements[0].alternatives;
+    for (var i = 0; i < alternatives.length; i++) {
+      if (normalize(alternatives[i]) === normalizedName) return 1500;
+    }
+    return 0;
+  }
+
   function scoreProduct(product, query) {
     product = product || {};
     var normalizedQuery = normalize(query);
@@ -239,7 +286,7 @@
     if (!textScore) return 0;
 
     var nameScore = scoreFields(collectFields(product, ['name', 'nombre', 'title', 'titulo', 'producto']), query);
-    return textScore + (nameScore ? 700 : 0);
+    return textScore + (nameScore ? 700 : 0) + exactNameBonus(normalizedName, normalizedQuery);
   }
 
   return {

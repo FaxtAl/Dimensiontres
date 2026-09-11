@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html class="dark" style="background:#0e0e0e" lang="es" style="scroll-behavior:smooth;">
+<html class="dark" lang="es" style="background:#0e0e0e;scroll-behavior:smooth;">
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -321,8 +321,9 @@
         </div>
       </div>
 
-      <label class="catalog-filter-label" for="mobile-sort-select">Ordenar por precio</label>
+      <label class="catalog-filter-label" for="mobile-sort-select">Ordenar por</label>
       <select id="mobile-sort-select" class="mobile-sort-select" data-sort-select onchange="sortCards(this.value)">
+        <option value="relevance">Más relevante</option>
         <option value="price-low">Menor precio</option>
         <option value="price-high">Mayor precio</option>
       </select>
@@ -375,11 +376,12 @@
             <span class="material-symbols-outlined absolute right-3 text-[#8f8e8d] text-[20px]">search</span>
           </div>
           <div id="root-price-sort-controls" class="flex items-center gap-3">
-            <span class="font-headline text-xs uppercase tracking-widest text-[#8f8e8d]">Precio:</span>
-            <select aria-label="Ordenar productos por precio" class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
+            <span class="font-headline text-xs uppercase tracking-widest text-[#8f8e8d]">Orden:</span>
+            <select aria-label="Ordenar productos" class="custom-select bg-[#131313] border border-outline-variant/20 text-on-surface-variant font-headline text-xs uppercase tracking-widest px-3 py-2 outline-none pr-8"
               data-sort-select
               style="border-radius:6px;"
               onchange="sortCards(this.value)">
+              <option value="relevance">Más relevante</option>
               <option value="price-low">Menor precio</option>
               <option value="price-high">Mayor precio</option>
             </select>
@@ -436,8 +438,9 @@
                 </select>
               </label>
             </div>
-            <span>Precio</span>
-            <select aria-label="Ordenar productos por precio" class="custom-select" data-sort-select onchange="sortCards(this.value)">
+            <span>Orden</span>
+            <select aria-label="Ordenar productos" class="custom-select" data-sort-select onchange="sortCards(this.value)">
+              <option value="relevance">Más relevante</option>
               <option value="price-low">Menor precio</option>
               <option value="price-high">Mayor precio</option>
             </select>
@@ -3360,6 +3363,13 @@ function applyProductFilters() {
   }
 }
 
+// Solo applyProductFilters escribe el "Mostrando X de Y"; las vistas que no pasan
+// por ahi (categorias, busqueda sin resultados) lo borran para no dejar el de antes.
+function clearResultsLine() {
+  var linea = document.getElementById('dt-resultados');
+  if (linea) linea.textContent = '';
+}
+
 function setProductBrandFilter(value) {
   currentProductFilters.brand = value || 'all';
   buildCascadeFilterOptions(currentProductFilterPool);
@@ -4702,7 +4712,9 @@ async function renderProductSearchResults(query, options) {
     return;
   }
 
-  var contextLabel = getActiveCatalogContextLabel();
+  // Buscar desde adentro de una subcategoria mira todo el catalogo, asi que no se
+  // puede titular "Resultados en categoria X": los resultados no son de ahi.
+  var contextLabel = options.global ? '' : getActiveCatalogContextLabel();
   var displayQuery = currentSearchDisplay || query;
   setCatalogHeaderContext(
     contextLabel ? 'Resultados en categoría' : '',
@@ -4718,6 +4730,7 @@ async function renderProductSearchResults(query, options) {
   grid.style.display = 'none';
   document.getElementById('visible-count').textContent = '...';
   document.getElementById('count-label').textContent = 'productos';
+  clearResultsLine();
   empty.classList.remove('hidden');
   empty.querySelector('.material-symbols-outlined').textContent = 'hourglass_top';
   empty.querySelector('p.font-headline').textContent = 'Buscando productos';
@@ -4737,6 +4750,10 @@ async function renderProductSearchResults(query, options) {
   document.getElementById('visible-count').textContent = results.length;
   if (results.length) {
     empty.classList.add('hidden');
+    // Los resultados ya vienen ordenados por relevancia. Sin esto, sortCards los
+    // reordena por precio y el producto que el cliente busco queda enterrado entre
+    // accesorios baratos que apenas lo mencionan.
+    currentSortOrder = 'relevance';
     renderProductCards(results);
   } else {
     grid.style.display = 'none';
@@ -5074,6 +5091,7 @@ function renderGrid(items, animate) {
   setProductFiltersVisible(false);
   grid.innerHTML = '';
   resetEmptyState();
+  clearResultsLine();
 
   var visible = items.filter(function(item) {
     var matchFilter = currentFilter === 'all' || item.category === currentFilter || currentLevel !== 'root';
@@ -5298,18 +5316,11 @@ function setFilter(filter, btn) {
   closeCatalogPanel();
 }
 
+// El buscador de la barra del catalogo (el que se ve en celular) y la lupa entran
+// por aca. Era una copia de handleSearchLive sin el caso de subcategoria, asi que
+// buscar desde ahi seguia borrando los productos: ahora usan la misma logica.
 function filterBySearch(query) {
-  setCatalogSearchQuery(query);
-  if (currentLevel === 'root') {
-    currentRouteState = { view: 'root', filter: currentFilter, q: currentSearch };
-    updateCatalogHistory(currentRouteState, true);
-    clearTimeout(productSearchTimer);
-    productSearchTimer = setTimeout(function() {
-      renderProductSearchResults(currentSearch);
-    }, currentSearch ? 220 : 0);
-    return;
-  }
-  renderGrid(currentLevel === 'root' ? CATALOG : (currentParent ? currentParent.children : CATALOG));
+  handleSearchLive(query);
 }
 
 function handleSearchLive(query) {
@@ -5323,6 +5334,25 @@ function handleSearchLive(query) {
     }, currentSearch ? 220 : 0);
     return;
   }
+
+  // Dentro de una subcategoria la grilla muestra productos, no categorias. Antes se
+  // la reemplazaba por las subcategorias hermanas que coincidian: escribir "ps2"
+  // parado en "Accesorios Ps3" borraba los 3 productos y dejaba una tarjeta de
+  // "Accesorios Ps2", con el titulo y el "Mostrando 3 de 3" de la vista anterior.
+  // Ahora busca productos igual que en la raiz, y al borrar el texto vuelve a la
+  // subcategoria en la que estaba.
+  if (currentLevel === 'products') {
+    clearTimeout(productSearchTimer);
+    productSearchTimer = setTimeout(function() {
+      if (currentSearch) {
+        renderProductSearchResults(currentSearch, { global: true });
+      } else {
+        applyCatalogRoute({ updateHistory: false, scroll: false });
+      }
+    }, currentSearch ? 220 : 0);
+    return;
+  }
+
   renderGrid(currentParent ? currentParent.children : CATALOG);
 }
 
@@ -5390,7 +5420,17 @@ function sortCards(order) {
   });
   var grid = document.getElementById('categories-grid');
   var cards = Array.from(grid.querySelectorAll('.cat-card, .product-card'));
-  if (order === 'default') {
+  if (order === 'relevance') {
+    // Orden en que ya vinieron rankeados (relevancia de la busqueda), con lo que no
+    // hay stock al final. No se aplica prioridad por categoria: si alguien busca algo,
+    // manda lo que mejor coincide.
+    cards.sort(function(a, b) {
+      var outA = (a.dataset.stockStatus || '') === 'out';
+      var outB = (b.dataset.stockStatus || '') === 'out';
+      if (outA !== outB) return outA ? 1 : -1;
+      return Number(a.dataset.order || 0) - Number(b.dataset.order || 0);
+    });
+  } else if (order === 'default') {
     cards.sort(function(a, b) {
       return compareCardCategoryPriority(a, b) || compareCardAvailability(a, b) || Number(a.dataset.order || 0) - Number(b.dataset.order || 0);
     });
