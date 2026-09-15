@@ -1467,6 +1467,8 @@
     var text = normalizeCatalogText(status || '');
     if (text) {
       if (text.indexOf('sin stock') !== -1 || text.indexOf('agot') !== -1) return 0;
+      // Estado nuevo de Invid, llega sin numero de stock: cuenta como con stock.
+      if (text.indexOf('menos de') !== -1) return 10;
       if (text.indexOf('bajo stock') !== -1) return 2;
       if (text.indexOf('stock ok') !== -1 || text.indexOf('dispon') !== -1 || text.indexOf('stock') !== -1) return 10;
     }
