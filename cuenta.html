@@ -1544,6 +1544,12 @@
           <span class="input-hint">Si tu DNI ya está cargado en el sistema, usá Activar DNI para vincular tus datos del local.</span>
         </div>
 
+        <div class="input-group">
+          <label class="input-label">Teléfono</label>
+          <input class="input-field" type="tel" id="create-phone" placeholder="Ej: 353 4123456" inputmode="tel" autocomplete="tel"/>
+          <span class="input-hint">Lo usamos para avisarte por WhatsApp sobre tu pedido.</span>
+        </div>
+
         </div>
 
         <button class="submit-btn" type="submit">Crear cuenta</button>
@@ -1831,7 +1837,7 @@
 <script src="img/producto-imagenes-juegos-extra.js?v=map-juegos-ps4-hitman-20260812"></script>
 <script src="img/producto-imagenes-local.js?v=local-images-20260810c"></script>
 <script src="img/invid-imagenes-local.js?v=invid-images-local-20260805a"></script>
-<script src="supabase-client.js?v=dolar-invid-automatico-20260810"></script>
+<script src="supabase-client.js?v=registro-dni-telefono-20260916"></script>
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
 <script src="search-global.js?v=search-ranking-20260805b"></script>
 <script src="cart.js?v=minicarrito-20260826"></script>
@@ -2006,16 +2012,17 @@ async function handleDniRegister() {
   loginUser(result.user);
 }
 
-// Crea una cuenta nueva desde la web. Si carga DNI, despues se puede vincular al historial local.
+// Crea una cuenta nueva desde la web. El DNI permite vincularla despues al historial local.
 async function handleNormalRegister() {
   const name = document.getElementById('create-name').value.trim();
   const email = document.getElementById('create-email').value.trim().toLowerCase();
   const pass = document.getElementById('create-pass').value;
   const passConfirm = document.getElementById('create-pass-confirm').value;
   const dni = cleanDni(document.getElementById('create-dni').value);
+  const phone = document.getElementById('create-phone').value.trim();
   const status = document.getElementById('create-status');
 
-  if (!name || !email || !pass || !passConfirm) {
+  if (!name || !email || !pass || !passConfirm || !dni || !phone) {
     showStatus(status, 'Completá todos los campos.', 'error');
     return;
   }
@@ -2031,8 +2038,15 @@ async function handleNormalRegister() {
     showStatus(status, 'Las contraseñas no coinciden.', 'error');
     return;
   }
-  if (dni && dni.length < 7) {
-    showStatus(status, 'DNI inválido.', 'error');
+  // DNI y telefono obligatorios, igual que en "Datos personales": el
+  // telefono hace falta para avisar por WhatsApp cuando hay un pedido, y
+  // antes una cuenta nueva podia llegar al checkout sin ninguno de los dos.
+  if (dni.length < 7) {
+    showStatus(status, 'Ingresá un DNI válido.', 'error');
+    return;
+  }
+  if (phone.replace(/\D/g, '').length < 8) {
+    showStatus(status, 'Ingresá un teléfono válido, lo necesitamos para avisarte por tu pedido.', 'error');
     return;
   }
   if (!window.SupabaseStore || !window.SupabaseStore.registerEmailAccount) {
@@ -2045,7 +2059,8 @@ async function handleNormalRegister() {
     name: name,
     email: email,
     password: pass,
-    dni: dni
+    dni: dni,
+    phone: phone
   });
   if (result.error) {
     showStatus(status, result.error.message || 'No pudimos crear la cuenta.', 'error');

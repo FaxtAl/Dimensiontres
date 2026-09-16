@@ -1110,7 +1110,7 @@
       firstName: firstName,
       lastName: lastName,
       email: meta.profile_email || fallback.email || (authUser && authUser.email) || '',
-      phone: meta.phone || meta.telefono || '',
+      phone: meta.phone || meta.telefono || fallback.phone || '',
       address: meta.address || meta.direccion || '',
       avatar: meta.avatar_url || meta.picture || '',
       provider: fallback.provider || (authUser && authUser.app_metadata && authUser.app_metadata.provider) || 'email',
@@ -1124,10 +1124,15 @@
     var email = normalizeEmail(data.email);
     var password = data.password || '';
     var cleanDni = normalizeDni(data.dni);
+    var phone = String(data.phone || '').trim();
     if (!sb) return { user: null, error: { message: 'Supabase no esta disponible.' } };
     if (!name || !email || !password) return { user: null, error: { message: 'Completá todos los campos.' } };
 
-    if (cleanDni && cleanDni.length < 7) return { user: null, error: { message: 'DNI invalido.' } };
+    // DNI y telefono obligatorios: el telefono se guarda en los metadatos de
+    // la cuenta, de donde lo leen "Datos personales" (buildEmailAccountUser)
+    // y el armado del pedido (order_create_account_value en order-create.php).
+    if (!cleanDni || cleanDni.length < 7) return { user: null, error: { message: 'Ingresá un DNI válido.' } };
+    if (phone.replace(/\D/g, '').length < 8) return { user: null, error: { message: 'Ingresá un teléfono válido.' } };
 
     if (cleanDni) {
       var lookup = await fetchCustomerByDni(cleanDni);
@@ -1149,7 +1154,7 @@
       email: email,
       password: password,
       options: {
-        data: { name: name, dni: cleanDni || '' }
+        data: { name: name, dni: cleanDni || '', phone: phone }
       }
     });
 
@@ -1159,7 +1164,7 @@
     }
 
     return {
-      user: buildEmailAccountUser(result.data.user, { name: name, email: email, dni: cleanDni }),
+      user: buildEmailAccountUser(result.data.user, { name: name, email: email, dni: cleanDni, phone: phone }),
       needsVerification: !(result.data && result.data.session),
       error: null
     };
