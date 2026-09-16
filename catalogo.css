@@ -1249,8 +1249,9 @@ body::after {
 .product-card-media {
   position: relative;
   margin: 8px 8px 0;
-  /* Cuadrada: tarjeta mas larga y foto mas grande (pedido del dueño). */
-  aspect-ratio: 1 / 1;
+  /* 5:4 (antes 4:3): tarjeta apenas mas alta, pedido del dueño. En celular
+     sigue cuadrada (ver media query de 640px). */
+  aspect-ratio: 5 / 4;
   display: flex;
   align-items: center;
   justify-content: center;
