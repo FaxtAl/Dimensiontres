@@ -373,6 +373,16 @@ body::after {
   background: rgba(143,245,255,0.06);
 }
 
+/* Buscador de escritorio dentro de la pagina: repetia la barra del nav.
+   Se oculta (el input queda en el DOM para el JS) y el orden va a la derecha. */
+#desktop-controls .catalog-search-shell {
+  display: none;
+}
+
+#desktop-controls {
+  justify-content: flex-end;
+}
+
 .catalog-mobile-bar {
   display: none;
   background: #0e0e0e;
@@ -1239,7 +1249,8 @@ body::after {
 .product-card-media {
   position: relative;
   margin: 8px 8px 0;
-  aspect-ratio: 4 / 3;
+  /* Cuadrada: tarjeta mas larga y foto mas grande (pedido del dueño). */
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1650,8 +1661,11 @@ body::after {
     display: block;
   }
 
+  /* Oculto: en celular se busca con la lupa del nav, que en el catalogo
+     filtra igual (search-nav-mobile). El input sigue en el DOM porque el JS
+     lo sincroniza. */
   .mobile-catalog-search {
-    display: flex;
+    display: none;
   }
 
   .catalog-results-toolbar .product-sort-controls,

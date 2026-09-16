@@ -255,6 +255,22 @@
     '</div>';
 })();
 
+// Bot de preguntas "Tito" (bot.js + bot.css). Se carga desde aca para que
+// aparezca en todas las paginas que ya usan shared.js, sin tocar cada HTML.
+(function injectQuestionBot() {
+  if (document.querySelector('script[data-dt-bot]')) return;
+  var version = 'tito-20260916';
+  var css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = 'bot.css?v=' + version;
+  document.head.appendChild(css);
+  var script = document.createElement('script');
+  script.src = 'bot.js?v=' + version;
+  script.defer = true;
+  script.setAttribute('data-dt-bot', '');
+  document.head.appendChild(script);
+})();
+
 (function injectFloatingWhatsApp() {
   if (document.querySelector('.dt-whatsapp-float')) return;
 

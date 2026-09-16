@@ -1,0 +1,426 @@
+/* bot.css - "Tito", el bot de preguntas de DimensionTres.
+   Usa la misma paleta del sitio: negro, cyan #8ff5ff y esquinas casi rectas.
+   Va abajo a la izquierda para no chocar con el boton de WhatsApp (derecha). */
+
+/* Boton redondo con la foto de Tito (img/bot-tito.jpg). */
+.dt-bot-launcher {
+  position: fixed;
+  left: clamp(16px, 2vw, 28px);
+  bottom: clamp(18px, 2.4vw, 30px);
+  z-index: 76;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  overflow: hidden;
+  background: #8ff5ff;
+  border: 2px solid #8ff5ff;
+  border-radius: 50%;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 0 5px rgba(143, 245, 255, 0.12);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dt-bot-launcher:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5), 0 0 0 7px rgba(143, 245, 255, 0.18);
+}
+
+.dt-bot-launcher-img,
+.dt-bot-avatar-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sin foto: la inicial sobre el circulo cyan. */
+.dt-bot-launcher-img.is-fallback,
+.dt-bot-avatar-img.is-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: #061111;
+}
+
+.dt-bot-avatar-img.is-fallback {
+  font-size: 18px;
+}
+
+.dt-bot-launcher:focus-visible,
+.dt-bot-close:focus-visible,
+.dt-bot-chip:focus-visible,
+.dt-bot-send:focus-visible,
+.dt-bot-link:focus-visible,
+.dt-bot-product:focus-visible {
+  outline: 2px solid #8ff5ff;
+  outline-offset: 3px;
+}
+
+/* El cursor de terminal: la unica animacion que corre sola. */
+.dt-bot-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 17px;
+  background: currentColor;
+  animation: dt-bot-blink 1.1s steps(1) infinite;
+}
+
+@keyframes dt-bot-blink {
+  50% { opacity: 0; }
+}
+
+body.dt-mobile-menu-open .dt-bot-launcher,
+body.catalog-panel-open .dt-bot-launcher,
+body.dt-modal-open .dt-bot-launcher,
+body.dt-mobile-menu-open .dt-bot-panel,
+body.catalog-panel-open .dt-bot-panel,
+body.dt-modal-open .dt-bot-panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* -- Panel -- */
+.dt-bot-panel {
+  position: fixed;
+  left: clamp(16px, 2vw, 28px);
+  bottom: calc(clamp(18px, 2.4vw, 30px) + 72px);
+  z-index: 95;
+  width: min(370px, calc(100vw - 32px));
+  height: min(540px, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  background: #0e0e0e;
+  border: 1px solid rgba(143, 245, 255, 0.28);
+  border-radius: 2px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  color: #e7e5e4;
+  font-family: 'Manrope', system-ui, sans-serif;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.dt-bot-panel.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dt-bot-panel[hidden] {
+  display: none;
+}
+
+.dt-bot-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid rgba(143, 245, 255, 0.12);
+}
+
+.dt-bot-avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  background: #8ff5ff;
+  border: 2px solid #8ff5ff;
+  border-radius: 50%;
+}
+
+.dt-bot-title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.dt-bot-title strong {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.dt-bot-title span {
+  font-size: 12px;
+  color: #adaaaa;
+}
+
+.dt-bot-close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #adaaaa;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.dt-bot-close:hover {
+  color: #ffffff;
+  border-color: rgba(143, 245, 255, 0.25);
+}
+
+.dt-bot-close svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* -- Conversacion -- */
+.dt-bot-log {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dt-bot-msg {
+  max-width: 88%;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.dt-bot-msg p {
+  margin: 0;
+}
+
+.dt-bot-msg p + p,
+.dt-bot-msg p + div,
+.dt-bot-msg div + div {
+  margin-top: 8px;
+}
+
+.dt-bot-msg--bot {
+  align-self: flex-start;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid #8ff5ff;
+  color: #e7e5e4;
+}
+
+.dt-bot-msg--user {
+  align-self: flex-end;
+  padding: 8px 12px;
+  background: #8ff5ff;
+  color: #061111;
+  font-weight: 600;
+  border-radius: 2px;
+}
+
+.dt-bot-msg--thinking {
+  display: inline-flex;
+  gap: 5px;
+  padding: 8px 0 8px 12px;
+}
+
+.dt-bot-msg--thinking span {
+  width: 6px;
+  height: 6px;
+  background: #8ff5ff;
+  animation: dt-bot-think 0.9s ease-in-out infinite;
+}
+
+.dt-bot-msg--thinking span:nth-child(2) { animation-delay: 0.15s; }
+.dt-bot-msg--thinking span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes dt-bot-think {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+.dt-bot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.dt-bot-link {
+  color: #8ff5ff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dt-bot-link:hover {
+  color: #ffffff;
+}
+
+.dt-bot-products {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dt-bot-product {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: #161616;
+  border: 1px solid rgba(143, 245, 255, 0.14);
+  border-radius: 2px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.dt-bot-product:hover {
+  border-color: rgba(143, 245, 255, 0.55);
+}
+
+.dt-bot-product-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dt-bot-product-meta {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8ff5ff;
+}
+
+/* -- Respuestas rapidas y campo de texto -- */
+.dt-bot-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 14px;
+}
+
+.dt-bot-chips:not(:empty) {
+  padding-bottom: 10px;
+}
+
+.dt-bot-chip {
+  padding: 6px 10px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e7e5e4;
+  background: transparent;
+  border: 1px solid rgba(143, 245, 255, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.dt-bot-chip:hover {
+  color: #8ff5ff;
+  border-color: #8ff5ff;
+}
+
+.dt-bot-form {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(143, 245, 255, 0.12);
+}
+
+.dt-bot-input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 16px; /* 16px evita el zoom automatico de iOS al enfocar */
+  color: #ffffff;
+  background: #161616;
+  border: 1px solid rgba(143, 245, 255, 0.18);
+  border-radius: 2px;
+}
+
+.dt-bot-input:focus {
+  outline: none;
+  border-color: #8ff5ff;
+}
+
+.dt-bot-input::placeholder {
+  color: #767575;
+}
+
+.dt-bot-send {
+  flex: none;
+  height: 42px;
+  padding: 0 14px;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #061111;
+  background: #8ff5ff;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.dt-bot-send:hover {
+  background: #ffffff;
+}
+
+.dt-bot-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* -- Celular -- */
+@media (max-width: 767px) {
+  .dt-bot-launcher {
+    left: 16px;
+    bottom: 16px;
+    width: 54px;
+    height: 54px;
+  }
+
+  /* En la ficha de producto la barra de "Agregar" ocupa el borde de abajo:
+     el bot sube igual que el boton de WhatsApp. */
+  body.has-mobile-cta .dt-bot-launcher {
+    bottom: 88px;
+  }
+
+  .dt-bot-panel {
+    left: 16px;
+    right: 16px;
+    bottom: 82px;
+    width: auto;
+    height: min(560px, calc(100vh - 106px));
+  }
+
+  body.has-mobile-cta .dt-bot-panel {
+    bottom: 154px;
+    height: min(520px, calc(100vh - 178px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-bot-cursor,
+  .dt-bot-msg--thinking span {
+    animation: none;
+  }
+
+  .dt-bot-launcher,
+  .dt-bot-panel {
+    transition: none;
+  }
+}

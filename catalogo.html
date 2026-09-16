@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
-<link rel="stylesheet" href="catalogo.css?v=tarjeta-prolija-20260916">
+<link rel="stylesheet" href="catalogo.css?v=tarjetas-b-20260916">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -123,11 +123,16 @@
 
   <!-- Buscador de celular: lo despliega la lupa. -->
   <div id="dt-mobile-search" class="dt-mobile-search md:hidden px-5 pb-3">
-    <div class="relative w-full flex items-center global-search-host">
-      <input data-global-search type="text" placeholder="Buscar productos..."
+    <!-- En el catalogo la lupa del nav filtra en vivo (como la barra de
+         escritorio): el buscador que habia dentro de la pagina se oculto
+         para no repetir. search-global.js no se carga en esta pagina. -->
+    <div class="relative w-full flex items-center catalog-search-shell">
+      <input id="search-nav-mobile" type="text" placeholder="Buscar productos..."
         class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none"
-        style="border-radius:6px;"/>
-      <button type="button" class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors"
+        style="border-radius:6px;"
+        oninput="handleSearchLive(this.value)"
+        onkeydown="if (event.key === 'Enter') submitCatalogSearch('search-nav-mobile')"/>
+      <button type="button" onclick="submitCatalogSearch('search-nav-mobile')" class="absolute right-0 h-full px-3.5 flex items-center justify-center text-[#8f8e8d] hover:text-primary transition-colors"
         style="border-radius:0 6px 6px 0;" aria-label="Buscar">
         <span class="material-symbols-outlined text-[20px]">search</span>
       </button>
@@ -1696,7 +1701,9 @@ function setBackAction(label, handler) {
 }
 
 function getCatalogSearchInputIds() {
-  return ['search-input', 'search-catalog', 'search-mobile-catalog'];
+  // search-catalog y search-mobile-catalog quedan ocultos por CSS (se busca
+  // desde el nav), pero se siguen sincronizando: otras partes leen su valor.
+  return ['search-input', 'search-nav-mobile', 'search-catalog', 'search-mobile-catalog'];
 }
 
 function syncSearchInputs(value) {
