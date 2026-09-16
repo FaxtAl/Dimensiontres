@@ -48,7 +48,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
-<link rel="stylesheet" href="catalogo.css?v=banners-cat-b-20260826">
+<link rel="stylesheet" href="catalogo.css?v=tarjeta-prolija-20260916">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -3568,6 +3568,14 @@ function renderProductCards(products, options) {
       soldOut.className = 'product-card-soldout';
       soldOut.textContent = 'Sin stock';
       media.appendChild(soldOut);
+    } else {
+      // Disponibilidad como una sola pildora sobre la foto. Antes eran dos
+      // cajas ("En local" arriba y otra de stock a todo el ancho). Sin stock
+      // no se muestra: ya lo dice el cartel "Sin stock".
+      var availability = document.createElement('span');
+      availability.className = 'product-card-availability ' + (isProviderProduct(p) ? 'is-provider' : 'is-local');
+      availability.textContent = isProviderProduct(p) ? 'Llega en 48 hs' : getProductAvailabilityLabel(p);
+      media.appendChild(availability);
     }
     card.appendChild(media);
 
@@ -3582,50 +3590,46 @@ function renderProductCards(products, options) {
     // El cartel de "usado" por tarjeta se saco: ahora ese aviso vive solo
     // arriba de la lista (dtActualizarAvisoUsados, junto al boton volver),
     // no repetido en cada producto.
-    var availability = document.createElement('span');
-    availability.className = 'product-card-availability ' + (isProviderProduct(p) ? 'is-provider' : 'is-local');
-    availability.textContent = getProductAvailabilityLabel(p);
-    body.appendChild(availability);
 
     var title = document.createElement('h3');
     title.className = 'product-card-title';
     title.textContent = p.name;
     body.appendChild(title);
 
-    var subtitle = document.createElement('p');
-    subtitle.className = 'product-card-subtitle';
-    subtitle.textContent = displayCatalogText(p.subtitle || 'Consultar disponibilidad');
-    body.appendChild(subtitle);
-
-    var stock = document.createElement('span');
-    stock.className = 'product-card-stock' + catalogStockChipClass(stockState);
-    stock.textContent = stockState.label;
-    if (hasStockValue && Number.isFinite(Number(p.stock)) && stockState.status !== 'out') {
-      stock.title = Number(p.stock) + ' unidades disponibles';
-    }
-    body.appendChild(stock);
-
+    // Pie: precio (con "Quedan pocas" solo si el stock es bajo) y una sola
+    // accion. Se sacaron el subtitulo (repetia la categoria), la caja de
+    // stock a todo el ancho y la flecha, que competia con el boton.
     var foot = document.createElement('div');
     foot.className = 'product-card-foot';
+    var priceWrap = document.createElement('div');
+    priceWrap.className = 'product-card-price';
     var price = document.createElement('strong');
-    price.textContent = formatProductPrice(p);
-    foot.appendChild(price);
-    var action = document.createElement(needsConsult ? 'button' : 'span');
+    price.textContent = getProductPrice(p) > 0 ? formatProductPrice(p) : 'Precio a consultar';
+    priceWrap.appendChild(price);
+    if (stockState.status === 'low') {
+      var low = document.createElement('span');
+      low.className = 'product-card-low';
+      low.textContent = 'Quedan pocas';
+      if (hasStockValue && Number.isFinite(Number(p.stock))) {
+        low.title = Number(p.stock) + ' unidades disponibles';
+      }
+      priceWrap.appendChild(low);
+    }
+    foot.appendChild(priceWrap);
+
     if (needsConsult) {
-      action.type = 'button';
-      action.className = 'product-card-consult-btn';
-      action.innerHTML = '<span class="material-symbols-outlined">chat</span><span>Consultar</span>';
-      action.title = 'Consultar por WhatsApp';
-      action.setAttribute('aria-label', 'Consultar por WhatsApp ' + (p.name || 'producto'));
-      action.addEventListener('click', function(event) {
+      var consultBtn = document.createElement('button');
+      consultBtn.type = 'button';
+      consultBtn.className = 'product-card-consult-btn';
+      consultBtn.innerHTML = '<span class="material-symbols-outlined">chat</span><span>Consultar</span>';
+      consultBtn.title = 'Consultar por WhatsApp';
+      consultBtn.setAttribute('aria-label', 'Consultar por WhatsApp ' + (p.name || 'producto'));
+      consultBtn.addEventListener('click', function(event) {
         event.stopPropagation();
         openProductWhatsApp(p);
       });
-    } else {
-      action.className = 'material-symbols-outlined';
-      action.textContent = 'arrow_forward';
+      foot.appendChild(consultBtn);
     }
-    foot.appendChild(action);
     body.appendChild(foot);
 
     // Agregar al carrito sin entrar a la ficha. Mismo objeto de producto que
@@ -3634,7 +3638,8 @@ function renderProductCards(products, options) {
       var addBtn = document.createElement('button');
       addBtn.type = 'button';
       addBtn.className = 'product-card-add';
-      addBtn.textContent = byOrder ? 'A pedido' : 'Agregar';
+      addBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>';
+      addBtn.title = byOrder ? 'Pedir' : 'Agregar al carrito';
       addBtn.setAttribute('aria-label', 'Agregar ' + (p.name || 'producto') + ' al carrito');
       addBtn.addEventListener('click', function(event) {
         // La tarjeta es un <a>: hay que frenar el link ademas de la burbuja.
@@ -3657,7 +3662,7 @@ function renderProductCards(products, options) {
           byOrder: byOrder
         });
       });
-      body.appendChild(addBtn);
+      foot.appendChild(addBtn);
     }
 
     card.appendChild(body);

@@ -650,23 +650,25 @@ function createFeaturedProductCard(product) {
     media.appendChild(icon);
     hydrateFeaturedProductImage(product, media);
   }
-  var line = document.createElement('div');
-  line.className = 'feat-bottom-line';
-  media.appendChild(line);
+  // Misma tarjeta que el catalogo: disponibilidad como pildora sobre la foto,
+  // categoria y nombre, y un pie con precio (+ "Quedan pocas") y boton-icono.
+  var esProveedor = product.fulfillment === 'provider' || product.sourceIntegration === 'invid';
+  var disponibilidad = document.createElement('span');
+  disponibilidad.className = 'feat-availability' + (esProveedor ? ' is-provider' : ' is-local');
+  disponibilidad.textContent = esProveedor ? 'Llega en 48 hs' : 'En local';
+  media.appendChild(disponibilidad);
   card.appendChild(media);
 
   var body = document.createElement('div');
   body.className = 'feat-body';
 
-  var esProveedor = product.fulfillment === 'provider' || product.sourceIntegration === 'invid';
-  var disponibilidad = document.createElement('span');
-  disponibilidad.className = 'feat-availability' + (esProveedor ? ' is-provider' : ' is-local');
-  disponibilidad.textContent = esProveedor ? '48 hs de demora' : 'En local';
-  body.appendChild(disponibilidad);
-
   var tag = document.createElement('p');
   tag.className = 'feat-tag';
-  tag.textContent = product.sourceLabel || product.category || 'Catalogo';
+  // Access trae "Accessorios" mal escrito; el catalogo lo corrige con
+  // displayCatalogText y ahora, sin mayusculas forzadas, se notaba aca.
+  tag.textContent = String(product.sourceLabel || product.category || 'Catálogo')
+    .replace(/\bAccessorios\b/gi, 'Accesorios')
+    .replace(/\bAccessorio\b/gi, 'Accesorio');
   body.appendChild(tag);
 
   var name = document.createElement('p');
@@ -674,10 +676,21 @@ function createFeaturedProductCard(product) {
   name.textContent = product.name;
   body.appendChild(name);
 
+  var foot = document.createElement('div');
+  foot.className = 'feat-foot';
+  var priceWrap = document.createElement('div');
+  priceWrap.className = 'feat-price-wrap';
   var price = document.createElement('p');
   price.className = 'feat-price';
   price.textContent = formatHomeMoney(product.price);
-  body.appendChild(price);
+  priceWrap.appendChild(price);
+  if (typeof getProductStockState === 'function' && getProductStockState(product).status === 'low') {
+    var low = document.createElement('span');
+    low.className = 'feat-low';
+    low.textContent = 'Quedan pocas';
+    priceWrap.appendChild(low);
+  }
+  foot.appendChild(priceWrap);
 
   var btn = document.createElement('button');
   btn.className = 'feat-btn';
@@ -685,9 +698,11 @@ function createFeaturedProductCard(product) {
   var byOrder = typeof isByOrderProduct === 'function' && isByOrderProduct(product);
   var btnIcon = document.createElement('span');
   btnIcon.className = 'material-symbols-outlined';
+  btnIcon.setAttribute('aria-hidden', 'true');
   btnIcon.textContent = byOrder ? 'schedule' : 'add_shopping_cart';
   btn.appendChild(btnIcon);
-  btn.appendChild(document.createTextNode(byOrder ? 'A pedido' : 'Agregar al carrito'));
+  btn.title = byOrder ? 'A pedido' : 'Agregar al carrito';
+  btn.setAttribute('aria-label', 'Agregar ' + (product.name || 'producto') + ' al carrito');
   btn.addEventListener('click', function(event) {
     event.stopPropagation();
     if (typeof addToCartUI !== 'function') return;
@@ -707,7 +722,8 @@ function createFeaturedProductCard(product) {
       byOrder: byOrder
     });
   });
-  body.appendChild(btn);
+  foot.appendChild(btn);
+  body.appendChild(foot);
   card.appendChild(body);
   return card;
 }

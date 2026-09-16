@@ -936,8 +936,10 @@ body::after {
   align-items: stretch;
 }
 
+/* 155px y no 130px: con la tarjeta nueva (precio + boton en la misma fila)
+   las columnas de 130px dejaban el precio cortado en tablets. */
 .catalog-layout.has-sidebar #categories-grid {
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
 }
 
 .catalog-layout:not(.has-sidebar) .cat-card .aspect-square {
@@ -1131,27 +1133,36 @@ body::after {
   }
 }
 
+/* Tarjeta de producto "oscura prolija": foto sobre placa clara, una sola
+   pildora de disponibilidad, precio protagonista y un boton-icono de carrito.
+   Sin min-height fijos: la altura la da el contenido y la grilla estira. */
 .product-card {
   /* Ahora la tarjeta es un <a>: hay que anular el subrayado y el color de link. */
   text-decoration: none;
   color: inherit;
-  min-height: 320px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(72,72,71,0.22);
-  background: #141414;
-  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: #131313;
+  border-radius: 4px;
   cursor: pointer;
   opacity: 0;
   animation: fadeSlideUp 0.45s ease forwards;
-  transition: border-color 0.25s, transform 0.25s, background 0.25s;
+  transition: border-color 0.2s, background-color 0.2s;
+  /* Para ajustar precio, boton y pildora al ancho real de la tarjeta
+     (ver @container al final del archivo), no al de la pantalla. */
+  container-type: inline-size;
 }
 
 .product-card:hover {
-  border-color: rgba(143,245,255,0.32);
-  background: #171717;
-  transform: translateY(-3px);
+  border-color: rgba(143,245,255,0.35);
+  background: #161616;
+}
+
+.product-card:focus-visible {
+  outline: 2px solid #8ff5ff;
+  outline-offset: 2px;
 }
 
 .product-card-skeleton {
@@ -1222,13 +1233,18 @@ body::after {
   opacity: 0.88;
 }
 
+/* Placa clara con margen dentro de la tarjeta oscura: casi todas las fotos
+   de Invid y Access vienen con fondo blanco, y pegadas al borde de una
+   tarjeta negra quedan como recuadros blancos cortados. */
 .product-card-media {
   position: relative;
-  height: 180px;
+  margin: 8px 8px 0;
+  aspect-ratio: 4 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: 2px;
   background:
     radial-gradient(circle at center, rgba(143,245,255,0.07), transparent 58%),
     #0d0d0d;
@@ -1248,13 +1264,13 @@ body::after {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 16px;
+  padding: 12px;
   opacity: 1;
   transition: transform 0.45s;
 }
 
 .product-card:hover .product-card-media img {
-  transform: scale(1.035);
+  transform: scale(1.03);
 }
 
 .product-card-media.is-out-of-stock::after {
@@ -1277,27 +1293,21 @@ body::after {
 .product-card-soldout {
   position: absolute;
   z-index: 2;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 76px;
-  min-height: 28px;
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 4px;
+  min-height: 26px;
+  border-radius: 2px;
   background: rgba(14,14,14,0.88);
-  padding: 0 0.58rem;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.58rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
+  padding: 0 0.6rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
   line-height: 1;
-  text-transform: uppercase;
-  text-align: center;
   color: #e8e8e8;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+  backdrop-filter: blur(8px);
 }
 
 .product-card-media .material-symbols-outlined {
@@ -1305,205 +1315,139 @@ body::after {
 }
 
 .product-card-body {
-  min-height: 218px;
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: 1rem;
+  gap: 0.3rem;
+  padding: 0.75rem 0.85rem 0.85rem;
 }
 
 .product-card-source {
-  min-height: 0.72rem;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.56rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #8ff5ff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #adaaaa;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* Sufijo "Usado" dentro de la misma etiqueta chica de categoria, ademas
-   del cartel de color aparte (.product-card-used) que ya se ve de lejos.
-   Mismo naranja que ese cartel para que se entienda que son la misma
-   señal en dos lugares. */
-.product-card-source-usado {
-  color: #ffb37a;
-}
-
+/* Pildora de disponibilidad sobre la foto, abajo a la izquierda. */
 .product-card-availability {
-  width: fit-content;
-  max-width: 100%;
+  position: absolute;
+  z-index: 2;
+  left: 8px;
+  bottom: 8px;
+  max-width: calc(100% - 16px);
   min-height: 24px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(143,245,255,0.18);
-  border-radius: 4px;
-  background: rgba(143,245,255,0.045);
-  padding: 0.32rem 0.58rem;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.55rem;
-  font-weight: 850;
-  letter-spacing: 0.09em;
+  gap: 6px;
+  border-radius: 2px;
+  background: rgba(14,14,14,0.85);
+  padding: 0 0.55rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
   line-height: 1;
-  text-transform: uppercase;
-  color: #d9fcff;
+  white-space: nowrap;
+  color: #e7e5e4;
 }
 
-.product-card-availability.is-provider {
-  border-color: rgba(255,198,0,0.38);
-  background: rgba(255,198,0,0.08);
-  color: #ffe38a;
+.product-card-availability::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8ff5ff;
 }
 
-.product-card-availability.is-local {
-  border-color: rgba(76,217,100,0.28);
-  background: rgba(76,217,100,0.075);
-  color: #9ff0b3;
+.product-card-availability.is-local::before {
+  background: #4cd964;
 }
 
-/* Mismo look que product-card-availability, en naranja, para marcar
-   productos usados. No hay campo aparte en Access: se detecta si el
-   nombre trae la palabra "usado/usada" (dtProductoEsUsado). */
-.product-card-used {
-  width: fit-content;
-  max-width: 100%;
-  min-height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255,148,60,0.32);
-  border-radius: 4px;
-  background: rgba(255,148,60,0.09);
-  padding: 0.32rem 0.58rem;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.55rem;
-  font-weight: 850;
-  letter-spacing: 0.09em;
-  line-height: 1;
-  text-transform: uppercase;
-  color: #ffb37a;
-  margin-left: 0.4rem;
+.product-card-availability.is-provider::before {
+  background: #ffc600;
 }
 
 .product-card-title {
-  min-height: 3.24em;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1rem;
-  font-weight: 900;
-  line-height: 1.08;
-  color: #fff;
-}
-
-.product-card-subtitle {
+  margin: 0;
+  min-height: 2.5em;
   display: -webkit-box;
   overflow: hidden;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  min-height: 2.08em;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.74rem;
-  line-height: 1.4;
-  color: #8f8c8c;
-}
-
-.product-card-stock {
-  width: 100%;
-  min-width: 0;
-  min-height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(143,245,255,0.18);
-  border-radius: 4px;
-  background: rgba(143,245,255,0.06);
-  padding: 0.42rem 0.65rem;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.56rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-align: center;
-  color: #8ff5ff;
-}
-
-.product-card-stock.is-unknown {
-  border-color: rgba(143,245,255,0.14);
-  background: rgba(143,245,255,0.035);
-  color: #9a9898;
-}
-
-.product-card-stock.is-by-order {
-  border-color: rgba(255,198,0,0.42);
-  background: linear-gradient(135deg, rgba(255,198,0,0.18), rgba(255,198,0,0.06));
-  color: #ffe38a;
-  box-shadow: 0 0 18px rgba(255,198,0,0.08);
-}
-
-.product-card-stock.is-stock-available {
-  border-color: rgba(76,217,100,0.28);
-  background: rgba(76,217,100,0.08);
-  color: #9ff0b3;
-}
-
-.product-card-stock.is-low-stock {
-  border-color: rgba(255,198,0,0.44);
-  background: rgba(255,198,0,0.1);
-  color: #ffe38a;
-}
-
-.product-card-stock.is-out-of-stock {
-  border-color: rgba(170,170,170,0.24);
-  background: rgba(255,255,255,0.05);
-  color: #c7c7c7;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
 }
 
 .product-card-foot {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.6rem;
   margin-top: auto;
-  color: #8ff5ff;
+  padding-top: 0.55rem;
 }
 
-.product-card-foot strong {
+.product-card-price {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.product-card-price strong {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 900;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.product-card.is-consult .product-card-price strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: #adaaaa;
+}
+
+.product-card-low {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffe38a;
 }
 
 .product-card.is-consult .product-card-foot {
   align-items: stretch;
   flex-direction: column;
-  gap: 0.62rem;
+  gap: 0.5rem;
 }
 
 .product-card-consult-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.34rem;
-  min-height: 34px;
-  min-width: 112px;
+  gap: 0.35rem;
+  min-height: 36px;
+  min-width: 104px;
   border: 1px solid rgba(76,217,100,0.34);
-  border-radius: 4px;
+  border-radius: 2px;
   background: rgba(76,217,100,0.08);
-  padding: 0 0.62rem;
+  padding: 0 0.7rem;
   color: #9ff0b3;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.58rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
   line-height: 1;
-  text-transform: uppercase;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
 }
 
 .product-card.is-consult .product-card-consult-btn {
@@ -1521,13 +1465,15 @@ body::after {
   white-space: nowrap;
 }
 
-.product-card-consult-btn:hover,
-.product-card-consult-btn:focus-visible {
+.product-card-consult-btn:hover {
   border-color: rgba(76,217,100,0.58);
   background: rgba(76,217,100,0.14);
   color: #d6ffe0;
-  transform: translateY(-1px);
-  outline: none;
+}
+
+.product-card-consult-btn:focus-visible {
+  outline: 2px solid #9ff0b3;
+  outline-offset: 2px;
 }
 
 /* ── Custom select arrow ── */
@@ -1865,61 +1811,56 @@ body::after {
     width: 100%;
   }
 
-  .product-card {
-    min-height: 390px;
-    border-radius: 8px;
-  }
-
   .product-card-media {
-    height: auto;
+    margin: 6px 6px 0;
     aspect-ratio: 1 / 1;
-    min-height: 0;
   }
 
   .product-card-media img {
-    padding: 0.85rem;
+    padding: 0.6rem;
   }
 
   .product-card-body {
-    min-height: 176px;
-    padding: 0.9rem;
-    gap: 0.48rem;
+    padding: 0.6rem 0.65rem 0.7rem;
+    gap: 0.25rem;
   }
 
   .product-card-availability {
-    max-width: 100%;
-    min-height: 20px;
-    padding: 0.22rem 0.42rem;
-    font-size: 0.5rem;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
+    left: 6px;
+    bottom: 6px;
+    min-height: 22px;
+    gap: 5px;
+    padding: 0 0.45rem;
+    font-size: 11px;
+  }
+
+  .product-card-source,
+  .product-card-low {
+    font-size: 11px;
   }
 
   .product-card-title {
-    font-size: 0.9rem;
-    line-height: 1.08;
-    min-height: 3.24em;
-  }
-
-  .product-card-subtitle,
-  .product-card-stock {
-    display: none !important;
+    font-size: 13px;
   }
 
   .product-card-foot {
-    gap: 0.45rem;
+    gap: 0.4rem;
   }
 
-  .product-card-foot strong {
-    font-size: 1rem;
-    white-space: nowrap;
+  .product-card-price strong {
+    font-size: 16px;
+  }
+
+  .product-card-add {
+    width: 36px;
+    height: 36px;
   }
 
   .product-card-consult-btn {
     min-width: 0;
     flex: 1;
     padding: 0 0.45rem;
-    font-size: 0.52rem;
+    font-size: 12px;
   }
 
   .catalog-layout:not(.has-sidebar) .cat-card .aspect-square,
@@ -2261,27 +2202,50 @@ body::after {
   color: inherit;
 }
 
-/* Boton de agregar al carrito en la tarjeta del catalogo. */
+/* Boton-icono de agregar al carrito, al lado del precio. */
 .product-card-add {
-  width: 100%;
-  margin-top: 0.7rem;
-  padding: 0.6rem 0.8rem;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 2px;
   cursor: pointer;
-  background: linear-gradient(135deg, #8ff5ff 0%, #00eefc 100%);
+  background: #8ff5ff;
   color: #003f43;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: filter 0.18s, transform 0.18s;
+  transition: background-color 0.18s, transform 0.18s;
 }
 
-.product-card-add:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.product-card-add:active { transform: scale(0.98); }
-.product-card-add:disabled { opacity: 0.75; cursor: default; transform: none; }
+.product-card-add .material-symbols-outlined { font-size: 20px; }
+
+/* addToCartUI (cart.js) pone "check + Agregado" durante 1,8 s. En un
+   boton-icono solo entra el check: se oculta el texto. */
+.product-card-add span + span { display: none; }
+
+.product-card-add:hover { background: #ffffff; }
+.product-card-add:active { transform: scale(0.96); }
+.product-card-add:focus-visible { outline: 2px solid #8ff5ff; outline-offset: 2px; }
+.product-card-add:disabled { cursor: default; transform: none; }
+
+/* Tarjetas angostas (tablets, grillas con barra lateral): precio y boton
+   comparten fila, asi que se achican antes de que el precio se corte. */
+@container (max-width: 200px) {
+  .product-card-body { padding: 0.6rem 0.6rem 0.7rem; }
+  .product-card-title { font-size: 13px; }
+  .product-card-price strong { font-size: 16px; }
+  .product-card-add { width: 34px; height: 34px; }
+  .product-card-add .material-symbols-outlined { font-size: 18px; }
+  .product-card-availability { gap: 4px; padding: 0 0.4rem; font-size: 11px; }
+}
+
+@container (max-width: 150px) {
+  .product-card-price strong { font-size: 14px; }
+  .product-card-foot { flex-wrap: wrap; }
+  .product-card-add { margin-left: auto; }
+}
 
 /* El contador "104 PRODUCTOS" del encabezado sale de la vista: ocupaba una
    fila entera y la misma cuenta la da "Mostrando X de Y resultados" arriba

@@ -123,24 +123,28 @@ body::after {
 @media (min-width: 1280px) {
   .related-products-grid { grid-template-columns:repeat(5, minmax(0, 1fr)); }
 }
+/* Relacionados: misma tarjeta "oscura prolija" que el catalogo y la home. */
 .related-products-grid .acc-card {
-  border-radius:8px;
-  background:#151515;
-  transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+  display:flex;flex-direction:column;
+  border:1px solid rgba(255,255,255,.07);border-radius:4px;
+  background:#131313;
+  transition:border-color .2s, background-color .2s;
   contain:content;
+  container-type:inline-size;
 }
 .related-products-grid .acc-card:hover {
-  transform:translateY(-2px);
-  box-shadow:0 10px 24px rgba(0,240,255,.045);
+  transform:none;box-shadow:none;
+  border-color:rgba(143,245,255,.35);background:#161616;
 }
+.related-products-grid .acc-card:hover .acc-img { transform:scale(1.03); }
 .related-card-media {
-  overflow:hidden;background:#131313;aspect-ratio:16/11;position:relative;
-  display:flex;align-items:center;justify-content:center;
+  position:relative;margin:8px 8px 0;aspect-ratio:4/3;overflow:hidden;border-radius:2px;
+  background:#0d0d0d;display:flex;align-items:center;justify-content:center;
 }
 .related-card-img {
-  width:100%;height:100%;object-fit:contain;padding:16px;
+  width:100%;height:100%;object-fit:contain;padding:12px;
   background:var(--dt-product-image-bg);
-  transition:transform .24s ease;
+  transition:transform .45s;
 }
 .related-card-placeholder {
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;
@@ -150,26 +154,64 @@ body::after {
   font-size:52px;color:rgba(143,245,255,0.13);
   font-variation-settings:'FILL' 0,'wght' 100;
 }
-.related-card-body { padding:.9rem; }
+.related-card-availability {
+  position:absolute;z-index:2;left:8px;bottom:8px;max-width:calc(100% - 16px);
+  min-height:24px;display:inline-flex;align-items:center;gap:6px;padding:0 .55rem;
+  border-radius:2px;background:rgba(14,14,14,.85);
+  font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;line-height:1;
+  white-space:nowrap;color:#e7e5e4;
+}
+.related-card-availability::before {
+  content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#8ff5ff;
+}
+.related-card-availability.is-local::before { background:#4cd964; }
+.related-card-availability.is-provider::before { background:#ffc600; }
+.related-card-body {
+  display:flex;flex-direction:column;gap:.3rem;flex:1;padding:.75rem .85rem .85rem;
+}
 .related-card-source {
-  font-family:'Manrope',sans-serif;font-size:.6rem;color:#5b5958;
-  text-transform:uppercase;letter-spacing:.11em;margin-bottom:4px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin:0;font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;line-height:1.3;
+  color:#adaaaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .related-card-title {
-  font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:.82rem;
-  text-transform:uppercase;letter-spacing:.035em;line-height:1.15;margin-bottom:.55rem;
-  min-height:2.3em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin:0;min-height:2.5em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;line-height:1.25;color:#fff;
 }
+.related-card-foot {
+  display:flex;align-items:flex-end;justify-content:space-between;gap:.6rem;
+  margin-top:auto;padding-top:.55rem;
+}
+.related-card-price-wrap { min-width:0;display:flex;flex-direction:column;gap:2px; }
 .related-card-price {
-  font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1rem;
+  font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:20px;line-height:1.1;
+  color:#fff;white-space:nowrap;
 }
+.related-card-low { font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;color:#ffe38a; }
 .related-card-add {
-  color:#484847;font-size:20px;cursor:pointer;background:none;border:none;padding:4px;
-  transition:color .18s ease;
+  flex:none;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+  padding:0;border:0;border-radius:2px;background:#8ff5ff;color:#003f43;font-size:20px;
+  cursor:pointer;transition:background-color .18s;
 }
+.related-card-add:hover { background:#ffffff; }
+.related-card-add.is-consult {
+  background:rgba(76,217,100,.08);border:1px solid rgba(76,217,100,.34);color:#9ff0b3;
+}
+.related-card-add.is-consult:hover { background:rgba(76,217,100,.14);color:#d6ffe0; }
+.related-card-add:focus-visible { outline:2px solid #8ff5ff;outline-offset:2px; }
 .related-card-add:disabled {
   color:#686868;cursor:not-allowed;opacity:.65;
+}
+@container (max-width: 200px) {
+  .related-card-body { padding:.6rem .6rem .7rem; }
+  .related-card-title { font-size:13px; }
+  .related-card-price { font-size:16px; }
+  .related-card-add { width:34px;height:34px;font-size:18px; }
+  .related-card-availability { gap:4px;padding:0 .4rem;font-size:11px; }
+}
+@container (max-width: 150px) {
+  .related-card-price { font-size:14px; }
+  .related-card-foot { flex-wrap:wrap; }
+  .related-card-add { margin-left:auto; }
 }
 .related-products-grid .acc-card.is-out-of-stock {
   border-color:rgba(150,150,150,.18);
@@ -183,12 +225,9 @@ body::after {
 .related-card-soldout {
   position:absolute;top:8px;right:8px;z-index:2;
   display:inline-flex;align-items:center;justify-content:center;
-  min-width:68px;min-height:26px;
-  border:1px solid rgba(255,255,255,.18);border-radius:4px;
-  background:rgba(14,14,14,.88);padding:0 .5rem;
-  font-family:'Space Grotesk',sans-serif;font-size:.52rem;font-weight:900;
-  letter-spacing:.1em;line-height:1;text-transform:uppercase;text-align:center;color:#e8e8e8;
-  box-shadow:0 8px 20px rgba(0,0,0,.16);
+  min-height:26px;border-radius:2px;
+  background:rgba(14,14,14,.88);padding:0 .6rem;
+  font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;line-height:1;color:#e8e8e8;
 }
 
 ::-webkit-scrollbar { width:4px; }
@@ -1664,6 +1703,12 @@ function renderRelatedCard(p, i) {
       soldOut.className = 'related-card-soldout';
       soldOut.textContent = 'Sin stock';
       media.appendChild(soldOut);
+    } else {
+      // Misma pildora de disponibilidad que el catalogo y la home.
+      var availability = document.createElement('span');
+      availability.className = 'related-card-availability ' + (productIsProvider(p) ? 'is-provider' : 'is-local');
+      availability.textContent = productIsProvider(p) ? 'Llega en 48 hs' : 'En local';
+      media.appendChild(availability);
     }
 
     var body = document.createElement('div');
@@ -1677,17 +1722,27 @@ function renderRelatedCard(p, i) {
     title.textContent = cleanText(p.name);
 
     var foot = document.createElement('div');
-    foot.className = 'flex items-center justify-between';
+    foot.className = 'related-card-foot';
+    var priceWrap = document.createElement('div');
+    priceWrap.className = 'related-card-price-wrap';
     var price = document.createElement('span');
     price.className = 'related-card-price';
-    price.style.color = color;
     price.textContent = formatProductPrice(p);
+    priceWrap.appendChild(price);
+    if (stockState.status === 'low') {
+      var low = document.createElement('span');
+      low.className = 'related-card-low';
+      low.textContent = 'Quedan pocas';
+      priceWrap.appendChild(low);
+    }
 
     var addButton = document.createElement('button');
-    addButton.className = 'material-symbols-outlined related-card-add';
+    addButton.type = 'button';
+    addButton.className = 'material-symbols-outlined related-card-add' + (needsConsult ? ' is-consult' : '');
     addButton.disabled = false;
     addButton.textContent = needsConsult ? 'chat' : 'add_shopping_cart';
     addButton.title = needsConsult ? 'Consultar por WhatsApp' : 'Agregar al carrito';
+    addButton.setAttribute('aria-label', (needsConsult ? 'Consultar por WhatsApp ' : 'Agregar al carrito ') + cleanText(p.name));
     addButton.addEventListener('click', function(event) {
       event.stopPropagation();
       if (needsConsult) {
@@ -1696,10 +1751,8 @@ function renderRelatedCard(p, i) {
       }
       addToCart(p.name, p.price, p.image || '', p);
     });
-    addButton.addEventListener('mouseenter', function() { addButton.style.color = color; });
-    addButton.addEventListener('mouseleave', function() { addButton.style.color = '#484847'; });
 
-    foot.appendChild(price);
+    foot.appendChild(priceWrap);
     foot.appendChild(addButton);
     body.appendChild(source);
     body.appendChild(title);
