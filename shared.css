@@ -773,6 +773,72 @@ body.dt-modal-open .dt-whatsapp-float {
 .dt-nav-redes a:hover { color: #00f0ff; }
 .dt-nav-redes .material-symbols-outlined { font-size: 22px; }
 
+.dt-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #adaaaa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.dt-social-link:hover { color: #00f0ff; }
+.dt-social-link:focus-visible { outline: 2px solid #8ff5ff; outline-offset: 3px; }
+.dt-social-link svg { display: block; width: 22px; height: 22px; }
+
+/* ============================================================
+   Navegacion compacta y translúcida.
+   Las alturas se fijan aca porque las paginas usan un Tailwind compilado
+   y todavia conservan las clases h-16 / md:h-20 en el marcado.
+   ============================================================ */
+
+body > nav.fixed {
+  background: rgba(7, 8, 9, 0.82) !important;
+  border-bottom: 1px solid rgba(143, 245, 255, 0.12) !important;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
+  backdrop-filter: blur(16px) saturate(135%);
+}
+
+.dt-nav-row {
+  height: 56px !important;
+  min-height: 56px;
+}
+
+.dt-nav-row .material-symbols-outlined {
+  font-size: 20px;
+}
+
+@media (min-width: 768px) {
+  :root { --dt-nav-fila1: 50px; }
+
+  .dt-nav-top {
+    gap: 1.25rem;
+    padding-inline: 1.5rem;
+  }
+
+  .dt-nav-row {
+    height: 52px !important;
+    min-height: 52px;
+    padding-inline: 1.5rem !important;
+  }
+
+  .dt-nav-top-logo { font-size: 1.3rem; }
+  .dt-nav-row > .hidden.md\:flex { gap: 1.35rem; font-size: 0.78rem; }
+  .dt-nav-buscador input { height: 34px; padding-top: 0.4rem; padding-bottom: 0.4rem; }
+  .dt-nav-redes { gap: 0.7rem; }
+  .dt-nav-redes .material-symbols-outlined,
+  .dt-social-link svg { width: 19px; height: 19px; font-size: 19px; }
+  .dt-mega-toggle { min-height: 34px; padding-top: 0.4rem; padding-bottom: 0.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-nav-row *,
+  .dt-nav-top * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ============================================================
    Mini carrito lateral. El markup lo arma cart.js, asi que
    existe en todas las paginas sin repetirlo en cada HTML.
@@ -836,6 +902,56 @@ body.dt-modal-open .dt-whatsapp-float {
 
 .dt-minicart-head button:hover { color: #00f0ff; }
 
+.dt-minicart-head button:focus-visible,
+.dt-minicart-share:focus-visible,
+.dt-minicart-ver:focus-visible,
+.dt-minicart-pagar:focus-visible,
+.dt-minicart-quitar:focus-visible {
+  outline: 2px solid #8ff5ff;
+  outline-offset: 3px;
+}
+
+.dt-minicart-share-wrap {
+  flex: 0 0 auto;
+  padding: 1rem 1.25rem .7rem;
+  border-bottom: 1px solid rgba(143, 245, 255, .08);
+}
+
+.dt-minicart-share {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  border: 1px solid rgba(143, 245, 255, .32);
+  border-radius: 5px;
+  background: rgba(143, 245, 255, .1);
+  color: #8ff5ff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.dt-minicart-share:hover {
+  background: #8ff5ff;
+  border-color: #8ff5ff;
+  color: #003f43;
+}
+
+.dt-minicart-share .material-symbols-outlined { font-size: 18px; }
+
+.dt-minicart-share-status {
+  min-height: 1rem;
+  margin: .45rem 0 0;
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: .68rem;
+  color: #adaaaa;
+}
+
 .dt-minicart-body {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -853,7 +969,7 @@ body.dt-modal-open .dt-whatsapp-float {
 
 .dt-minicart-item {
   display: grid;
-  grid-template-columns: 52px 1fr 24px;
+  grid-template-columns: 64px minmax(0, 1fr) 24px;
   align-items: center;
   gap: 0.85rem;
   padding: 0.85rem 1.35rem;
@@ -861,8 +977,8 @@ body.dt-modal-open .dt-whatsapp-float {
 }
 
 .dt-minicart-item img {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   background: #fff;
   border-radius: 4px;
@@ -873,7 +989,7 @@ body.dt-modal-open .dt-whatsapp-float {
   display: block;
   font-family: 'Manrope', sans-serif;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 750;
   line-height: 1.3;
   color: #e8e6e3;
   margin-bottom: 0.25rem;
@@ -935,11 +1051,27 @@ body.dt-modal-open .dt-whatsapp-float {
   text-align: center;
   text-decoration: none;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.69rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition: filter 0.18s, background 0.18s, color 0.18s;
+}
+
+@media (max-width: 420px) {
+  .dt-minicart { width: 100%; max-width: none; }
+  .dt-minicart-head { padding: 1rem; }
+  .dt-minicart-share-wrap { padding-inline: 1rem; }
+  .dt-minicart-item { padding-inline: 1rem; }
+  .dt-minicart-foot { padding: 1rem; }
+  .dt-minicart-botones { gap: .45rem; }
+  .dt-minicart-ver,
+  .dt-minicart-pagar { padding-inline: .35rem; letter-spacing: .04em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-minicart,
+  .dt-minicart-fondo { transition-duration: .01ms; }
 }
 
 .dt-minicart-ver {
@@ -971,4 +1103,12 @@ body.dt-modal-open .dt-whatsapp-float {
    ============================================================ */
 @media (max-width: 767px) {
   main.pt-28 { padding-top: 64px; }
+}
+
+.dt-minicart-delay,
+.cart-item-delay {
+  display: block;
+  margin-top: 4px;
+  color: #ffd76a;
+  font: 750 .66rem/1.3 "Manrope", sans-serif;
 }

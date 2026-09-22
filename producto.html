@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="translation-guard.js?v=20260821"></script>
+<script src="translation-guard.js?v=20260921"></script>
 <title>Producto | DimensionTres</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta property="og:type" content="product">
@@ -19,8 +19,9 @@
 <meta name="description" content="Consultá precio, stock y detalles de productos en DimensionTres."/>
 <link id="canonical-url" rel="canonical" href="https://dimensiontres.com/producto.html"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
+<link rel="stylesheet" href="material-symbols-local.css?v=20260921">
+<link rel="stylesheet" href="shared.css?v=cart-gorila-20260922">
+<link rel="stylesheet" href="cookie-notice.css?v=20260918">
 <style>
 body::after {
   content:'';position:fixed;inset:0;
@@ -187,6 +188,7 @@ body::after {
   color:#fff;white-space:nowrap;
 }
 .related-card-low { font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;color:#ffe38a; }
+.related-card-available { font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;color:#9ff0b3; }
 .related-card-add {
   flex:none;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
   padding:0;border:0;border-radius:2px;background:#8ff5ff;color:#003f43;font-size:20px;
@@ -476,6 +478,18 @@ body::after {
   font-size:16px;
   flex:0 0 auto;
 }
+.product-warranty-summary {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  margin:0;
+  color:#b6e9ee;
+  font-family:'Manrope',sans-serif;
+  font-size:.8rem;
+}
+.product-warranty-summary .material-symbols-outlined { font-size:17px; color:#8ff5ff; }
+.product-warranty-summary a { color:inherit; text-decoration:underline; text-underline-offset:3px; }
+.product-warranty-summary[hidden] { display:none; }
 @media (max-width: 900px) {
   .purchase-row { align-items:flex-start;flex-direction:column; }
   .purchase-note-list { grid-template-columns:1fr; }
@@ -673,6 +687,10 @@ body::after {
         </div>
 
         <div id="product-meta-grid" class="product-meta-grid"></div>
+        <p id="product-warranty-summary" class="product-warranty-summary" hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">shield</span>
+          <a href="legales.html#garantia"></a>
+        </p>
 
         <div style="height:1px;background:rgba(72,72,71,0.16);"></div>
 
@@ -707,7 +725,6 @@ body::after {
           </button>
           <div class="purchase-note-list">
             <span><span class="material-symbols-outlined">verified</span>Producto verificado</span>
-            <span><span class="material-symbols-outlined">shield</span>Garantía del local</span>
             <span><span class="material-symbols-outlined">storefront</span>Retiro en Villa María</span>
             <span><span class="material-symbols-outlined">chat</span>Consulta por WhatsApp</span>
           </div>
@@ -752,7 +769,8 @@ body::after {
 
 <footer></footer>
 
-<script src="shared.js"></script>
+<script src="shared.js?v=redes-20260918"></script>
+<script src="cookie-notice.js?v=20260918"></script>
 <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
 <script src="config.js?v=invid-1515-30-20260810"></script>
@@ -765,7 +783,7 @@ body::after {
 <script src="supabase-client.js?v=dolar-invid-automatico-20260810"></script>
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
 <script src="search-global.js?v=search-ranking-20260805b"></script>
-<script src="cart.js?v=minicarrito-20260826"></script>
+<script src="cart.js?v=cart-gorila-20260922"></script>
 
 <script>
 // -------------------------------------------------------
@@ -777,28 +795,28 @@ var PRODUCTS_DB = {"cable-hdmi-2-0-1-5m":{"name":"Cable HDMI 2.0 1.5m","price":4
 //  SPECS POR CATEGORÍA
 // -------------------------------------------------------
 var CATEGORY_SPECS = {
-  teclado:  [['Tipo','Mecánico/Membrana'],['Conexión','USB'],['Iluminación','RGB'],['Garantía','6 meses']],
-  mouse:    [['DPI','Variable'],['Botones','6+'],['Conexión','USB/2.4G'],['Garantía','6 meses']],
+  teclado:  [['Tipo','Mecánico/Membrana'],['Conexión','USB'],['Iluminación','RGB'],['Garantía','3 meses']],
+  mouse:    [['DPI','Variable'],['Botones','6+'],['Conexión','USB/2.4G'],['Garantía','3 meses']],
   pad:      [['Material','Tela/Plástico'],['Base','Antideslizante'],['Superficie','Gaming'],['Garantía','3 meses']],
-  auricular:[['Driver','40-50mm'],['Conexión','3.5mm/USB'],['Micrófono','Integrado'],['Garantía','6 meses']],
-  micro:    [['Patrón','Cardioide'],['Conexión','USB/XLR'],['Frecuencia','20Hz-20kHz'],['Garantía','6 meses']],
-  webcam:   [['Resolución','1080p/4K'],['FPS','30/60fps'],['Enfoque','Autofocus'],['Garantía','6 meses']],
-  ssd:      [['Interfaz','SATA/NVMe'],['Lectura','500+ MB/s'],['Form factor','2.5"/M.2'],['Garantía','3 años']],
-  hdd:      [['RPM','7200rpm'],['Interfaz','SATA III'],['Cache','64/256MB'],['Garantía','2 años']],
-  pendrive: [['Interfaz','USB 3.0'],['Velocidad','100+ MB/s'],['Formato','Compacto'],['Garantía','1 año']],
-  sd:       [['Clase','C10/U3'],['Velocidad','100+ MB/s'],['Formato','MicroSD/SD'],['Garantía','1 año']],
-  externo:  [['Interfaz','USB 3.0'],['Portátil','Sí'],['Alimentación','USB'],['Garantía','1 año']],
-  cpu:      [['Socket','AM4/LGA1700'],['Cores','6-12'],['Tecnología','7-12nm'],['Garantía','1 año']],
-  ram:      [['Tipo','DDR4'],['Velocidad','3200-3600MHz'],['Latencia','CL16/18'],['Garantía','1 año']],
-  mb:       [['Formato','mATX/ATX'],['Socket','AMD/Intel'],['PCIe','4.0/3.0'],['Garantía','1 año']],
-  gpu:      [['VRAM','6-12GB'],['Bus','256/192bit'],['Salidas','HDMI/DP'],['Garantía','1 año']],
-  fuente:   [['Eficiencia','80+ Bronze/Gold'],['Modular','Semi/Full'],['Protecciones','OVP/OCP'],['Garantía','2 años']],
-  cooler:   [['TDP','150-250W'],['Ventilador','120mm+'],['RGB','Opcional'],['Garantía','1 año']],
+  auricular:[['Driver','40-50mm'],['Conexión','3.5mm/USB'],['Micrófono','Integrado'],['Garantía','3 meses']],
+  micro:    [['Patrón','Cardioide'],['Conexión','USB/XLR'],['Frecuencia','20Hz-20kHz'],['Garantía','3 meses']],
+  webcam:   [['Resolución','1080p/4K'],['FPS','30/60fps'],['Enfoque','Autofocus'],['Garantía','3 meses']],
+  ssd:      [['Interfaz','SATA/NVMe'],['Lectura','500+ MB/s'],['Form factor','2.5"/M.2'],['Garantía','3 meses']],
+  hdd:      [['RPM','7200rpm'],['Interfaz','SATA III'],['Cache','64/256MB'],['Garantía','3 meses']],
+  pendrive: [['Interfaz','USB 3.0'],['Velocidad','100+ MB/s'],['Formato','Compacto'],['Garantía','3 meses']],
+  sd:       [['Clase','C10/U3'],['Velocidad','100+ MB/s'],['Formato','MicroSD/SD'],['Garantía','3 meses']],
+  externo:  [['Interfaz','USB 3.0'],['Portátil','Sí'],['Alimentación','USB'],['Garantía','3 meses']],
+  cpu:      [['Socket','AM4/LGA1700'],['Cores','6-12'],['Tecnología','7-12nm'],['Garantía','3 meses']],
+  ram:      [['Tipo','DDR4'],['Velocidad','3200-3600MHz'],['Latencia','CL16/18'],['Garantía','3 meses']],
+  mb:       [['Formato','mATX/ATX'],['Socket','AMD/Intel'],['PCIe','4.0/3.0'],['Garantía','3 meses']],
+  gpu:      [['VRAM','6-12GB'],['Bus','256/192bit'],['Salidas','HDMI/DP'],['Garantía','3 meses']],
+  fuente:   [['Eficiencia','80+ Bronze/Gold'],['Modular','Semi/Full'],['Protecciones','OVP/OCP'],['Garantía','3 meses']],
+  cooler:   [['TDP','150-250W'],['Ventilador','120mm+'],['RGB','Opcional'],['Garantía','3 meses']],
   cable:    [['Material','Cobre OFC'],['Longitud','1-2m'],['Blindaje','Triple'],['Garantía','3 meses']],
   adaptador:[['Resolución','4K 60Hz'],['Plug & Play','Sí'],['Compatible','Universal'],['Garantía','3 meses']],
-  cargador: [['Protocolo','PD/QC'],['Potencia','65W'],['Puertos','1-4'],['Garantía','6 meses']],
+  cargador: [['Protocolo','PD/QC'],['Potencia','65W'],['Puertos','1-4'],['Garantía','3 meses']],
   led:      [['Control','App/Remoto'],['Longitud','1-5m'],['Colores','16M RGB'],['Garantía','3 meses']],
-  soporte:  [['Compatibilidad','VESA 75/100'],['Ajuste','Full Motion'],['Peso max','8kg'],['Garantía','1 año']],
+  soporte:  [['Compatibilidad','VESA 75/100'],['Ajuste','Full Motion'],['Peso max','8kg'],['Garantía','3 meses']],
   playstation:[['Plataforma','PlayStation'],['Almacen','500GB-1TB'],['UHD','4K HDR'],['Estado','Ver descripción']],
   xbox:     [['Plataforma','Xbox'],['Almacen','500GB-1TB'],['UHD','4K HDR'],['Estado','Ver descripción']],
   nintendo: [['Plataforma','Nintendo Switch'],['Pantalla','6.2"/7" OLED'],['Modos','TV/Portátil'],['Estado','Ver descripción']],
@@ -807,10 +825,10 @@ var CATEGORY_SPECS = {
   ps3:      [['Plataforma','PS3'],['Conexión','Bluetooth/USB'],['Vibración','Doble'],['Estado','Usado/Genérico']],
   videogame_asset:[['Plataforma','Físico/Digital'],['Región','Argentina'],['Idioma','Español/Inglés'],['Estado','Nuevo/Usado']],
   digital:  [['Tipo','Código Digital'],['Entrega','Inmediata'],['Región','Argentina'],['Validez','Sin vencer']],
-  reparacion:[['Diagnóstico','Incluido'],['Garantía','30 días trabajo'],['Entrega','24-72hs'],['Domicilio','Villa María']],
-  consola:  [['Tipo','Custom FW'],['Riesgo','Garantía anulada'],['Soporte','Post-servicio'],['Domicilio','Villa María']],
+  reparacion:[['Diagnóstico','Incluido'],['Garantía del trabajo','3 meses'],['Entrega','24-72hs'],['Domicilio','Villa María']],
+  consola:  [['Tipo','Custom FW'],['Riesgo','Consultar compatibilidad'],['Soporte','Post-servicio'],['Domicilio','Villa María']],
   software: [['Entrega','Mismo día'],['Activación','Incluida'],['Versión','última'],['Domicilio','Villa María']],
-  pc:       [['Sistema','Windows'],['Entrega','24-48hs'],['Garantía','30 días'],['Domicilio','Villa María']],
+  pc:       [['Sistema','Windows'],['Entrega','24-48hs'],['Garantía del trabajo','3 meses'],['Domicilio','Villa María']],
 };
 
 var CATEGORY_FEATURES = {
@@ -836,12 +854,12 @@ var CATEGORY_FEATURES = {
   cargador:  ['Protección contra sobrecargas','Compatible con laptops y celulares','Compacto para viaje'],
   led:       ['Adhesivo 3M incluido','Controlador por app o mando','Corte cada 10cm'],
   soporte:   ['Instalación sin taladro (desk clamp)','Altura y ángulo regulable','Gestión de cables integrada'],
-  playstation:['Consola verificada y funcional','Incluye cables de alimentación y HDMI','Garantía 30 días del local'],
-  xbox:      ['Consola verificada y funcional','Incluye cables de alimentación y HDMI','Garantía 30 días del local'],
-  nintendo:  ['Consola verificada y funcional','Incluye cables y dock (modelos TV)','Garantía 30 días del local'],
-  ps5:       ['Vibración háptica y gatillos adaptativos','Carga por USB-C','Garantía 30 días del local'],
-  ps4:       ['Control verificado y funcional','Cable micro-USB incluido','Garantía 30 días del local'],
-  ps3:       ['Funcional y revisado por técnico','Cable micro-USB incluido','Garantía 30 días del local'],
+  playstation:['Consola verificada y funcional','Incluye cables de alimentación y HDMI','Garantía de 3 meses'],
+  xbox:      ['Consola verificada y funcional','Incluye cables de alimentación y HDMI','Garantía de 3 meses'],
+  nintendo:  ['Consola verificada y funcional','Incluye cables y dock (modelos TV)','Garantía de 3 meses'],
+  ps5:       ['Vibración háptica y gatillos adaptativos','Carga por USB-C','Garantía de 3 meses'],
+  ps4:       ['Control verificado y funcional','Cable micro-USB incluido','Garantía de 3 meses'],
+  ps3:       ['Funcional y revisado por técnico','Cable micro-USB incluido','Garantía de 3 meses'],
   videogame_asset:['Juego físico en buen estado','Compatible con la consola indicada','Sin región lock en Argentina'],
   digital:   ['Código enviado por WhatsApp','Sin vencimiento de validez','Recarga oficial PSN / Xbox'],
   reparacion:['Presupuesto sin cargo previo','Piezas originales o equivalentes','Retiro a domicilio disponible'],
@@ -917,11 +935,11 @@ function productNeedsWhatsAppConsult(p) {
 }
 
 function getSpecs(cat) {
-  return CATEGORY_SPECS[cat] || [['Categoría', cat],['Disponibilidad','Consultar'],['Garantía','30 días'],['Entrega','Villa María']];
+  return CATEGORY_SPECS[cat] || [['Categoría', cat],['Disponibilidad','Consultar'],['Entrega','Villa María']];
 }
 
 function getFeatures(cat) {
-  return CATEGORY_FEATURES[cat] || ['Producto verificado por nuestro equipo','Garantía del local','Consulta por WhatsApp'];
+  return CATEGORY_FEATURES[cat] || ['Producto verificado por nuestro equipo','Garantía de 3 meses','Consulta por WhatsApp'];
 }
 
 function useSimpleProductDetail(p) {
@@ -976,7 +994,7 @@ function getProductStockStateForView(p) {
   if (stock !== null && stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (productIsByOrder(p)) return { status: 'by-order', label: 'A pedido', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 3) return { status: 'low', label: 'Stock bajo', stock: stock };
+  if (stock <= 5) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
 
@@ -996,10 +1014,17 @@ function productIsProvider(p) {
 // no confundir con palabras que la contienen, como "reusado".
 function dtProductoEsUsado(p) {
   if (!p) return false;
-  var texto = (String(p.name || '') + ' ' + String(p.description || '') + ' ' + String(p.subtitle || '')).toLowerCase();
+  if (p.used === true) return true;
+  var texto = (String(p.name || '') + ' ' + String(p.description || '') + ' ' + String(p.subtitle || '') + ' ' + String(p.condition || '')).toLowerCase();
   var palabras = texto.split(/[^a-z0-9]+/i);
   return palabras.indexOf('usado') !== -1 || palabras.indexOf('usada') !== -1 ||
-         palabras.indexOf('usados') !== -1 || palabras.indexOf('usadas') !== -1;
+         palabras.indexOf('usados') !== -1 || palabras.indexOf('usadas') !== -1 ||
+         palabras.indexOf('reacondicionado') !== -1 || palabras.indexOf('reacondicionada') !== -1;
+}
+
+function getProductWarrantyText(p) {
+  if (!p) return '';
+  return 'Garantía de 3 meses';
 }
 
 function getProductAvailabilityLabel(p) {
@@ -1496,6 +1521,10 @@ function renderProduct(p) {
   document.getElementById('prod-price').textContent = formatProductPrice(p);
   renderStock(p);
   renderProductMeta(p);
+  var warrantySummary = document.getElementById('product-warranty-summary');
+  var warrantyText = getProductWarrantyText(p);
+  warrantySummary.hidden = !warrantyText;
+  if (warrantyText) warrantySummary.querySelector('a').textContent = warrantyText;
   setGeneratedDetailBlocksVisible(p);
 
   // Mobile CTA
@@ -1510,7 +1539,10 @@ function renderProduct(p) {
   setPurchaseButtonsMode(p);
 
   // Specs
-  var specs = getSpecs(p.category);
+  var specs = getSpecs(p.category).filter(function(s) {
+    return s[0].indexOf('Garantía') !== 0;
+  });
+  specs.push(['Garantía', '3 meses']);
   var grid = document.getElementById('specs-grid');
   grid.innerHTML = '';
   specs.forEach(function(s) {
@@ -1734,6 +1766,11 @@ function renderRelatedCard(p, i) {
       low.className = 'related-card-low';
       low.textContent = 'Quedan pocas';
       priceWrap.appendChild(low);
+    } else if (stockState.status === 'available' && !needsConsult) {
+      var available = document.createElement('span');
+      available.className = 'related-card-available';
+      available.textContent = 'Disponible';
+      priceWrap.appendChild(available);
     }
 
     var addButton = document.createElement('button');
@@ -1952,5 +1989,3 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 </body>
 </html>
-
-

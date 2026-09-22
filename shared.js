@@ -208,7 +208,7 @@
       '<div class="space-y-5">' +
         '<div class="text-[#00f0ff] font-bold text-xl tracking-tighter italic">DIMENSIONTRES</div>' +
         '<p class="text-[#adaaaa] normal-case tracking-normal max-w-xs leading-relaxed font-body">Hardware, gaming y servicio técnico en Villa María.</p>' +
-        '<div class="flex gap-4">' +
+        '<div class="dt-footer-social flex gap-4">' +
           '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="index.html#contacto" title="Ubicación"><span class="material-symbols-outlined">public</span></a>' +
           '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="https://wa.me/5493534019085?text=Hola!%20Quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" title="WhatsApp"><span class="material-symbols-outlined">forum</span></a>' +
           '<a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#" onclick="openContactEmailModal(); return false;" title="Email"><span class="material-symbols-outlined">mail</span></a>' +
@@ -250,25 +250,41 @@
       '<p>© 2026 DIMENSIONTRES. HARDWARE, GAMING Y SERVICIO TÉCNICO.</p>' +
       '<div class="flex gap-8">' +
         '<a class="hover:text-white transition-colors" href="legales.html#privacidad">PRIVACIDAD</a>' +
+        '<button type="button" class="dt-cookie-settings hover:text-white transition-colors" data-dt-cookie-settings>COOKIES</button>' +
         '<a class="hover:text-white transition-colors" href="index.html#servicios">SOPORTE</a>' +
       '</div>' +
     '</div>';
 })();
 
-// Bot de preguntas "Tito" (bot.js + bot.css). Se carga desde aca para que
-// aparezca en todas las paginas que ya usan shared.js, sin tocar cada HTML.
-(function injectQuestionBot() {
-  if (document.querySelector('script[data-dt-bot]')) return;
-  var version = 'tito-20260916';
-  var css = document.createElement('link');
-  css.rel = 'stylesheet';
-  css.href = 'bot.css?v=' + version;
-  document.head.appendChild(css);
-  var script = document.createElement('script');
-  script.src = 'bot.js?v=' + version;
-  script.defer = true;
-  script.setAttribute('data-dt-bot', '');
-  document.head.appendChild(script);
+(function injectSocialLinks() {
+  var icons = {
+    facebook: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14.2 22v-8.4h2.8l.4-3.3h-3.2V8.2c0-1 .3-1.6 1.6-1.6h1.7v-3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.5H8v3.3h2.8V22h3.4Z"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.7" cy="6.4" r="1" fill="currentColor" stroke="none"/></svg>'
+  };
+  var networks = [
+    { name: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/' },
+    { name: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/dimension3videojuegos/?hl=es' }
+  ];
+
+  function addLinks(container) {
+    if (!container) return;
+    networks.forEach(function(network) {
+      if (container.querySelector('[data-dt-social="' + network.name + '"]')) return;
+      var link = document.createElement('a');
+      link.className = 'dt-social-link';
+      link.href = network.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.title = network.label;
+      link.setAttribute('aria-label', network.label);
+      link.setAttribute('data-dt-social', network.name);
+      link.innerHTML = icons[network.name];
+      container.appendChild(link);
+    });
+  }
+
+  document.querySelectorAll('.dt-nav-redes').forEach(addLinks);
+  addLinks(document.querySelector('.dt-footer-social'));
 })();
 
 (function injectFloatingWhatsApp() {

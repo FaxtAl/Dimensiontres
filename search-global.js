@@ -389,12 +389,4 @@
     document.querySelectorAll('[data-global-search], #search-input').forEach(attachSearch);
   });
 
-  // Para el bot de preguntas (bot.js): reusa la misma carga de productos y el
-  // mismo ranking que las sugerencias del buscador, sin duplicar codigo.
-  window.DimensionTresSearchGlobal = {
-    loadProducts: loadProducts,
-    getSuggestions: getSuggestions,
-    productUrl: productUrl,
-    formatPrice: formatPrice
-  };
 })();

@@ -1144,14 +1144,14 @@ body::after {
 }
 
 /* Tarjeta de producto "oscura prolija": foto sobre placa clara, una sola
-   pildora de disponibilidad, precio protagonista y un boton-icono de carrito.
-   Sin min-height fijos: la altura la da el contenido y la grilla estira. */
+   pildora de disponibilidad, precio protagonista y un boton-icono de carrito. */
 .product-card {
   /* Ahora la tarjeta es un <a>: hay que anular el subrayado y el color de link. */
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
+  min-height: 380px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.07);
   background: #131313;
@@ -1225,18 +1225,11 @@ body::after {
 
 .product-card.is-out-of-stock {
   border-color: rgba(115,115,115,0.22);
-  background: #0f0f0f;
 }
 
 .product-card.is-out-of-stock:hover {
   border-color: rgba(150,150,150,0.28);
-  background: #111;
   transform: none;
-}
-
-.product-card.is-out-of-stock .product-card-body,
-.product-card.is-out-of-stock .product-card-foot {
-  opacity: 0.72;
 }
 
 .product-card.is-out-of-stock .product-card-media {
@@ -1249,9 +1242,8 @@ body::after {
 .product-card-media {
   position: relative;
   margin: 8px 8px 0;
-  /* 5:4 (antes 4:3): tarjeta apenas mas alta, pedido del dueño. En celular
-     sigue cuadrada (ver media query de 640px). */
-  aspect-ratio: 5 / 4;
+  /* Una foto cuadrada acerca el alto de la tarjeta al de la referencia. */
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1305,7 +1297,7 @@ body::after {
 .product-card-soldout {
   position: absolute;
   z-index: 2;
-  top: 8px;
+  bottom: 8px;
   right: 8px;
   display: inline-flex;
   align-items: center;
@@ -1424,12 +1416,6 @@ body::after {
   white-space: nowrap;
 }
 
-.product-card.is-consult .product-card-price strong {
-  font-size: 14px;
-  font-weight: 700;
-  color: #adaaaa;
-}
-
 .product-card-low {
   font-family: 'Manrope', sans-serif;
   font-size: 12px;
@@ -1437,56 +1423,22 @@ body::after {
   color: #ffe38a;
 }
 
-.product-card.is-consult .product-card-foot {
-  align-items: stretch;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.product-card-consult-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  min-height: 36px;
-  min-width: 104px;
-  border: 1px solid rgba(76,217,100,0.34);
-  border-radius: 2px;
-  background: rgba(76,217,100,0.08);
-  padding: 0 0.7rem;
-  color: #9ff0b3;
+.product-card-available {
   font-family: 'Manrope', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ff0b3;
 }
 
-.product-card.is-consult .product-card-consult-btn {
-  width: 100%;
-  min-width: 0;
+.product-card-consult-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ff0b3;
 }
 
 .product-card-consult-btn .material-symbols-outlined {
-  font-size: 16px;
-}
-
-.product-card-consult-btn span:last-child {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.product-card-consult-btn:hover {
-  border-color: rgba(76,217,100,0.58);
-  background: rgba(76,217,100,0.14);
-  color: #d6ffe0;
-}
-
-.product-card-consult-btn:focus-visible {
-  outline: 2px solid #9ff0b3;
-  outline-offset: 2px;
+  font-size: 20px;
 }
 
 /* ── Custom select arrow ── */
@@ -1827,6 +1779,10 @@ body::after {
     width: 100%;
   }
 
+  .product-card {
+    min-height: 340px;
+  }
+
   .product-card-media {
     margin: 6px 6px 0;
     aspect-ratio: 1 / 1;
@@ -1834,6 +1790,11 @@ body::after {
 
   .product-card-media img {
     padding: 0.6rem;
+  }
+
+  .product-card-soldout {
+    right: 6px;
+    bottom: 6px;
   }
 
   .product-card-body {
@@ -1851,7 +1812,8 @@ body::after {
   }
 
   .product-card-source,
-  .product-card-low {
+  .product-card-low,
+  .product-card-available {
     font-size: 11px;
   }
 
@@ -1870,13 +1832,6 @@ body::after {
   .product-card-add {
     width: 36px;
     height: 36px;
-  }
-
-  .product-card-consult-btn {
-    min-width: 0;
-    flex: 1;
-    padding: 0 0.45rem;
-    font-size: 12px;
   }
 
   .catalog-layout:not(.has-sidebar) .cat-card .aspect-square,

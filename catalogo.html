@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="es" style="background:#0e0e0e;scroll-behavior:smooth;">
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<script src="translation-guard.js?v=20260821"></script>
+<script src="translation-guard.js?v=20260921"></script>
 <title>Catálogo | DimensionTres</title>
 <meta name="description" content="Explorá el catálogo de hardware, gaming, consolas y accesorios de DimensionTres.">
 <link rel="canonical" href="https://dimensiontres.com/catalogo.html">
@@ -46,9 +46,10 @@
 })();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
-<link rel="stylesheet" href="catalogo.css?v=tarjetas-b-20260916">
+<link rel="stylesheet" href="material-symbols-local.css?v=20260921">
+<link rel="stylesheet" href="shared.css?v=cart-gorila-20260922">
+<link rel="stylesheet" href="cookie-notice.css?v=20260918">
+<link rel="stylesheet" href="catalogo.css?v=stock-garantia-20260921">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -485,7 +486,8 @@
 
 <footer></footer>
 
-<script src="shared.js"></script>
+<script src="shared.js?v=redes-20260918"></script>
+<script src="cookie-notice.js?v=20260918"></script>
 <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
 <script src="config.js?v=invid-1515-30-20260810"></script>
@@ -497,7 +499,7 @@
 <script src="img/invid-imagenes-local.js?v=invid-images-local-20260805a"></script>
 <script src="supabase-client.js?v=dolar-invid-automatico-20260810"></script>
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
-<script src="cart.js?v=minicarrito-20260826"></script>
+<script src="cart.js?v=cart-gorila-20260922"></script>
 
 <script>
 /* ======================================================
@@ -1891,7 +1893,7 @@ function catalogGetStockState(product) {
   if (!Number.isFinite(stock)) stock = null;
   if (stock !== null && stock <= 0) return { status: 'out', label: 'Sin stock', stock: stock };
   if (stock === null) return { status: 'unknown', label: 'Consultar', stock: stock };
-  if (stock <= 3) return { status: 'low', label: 'Stock bajo', stock: stock };
+  if (stock <= 5) return { status: 'low', label: 'Stock bajo', stock: stock };
   return { status: 'available', label: 'Stock disponible', stock: stock };
 }
 
@@ -3540,9 +3542,6 @@ function renderProductCards(products, options) {
     card.dataset.price = String(getProductPrice(p));
     card.dataset.stockStatus = stockState.status;
     card.style.animationDelay = (idx * 0.035) + 's';
-    if (outOfStock) {
-      card.setAttribute('aria-disabled', 'true');
-    }
     card.onclick = function(event) {
       if (needsConsult) {
         if (event) event.preventDefault();
@@ -3621,17 +3620,29 @@ function renderProductCards(products, options) {
         low.title = Number(p.stock) + ' unidades disponibles';
       }
       priceWrap.appendChild(low);
+    } else if (stockState.status === 'available' && !needsConsult) {
+      var available = document.createElement('span');
+      available.className = 'product-card-available';
+      available.textContent = 'Disponible';
+      priceWrap.appendChild(available);
+    }
+    if (needsConsult && getProductPrice(p) > 0) {
+      var consultLabel = document.createElement('span');
+      consultLabel.className = 'product-card-consult-label';
+      consultLabel.textContent = 'Consultar';
+      priceWrap.appendChild(consultLabel);
     }
     foot.appendChild(priceWrap);
 
     if (needsConsult) {
       var consultBtn = document.createElement('button');
       consultBtn.type = 'button';
-      consultBtn.className = 'product-card-consult-btn';
-      consultBtn.innerHTML = '<span class="material-symbols-outlined">chat</span><span>Consultar</span>';
+      consultBtn.className = 'product-card-add product-card-consult-btn';
+      consultBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">chat</span>';
       consultBtn.title = 'Consultar por WhatsApp';
       consultBtn.setAttribute('aria-label', 'Consultar por WhatsApp ' + (p.name || 'producto'));
       consultBtn.addEventListener('click', function(event) {
+        event.preventDefault();
         event.stopPropagation();
         openProductWhatsApp(p);
       });

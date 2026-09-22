@@ -14,6 +14,22 @@ var TRANSFER_PAYMENT = {
   email: 'carlos_p4525@hotmail.com'
 };
 
+function applyCartCoupon(event) {
+  if (event) event.preventDefault();
+  var input = document.getElementById('coupon-code');
+  var status = document.getElementById('coupon-status');
+  if (!input || !status) return;
+  var code = String(input.value || '').trim().toUpperCase();
+  if (!code) {
+    status.className = 'is-error';
+    status.textContent = 'Ingresá un código de cupón.';
+    input.focus();
+    return;
+  }
+  status.className = 'is-error';
+  status.textContent = 'Ese cupón no es válido o ya venció.';
+}
+
 function selectMercadoPagoInstallments() {
   mercadoPagoInstallments = 12;
   var label = document.getElementById('mp-selected-label');
@@ -199,8 +215,8 @@ async function resetCheckoutSessionAndRedirect(message) {
     }
   } catch (error) {}
 
-  alert(message || 'Tu sesion vencio. Inicia sesion de nuevo y volve al carrito para pagar.');
-  window.location.href = 'cuenta.html?next=carrito.html';
+  alert(message || 'Tu sesion vencio. Inicia sesion de nuevo para continuar con el pago.');
+  window.location.href = 'cuenta.html?from=checkout&return=' + encodeURIComponent('carrito.html#pago');
 }
 
 function cleanCartText(value) {
@@ -271,7 +287,12 @@ async function hydrateCartImages() {
 function render() {
   var grid  = document.getElementById('cart-grid');
   var empty = document.getElementById('cart-empty');
-  if (!grid || !empty) return;
+  var checkoutGrid = document.getElementById('checkout-grid');
+  var checkoutEmpty = document.getElementById('checkout-empty');
+  if (!grid || !empty) {
+    if (checkoutGrid && checkoutEmpty) renderCheckoutSummary(checkoutGrid, checkoutEmpty);
+    return;
+  }
 
   if (CartStore.removeByOrderItems && CartStore.removeByOrderItems() > 0) {
     showCartNotice('Sacamos del carrito los productos a pedido. Consultanos por WhatsApp para reservarlos.');
@@ -297,6 +318,51 @@ function render() {
     tr.style.animationDelay = (idx * 0.04) + 's';
     tbody.appendChild(tr);
     requestAnimationFrame(function() { tr.classList.add('row-in'); });
+  });
+
+  updateTotals();
+}
+
+function renderCheckoutSummary(grid, empty) {
+  var items = CartStore.getAll();
+  var list = document.getElementById('checkout-items');
+
+  if (!items.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'flex';
+    return;
+  }
+
+  empty.style.display = 'none';
+  grid.style.display = '';
+  if (!list) return;
+  list.innerHTML = '';
+
+  items.forEach(function(item) {
+    var row = document.createElement('div');
+    row.className = 'dt-checkout-item';
+
+    var img = document.createElement('img');
+    img.src = item.image || '';
+    img.alt = item.name || 'Producto';
+    img.onerror = function() { this.style.visibility = 'hidden'; };
+
+    var copy = document.createElement('div');
+    copy.className = 'dt-checkout-item-copy';
+    var name = document.createElement('strong');
+    name.textContent = cleanCartText(item.name || 'Producto');
+    var qty = document.createElement('span');
+    qty.textContent = item.qty + ' × ' + formatMoney(item.price);
+    copy.appendChild(name);
+    copy.appendChild(qty);
+
+    var total = document.createElement('strong');
+    total.textContent = formatMoney(item.price * item.qty);
+
+    row.appendChild(img);
+    row.appendChild(copy);
+    row.appendChild(total);
+    list.appendChild(row);
   });
 
   updateTotals();
@@ -348,6 +414,13 @@ function buildRow(item) {
   stockP.style.color = '#8ff5ff';
   stockP.textContent = getCartStockLabel(item);
   infoDiv.appendChild(stockP);
+
+  if (typeof isDelayedDeliveryProduct === 'function' && isDelayedDeliveryProduct(item)) {
+    var delayP = document.createElement('p');
+    delayP.className = 'cart-item-delay';
+    delayP.textContent = 'Demora aproximada: 48 hs';
+    infoDiv.appendChild(delayP);
+  }
 
   var priceP = document.createElement('p');
   priceP.className = 'text-primary font-headline font-bold text-sm mt-1 md:hidden';
@@ -583,7 +656,7 @@ async function resolveCheckoutUser() {
 
   try { localStorage.removeItem('d3_user'); } catch (error) {}
 
-  window.location.href = 'cuenta.html?from=checkout&return=' + encodeURIComponent('carrito.html');
+  window.location.href = 'cuenta.html?from=checkout&return=' + encodeURIComponent('carrito.html#pago');
   return null;
 }
 

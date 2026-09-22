@@ -1,7 +1,7 @@
-﻿<!DOCTYPE html><html class="dark" lang="es" style="scroll-behavior:smooth;"><head>
+<!DOCTYPE html><html class="dark" lang="es" style="scroll-behavior:smooth;"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<script src="translation-guard.js?v=20260821"></script>
+<script src="translation-guard.js?v=20260921"></script>
 <title>DimensionTres | Hardware, Gaming y Servicio Técnico</title>
 <meta name="description" content="Hardware, gaming, consolas, accesorios y servicio técnico en DimensionTres.">
 <link rel="canonical" href="https://dimensiontres.com/">
@@ -20,11 +20,12 @@
 {"@context":"https://schema.org","@type":"Store","name":"DimensionTres","description":"Hardware, perifericos, consolas y servicio tecnico en Villa Maria, Cordoba.","url":"https://dimensiontres.com/","image":"https://dimensiontres.com/img/Inicio.jpg","telephone":"+5493534019085","priceRange":"$$","address":{"@type":"PostalAddress","streetAddress":"Bartolome Mitre 212","addressLocality":"Villa Maria","addressRegion":"Cordoba","postalCode":"X5901BDF","addressCountry":"AR"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"13:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"16:30","closes":"20:30"}]}
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="material-symbols-local.css?v=20260921">
 
 
-  <link rel="stylesheet" href="shared.css?v=minicarrito-b-20260826">
-  <link rel="stylesheet" href="index.css?v=efectos-20260826">
+  <link rel="stylesheet" href="shared.css?v=cart-gorila-20260922">
+  <link rel="stylesheet" href="cookie-notice.css?v=20260918">
+  <link rel="stylesheet" href="index.css?v=setup-carousel-20260922">
   <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" data-mode="connect" style="scroll-padding-top:5rem; overflow-x:hidden;">
@@ -298,91 +299,28 @@
 </div>
 
 </div>
-<div id="home-category-grid" class="home-category-grid grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-<!-- Consolas -->
-<a href="catalogo.html?catid=cat-consolas-de-juegos" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
-<img alt="Consolas" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/Consolas.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">sports_esports</span>
-<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Consolas</h3>
+<div id="home-category-grid" class="home-category-grid">
+<a href="catalogo.html?catid=cat-consolas-de-juegos" class="home-category-card"><span class="home-category-media"><img alt="Consolas" src="img/Consolas.jpg"></span><span class="home-category-copy">Consolas</span></a>
+<a href="catalogo.html?catid=cat-juegos-fisicos" class="home-category-card"><span class="home-category-media"><img alt="Juegos físicos" src="img/Consolas_Accesorios.jpg"></span><span class="home-category-copy">Juegos físicos</span></a>
+<a href="catalogo.html?catid=cat-accesorios-consolas" class="home-category-card"><span class="home-category-media"><img alt="Accesorios para consolas" src="img/Consolas_Accesorios.jpg"></span><span class="home-category-copy">Accesorios para consolas</span></a>
+<a href="catalogo.html?catid=cat-pc-y-componentes" class="home-category-card"><span class="home-category-media"><img alt="PC y componentes" src="img/hadware.jpg"></span><span class="home-category-copy">PC y componentes</span></a>
+<a href="catalogo.html?catid=cat-perifericos-pc" class="home-category-card"><span class="home-category-media"><img alt="Periféricos PC" src="img/perifericos.jpg"></span><span class="home-category-copy">Periféricos PC</span></a>
+<a href="catalogo.html?catid=cat-almacenamiento" class="home-category-card"><span class="home-category-media"><img alt="Almacenamiento" src="img/memorias.webp"></span><span class="home-category-copy">Almacenamiento</span></a>
+<a href="catalogo.html?catid=cat-cables" class="home-category-card"><span class="home-category-media"><img alt="Cables" src="img/cables.jpg"></span><span class="home-category-copy">Cables</span></a>
+<a href="catalogo.html?catid=cat-adaptadores" class="home-category-card"><span class="home-category-media"><img alt="Adaptadores" src="img/adaptadores.jpg"></span><span class="home-category-copy">Adaptadores</span></a>
+<a href="catalogo.html?catid=cat-accesorio-celular" class="home-category-card"><span class="home-category-media"><img alt="Accesorios para celular" src="img/accesorio-celular.jpg"></span><span class="home-category-copy">Accesorios para celular</span></a>
+<a href="catalogo.html?catid=cat-auriculares" class="home-category-card"><span class="home-category-media"><img alt="Auriculares" src="img/auriculares.jpg"></span><span class="home-category-copy">Auriculares</span></a>
 </div>
-</a>
-<!-- PC y Componentes -->
-<a href="catalogo.html?catid=cat-pc-y-componentes" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
-<img alt="PC y Componentes" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/hadware.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">memory</span>
-<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">PC y Componentes</h3>
-</div>
-</a>
-<!-- Perifericos PC -->
-<a href="catalogo.html?catid=cat-perifericos-pc" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
-<img alt="Perifericos PC" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/perifericos.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">mouse</span>
-<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Perifericos PC</h3>
-</div>
-</a>
-<!-- Accesorios Consolas -->
-<a href="catalogo.html?catid=cat-accesorios-consolas" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
-<img alt="Accesorios Consolas" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/Consolas_Accesorios.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">gamepad</span>
-<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Accesorios Consolas</h3>
-</div>
-</a>
-<!-- Auriculares -->
-<a href="catalogo.html?catid=cat-auriculares" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
-<img alt="Auriculares" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/auriculares.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">headphones</span>
-<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Auriculares</h3>
-</div>
-</a>
-<!-- Adaptadores -->
-<a href="catalogo.html?catid=cat-adaptadores" onclick="window.location.href=this.href; return false;" class="home-category-card group relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px] block no-underline text-inherit">
-<img alt="Adaptadores" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0" src="img/adaptadores.jpg">
-<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<span class="material-symbols-outlined text-primary mb-2 text-3xl">device_hub</span>
-<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">Adaptadores</h3>
-</div>
-</a>
-</div>
-
-  <!-- Botón Ver todo el catálogo -->
-  <div class="flex justify-center mt-8 md:mt-10">
-    <button
-      onclick="handleViewCatalog()"
-      class="flex items-center gap-3 px-8 py-4 bg-primary/10 border border-primary/30 text-primary font-headline font-bold uppercase text-sm tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all duration-300 rounded-lg group"
-    >
-      <span class="material-symbols-outlined text-[20px] group-hover:rotate-12 transition-transform duration-300">grid_view</span>
-      Ver todo el catálogo
-      <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform duration-300">arrow_forward</span>
-    </button>
-  </div>
 
 </section>
 <section id="destacados" class="dt-seccion py-14 md:py-24 bg-[#0b0b0b] border-y border-outline-variant/10">
 <div class="dt-halo" aria-hidden="true"></div>
 <div class="container mx-auto px-4 md:px-8 max-w-[1920px]">
-<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-5 mb-8 md:mb-10">
-<div>
-<h2 class="font-headline text-2xl md:text-4xl font-bold uppercase tracking-tight text-on-surface">Mejorá tu setup</h2>
-<div class="h-1 w-24 bg-primary mt-2"></div>
-<p class="text-on-surface-variant font-body mt-3">Productos seleccionados para jugar, trabajar y actualizar tu equipo.</p>
-</div>
-<a href="catalogo.html" class="flex items-center gap-2 font-headline text-sm uppercase tracking-widest text-[#00f0ff] hover:text-white transition-colors">
-Ver todo
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</a>
-</div>
-
+  <div class="setup-section-head">
+    <span class="setup-section-eyebrow">Mejorá tu setup</span>
+    <h2>Componentes para tu próxima PC</h2>
+    <p>Compará productos y recorré cada categoría sin salir del inicio.</p>
+  </div>
 <style>
 .featured-showcase {
   display: grid;
@@ -615,6 +553,12 @@ Ver todo
   font-weight: 600;
   color: #ffe38a;
 }
+.feat-available {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ff0b3;
+}
 .feat-btn {
   flex: none;
   width: 40px;
@@ -728,48 +672,166 @@ Ver todo
     gap: 1rem;
   }
 }
+.setup-section-eyebrow {
+  display: block;
+  margin-bottom: .45rem;
+  color: #8ff5ff;
+  font: 800 .7rem/1 "Space Grotesk", sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.featured-showcase { display: block; }
+.setup-carousel-shell { position: relative; }
+.setup-carousel-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: .45rem;
+  margin-bottom: .75rem;
+}
+.setup-carousel-btn {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #adaaaa;
+  border: 1px solid rgba(143,245,255,.16);
+  border-radius: 4px;
+  background: rgba(255,255,255,.035);
+  cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.setup-carousel-btn:hover,
+.setup-carousel-btn:focus-visible {
+  color: #8ff5ff;
+  border-color: rgba(143,245,255,.5);
+  background: rgba(143,245,255,.08);
+}
+.setup-carousel-viewport { overflow: hidden; }
+.featured-products-grid {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+}
+.featured-products-grid::-webkit-scrollbar { display: none; }
+.featured-products-grid .featured-card {
+  flex: 0 0 calc((100% - 3rem) / 4);
+  scroll-snap-align: start;
+}
+@media (max-width: 1023px) {
+  .featured-products-grid .featured-card { flex-basis: calc((100% - 2rem) / 3); }
+}
+@media (max-width: 767px) {
+  .featured-products-grid .featured-card { flex-basis: min(78vw, 270px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .featured-products-grid { scroll-behavior: auto; }
+}
 </style>
-
-<div class="featured-showcase">
-  <div id="home-promo-card" class="setup-promo-card" onclick="window.location.href='catalogo.html?cat=hardware'">
-    <img src="img/hadware.jpg" alt="PC y Componentes">
-    <div class="setup-promo-content">
-      <span class="setup-kicker">Productos del catálogo</span>
-      <h3 class="setup-promo-title">PC y Componentes</h3>
-      <span class="setup-promo-link">Ver productos <span class="material-symbols-outlined text-[18px]">arrow_forward</span></span>
+  <div class="featured-showcase">
+    <section class="setup-product-group" aria-labelledby="home-featured-processors-title">
+  <div class="setup-product-group-head">
+    <div>
+      <h3 id="home-featured-processors-title">Procesadores</h3>
+      <span></span>
+    </div>
+    <div class="setup-product-group-actions">
+      <a href="catalogo.html?q=procesadores">Ver todos</a>
+      <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-processors', -1)" aria-label="Producto anterior de Procesadores"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
+      <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-processors', 1)" aria-label="Producto siguiente de Procesadores"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
     </div>
   </div>
-
-<div id="home-featured-grid" class="featured-products-grid">
-
-  <div class="featured-card featured-loading" aria-hidden="true">
-    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
-    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
+  <div class="setup-carousel-viewport">
+    <div id="home-featured-processors" class="featured-products-grid">
+      <div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+    </div>
   </div>
-  <div class="featured-card featured-loading" aria-hidden="true">
-    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
-    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
+</section>
+    <section class="setup-product-group" aria-labelledby="home-featured-cases-title">
+  <div class="setup-product-group-head">
+    <div>
+      <h3 id="home-featured-cases-title">Gabinetes</h3>
+      <span></span>
+    </div>
+    <div class="setup-product-group-actions">
+      <a href="catalogo.html?q=gabinetes">Ver todos</a>
+      <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-cases', -1)" aria-label="Producto anterior de Gabinetes"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
+      <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-cases', 1)" aria-label="Producto siguiente de Gabinetes"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
+    </div>
   </div>
-  <div class="featured-card featured-loading" aria-hidden="true">
-    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
-    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
+  <div class="setup-carousel-viewport">
+    <div id="home-featured-cases" class="featured-products-grid">
+      <div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+    </div>
   </div>
-  <div class="featured-card featured-loading" aria-hidden="true">
-    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
-    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
+</section>
+    <section class="setup-product-group" aria-labelledby="home-featured-gpus-title">
+  <div class="setup-product-group-head">
+    <div>
+      <h3 id="home-featured-gpus-title">Placas de video</h3>
+      <span></span>
+    </div>
+    <div class="setup-product-group-actions">
+      <a href="catalogo.html?q=placas%20de%20video">Ver todos</a>
+      <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-gpus', -1)" aria-label="Producto anterior de Placas de video"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
+      <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-gpus', 1)" aria-label="Producto siguiente de Placas de video"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
+    </div>
   </div>
-  <div class="featured-card featured-loading" aria-hidden="true">
-    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
-    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
+  <div class="setup-carousel-viewport">
+    <div id="home-featured-gpus" class="featured-products-grid">
+      <div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+<div class="featured-card featured-loading" aria-hidden="true">
+      <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span></div>
+      <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
+    </div>
+    </div>
   </div>
-  <div class="featured-card featured-loading" aria-hidden="true">
-    <div class="feat-img-wrap"><span class="material-symbols-outlined feat-icon">inventory_2</span><div class="feat-bottom-line"></div></div>
-    <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p><button class="feat-btn" type="button">Cargando</button></div>
+</section>
   </div>
-
-</div>
-</div>
-
 </div>
 </section>
 <section id="servicios" class="dt-seccion py-14 md:py-24 border-t border-outline-variant/10">
@@ -948,21 +1010,25 @@ Ver todo
       </div>
 
       <!-- Columna 2 y 3: Mapa (ocupa 2 columnas en desktop) -->
-      <!-- Para actualizar el mapa:
-           1. Ir a Google Maps y buscar la dirección del local
-           2. Clic en "Compartir" > "Insertar un mapa"
-           3. Copiar el src del iframe y reemplazar el src de abajo -->
       <div class="md:col-span-2 overflow-hidden border border-outline-variant/20" style="min-height: 320px;">
         <iframe
-          src="https://www.google.com/maps?q=Dimensi%C3%B3n%203%2C%20Bartolom%C3%A9%20Mitre%20212%2C%20Villa%20Mar%C3%ADa%2C%20C%C3%B3rdoba&z=17&output=embed"
+          data-dt-map-frame
+          data-src="https://www.google.com/maps?q=Dimensi%C3%B3n%203%2C%20Bartolom%C3%A9%20Mitre%20212%2C%20Villa%20Mar%C3%ADa%2C%20C%C3%B3rdoba&z=17&output=embed"
           width="100%"
           height="100%"
-          style="border:0; filter: invert(90%) hue-rotate(180deg); min-height: 320px; display:block;"
+          style="border:0; filter: invert(90%) hue-rotate(180deg); min-height: 320px;"
           allowfullscreen=""
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
           title="Ubicación DimensionTres"
+          hidden
         ></iframe>
+        <div class="dt-map-placeholder" data-dt-map-placeholder>
+          <strong>Encontranos en Villa María</strong>
+          <p>El mapa de Google se carga solo si lo permitís. También podés abrir la dirección directamente en Google Maps.</p>
+          <button type="button" data-dt-allow-map>Aceptar y ver mapa</button>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Bartolom%C3%A9%20Mitre%20212%2C%20Villa%20Mar%C3%ADa%2C%20C%C3%B3rdoba" target="_blank" rel="noopener noreferrer">Abrir en Google Maps</a>
+        </div>
       </div>
 
     </div>
@@ -979,7 +1045,8 @@ Ver todo
 
 
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=redes-20260918"></script>
+  <script src="cookie-notice.js?v=20260918"></script>
   <script src="config.js?v=invid-1515-30-20260810"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
@@ -992,10 +1059,8 @@ Ver todo
 <script src="search-global.js?v=search-ranking-20260805b"></script>
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
-  <script src="cart.js?v=minicarrito-20260826"></script>
-  <script src="index.js?v=tarjeta-prolija-20260916"></script>
+  <script src="cart.js?v=cart-gorila-20260922"></script>
+  <script src="index.js?v=setup-carousel-20260922"></script>
 
 </body>
 </html>
-
-

@@ -6,6 +6,33 @@
   var CANDIDATE_SELECTOR = '.material-symbols-outlined, [data-dt-notranslate], title, a, h1, h2, h3, p, span, div, strong';
   var BRAND_TEXT = 'dimensiontres';
 
+  if (document.documentElement) {
+    document.documentElement.classList.add('dt-symbol-font-loading');
+  }
+
+  function revealSymbolsWhenFontIsReady() {
+    if (!document.documentElement) return;
+    if (!document.fonts || !document.fonts.load) {
+      document.documentElement.classList.remove('dt-symbol-font-loading');
+      return;
+    }
+
+    document.fonts.load('24px "Material Symbols Outlined"').then(function() {
+      if (document.fonts.check('24px "Material Symbols Outlined"')) {
+        document.documentElement.classList.remove('dt-symbol-font-loading');
+        document.documentElement.classList.add('dt-symbol-font-ready');
+      }
+    }).catch(function() {
+      // Si la fuente no carga, los nombres internos permanecen ocultos.
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', revealSymbolsWhenFontIsReady, { once: true });
+  } else {
+    revealSymbolsWhenFontIsReady();
+  }
+
   function markAsNotTranslatable(element) {
     if (!element || element.nodeType !== 1) return;
     element.setAttribute('translate', 'no');

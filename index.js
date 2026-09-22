@@ -459,14 +459,18 @@ function homeCategoryMeta(name) {
 }
 
 function pickHomeCategories(tree) {
-  // Home: solo seis accesos visuales a categorias reales del catalogo.
+  // Diez accesos visuales a categorias reales del catalogo.
   var wanted = [
     { title: 'Consolas', source: 'Consolas de juegos', href: 'catalogo.html?catid=cat-consolas-de-juegos' },
-    { title: 'PC y Componentes', source: 'PC y Componentes', href: 'catalogo.html?catid=cat-pc-y-componentes' },
-    { title: 'Perifericos PC', source: 'Periféricos PC', href: 'catalogo.html?catid=cat-perifericos-pc' },
-    { title: 'Accesorios Consolas', source: 'Accesorios Consolas', href: 'catalogo.html?catid=cat-accesorios-consolas' },
-    { title: 'Auriculares', source: 'Auriculares', href: 'catalogo.html?catid=cat-auriculares' },
-    { title: 'Adaptadores', source: 'Adaptadores', href: 'catalogo.html?catid=cat-adaptadores' }
+    { title: 'Juegos físicos', source: 'Juegos Fisicos', href: 'catalogo.html?catid=cat-juegos-fisicos' },
+    { title: 'Accesorios para consolas', source: 'Accesorios Consolas', href: 'catalogo.html?catid=cat-accesorios-consolas' },
+    { title: 'PC y componentes', source: 'PC y Componentes', href: 'catalogo.html?catid=cat-pc-y-componentes' },
+    { title: 'Periféricos PC', source: 'Periféricos PC', href: 'catalogo.html?catid=cat-perifericos-pc' },
+    { title: 'Almacenamiento', source: 'Almacenamiento', href: 'catalogo.html?catid=cat-almacenamiento' },
+    { title: 'Cables', source: 'Cables', href: 'catalogo.html?catid=cat-cables' },
+    { title: 'Adaptadores', source: 'Adaptadores', href: 'catalogo.html?catid=cat-adaptadores' },
+    { title: 'Accesorios para celular', source: 'Accesorio Celular', href: 'catalogo.html?catid=cat-accesorio-celular' },
+    { title: 'Auriculares', source: 'Auriculares', href: 'catalogo.html?catid=cat-auriculares' }
   ];
 
   // Fallbacks estaticos (mismo slugify que catalogSlug del supabase-client.js)
@@ -506,27 +510,22 @@ function renderHomeCategories(tree) {
   categories.forEach(function(item) {
     var meta = homeCategoryMeta(item.homeTitle || item.name);
     var card = document.createElement('a');
-    // 13 categorías → grid responsive (1/2/4/5 columnas) heredado del HTML
-    card.className = 'home-category-card group block relative overflow-hidden bg-surface-container cursor-pointer min-h-[220px]';
+    card.className = 'home-category-card';
     card.href = homeCatalogHref(item);
     card.setAttribute('aria-label', 'Ver categoria ' + meta.title);
 
     var img = document.createElement('img');
     img.alt = meta.title;
-    img.className = 'w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-700 absolute inset-0';
     img.src = meta.image;
-    card.appendChild(img);
+    var media = document.createElement('span');
+    media.className = 'home-category-media';
+    media.appendChild(img);
+    card.appendChild(media);
 
-    var gradient = document.createElement('div');
-    gradient.className = 'absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent';
-    card.appendChild(gradient);
-
-    var content = document.createElement('div');
-    content.className = 'absolute bottom-6 left-6 right-6';
-    content.innerHTML =
-      '<span class="material-symbols-outlined text-primary mb-2 text-3xl">' + meta.icon + '</span>' +
-      '<h3 class="font-headline text-xl md:text-2xl font-black uppercase tracking-tighter">' + meta.title + '</h3>';
-    card.appendChild(content);
+    var copy = document.createElement('span');
+    copy.className = 'home-category-copy';
+    copy.textContent = item.homeTitle || meta.title;
+    card.appendChild(copy);
     grid.appendChild(card);
   });
 }
@@ -684,11 +683,14 @@ function createFeaturedProductCard(product) {
   price.className = 'feat-price';
   price.textContent = formatHomeMoney(product.price);
   priceWrap.appendChild(price);
-  if (typeof getProductStockState === 'function' && getProductStockState(product).status === 'low') {
-    var low = document.createElement('span');
-    low.className = 'feat-low';
-    low.textContent = 'Quedan pocas';
-    priceWrap.appendChild(low);
+  if (typeof getProductStockState === 'function') {
+    var stockStatus = getProductStockState(product).status;
+    if (stockStatus === 'low' || stockStatus === 'available') {
+      var stockLabel = document.createElement('span');
+      stockLabel.className = stockStatus === 'low' ? 'feat-low' : 'feat-available';
+      stockLabel.textContent = stockStatus === 'low' ? 'Quedan pocas' : 'Disponible';
+      priceWrap.appendChild(stockLabel);
+    }
   }
   foot.appendChild(priceWrap);
 
@@ -888,21 +890,27 @@ function wireStaticSetupLinks() {
 }
 
 async function loadHomeFeaturedProducts(tree) {
-  if (!window.SupabaseStore) return [];
-  var categories = pickHomeCategories(tree);
-  var batches = await Promise.all(categories.map(function(item) {
-    return fetchHomeProductsForCategory(item)
-      .then(function(products) {
-        return (products || [])
-          .filter(function(product) { return Number(product.price || 0) > 0; })
-          .slice(0, 2);
-      })
-      .catch(function() { return []; });
-  }));
+  if (!window.SupabaseStore || !window.SupabaseStore.fetchAccessProductsBySubcategory) return [];
+  var pcCategory = (tree || []).find(function(item) {
+    return normalizeHomeText(item && item.name) === 'pc y componentes';
+  });
+  var processorNode = pcCategory && (pcCategory.children || []).find(function(item) {
+    return normalizeHomeText(item && item.name).indexOf('procesador') !== -1;
+  });
+  var processorId = processorNode && (processorNode.accessSubcategoryId || processorNode.id);
+  processorId = processorId || 'subcat-59';
 
-  return pickPreferredHomeFeaturedProducts(batches.reduce(function(all, group) {
-    return all.concat(group || []);
-  }, []));
+  var products = await window.SupabaseStore.fetchAccessProductsBySubcategory(processorId).catch(function() { return []; });
+  var seen = {};
+  return (products || [])
+    .filter(isUsableHomeFeaturedProduct)
+    .filter(function(product) {
+      if (seen[product.slug]) return false;
+      seen[product.slug] = true;
+      return true;
+    })
+    .sort(compareHomeFeaturedProducts)
+    .slice(0, 12);
 }
 
 function renderHomeFeaturedProducts(products) {
@@ -912,6 +920,50 @@ function renderHomeFeaturedProducts(products) {
   products.forEach(function(product) {
     grid.appendChild(createFeaturedProductCard(product));
   });
+  resetSetupCarousel();
+}
+
+var setupCarouselTimer = null;
+
+function setupCarouselStepWidth() {
+  var grid = document.getElementById('home-featured-grid');
+  var card = grid && grid.querySelector('.featured-card');
+  if (!grid || !card) return 0;
+  var styles = window.getComputedStyle(grid);
+  var gap = parseFloat(styles.columnGap || styles.gap || 0);
+  return card.getBoundingClientRect().width + gap;
+}
+
+function moveSetupCarousel(direction) {
+  var grid = document.getElementById('home-featured-grid');
+  var step = setupCarouselStepWidth();
+  if (!grid || !step) return;
+  var atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
+  var atStart = grid.scrollLeft <= 4;
+  if (direction > 0 && atEnd) grid.scrollTo({ left: 0, behavior: 'smooth' });
+  else if (direction < 0 && atStart) grid.scrollTo({ left: grid.scrollWidth, behavior: 'smooth' });
+  else grid.scrollBy({ left: step * direction, behavior: 'smooth' });
+  restartSetupCarousel();
+}
+
+function restartSetupCarousel() {
+  window.clearInterval(setupCarouselTimer);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  setupCarouselTimer = window.setInterval(function() { moveSetupCarousel(1); }, 4500);
+}
+
+function resetSetupCarousel() {
+  var grid = document.getElementById('home-featured-grid');
+  if (!grid) return;
+  if (!grid.dataset.carouselReady) {
+    grid.dataset.carouselReady = 'true';
+    grid.addEventListener('mouseenter', function() { window.clearInterval(setupCarouselTimer); });
+    grid.addEventListener('mouseleave', restartSetupCarousel);
+    grid.addEventListener('focusin', function() { window.clearInterval(setupCarouselTimer); });
+    grid.addEventListener('focusout', restartSetupCarousel);
+    grid.addEventListener('pointerdown', function() { window.clearInterval(setupCarouselTimer); });
+  }
+  restartSetupCarousel();
 }
 
 function collectHomeAccessSubcategoryIds(item) {
@@ -955,9 +1007,8 @@ async function loadHomeCatalogSections() {
     var tree = await window.SupabaseStore.fetchAccessCatalogTree();
     if (!tree || !tree.length) return;
     renderHomeCategories(tree);
-    renderHomePromo(tree);
     var products = await loadHomeFeaturedProducts(tree);
-    renderHomeFeaturedProducts(products.slice(0, 6));
+    renderHomeFeaturedProducts(products);
   } catch (err) {
     console.warn('No se pudo actualizar el inicio desde Supabase:', err);
   }
@@ -1046,6 +1097,7 @@ document.addEventListener('DOMContentLoaded', function() {
   checkStoreStatus();
   setInterval(checkStoreStatus, 60000);
   wireStaticSetupLinks();
+  resetSetupCarousel();
   initHomeHeroCarousel();
   loadHomeCatalogSections();
   checkHomeAdminAccess();

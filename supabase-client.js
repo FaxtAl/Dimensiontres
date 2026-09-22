@@ -1199,6 +1199,19 @@
     return { error: result.error || null };
   }
 
+  async function sendPasswordReset(email, redirectTo) {
+    var sb = getClient();
+    var cleanEmail = normalizeEmail(email);
+    if (!sb) return { error: { message: 'Supabase no esta disponible.' } };
+    if (!cleanEmail) return { error: { message: 'Ingresá un email válido.' } };
+
+    var result = await sb.auth.resetPasswordForEmail(cleanEmail, {
+      redirectTo: redirectTo || window.location.href
+    });
+
+    return { error: result.error || null };
+  }
+
   async function getActiveSession(sb) {
     if (!sb || !sb.auth) return { data: { session: null }, error: null };
 
@@ -3054,6 +3067,7 @@
     registerEmailAccount: registerEmailAccount,
     loginEmailAccount: loginEmailAccount,
     signInWithGoogle: signInWithGoogle,
+    sendPasswordReset: sendPasswordReset,
     getCurrentAccount: getCurrentAccount,
     registerCustomerByDni: registerCustomerByDni,
     loginCustomerByDni: loginCustomerByDni,
