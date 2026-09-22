@@ -724,6 +724,7 @@
 .setup-product-group:last-child { margin-bottom: 0; }
 
 .setup-cat-banner {
+  width: 50%;
   margin-bottom: 1rem;
   padding: 0.85rem 1.25rem;
   background: linear-gradient(135deg, #8ff5ff, #00deec);
@@ -795,7 +796,8 @@
   /* En celular la imagen se saca: ocupa mucho y el carrusel ya ocupa el ancho. */
   .setup-group-row { grid-template-columns: minmax(0, 1fr); }
   .setup-group-promo { display: none; }
-  .setup-cat-banner { clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 100%, 0 100%); }
+  /* En celular el titulo necesita todo el ancho para no cortarse. */
+  .setup-cat-banner { width: 100%; clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 100%, 0 100%); }
   .setup-group-all { font-size: 0.88rem; }
   .setup-carousel-btn { width: 34px; height: 34px; }
 }
@@ -1189,7 +1191,7 @@
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
   <script src="cart.js?v=cart-gorila-20260922"></script>
-  <script src="index.js?v=setup-filas-20260922b"></script>
+  <script src="index.js?v=setup-auto-20260922"></script>
 
 </body>
 </html>

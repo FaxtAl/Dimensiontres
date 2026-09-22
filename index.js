@@ -950,6 +950,65 @@ async function loadHomeSetupGroups(tree) {
     var products = await loadSetupGroupProducts(tree, group).catch(function() { return []; });
     renderSetupGroup(group.gridId, products);
   }));
+  startSetupAutoplay();
+}
+
+var SETUP_AUTOPLAY_MS = 4500;
+var setupAutoplayTimers = {};
+
+// Las filas avanzan solas, pero se frenan mientras la persona mira o toca
+// una fila, con la pestaña en segundo plano o si pidio menos movimiento.
+function startSetupAutoplay() {
+  var menosMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (menosMovimiento) return;
+
+  SETUP_GROUPS.forEach(function(group) {
+    var grid = document.getElementById(group.gridId);
+    if (!grid || grid.dataset.autoplayListo === '1') return;
+    var section = grid.closest('.setup-product-group');
+    if (!section || section.style.display === 'none') return;
+
+    grid.dataset.autoplayListo = '1';
+
+    function frenar() { detenerSetupAutoplay(group.gridId); }
+    function seguir() { reanudarSetupAutoplay(group.gridId); }
+
+    section.addEventListener('pointerenter', frenar);
+    section.addEventListener('pointerleave', seguir);
+    section.addEventListener('focusin', frenar);
+    section.addEventListener('focusout', seguir);
+    grid.addEventListener('touchstart', frenar, { passive: true });
+    grid.addEventListener('touchend', seguir, { passive: true });
+
+    reanudarSetupAutoplay(group.gridId);
+  });
+
+  if (!document.body.dataset.autoplayVisibilidad) {
+    document.body.dataset.autoplayVisibilidad = '1';
+    document.addEventListener('visibilitychange', function() {
+      SETUP_GROUPS.forEach(function(group) {
+        if (document.hidden) detenerSetupAutoplay(group.gridId);
+        else reanudarSetupAutoplay(group.gridId);
+      });
+    });
+  }
+}
+
+function detenerSetupAutoplay(gridId) {
+  if (setupAutoplayTimers[gridId]) {
+    window.clearInterval(setupAutoplayTimers[gridId]);
+    setupAutoplayTimers[gridId] = null;
+  }
+}
+
+function reanudarSetupAutoplay(gridId) {
+  detenerSetupAutoplay(gridId);
+  if (document.hidden) return;
+  var grid = document.getElementById(gridId);
+  if (!grid || grid.scrollWidth <= grid.clientWidth + 4) return;
+  setupAutoplayTimers[gridId] = window.setInterval(function() {
+    moveSetupCarousel(gridId, 1);
+  }, SETUP_AUTOPLAY_MS);
 }
 
 /* Flechas de cada fila. El HTML las llama con el id de la grilla, asi que
