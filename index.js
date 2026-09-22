@@ -522,10 +522,8 @@ function renderHomeCategories(tree) {
     media.appendChild(img);
     card.appendChild(media);
 
-    var copy = document.createElement('span');
-    copy.className = 'home-category-copy';
-    copy.textContent = item.homeTitle || meta.title;
-    card.appendChild(copy);
+    // Sin texto debajo: la tarjeta es solo la foto. El nombre de la categoria
+    // sigue en el aria-label para quien navega con lector de pantalla.
     grid.appendChild(card);
   });
 }
