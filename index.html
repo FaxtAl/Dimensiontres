@@ -773,21 +773,13 @@
   gap: 1rem;
   align-items: stretch;
 }
+/* Columna lateral sin foto: solo el panel negro al costado de la fila. */
 .setup-group-promo {
   display: block;
-  overflow: hidden;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 4px;
-  background: #131313;
+  background: #0e0e0e;
 }
-.setup-group-promo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.45s;
-}
-.setup-group-promo:hover img { transform: scale(1.03); }
 
 @media (max-width: 1023px) {
   .setup-group-row { grid-template-columns: 160px minmax(0, 1fr); }
@@ -866,9 +858,7 @@
     </div>
   </div>
   <div class="setup-group-row">
-    <a class="setup-group-promo" href="catalogo.html?q=procesadores" aria-label="Ver todos los procesadores">
-      <img src="img/Water%20cooler%20corner.jpg" alt="" loading="lazy">
-    </a>
+    <div class="setup-group-promo" aria-hidden="true"></div>
   <div class="setup-carousel-viewport">
     <div id="home-featured-processors" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -902,9 +892,7 @@
     </div>
   </div>
   <div class="setup-group-row">
-    <a class="setup-group-promo" href="catalogo.html?q=gabinetes" aria-label="Ver todos los gabinetes">
-      <img src="img/hadware.jpg" alt="" loading="lazy">
-    </a>
+    <div class="setup-group-promo" aria-hidden="true"></div>
   <div class="setup-carousel-viewport">
     <div id="home-featured-cases" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -938,9 +926,7 @@
     </div>
   </div>
   <div class="setup-group-row">
-    <a class="setup-group-promo" href="catalogo.html?q=placas%20de%20video" aria-label="Ver todas las placas de video">
-      <img src="img/banners/perifericos-logitech.webp?v=banners-limpios-20260826" alt="" loading="lazy">
-    </a>
+    <div class="setup-group-promo" aria-hidden="true"></div>
   <div class="setup-carousel-viewport">
     <div id="home-featured-gpus" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
