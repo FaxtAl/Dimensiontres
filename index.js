@@ -854,55 +854,48 @@ function pickPreferredHomeFeaturedProducts(products) {
   return selected.slice(0, 6);
 }
 
-function wireStaticSetupLinks() {
-  var grid = document.getElementById('home-featured-grid');
-  if (!grid) return;
+/* ── "Mejora tu setup": una fila por categoria ──────────────────────────
+   Cada fila es un carrusel horizontal con productos reales, del local
+   (Access) y del proveedor (Invid). Antes el HTML tenia tres filas pero el
+   JS solo llenaba una grilla vieja (#home-featured-grid) que ya no existe:
+   por eso quedaban en "Cargando producto". */
+var SETUP_GROUPS = [
+  { gridId: 'home-featured-processors', words: ['procesador'], invid: ['AMD', 'Intel'] },
+  { gridId: 'home-featured-cases', words: ['gabinete'], invid: ['Gabinetes sin Fuente', 'Gabinetes con Fuente'] },
+  { gridId: 'home-featured-gpus', words: ['placas de video', 'placa de video'], invid: ['Línea NVIDIA GEFORCE', 'Línea AMD RADEON'] }
+];
 
-  var links = [
-    { href: 'catalogo.html?q=joystick', label: 'Ver joysticks' },
-    { href: 'catalogo.html?q=teclado', label: 'Ver teclados' },
-    { href: 'catalogo.html?q=mouse', label: 'Ver mouses' },
-    { href: 'catalogo.html?q=auricular', label: 'Ver audio' },
-    { href: 'catalogo.html?q=monitor', label: 'Ver monitores' },
-    { href: 'catalogo.html?q=ssd', label: 'Ver almacenamiento' }
-  ];
-
-  Array.from(grid.querySelectorAll('.featured-card')).forEach(function(card, index) {
-    if (card.dataset.productCard) return;
-    var target = links[index] || { href: 'catalogo.html', label: 'Ver catalogo' };
-    card.removeAttribute('aria-hidden');
-    card.setAttribute('role', 'link');
-    card.setAttribute('tabindex', '0');
-    card.onclick = function() { window.location.href = target.href; };
-    card.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') window.location.href = target.href;
+function findHomeTreeNode(tree, words) {
+  var found = null;
+  (function walk(nodes) {
+    (nodes || []).forEach(function(node) {
+      if (found || !node) return;
+      var name = normalizeHomeText(node.name);
+      if (words.some(function(word) { return name.indexOf(normalizeHomeText(word)) !== -1; })) {
+        found = node;
+        return;
+      }
+      walk(node.children);
     });
-
-    var button = card.querySelector('.feat-btn');
-    if (button) {
-      button.textContent = target.label;
-      button.onclick = function(event) {
-        event.stopPropagation();
-        window.location.href = target.href;
-      };
-    }
-  });
+  })(tree);
+  return found;
 }
 
-async function loadHomeFeaturedProducts(tree) {
-  if (!window.SupabaseStore || !window.SupabaseStore.fetchAccessProductsBySubcategory) return [];
-  var pcCategory = (tree || []).find(function(item) {
-    return normalizeHomeText(item && item.name) === 'pc y componentes';
-  });
-  var processorNode = pcCategory && (pcCategory.children || []).find(function(item) {
-    return normalizeHomeText(item && item.name).indexOf('procesador') !== -1;
-  });
-  var processorId = processorNode && (processorNode.accessSubcategoryId || processorNode.id);
-  processorId = processorId || 'subcat-59';
+async function loadSetupGroupProducts(tree, group) {
+  var lists = [];
+  var node = findHomeTreeNode(tree, group.words);
+  if (node) {
+    lists.push(await fetchHomeProductsForCategory(node).catch(function() { return []; }));
+  }
 
-  var products = await window.SupabaseStore.fetchAccessProductsBySubcategory(processorId).catch(function() { return []; });
+  var store = window.SupabaseStore;
+  if (group.invid && group.invid.length && store && store.fetchInvidPcProductsByCategories) {
+    lists.push(await store.fetchInvidPcProductsByCategories(group.invid).catch(function() { return []; }));
+  }
+
   var seen = {};
-  return (products || [])
+  return lists
+    .reduce(function(all, list) { return all.concat(list || []); }, [])
     .filter(isUsableHomeFeaturedProduct)
     .filter(function(product) {
       if (seen[product.slug]) return false;
@@ -913,57 +906,48 @@ async function loadHomeFeaturedProducts(tree) {
     .slice(0, 12);
 }
 
-function renderHomeFeaturedProducts(products) {
-  var grid = document.getElementById('home-featured-grid');
-  if (!grid || !products.length) return;
+function renderSetupGroup(gridId, products) {
+  var grid = document.getElementById(gridId);
+  if (!grid) return;
+  var section = grid.closest('.setup-product-group');
+
+  // Sin productos se esconde la fila entera: peor que no mostrarla es
+  // dejar las tarjetas de "Cargando producto" para siempre.
+  if (!products.length) {
+    if (section) section.style.display = 'none';
+    return;
+  }
+
+  if (section) section.style.display = '';
   grid.innerHTML = '';
   products.forEach(function(product) {
     grid.appendChild(createFeaturedProductCard(product));
   });
-  resetSetupCarousel();
 }
 
-var setupCarouselTimer = null;
+async function loadHomeSetupGroups(tree) {
+  await Promise.all(SETUP_GROUPS.map(async function(group) {
+    var products = await loadSetupGroupProducts(tree, group).catch(function() { return []; });
+    renderSetupGroup(group.gridId, products);
+  }));
+}
 
-function setupCarouselStepWidth() {
-  var grid = document.getElementById('home-featured-grid');
+/* Flechas de cada fila. El HTML las llama con el id de la grilla, asi que
+   cada carrusel se mueve por su cuenta. */
+function moveSetupCarousel(gridId, direction) {
+  var grid = document.getElementById(gridId);
   var card = grid && grid.querySelector('.featured-card');
-  if (!grid || !card) return 0;
-  var styles = window.getComputedStyle(grid);
-  var gap = parseFloat(styles.columnGap || styles.gap || 0);
-  return card.getBoundingClientRect().width + gap;
-}
+  if (!grid || !card) return;
 
-function moveSetupCarousel(direction) {
-  var grid = document.getElementById('home-featured-grid');
-  var step = setupCarouselStepWidth();
-  if (!grid || !step) return;
+  var styles = window.getComputedStyle(grid);
+  var gap = parseFloat(styles.columnGap || styles.gap || 0) || 0;
+  var step = card.getBoundingClientRect().width + gap;
   var atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
   var atStart = grid.scrollLeft <= 4;
+
   if (direction > 0 && atEnd) grid.scrollTo({ left: 0, behavior: 'smooth' });
   else if (direction < 0 && atStart) grid.scrollTo({ left: grid.scrollWidth, behavior: 'smooth' });
   else grid.scrollBy({ left: step * direction, behavior: 'smooth' });
-  restartSetupCarousel();
-}
-
-function restartSetupCarousel() {
-  window.clearInterval(setupCarouselTimer);
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  setupCarouselTimer = window.setInterval(function() { moveSetupCarousel(1); }, 4500);
-}
-
-function resetSetupCarousel() {
-  var grid = document.getElementById('home-featured-grid');
-  if (!grid) return;
-  if (!grid.dataset.carouselReady) {
-    grid.dataset.carouselReady = 'true';
-    grid.addEventListener('mouseenter', function() { window.clearInterval(setupCarouselTimer); });
-    grid.addEventListener('mouseleave', restartSetupCarousel);
-    grid.addEventListener('focusin', function() { window.clearInterval(setupCarouselTimer); });
-    grid.addEventListener('focusout', restartSetupCarousel);
-    grid.addEventListener('pointerdown', function() { window.clearInterval(setupCarouselTimer); });
-  }
-  restartSetupCarousel();
 }
 
 function collectHomeAccessSubcategoryIds(item) {
@@ -1007,8 +991,7 @@ async function loadHomeCatalogSections() {
     var tree = await window.SupabaseStore.fetchAccessCatalogTree();
     if (!tree || !tree.length) return;
     renderHomeCategories(tree);
-    var products = await loadHomeFeaturedProducts(tree);
-    renderHomeFeaturedProducts(products);
+    await loadHomeSetupGroups(tree);
   } catch (err) {
     console.warn('No se pudo actualizar el inicio desde Supabase:', err);
   }
@@ -1096,8 +1079,6 @@ document.addEventListener('DOMContentLoaded', function() {
   updateCartBadge();
   checkStoreStatus();
   setInterval(checkStoreStatus, 60000);
-  wireStaticSetupLinks();
-  resetSetupCarousel();
   initHomeHeroCarousel();
   loadHomeCatalogSections();
   checkHomeAdminAccess();

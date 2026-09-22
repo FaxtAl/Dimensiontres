@@ -25,7 +25,7 @@
 
   <link rel="stylesheet" href="shared.css?v=cart-gorila-20260922">
   <link rel="stylesheet" href="cookie-notice.css?v=20260918">
-  <link rel="stylesheet" href="index.css?v=setup-carousel-20260922">
+  <link rel="stylesheet" href="index.css?v=setup-filas-20260922">
   <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" data-mode="connect" style="scroll-padding-top:5rem; overflow-x:hidden;">
@@ -681,6 +681,54 @@
   text-transform: uppercase;
 }
 .featured-showcase { display: block; }
+/* Cabecera de cada fila de categoria: titulo a la izquierda, "Ver todos" y
+   las flechas a la derecha. Sin esto los titulos salian como texto suelto
+   y las flechas quedaban una debajo de la otra. */
+.setup-product-group { margin-bottom: 2.25rem; }
+.setup-product-group:last-child { margin-bottom: 0; }
+.setup-product-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.setup-product-group-head h3 {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+.setup-product-group-head > div:first-child > span {
+  display: block;
+  margin-top: 2px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: #adaaaa;
+}
+.setup-product-group-head > div:first-child > span:empty { display: none; }
+.setup-product-group-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.setup-product-group-actions a {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8ff5ff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.setup-product-group-actions a:hover { color: #fff; text-decoration: underline; }
+@media (max-width: 640px) {
+  .setup-product-group-head h3 { font-size: 1rem; }
+  .setup-product-group-actions a { font-size: 0.75rem; }
+  .setup-carousel-btn { width: 34px; height: 34px; }
+}
 .setup-carousel-shell { position: relative; }
 .setup-carousel-controls {
   display: flex;
@@ -1060,7 +1108,7 @@
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
   <script src="cart.js?v=cart-gorila-20260922"></script>
-  <script src="index.js?v=setup-carousel-20260922"></script>
+  <script src="index.js?v=setup-filas-20260922"></script>
 
 </body>
 </html>
