@@ -311,6 +311,64 @@ body::after {
   font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#605f5e;
 }
 
+/* Entrega: el aviso de "48 hs" solo no alcanzaba, la gente pregunta si puede
+   pasar a buscarlo y en que horario. */
+.prod-delivery-box {
+  border:1px solid rgba(255,255,255,.07);
+  border-left:3px solid #8ff5ff;
+  background:#131313;
+  padding:.85rem 1rem;
+}
+.prod-delivery-box.is-provider { border-left-color:#ffc600; }
+.prod-delivery-box.is-out { border-left-color:#605f5e; }
+.prod-delivery-title {
+  display:flex;align-items:center;gap:8px;margin:0 0 .35rem;
+  font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:800;color:#fff;
+}
+.prod-delivery-title .material-symbols-outlined { font-size:18px;color:#8ff5ff; }
+.prod-delivery-box.is-provider .prod-delivery-title .material-symbols-outlined { color:#ffc600; }
+.prod-delivery-text {
+  margin:0;font-family:'Manrope',sans-serif;font-size:.85rem;line-height:1.5;color:#adaaaa;
+}
+.prod-delivery-hours {
+  margin:.45rem 0 0;font-family:'Manrope',sans-serif;font-size:.78rem;line-height:1.45;color:#767575;
+}
+
+/* Cuotas: son las tasas reales que cobra Mercado Pago (api/mp-cuotas.php). */
+.prod-installments {
+  border:1px solid rgba(255,255,255,.07);
+  background:#131313;
+  padding:.85rem 1rem 1rem;
+}
+.prod-installments-title {
+  margin:0 0 .6rem;
+  font-family:'Space Grotesk',sans-serif;font-size:.65rem;font-weight:700;
+  color:#484847;text-transform:uppercase;letter-spacing:.2em;
+}
+.prod-installments-table { width:100%;border-collapse:collapse;font-family:'Manrope',sans-serif; }
+.prod-installments-table th,
+.prod-installments-table td {
+  padding:.45rem .3rem;text-align:right;font-size:.85rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.prod-installments-table th:first-child,
+.prod-installments-table td:first-child { text-align:left; }
+.prod-installments-table th {
+  font-size:.68rem;font-weight:700;color:#767575;text-transform:uppercase;letter-spacing:.1em;
+}
+.prod-installments-table td { color:#e7e7e7; }
+.prod-installments-table td:first-child { color:#adaaaa; }
+.prod-installments-table tr:last-child td { border-bottom:0; }
+.prod-installments-table .is-cuota-amount { font-weight:800;color:#fff; }
+.prod-installments-free { color:#9ff0b3;font-weight:700; }
+.prod-installments-note {
+  margin:.6rem 0 0;font-family:'Manrope',sans-serif;font-size:.72rem;line-height:1.45;color:#605f5e;
+}
+@media (max-width:420px) {
+  .prod-installments-table th,
+  .prod-installments-table td { font-size:.78rem;padding:.4rem .2rem; }
+}
+
 .product-meta-grid {
   display:flex;
   flex-wrap:wrap;
@@ -681,9 +739,28 @@ body::after {
           <p id="prod-subtitle-tag" style="font-family:'Manrope',sans-serif;font-size:.8rem;color:#767575;margin-top:.4rem;letter-spacing:.04em;"></p>
         </div>
 
+        <!-- Entrega y retiro -->
+        <div id="prod-delivery-box" class="prod-delivery-box" hidden>
+          <p class="prod-delivery-title"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span id="prod-delivery-title-text"></span></p>
+          <p id="prod-delivery-text" class="prod-delivery-text"></p>
+          <p class="prod-delivery-hours">Retiro en Bartolomé Mitre 212, Villa María · Lunes a sábado de 9:00 a 13:00 y de 16:30 a 20:30.</p>
+        </div>
+
         <!-- Price -->
         <div class="flex items-end gap-4">
           <span id="prod-price" class="price-tag"></span>
+        </div>
+
+        <!-- Cuotas de Mercado Pago -->
+        <div id="prod-installments" class="prod-installments" hidden>
+          <p class="prod-installments-title"><span id="prod-installments-head">Precio en cuotas con tarjeta</span></p>
+          <table class="prod-installments-table">
+            <thead>
+              <tr><th scope="col">Cuotas</th><th scope="col">Precio cuota</th><th scope="col">Precio final</th></tr>
+            </thead>
+            <tbody id="prod-installments-body"></tbody>
+          </table>
+          <p class="prod-installments-note">Valores de Mercado Pago para tarjeta de crédito. Pueden cambiar según el banco y la tarjeta. Por transferencia pagás el precio de arriba.</p>
         </div>
 
         <div id="product-meta-grid" class="product-meta-grid"></div>
@@ -780,7 +857,7 @@ body::after {
 <script src="img/producto-imagenes-juegos-extra.js?v=map-juegos-ps4-hitman-20260812"></script>
 <script src="img/producto-imagenes-local.js?v=local-images-20260810c"></script>
 <script src="img/invid-imagenes-local.js?v=invid-images-local-20260805a"></script>
-<script src="supabase-client.js?v=dolar-invid-automatico-20260810"></script>
+<script src="supabase-client.js?v=cuotas-entrega-20260922"></script>
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
 <script src="search-global.js?v=search-ranking-20260805b"></script>
 <script src="cart.js?v=cart-gorila-20260922"></script>
@@ -1030,6 +1107,128 @@ function getProductWarrantyText(p) {
 function getProductAvailabilityLabel(p) {
   if (p && (p.availabilityLabel || p.deliveryLabel)) return cleanText(p.availabilityLabel || p.deliveryLabel);
   return productIsProvider(p) ? '48 hs de demora' : 'En local';
+}
+
+// Explica en palabras lo que antes solo decia "48 hs de demora": si se puede
+// retirar, cuando y en que horario.
+function renderDeliveryBox(p) {
+  var box = document.getElementById('prod-delivery-box');
+  if (!box) return;
+
+  var title = document.getElementById('prod-delivery-title-text');
+  var text = document.getElementById('prod-delivery-text');
+  var hours = box.querySelector('.prod-delivery-hours');
+  var stockState = getProductStockStateForView(p);
+
+  box.classList.remove('is-provider', 'is-out');
+  box.hidden = false;
+  hours.hidden = false;
+
+  if (stockState.status === 'out') {
+    box.classList.add('is-out');
+    title.textContent = 'Sin stock por ahora';
+    text.textContent = 'Escribinos por WhatsApp y te avisamos apenas vuelve a entrar.';
+    hours.hidden = true;
+    return;
+  }
+
+  if (productIsByOrder(p)) {
+    box.classList.add('is-provider');
+    title.textContent = 'Producto a pedido';
+    text.textContent = 'Lo encargamos al proveedor y te confirmamos la fecha antes de cobrarte. Después lo retirás en el local o te lo enviamos a domicilio.';
+    return;
+  }
+
+  if (productIsProvider(p)) {
+    box.classList.add('is-provider');
+    title.textContent = 'Llega al local en 48 hs';
+    text.textContent = 'No lo tenemos en el local: lo pedimos al depósito y llega en 48 hs hábiles. Te avisamos cuando está y lo retirás en Villa María, o te lo enviamos a domicilio.';
+    return;
+  }
+
+  title.textContent = 'Lo tenemos en el local';
+  text.textContent = 'Podés pasar a retirarlo por Villa María el mismo día, o pedir envío a domicilio.';
+}
+
+// Las cuotas salen de las tasas reales de Mercado Pago (api/mp-cuotas.php).
+// Las tasas no dependen del monto, asi que se piden una sola vez y despues se
+// recalcula solo con el precio y la cantidad.
+var INSTALLMENT_RATES = null;
+var installmentRatesPromise = null;
+
+function fetchInstallmentRates(amount) {
+  if (INSTALLMENT_RATES) return Promise.resolve(INSTALLMENT_RATES);
+  if (installmentRatesPromise) return installmentRatesPromise;
+
+  installmentRatesPromise = fetch('api/mp-cuotas.php?amount=' + encodeURIComponent(amount))
+    .then(function(res) { return res.ok ? res.json() : null; })
+    .then(function(data) {
+      if (!data || !data.ok || !data.options || !data.options.length) return null;
+      INSTALLMENT_RATES = data.options.map(function(option) {
+        return { installments: Number(option.installments), rate: Number(option.rate_percent) || 0 };
+      });
+      return INSTALLMENT_RATES;
+    })
+    .catch(function() { return null; });
+
+  return installmentRatesPromise;
+}
+
+function renderInstallments(p) {
+  var box = document.getElementById('prod-installments');
+  if (!box) return;
+
+  var unitPrice = Number(p && p.price);
+  if (!Number.isFinite(unitPrice) || unitPrice <= 1 || productNeedsWhatsAppConsult(p)) {
+    box.hidden = true;
+    return;
+  }
+
+  box.hidden = true;
+  fetchInstallmentRates(unitPrice).then(function(rates) {
+    if (!rates || PRODUCT !== p) return;
+    paintInstallments();
+    box.hidden = false;
+  });
+}
+
+function paintInstallments() {
+  var body = document.getElementById('prod-installments-body');
+  var head = document.getElementById('prod-installments-head');
+  if (!body || !INSTALLMENT_RATES || !PRODUCT) return;
+
+  var amount = Number(PRODUCT.price) * qty;
+  head.textContent = qty > 1
+    ? 'Precio en cuotas con tarjeta (' + qty + ' unidades)'
+    : 'Precio en cuotas con tarjeta';
+
+  body.innerHTML = '';
+  INSTALLMENT_RATES.forEach(function(plan) {
+    var total = amount * (1 + plan.rate / 100);
+    var cuota = total / plan.installments;
+    var tr = document.createElement('tr');
+
+    var tdCuotas = document.createElement('td');
+    tdCuotas.textContent = plan.installments === 1 ? '1 pago' : plan.installments + ' cuotas';
+    if (plan.rate <= 0 && plan.installments > 1) {
+      var libre = document.createElement('span');
+      libre.className = 'prod-installments-free';
+      libre.textContent = ' sin interés';
+      tdCuotas.appendChild(libre);
+    }
+
+    var tdCuota = document.createElement('td');
+    tdCuota.className = 'is-cuota-amount';
+    tdCuota.textContent = formatPrice(Math.round(cuota));
+
+    var tdTotal = document.createElement('td');
+    tdTotal.textContent = formatPrice(Math.round(total));
+
+    tr.appendChild(tdCuotas);
+    tr.appendChild(tdCuota);
+    tr.appendChild(tdTotal);
+    body.appendChild(tr);
+  });
 }
 
 function renderStock(p) {
@@ -1519,6 +1718,8 @@ function renderProduct(p) {
 
   // Price
   document.getElementById('prod-price').textContent = formatProductPrice(p);
+  renderDeliveryBox(p);
+  renderInstallments(p);
   renderStock(p);
   renderProductMeta(p);
   var warrantySummary = document.getElementById('product-warranty-summary');
@@ -1656,6 +1857,13 @@ async function getRelatedProducts(current, limit) {
             addGroup(await window.SupabaseStore.fetchAccessProductsBySubcategory(siblingIds[i]));
           }
         }
+      }
+    } else if (productIsProvider(current) && window.SupabaseStore.fetchInvidPcProductsByCategory) {
+      // Los de Invid no tienen subcategoria de Access: se buscan por su propia
+      // categoria ("Placas de video", "Gabinetes con Fuente", etc.).
+      var invidCategory = current.invidCategory || current.sourceLabel || '';
+      if (invidCategory) {
+        addGroup(await window.SupabaseStore.fetchInvidPcProductsByCategory(invidCategory));
       }
     } else if (current.source === 'supabase' && current.category && window.SupabaseStore.fetchProductsByCategorySlugs) {
       addGroup(await window.SupabaseStore.fetchProductsByCategorySlugs([current.category]));
@@ -1807,13 +2015,8 @@ async function renderRelated(current) {
   var section = document.getElementById('related-products-section');
   if (section) section.style.display = '';
 
-  if (productIsProvider(current)) {
-    if (section) section.style.display = 'none';
-    return;
-  }
-
   var relLink = document.getElementById('related-all-link');
-  relLink.href = 'catalogo.html';
+  relLink.href = current.sourceFile || 'catalogo.html';
 
   var grid = document.getElementById('related-grid');
   grid.innerHTML = '<div style="grid-column:1/-1;color:#605f5e;font-family:\'Space Grotesk\',sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;">Cargando productos relacionados...</div>';
@@ -1844,6 +2047,7 @@ function changeQty(delta) {
   qty = nextQty;
   var el = document.getElementById('qty-display');
   if (el) el.textContent = qty;
+  paintInstallments();
 }
 
 function handleAddToCart(btn) {

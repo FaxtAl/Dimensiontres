@@ -2569,6 +2569,10 @@
       source: 'invid',
       sourceIntegration: 'invid',
       sourceLabel: cleanSourceLabel,
+      // Nombre crudo de la categoria de Invid: hace falta para volver a pedirle
+      // productos de la misma categoria (relacionados en la ficha).
+      invidCategory: row.subcategoria || '',
+      invidParentCategory: row.categoria || '',
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent('invid-cat-' + catalogSlug(row.subcategoria || 'invid-pc')),
       slug: 'invid-' + id,
       codigo: row.codigo || id,
