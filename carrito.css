@@ -769,6 +769,31 @@
   font-size: 1.65rem;
 }
 
+/* Aviso cuando el pedido incluye productos del proveedor (demora 48 hs).
+   Mismo ambar que la disponibilidad "Llega en 48 hs" del catalogo. */
+.dt-cart-delay-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: -6px 0 18px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,198,0,.34);
+  border-radius: 4px;
+  background: rgba(255,198,0,.08);
+  color: #ffe38a;
+  font: 600 .8rem "Manrope", sans-serif;
+  line-height: 1.4;
+}
+
+.dt-cart-delay-note[hidden] {
+  display: none;
+}
+
+.dt-cart-delay-note .material-symbols-outlined {
+  flex: none;
+  font-size: 18px;
+}
+
 .dt-cart-checkout {
   min-height: 48px;
   display: flex;

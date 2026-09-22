@@ -533,11 +533,37 @@ function buildRow(item) {
 }
 
 /* ─── UPDATE TOTALS (función propia, separada de buildRow) ── */
+/**
+ * Aviso de demora en el resumen. Cada producto ya avisa en su fila, pero al
+ * pagar se pasaba por alto: esto lo dice una vez, arriba de los medios de pago.
+ */
+function updateDelayNote() {
+  var note = document.getElementById('cart-delay-note');
+  var text = document.getElementById('cart-delay-note-text');
+  if (!note || !text) return;
+
+  var delayed = CartStore.getAll().filter(function(item) {
+    return typeof isDelayedDeliveryProduct === 'function' && isDelayedDeliveryProduct(item);
+  });
+
+  if (!delayed.length) {
+    note.hidden = true;
+    return;
+  }
+
+  text.textContent = delayed.length === 1
+    ? 'Un producto de tu pedido llega en 48 hs. Te avisamos cuando esté listo para retirar.'
+    : delayed.length + ' productos de tu pedido llegan en 48 hs. Te avisamos cuando estén listos para retirar.';
+  note.hidden = false;
+}
+
 function updateTotals() {
   var totals = calculateCartTotals();
 
   var elSub   = document.getElementById('sum-sub');
   var elTotal = document.getElementById('sum-total');
+
+  updateDelayNote();
 
   if (elSub)   elSub.textContent   = formatMoney(totals.subtotal);
   if (elTotal) {

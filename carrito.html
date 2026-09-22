@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=20260921">
 <link rel="stylesheet" href="shared.css?v=cart-gorila-20260922">
 <link rel="stylesheet" href="cookie-notice.css?v=20260918">
-<link rel="stylesheet" href="carrito.css?v=checkout-separado-20260922">
+<link rel="stylesheet" href="carrito.css?v=aviso-demora-20260922">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body">
@@ -186,6 +186,13 @@
       <div class="dt-cart-summary-line"><span>Extras</span><strong>$0</strong></div>
       <div class="dt-cart-summary-line dt-cart-summary-total"><span>Total</span><strong id="sum-total">$0</strong></div>
 
+      <!-- Aviso de demora: lo muestra updateTotals() cuando el carrito tiene
+           productos que vienen del proveedor (48 hs). -->
+      <p id="cart-delay-note" class="dt-cart-delay-note" hidden>
+        <span class="material-symbols-outlined">schedule</span>
+        <span id="cart-delay-note-text"></span>
+      </p>
+
       <form class="dt-coupon" onsubmit="applyCartCoupon(event)" novalidate>
         <label for="coupon-code">¿Tenés un cupón?</label>
         <div class="dt-coupon-row">
@@ -259,7 +266,7 @@
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
 <script src="search-global.js?v=search-ranking-20260805b"></script>
 <script src="cart.js?v=cart-gorila-20260922"></script>
-<script src="carrito.js?v=checkout-separado-20260922"></script>
+<script src="carrito.js?v=aviso-demora-20260922"></script>
 
 </body>
 </html>
