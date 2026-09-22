@@ -470,11 +470,13 @@
 }
 /* Mismos colores que la disponibilidad del catalogo (verde local, ambar
    proveedor) para que signifique lo mismo en todo el sitio. */
+/* Etiqueta de entrega arriba a la izquierda de la foto, como en la
+   referencia ("producto a pedido" / "disponible en 24-48 hs"). */
 .feat-availability {
   position: absolute;
   z-index: 2;
   left: 8px;
-  bottom: 8px;
+  top: 8px;
   max-width: calc(100% - 16px);
   min-height: 24px;
   display: inline-flex;
@@ -500,6 +502,41 @@
 }
 .feat-availability.is-local::before { background: #4cd964; }
 .feat-availability.is-provider::before { background: #ffc600; }
+/* Chip de stock debajo de la foto, como el "DISPONIBLE" verde de la
+   referencia. El color lo pone index.js segun el stock real. */
+.feat-stock {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  margin-bottom: 2px;
+  padding: 0 0.5rem;
+  border: 1px solid rgba(76,217,100,0.3);
+  border-radius: 2px;
+  background: rgba(76,217,100,0.09);
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: #9ff0b3;
+}
+.feat-stock.is-low {
+  border-color: rgba(255,198,0,0.38);
+  background: rgba(255,198,0,0.09);
+  color: #ffe38a;
+}
+.feat-stock.is-out {
+  border-color: rgba(170,170,170,0.26);
+  background: rgba(255,255,255,0.05);
+  color: #c7c7c7;
+}
+.feat-note {
+  margin: 2px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #8f8c8c;
+}
 .feat-tag {
   margin: 0;
   font-family: 'Manrope', sans-serif;
@@ -681,52 +718,85 @@
   text-transform: uppercase;
 }
 .featured-showcase { display: block; }
-/* Cabecera de cada fila de categoria: titulo a la izquierda, "Ver todos" y
-   las flechas a la derecha. Sin esto los titulos salian como texto suelto
-   y las flechas quedaban una debajo de la otra. */
-.setup-product-group { margin-bottom: 2.25rem; }
+/* Cada categoria: barra de titulo con el corte en diagonal, fila de
+   "Ver todos" + linea + flechas, y una imagen vertical a la izquierda. */
+.setup-product-group { margin-bottom: 2.75rem; }
 .setup-product-group:last-child { margin-bottom: 0; }
-.setup-product-group-head {
+
+.setup-cat-banner {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: linear-gradient(135deg, #8ff5ff, #00deec);
+  clip-path: polygon(0 0, calc(100% - 42px) 0, 100% 100%, 0 100%);
+}
+.setup-cat-banner h3 {
+  margin: 0;
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #04252a;
+}
+
+.setup-group-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
-.setup-product-group-head h3 {
-  margin: 0;
+.setup-group-all {
+  flex: none;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 700;
-  line-height: 1.2;
-  color: #fff;
+  color: #8ff5ff;
+  text-decoration: none;
 }
-.setup-product-group-head > div:first-child > span {
-  display: block;
-  margin-top: 2px;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.78rem;
-  color: #adaaaa;
+.setup-group-all:hover { color: #fff; }
+.setup-group-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(143,245,255,0.28);
 }
-.setup-product-group-head > div:first-child > span:empty { display: none; }
 .setup-product-group-actions {
   flex: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-.setup-product-group-actions a {
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #8ff5ff;
-  text-decoration: none;
-  white-space: nowrap;
+
+.setup-group-row {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
 }
-.setup-product-group-actions a:hover { color: #fff; text-decoration: underline; }
-@media (max-width: 640px) {
-  .setup-product-group-head h3 { font-size: 1rem; }
-  .setup-product-group-actions a { font-size: 0.75rem; }
+.setup-group-promo {
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  background: #131313;
+}
+.setup-group-promo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s;
+}
+.setup-group-promo:hover img { transform: scale(1.03); }
+
+@media (max-width: 1023px) {
+  .setup-group-row { grid-template-columns: 160px minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  /* En celular la imagen se saca: ocupa mucho y el carrusel ya ocupa el ancho. */
+  .setup-group-row { grid-template-columns: minmax(0, 1fr); }
+  .setup-group-promo { display: none; }
+  .setup-cat-banner { clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 100%, 0 100%); }
+  .setup-group-all { font-size: 0.88rem; }
   .setup-carousel-btn { width: 34px; height: 34px; }
 }
 .setup-carousel-shell { position: relative; }
@@ -759,7 +829,9 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  /* "proximity" y no "mandatory": con el ajuste obligatorio, el desplazamiento
+     de las flechas se cancelaba y la fila volvia sola al principio. */
+  scroll-snap-type: x proximity;
   scroll-behavior: smooth;
   scrollbar-width: none;
   overscroll-behavior-inline: contain;
@@ -781,17 +853,19 @@
 </style>
   <div class="featured-showcase">
     <section class="setup-product-group" aria-labelledby="home-featured-processors-title">
-  <div class="setup-product-group-head">
-    <div>
-      <h3 id="home-featured-processors-title">Procesadores</h3>
-      <span></span>
-    </div>
+  <div class="setup-cat-banner"><h3 id="home-featured-processors-title">Procesadores</h3></div>
+  <div class="setup-group-toolbar">
+    <a class="setup-group-all" href="catalogo.html?q=procesadores">Ver todos</a>
+    <span class="setup-group-rule" aria-hidden="true"></span>
     <div class="setup-product-group-actions">
-      <a href="catalogo.html?q=procesadores">Ver todos</a>
       <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-processors', -1)" aria-label="Producto anterior de Procesadores"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
       <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-processors', 1)" aria-label="Producto siguiente de Procesadores"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
     </div>
   </div>
+  <div class="setup-group-row">
+    <a class="setup-group-promo" href="catalogo.html?q=procesadores" aria-label="Ver todos los procesadores">
+      <img src="img/banners/arma-tu-pc.webp?v=banners-limpios-20260826" alt="" loading="lazy">
+    </a>
   <div class="setup-carousel-viewport">
     <div id="home-featured-processors" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -812,19 +886,22 @@
     </div>
     </div>
   </div>
+  </div>
 </section>
     <section class="setup-product-group" aria-labelledby="home-featured-cases-title">
-  <div class="setup-product-group-head">
-    <div>
-      <h3 id="home-featured-cases-title">Gabinetes</h3>
-      <span></span>
-    </div>
+  <div class="setup-cat-banner"><h3 id="home-featured-cases-title">Gabinetes</h3></div>
+  <div class="setup-group-toolbar">
+    <a class="setup-group-all" href="catalogo.html?q=gabinetes">Ver todos</a>
+    <span class="setup-group-rule" aria-hidden="true"></span>
     <div class="setup-product-group-actions">
-      <a href="catalogo.html?q=gabinetes">Ver todos</a>
       <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-cases', -1)" aria-label="Producto anterior de Gabinetes"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
       <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-cases', 1)" aria-label="Producto siguiente de Gabinetes"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
     </div>
   </div>
+  <div class="setup-group-row">
+    <a class="setup-group-promo" href="catalogo.html?q=gabinetes" aria-label="Ver todos los gabinetes">
+      <img src="img/hadware.jpg" alt="" loading="lazy">
+    </a>
   <div class="setup-carousel-viewport">
     <div id="home-featured-cases" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -845,19 +922,22 @@
     </div>
     </div>
   </div>
+  </div>
 </section>
     <section class="setup-product-group" aria-labelledby="home-featured-gpus-title">
-  <div class="setup-product-group-head">
-    <div>
-      <h3 id="home-featured-gpus-title">Placas de video</h3>
-      <span></span>
-    </div>
+  <div class="setup-cat-banner"><h3 id="home-featured-gpus-title">Placas de video</h3></div>
+  <div class="setup-group-toolbar">
+    <a class="setup-group-all" href="catalogo.html?q=placas%20de%20video">Ver todos</a>
+    <span class="setup-group-rule" aria-hidden="true"></span>
     <div class="setup-product-group-actions">
-      <a href="catalogo.html?q=placas%20de%20video">Ver todos</a>
       <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-gpus', -1)" aria-label="Producto anterior de Placas de video"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
       <button class="setup-carousel-btn" type="button" onclick="moveSetupCarousel('home-featured-gpus', 1)" aria-label="Producto siguiente de Placas de video"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
     </div>
   </div>
+  <div class="setup-group-row">
+    <a class="setup-group-promo" href="catalogo.html?q=placas%20de%20video" aria-label="Ver todas las placas de video">
+      <img src="img/banners/arma-tu-pc.webp?v=banners-limpios-20260826" alt="" loading="lazy">
+    </a>
   <div class="setup-carousel-viewport">
     <div id="home-featured-gpus" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -877,6 +957,7 @@
       <div class="feat-body"><p class="feat-tag">Catálogo</p><p class="feat-name">Cargando producto</p><p class="feat-price">...</p></div>
     </div>
     </div>
+  </div>
   </div>
 </section>
   </div>
@@ -1108,7 +1189,7 @@
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=menu-categorias-20260826"></script>
   <script src="cart.js?v=cart-gorila-20260922"></script>
-  <script src="index.js?v=setup-filas-20260922"></script>
+  <script src="index.js?v=setup-filas-20260922b"></script>
 
 </body>
 </html>

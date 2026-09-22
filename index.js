@@ -661,6 +661,19 @@ function createFeaturedProductCard(product) {
   var body = document.createElement('div');
   body.className = 'feat-body';
 
+  // Chip de stock debajo de la foto (verde disponible / ambar pocas /
+  // gris sin stock), como en la referencia que paso el dueño.
+  var stockState = typeof getProductStockState === 'function' ? getProductStockState(product) : null;
+  if (stockState && stockState.status !== 'unknown') {
+    var stockChip = document.createElement('span');
+    stockChip.className = 'feat-stock'
+      + (stockState.status === 'low' ? ' is-low' : '')
+      + (stockState.status === 'out' ? ' is-out' : '');
+    stockChip.textContent = stockState.status === 'low' ? 'Quedan pocas'
+      : (stockState.status === 'out' ? 'Sin stock' : 'Disponible');
+    body.appendChild(stockChip);
+  }
+
   var tag = document.createElement('p');
   tag.className = 'feat-tag';
   // Access trae "Accessorios" mal escrito; el catalogo lo corrige con
@@ -692,6 +705,13 @@ function createFeaturedProductCard(product) {
       priceWrap.appendChild(stockLabel);
     }
   }
+  // Linea chica bajo el precio, como el "Incluye 15% OFF..." de la
+  // referencia. Aca decimos lo que es cierto en DimensionTres: por
+  // transferencia se paga lo mismo (ver legales.html).
+  var note = document.createElement('p');
+  note.className = 'feat-note';
+  note.textContent = 'Transferencia: mismo precio';
+  priceWrap.appendChild(note);
   foot.appendChild(priceWrap);
 
   var btn = document.createElement('button');
@@ -945,9 +965,27 @@ function moveSetupCarousel(gridId, direction) {
   var atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
   var atStart = grid.scrollLeft <= 4;
 
-  if (direction > 0 && atEnd) grid.scrollTo({ left: 0, behavior: 'smooth' });
-  else if (direction < 0 && atStart) grid.scrollTo({ left: grid.scrollWidth, behavior: 'smooth' });
-  else grid.scrollBy({ left: step * direction, behavior: 'smooth' });
+  var target;
+  if (direction > 0 && atEnd) target = 0;
+  else if (direction < 0 && atStart) target = grid.scrollWidth;
+  else target = grid.scrollLeft + step * direction;
+
+  var from = grid.scrollLeft;
+  grid.scrollTo({ left: target, behavior: 'smooth' });
+
+  // Si el navegador no anima (pestaña en segundo plano, "reducir movimiento"),
+  // movemos la fila de una sola vez para que la flecha siempre responda.
+  window.setTimeout(function () {
+    if (Math.abs(grid.scrollLeft - from) < 2) {
+      var snap = grid.style.scrollSnapType;
+      var behavior = grid.style.scrollBehavior;
+      grid.style.scrollSnapType = 'none';
+      grid.style.scrollBehavior = 'auto';
+      grid.scrollLeft = target;
+      grid.style.scrollSnapType = snap;
+      grid.style.scrollBehavior = behavior;
+    }
+  }, 350);
 }
 
 function collectHomeAccessSubcategoryIds(item) {
