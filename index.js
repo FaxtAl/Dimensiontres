@@ -879,8 +879,9 @@ function pickPreferredHomeFeaturedProducts(products) {
    por eso quedaban en "Cargando producto". */
 var SETUP_GROUPS = [
   { gridId: 'home-featured-processors', words: ['procesador'], invid: ['AMD', 'Intel'] },
-  { gridId: 'home-featured-cases', words: ['gabinete'], invid: ['Gabinetes sin Fuente', 'Gabinetes con Fuente'] },
-  { gridId: 'home-featured-gpus', words: ['placas de video', 'placa de video'], invid: ['Línea NVIDIA GEFORCE', 'Línea AMD RADEON'] }
+  { gridId: 'home-featured-perifericos', words: ['perifericos'], invid: ['Mouse', 'Teclados'] },
+  // "consolas de juegos" y no "consola": si no agarra "Accesorios Consolas".
+  { gridId: 'home-featured-consolas', words: ['consolas de juegos'] }
 ];
 
 function findHomeTreeNode(tree, words) {

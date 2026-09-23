@@ -489,7 +489,7 @@
 <script src="shared.js?v=redes-20260918"></script>
 <script src="cookie-notice.js?v=20260918"></script>
 <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
-<script src="menu-categorias.js?v=menu-categorias-20260826"></script>
+<script src="menu-categorias.js?v=sub-unica-20260923"></script>
 <script src="config.js?v=invid-1515-30-20260810"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
@@ -1810,12 +1810,15 @@ function renderCategorySidebar() {
 function appendSidebarItem(container, item, depth, activeIds) {
   var hasChildren = item.children && item.children.length > 0;
   var isActive = activeIds.indexOf(item.id) !== -1;
-  var shouldShowChildren = hasChildren && isActive;
+  // Una sola subcategoria no se despliega: la categoria ya muestra todos sus
+  // productos (Parlantes -> Parlantes 2.1, Silla Gamer -> Silla Gamer...).
+  var hasVisibleChildren = hasChildren && item.children.length > 1;
+  var shouldShowChildren = hasVisibleChildren && isActive;
   var row = document.createElement('button');
 
   row.type = 'button';
   row.className = 'category-tree-row' +
-    (hasChildren ? ' has-children' : ' is-leaf') +
+    (hasVisibleChildren ? ' has-children' : ' is-leaf') +
     (isActive ? ' active' : '') +
     (shouldShowChildren ? ' open' : '');
   row.style.setProperty('--depth', depth);
@@ -1830,7 +1833,7 @@ function appendSidebarItem(container, item, depth, activeIds) {
 
   var chevron = document.createElement('span');
   chevron.className = 'category-tree-chevron material-symbols-outlined';
-  chevron.textContent = hasChildren
+  chevron.textContent = hasVisibleChildren
     ? (shouldShowChildren ? 'keyboard_arrow_up' : 'keyboard_arrow_down')
     : 'chevron_right';
   row.appendChild(chevron);

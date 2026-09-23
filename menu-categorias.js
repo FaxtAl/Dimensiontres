@@ -104,6 +104,13 @@ var DT_CATEGORIAS = [
   ] }
 ];
 
+// Una categoria con una sola subcategoria no la muestra: la categoria ya
+// trae todos sus productos y la subcategoria repetia lo mismo.
+function dtSubcategoriasVisibles(cat) {
+  var hijos = (cat && cat.children) || [];
+  return hijos.length > 1 ? hijos : [];
+}
+
 // Devuelve el id de categoria o subcategoria abierto ahora, para marcarlo.
 function dtCategoriaActiva() {
   var p = new URLSearchParams(window.location.search);
@@ -142,7 +149,9 @@ function dtRenderMenuCategorias() {
     todo.textContent = 'Ver todo en ' + cat.name;
     body.appendChild(todo);
 
-    (cat.children || []).forEach(function(hijo) {
+    // Con una sola subcategoria no se muestra: "Ver todo" ya lista lo mismo
+    // (Parlantes -> Parlantes 2.1, Silla Gamer -> Silla Gamer, etc.).
+    dtSubcategoriasVisibles(cat).forEach(function(hijo) {
       var a = document.createElement('a');
       a.href = 'catalogo.html?sub=' + encodeURIComponent(hijo.id);
       a.className = 'dt-cat-link' + (activo.sub === hijo.id ? ' is-active' : '');
@@ -198,7 +207,7 @@ function dtRenderMegaMenu() {
     todo.textContent = 'Ver todo en ' + cat.name;
     listaSubs.appendChild(todo);
 
-    (cat.children || []).forEach(function(hijo) {
+    dtSubcategoriasVisibles(cat).forEach(function(hijo) {
       var a = document.createElement('a');
       a.href = 'catalogo.html?sub=' + encodeURIComponent(hijo.id);
       a.className = 'dt-mega-sub' + (activo.sub === hijo.id ? ' is-active' : '');
