@@ -3520,7 +3520,9 @@ function renderProductCards(products, options) {
     // el catalogo filtrado, igual que antes.
     var card = document.createElement('a');
     card.className = 'product-card' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '') + (needsConsult ? ' is-consult' : '');
-    if (p.slug && !needsConsult) {
+    // Tambien los sin stock: se entra a la ficha y ahi esta el boton de
+    // WhatsApp. Antes la tarjeta abria WhatsApp directo y no dejaba ver nada.
+    if (p.slug) {
       card.href = 'producto.html?id=' + encodeURIComponent(p.slug);
       card.target = '_blank';
       card.rel = 'noopener';
@@ -3542,12 +3544,7 @@ function renderProductCards(products, options) {
     card.dataset.price = String(getProductPrice(p));
     card.dataset.stockStatus = stockState.status;
     card.style.animationDelay = (idx * 0.035) + 's';
-    card.onclick = function(event) {
-      if (needsConsult) {
-        if (event) event.preventDefault();
-        openProductWhatsApp(p);
-        return;
-      }
+    card.onclick = function() {
       // Con href el propio link navega; esto cubre las tarjetas sin slug.
       if (!card.getAttribute('href')) openCatalogProduct(p);
     };
@@ -3634,20 +3631,6 @@ function renderProductCards(products, options) {
     }
     foot.appendChild(priceWrap);
 
-    if (needsConsult) {
-      var consultBtn = document.createElement('button');
-      consultBtn.type = 'button';
-      consultBtn.className = 'product-card-add product-card-consult-btn';
-      consultBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">chat</span>';
-      consultBtn.title = 'Consultar por WhatsApp';
-      consultBtn.setAttribute('aria-label', 'Consultar por WhatsApp ' + (p.name || 'producto'));
-      consultBtn.addEventListener('click', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        openProductWhatsApp(p);
-      });
-      foot.appendChild(consultBtn);
-    }
     body.appendChild(foot);
 
     // Agregar al carrito sin entrar a la ficha. Mismo objeto de producto que

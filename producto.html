@@ -1818,6 +1818,8 @@ function setPurchaseButtonsMode(p) {
 
 function addUniqueRelatedProduct(list, seen, current, product) {
   if (!product || product.slug === current.slug || product.id === current.id) return;
+  // En similares solo lo que se puede comprar ya: nada sin stock.
+  if (getProductStockStateForView(product).status === 'out') return;
   var key = product.slug || product.id || product.name;
   if (!key || seen[key]) return;
   seen[key] = true;
