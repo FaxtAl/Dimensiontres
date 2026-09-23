@@ -225,7 +225,7 @@
             </div>
           </div>
           <p id="page-subtitle" class="text-on-surface-variant font-body text-sm md:text-base ml-5 md:ml-6">
-            Explorá todas las categorías disponibles en la tienda.
+            Todos los productos de la tienda.
           </p>
         </div>
         <div class="dt-contador-viejo flex items-center gap-3">
@@ -454,7 +454,7 @@
         </div>
 
         <div id="grid-helper" class="catalog-helper">
-          Elegi una categoria para explorar productos disponibles.
+          Tocá un producto para ver el detalle.
         </div>
 
         <!-- Va fuera de #grid-wrapper: ese wrapper es flex en fila, y adentro
@@ -1771,17 +1771,9 @@ function renderCategorySidebar() {
     });
   }
 
-  // El boton "Filtrar" solo tiene sentido donde hay productos. En la raiz
-  // se muestran tarjetas de categoria y el panel quedaria vacio.
+  // La raiz ahora tambien muestra productos, asi que lleva la misma barra
+  // lateral y el boton "Filtrar" que una categoria.
   var acciones = document.querySelector('.mobile-catalog-actions');
-
-  if (currentRouteState.view === 'root') {
-    if (tree) tree.innerHTML = '';
-    if (layout) layout.classList.remove('has-sidebar');
-    if (acciones) acciones.style.display = 'none';
-    dtToggleFiltrosMovil(true);
-    return;
-  }
 
   if (acciones) acciones.style.display = '';
   if (layout) layout.classList.add('has-sidebar');
@@ -4715,9 +4707,11 @@ async function renderProductSearchResults(query, options) {
   var requestId = ++productsRequestId;
   var normalizedQuery = normalizeSearchValue(query);
   if (!normalizedQuery) {
-    setCatalogHeaderContext('', 'Todo el Catálogo', '');
-    updateGridHelper('Elegí una categoría para explorar productos disponibles.');
-    renderGrid(CATALOG, options.animate === true);
+    // Busqueda borrada: vuelve a todos los productos (antes, tarjetas de
+    // categorias). Se llama directo y no por renderRootView para no volver
+    // a entrar aca si quedo un espacio en la busqueda.
+    setCatalogHeaderContext('', 'Todo el Catálogo', 'Todos los productos de la tienda.');
+    showAllProducts(currentFilter, requestId);
     return;
   }
 
@@ -4871,6 +4865,7 @@ async function showSubcategoryComingSoon(found, options) {
   dtActualizarAvisoUsados(products);
   if (products.length) {
     empty.classList.add('hidden');
+    restaurarOrdenDeCategoria();
     renderProductCards(products);
   } else {
     var grid = document.getElementById('categories-grid');
@@ -4904,6 +4899,103 @@ function ordenarParaVistaGeneralCategoria(products) {
   // se completa el resto con Invid.
   var lugarParaInvid = Math.max(0, LIMITE_VISTA_GENERAL_CATEGORIA - locales.length);
   return invid.slice(0, lugarParaInvid).concat(locales).slice(0, LIMITE_VISTA_GENERAL_CATEGORIA);
+}
+
+// "Todo el catalogo" ya no muestra tarjetas de categorias (para eso esta el
+// menu Productos): muestra productos. Con stock primero, y local e Invid
+// alternados para que los 200 no sean todos del mismo lado.
+function seleccionarVistaTodoElCatalogo(products) {
+  // Primero lo que se puede comprar ya; despues "precio a consultar"; al
+  // final lo sin stock (no se esconde: en la ficha esta el boton de WhatsApp).
+  var conStock = [];
+  var consultar = [];
+  var sinStock = [];
+  (products || []).forEach(function(p) {
+    var estado = catalogGetStockState(p);
+    if (estado.status === 'out') sinStock.push(p);
+    else if (catalogNeedsWhatsAppConsult(p, estado)) consultar.push(p);
+    else conStock.push(p);
+  });
+
+  function alternar(lista) {
+    var locales = lista.filter(function(p) { return !isProviderProduct(p); });
+    var invid = lista.filter(function(p) { return isProviderProduct(p); });
+    var mezcla = [];
+    for (var i = 0; i < Math.max(locales.length, invid.length); i++) {
+      if (i < locales.length) mezcla.push(locales[i]);
+      if (i < invid.length) mezcla.push(invid[i]);
+    }
+    return mezcla;
+  }
+
+  return alternar(conStock).concat(alternar(consultar), alternar(sinStock)).slice(0, LIMITE_VISTA_GENERAL_CATEGORIA);
+}
+
+async function showAllProducts(filter, requestId) {
+  renderProductLoadingSkeleton();
+  var empty = document.getElementById('empty-state');
+
+  var pool = [];
+  if (window.SupabaseStore && window.SupabaseStore.isReady()) {
+    try {
+      pool = await getProductPoolForSearch(filter || 'all');
+    } catch (error) {
+      console.warn('Catalogo: no pude cargar todos los productos:', error);
+      pool = [];
+    }
+  }
+  if (requestId !== productsRequestId) return;
+
+  var products = seleccionarVistaTodoElCatalogo(pool);
+  dtActualizarAvisoUsados([]);
+  if (products.length) {
+    empty.classList.add('hidden');
+    // Como en la busqueda: se respeta el orden armado (local e Invid
+    // alternados). Con "menor precio" arriba quedaban solo cables del local.
+    currentSortOrder = 'relevance';
+    document.querySelectorAll('[data-sort-select]').forEach(function(select) {
+      select.value = 'relevance';
+    });
+    renderProductCards(products);
+    updateGridHelper(pool.length > products.length
+      ? 'Mostrando los primeros ' + products.length + ' de ' + pool.length + '. Elegí una categoría del menú o buscá para encontrar algo puntual.'
+      : 'Tocá un producto para ver el detalle.');
+  } else {
+    var grid = document.getElementById('categories-grid');
+    if (grid) grid.style.display = 'none';
+    empty.classList.remove('hidden');
+    empty.querySelector('.material-symbols-outlined').textContent = 'inventory_2';
+    empty.querySelector('p.font-headline').textContent = 'Sin productos cargados';
+    empty.querySelector('p.font-body').textContent = window.SupabaseStore && window.SupabaseStore.isReady()
+      ? 'No encontramos productos activos todavia.'
+      : 'Supabase no esta disponible en esta pagina. Revisa la conexion o las policies.';
+  }
+}
+
+// "Mas relevante" solo tiene sentido en la busqueda y en todo el catalogo. Al
+// entrar a una categoria vuelve el orden de siempre (menor precio).
+function restaurarOrdenDeCategoria() {
+  if (currentSortOrder !== 'relevance') return;
+  currentSortOrder = 'price-low';
+  document.querySelectorAll('[data-sort-select]').forEach(function(select) {
+    select.value = 'price-low';
+  });
+}
+
+// La raiz: con busqueda, los resultados; sin busqueda, todos los productos.
+function renderRootView(options) {
+  options = options || {};
+  var deskCtrl = document.getElementById('desktop-controls');
+  // El orden lo trae la barra de productos; el de la raiz quedaba repetido.
+  if (deskCtrl) deskCtrl.style.display = 'none';
+  if (currentSearch) {
+    renderProductSearchResults(currentSearch, options);
+    return;
+  }
+  setCatalogHeaderContext(getRootFilterLabel(currentFilter || 'all') ? 'Categoría' : '',
+    getRootFilterLabel(currentFilter || 'all') || 'Todo el Catálogo',
+    'Todos los productos de la tienda.');
+  showAllProducts(currentFilter, ++productsRequestId);
 }
 
 async function showCategoryProducts(item, requestId) {
@@ -4940,6 +5032,7 @@ async function showCategoryProducts(item, requestId) {
   dtActualizarAvisoUsados([]);
   if (products.length) {
     empty.classList.add('hidden');
+    restaurarOrdenDeCategoria();
     renderProductCards(products);
     if (totalReal > products.length) {
       updateGridHelper('Mostrando los primeros ' + products.length + ' de ' + totalReal + '. Usa los filtros para encontrar algo puntual.');
@@ -5255,8 +5348,8 @@ function goToRoot(options) {
     }
 
     document.getElementById('page-title').textContent = 'Todo el Catálogo';
-    document.getElementById('page-subtitle').textContent = 'Explorá todas las categorías disponibles en la tienda.';
-    updateGridHelper('Elegi una categoria para explorar productos disponibles.');
+    document.getElementById('page-subtitle').textContent = 'Todos los productos de la tienda.';
+    updateGridHelper('Tocá un producto para ver el detalle.');
     dtActualizarAvisoUsados([]);
 
     var ll = document.getElementById('level-label');
@@ -5280,7 +5373,7 @@ function goToRoot(options) {
     document.getElementById('back-to-root').classList.remove('visible');
     syncRootControls();
 
-    renderGrid(CATALOG, true);
+    renderRootView({ animate: true });
     scrollCatalogTop();
 
     wrapper.classList.remove('leaving');
@@ -5318,9 +5411,7 @@ function setFilter(filter, btn) {
   if (currentSearch) {
     renderProductSearchResults(currentSearch);
   } else {
-    var filterLabel = getRootFilterLabel(currentFilter || 'all');
-    setCatalogHeaderContext(filterLabel ? 'Categoría' : '', filterLabel || 'Todo el Catálogo', '');
-    renderGrid(CATALOG);
+    renderRootView();
   }
   closeCatalogPanel();
 }
@@ -5468,8 +5559,7 @@ function resetFilters() {
   currentRouteState = { view: 'root', filter: 'all', q: '' };
   updateCatalogHistory(currentRouteState, true);
   syncRootControls();
-  setCatalogHeaderContext('', 'Todo el Catálogo', '');
-  renderGrid(CATALOG);
+  renderRootView();
 }
 
 function showRootRoute(filter, query, options) {
@@ -5487,7 +5577,7 @@ function showRootRoute(filter, query, options) {
 
   var filterLabel = getRootFilterLabel(currentFilter || 'all');
   setCatalogHeaderContext(filterLabel ? 'Categoría' : '', filterLabel || 'Todo el Catálogo', '');
-  updateGridHelper('Elegí una categoría para explorar productos disponibles.');
+  updateGridHelper('Tocá un producto para ver el detalle.');
 
   var trail = document.getElementById('breadcrumb-trail');
   trail.innerHTML =
@@ -5502,11 +5592,7 @@ function showRootRoute(filter, query, options) {
   document.getElementById('back-to-root').classList.remove('visible');
 
   syncRootControls();
-  if (currentSearch) {
-    renderProductSearchResults(currentSearch, options);
-  } else {
-    renderGrid(CATALOG, options.animate === true);
-  }
+  renderRootView(options);
   if (options.scroll !== false) scrollCatalogTop();
 }
 
