@@ -879,7 +879,8 @@ function pickPreferredHomeFeaturedProducts(products) {
    por eso quedaban en "Cargando producto". */
 var SETUP_GROUPS = [
   { gridId: 'home-featured-processors', words: ['procesador'], invid: ['AMD', 'Intel'] },
-  { gridId: 'home-featured-perifericos', words: ['perifericos'], invid: ['Mouse', 'Teclados'] },
+  // Perifericos solo de Invid (pedido del local): words vacio = no busca en Access.
+  { gridId: 'home-featured-perifericos', words: [], invid: ['Mouse', 'Teclados', 'Teclado + Mouse', 'Mousepads', 'Web Cam', 'Micrófonos'] },
   // "consolas de juegos" y no "consola": si no agarra "Accesorios Consolas".
   { gridId: 'home-featured-consolas', words: ['consolas de juegos'] }
 ];
@@ -952,7 +953,7 @@ async function loadHomeSetupGroups(tree) {
   startSetupAutoplay();
 }
 
-var SETUP_AUTOPLAY_MS = 4500;
+var SETUP_AUTOPLAY_MS = 2500; // 4,5 s se sentia lento
 var setupAutoplayTimers = {};
 
 // Las filas avanzan solas, pero se frenan mientras la persona mira o toca
