@@ -620,7 +620,9 @@ body.dt-modal-open .dt-whatsapp-float {
   left: 0;
   z-index: 60;
   display: none;
-  background: rgba(7, 8, 9, 0.82);
+  /* Casi solido: con 0.82 el banner de la portada se veia a traves y costaba
+     leer las categorias. Mantiene el desenfoque y el borde del nav. */
+  background: rgba(7, 8, 9, 0.96);
   -webkit-backdrop-filter: blur(16px) saturate(135%);
   backdrop-filter: blur(16px) saturate(135%);
   border: 1px solid rgba(143, 245, 255, 0.12);
