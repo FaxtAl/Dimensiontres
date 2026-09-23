@@ -49,7 +49,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=20260921">
 <link rel="stylesheet" href="shared.css?v=mega-solido-20260923">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="catalogo.css?v=vidrio-filtros-20260923">
+<link rel="stylesheet" href="catalogo.css?v=sin-parpadeo-20260923">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -762,6 +762,7 @@ var currentProductFilters = {
 };
 var currentProductFilterPool = [];
 var productRenderToken = 0;
+var catalogoYaMostroProductos = false;
 var PRODUCT_FIRST_PAINT_LIMIT = 24;
 var PRODUCT_RENDER_BATCH_SIZE = 48;
 var PRODUCT_SKELETON_COUNT = 24;
@@ -3479,6 +3480,15 @@ function renderProductCards(products, options) {
   options = options || {};
   products = products || [];
   var renderToken = ++productRenderToken;
+  // La entrada animada (aparecer deslizando) solo la primera vez. Al volver a
+  // "Todo el catalogo", cambiar un filtro o el orden, las tarjetas arrancaban
+  // invisibles y entraban de nuevo: eso era el parpadeo.
+  grid.classList.toggle('sin-entrada', catalogoYaMostroProductos);
+  if (products.length) {
+    // Se marca un poco despues: al abrir la pagina la grilla se dibuja dos
+    // veces seguidas y la segunda no tiene que cortar la animacion inicial.
+    setTimeout(function() { catalogoYaMostroProductos = true; }, 800);
+  }
   currentProductFilterPool = products.slice();
   if (!options.keepFilters) resetProductFilters();
   grid.innerHTML = '';

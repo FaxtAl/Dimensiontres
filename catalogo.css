@@ -2343,3 +2343,10 @@ body::after {
 }
 
 .dt-cabecera.con-banner #dt-migas { margin-bottom: 0.3rem; }
+
+/* Despues de la primera carga las tarjetas aparecen directo, sin volver a
+   entrar deslizando (ver renderProductCards, clase sin-entrada). */
+#categories-grid.sin-entrada .product-card {
+  opacity: 1;
+  animation: none;
+}
