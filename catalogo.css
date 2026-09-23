@@ -2292,7 +2292,9 @@ body::after {
    maximo porque el archivo tiene 1080px de ancho: mas alla de eso se estira
    y se nota. */
 .dt-cabecera.con-banner {
-  min-height: 215px;
+  /* En celular 215px ocupaba un cuarto de pantalla antes de ver un producto.
+     El texto (migas + titulo) necesita unos 120px; 140 deja ver el arte. */
+  min-height: 140px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

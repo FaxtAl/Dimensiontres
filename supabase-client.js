@@ -261,6 +261,8 @@
   function cleanSupplierCodeText(value) {
     return String(value || '')
       .replace(/\s*\(\d{3,}\)/g, ' ')
+      // "(II)" es una marca interna de Invid, no dice nada del producto.
+      .replace(/\s*\(I{1,3}\)/g, ' ')
       .replace(/\s{2,}/g, ' ')
       .trim();
   }
