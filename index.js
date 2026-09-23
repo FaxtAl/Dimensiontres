@@ -303,7 +303,7 @@ function homeCategoryMeta(name) {
       title: 'Consolas',
       subtitle: 'PS4 - Retro - Consolas',
       icon: 'sports_esports',
-      image: 'img/categorias/consolas.png?v=categorias-png-20260922'
+      image: 'img/categorias/consolas.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('juegos fisicos') !== -1 || text.indexOf('juegos originales') !== -1) {
@@ -311,7 +311,7 @@ function homeCategoryMeta(name) {
       title: 'Juegos Físicos',
       subtitle: 'PS5 - PS4 - PS3',
       icon: 'stadia_controller',
-      image: 'img/categorias/juegos-fisicos.png?v=categorias-png-20260922'
+      image: 'img/categorias/juegos-fisicos.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('accesorios consolas') !== -1 || text.indexOf('accesorios para consolas') !== -1) {
@@ -319,7 +319,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorios Consolas',
       subtitle: 'PS5 - PS4 - PS3 - PS2',
       icon: 'gamepad',
-      image: 'img/categorias/accesorios-consolas.png?v=categorias-png-20260922'
+      image: 'img/categorias/accesorios-consolas.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('pc y componentes') !== -1) {
@@ -327,7 +327,7 @@ function homeCategoryMeta(name) {
       title: 'PC y Componentes',
       subtitle: 'Procesador - Mother - Placa de Video',
       icon: 'memory',
-      image: 'img/categorias/pc-componentes.png?v=categorias-png-20260922'
+      image: 'img/categorias/pc-componentes.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('hardware') !== -1) {
@@ -335,7 +335,7 @@ function homeCategoryMeta(name) {
       title: 'PC y Componentes',
       subtitle: 'Procesadores - Mother - Fuentes',
       icon: 'memory',
-      image: 'img/categorias/pc-componentes.png?v=categorias-png-20260922'
+      image: 'img/categorias/pc-componentes.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('accesorio pc') !== -1) {
@@ -351,7 +351,7 @@ function homeCategoryMeta(name) {
       title: 'Periféricos PC',
       subtitle: 'Mouse - Teclados - Monitores',
       icon: 'mouse',
-      image: 'img/categorias/perifericos-pc.png?v=categorias-png-20260922'
+      image: 'img/categorias/perifericos-pc.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('monitores') !== -1) {
@@ -383,7 +383,7 @@ function homeCategoryMeta(name) {
       title: 'Almacenamiento',
       subtitle: 'SSD - HDD - Pendrives - MicroSD',
       icon: 'storage',
-      image: 'img/categorias/almacenamiento.png?v=categorias-png-20260922'
+      image: 'img/categorias/almacenamiento.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('memoria') !== -1) {
@@ -399,7 +399,7 @@ function homeCategoryMeta(name) {
       title: 'Auriculares',
       subtitle: 'Gamer - Vincha - In ear',
       icon: 'headphones',
-      image: 'img/categorias/auriculares.png?v=categorias-png-20260922'
+      image: 'img/categorias/auriculares.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('parlante') !== -1) {
@@ -423,7 +423,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorio Celular',
       subtitle: 'Cables - Cargadores - Powerbank',
       icon: 'inventory_2',
-      image: 'img/categorias/accesorio-celular.png?v=categorias-png-20260922'
+      image: 'img/categorias/accesorio-celular.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('adaptador') !== -1) {
@@ -431,7 +431,7 @@ function homeCategoryMeta(name) {
       title: 'Adaptadores',
       subtitle: 'Conversores - Hubs - Carga',
       icon: 'device_hub',
-      image: 'img/categorias/adaptadores.png?v=categorias-png-20260922'
+      image: 'img/categorias/adaptadores.png?v=categorias-iguales-20260923'
     };
   }
   if (text.indexOf('cable') !== -1) {
@@ -439,7 +439,7 @@ function homeCategoryMeta(name) {
       title: 'Cables',
       subtitle: 'HDMI - USB - Red - Corriente',
       icon: 'cable',
-      image: 'img/categorias/cables.png?v=categorias-png-20260922'
+      image: 'img/categorias/cables.png?v=categorias-iguales-20260923'
     };
   }
   if (text === 'otros' || text.indexOf('otros') !== -1) {
