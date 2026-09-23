@@ -339,7 +339,7 @@
   <!-- Category Grid -->
   <section class="container mx-auto px-5 md:px-8 py-8 md:py-5 max-w-[1920px]">
 
-    <div class="catalog-layout">
+    <div class="catalog-layout has-sidebar"><!-- con barra desde el inicio: si aparecia a los 0,5 s empujaba toda la grilla -->
       <aside id="catalog-sidebar" class="catalog-sidebar" aria-label="Filtros del catalogo">
         <div class="dt-filtros-cabecera">
           <span>Filtros</span>
@@ -3463,8 +3463,11 @@ function renderProductLoadingSkeleton() {
 
 function prepareInitialCatalogRouteLoading() {
   var params = new URLSearchParams(window.location.search || '');
-  if (!params.has('catid') && !params.has('sub') && !params.has('q')) return;
-  setCatalogHeaderContext('', 'Cargando catalogo', '');
+  var esRaiz = !params.has('catid') && !params.has('sub') && !params.has('q');
+  // La raiz ahora tambien muestra productos: las tarjetas de carga van desde
+  // el primer momento, si no la grilla quedaba vacia medio segundo y despues
+  // aparecian de golpe.
+  if (!esRaiz) setCatalogHeaderContext('', 'Cargando catalogo', '');
   updateGridHelper('');
   renderProductLoadingSkeleton();
 }
@@ -3538,7 +3541,9 @@ function renderProductCards(products, options) {
     card.dataset.order = idx;
     card.dataset.price = String(getProductPrice(p));
     card.dataset.stockStatus = stockState.status;
-    card.style.animationDelay = (idx * 0.035) + 's';
+    // Tope al escalonado: con idx * 0.035 la tarjeta 150 esperaba 5 s
+    // invisible y al bajar rapido se veian huecos que aparecian de a uno.
+    card.style.animationDelay = (Math.min(idx, 6) * 0.03) + 's';
     card.onclick = function() {
       // Con href el propio link navega; esto cubre las tarjetas sin slug.
       if (!card.getAttribute('href')) openCatalogProduct(p);
