@@ -1155,21 +1155,45 @@ function renderDeliveryBox(p) {
 // recalcula solo con el precio y la cantidad.
 var INSTALLMENT_RATES = null;
 var installmentRatesPromise = null;
+var INSTALLMENT_RATES_APPROX = false;
+
+// Ultimas tasas reales de Mercado Pago (tarjeta de credito, 23/09/2026).
+// Solo se usan si no se puede consultar api/mp-cuotas.php (Mercado Pago caido,
+// o la pagina abierta desde el disco sin servidor): asi la tabla aparece
+// siempre, marcada como aproximada.
+var INSTALLMENT_RATES_FALLBACK = [
+  { installments: 1, rate: 0 },
+  { installments: 3, rate: 19.69 },
+  { installments: 6, rate: 32.14 },
+  { installments: 9, rate: 43.47 },
+  { installments: 12, rate: 55.39 }
+];
 
 function fetchInstallmentRates(amount) {
   if (INSTALLMENT_RATES) return Promise.resolve(INSTALLMENT_RATES);
   if (installmentRatesPromise) return installmentRatesPromise;
 
-  installmentRatesPromise = fetch('api/mp-cuotas.php?amount=' + encodeURIComponent(amount))
-    .then(function(res) { return res.ok ? res.json() : null; })
-    .then(function(data) {
-      if (!data || !data.ok || !data.options || !data.options.length) return null;
-      INSTALLMENT_RATES = data.options.map(function(option) {
-        return { installments: Number(option.installments), rate: Number(option.rate_percent) || 0 };
-      });
-      return INSTALLMENT_RATES;
-    })
-    .catch(function() { return null; });
+  function usarRespaldo() {
+    INSTALLMENT_RATES = INSTALLMENT_RATES_FALLBACK;
+    INSTALLMENT_RATES_APPROX = true;
+    return INSTALLMENT_RATES;
+  }
+
+  try {
+    installmentRatesPromise = fetch('api/mp-cuotas.php?amount=' + encodeURIComponent(amount))
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data || !data.ok || !data.options || !data.options.length) return usarRespaldo();
+        INSTALLMENT_RATES = data.options.map(function(option) {
+          return { installments: Number(option.installments), rate: Number(option.rate_percent) || 0 };
+        });
+        INSTALLMENT_RATES_APPROX = false;
+        return INSTALLMENT_RATES;
+      })
+      .catch(usarRespaldo);
+  } catch (error) {
+    installmentRatesPromise = Promise.resolve(usarRespaldo());
+  }
 
   return installmentRatesPromise;
 }
@@ -1198,9 +1222,9 @@ function paintInstallments() {
   if (!body || !INSTALLMENT_RATES || !PRODUCT) return;
 
   var amount = Number(PRODUCT.price) * qty;
-  head.textContent = qty > 1
+  head.textContent = (qty > 1
     ? 'Precio en cuotas con tarjeta (' + qty + ' unidades)'
-    : 'Precio en cuotas con tarjeta';
+    : 'Precio en cuotas con tarjeta') + (INSTALLMENT_RATES_APPROX ? ' · aproximado' : '');
 
   body.innerHTML = '';
   INSTALLMENT_RATES.forEach(function(plan) {
