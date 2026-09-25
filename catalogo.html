@@ -49,7 +49,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=20260921">
 <link rel="stylesheet" href="shared.css?v=mega-solido-20260923">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="catalogo.css?v=sin-parpadeo-20260923">
+<link rel="stylesheet" href="catalogo.css?v=cabecera-fija-20260925">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -3424,6 +3424,22 @@ function clearProductFilters() {
   applyProductFilters();
 }
 
+// Al navegar (entrar a una categoria, volver al catalogo) los productos suelen
+// estar en memoria y llegan en milisegundos. Mostrar los recuadros de carga
+// igual hacia que la grilla pasara productos -> recuadros -> productos: el
+// titileo. Ahora solo aparecen si la carga tarda mas de 200 ms de verdad.
+function esqueletoSiTarda() {
+  var hecho = false;
+  var token = productRenderToken;
+  var timer = setTimeout(function() {
+    if (!hecho && token === productRenderToken) renderProductLoadingSkeleton();
+  }, 200);
+  return function() {
+    hecho = true;
+    clearTimeout(timer);
+  };
+}
+
 function renderProductLoadingSkeleton() {
   var grid = document.getElementById('categories-grid');
   if (!grid) return;
@@ -4839,7 +4855,7 @@ async function showSubcategoryComingSoon(found, options) {
   if (mobileBar) mobileBar.style.display = '';
 
   setBackAction(found.parent && found.parent !== found.child ? 'Volver a ' + found.parent.name : 'Volver al catalogo', goBackOneLevel);
-  renderProductLoadingSkeleton();
+  var esqueletoListo = esqueletoSiTarda();
 
   var empty = document.getElementById('empty-state');
   var emptyBtn = empty.querySelector('button');
@@ -4867,6 +4883,7 @@ async function showSubcategoryComingSoon(found, options) {
     }
   }
   if (requestId !== productsRequestId) return;
+  esqueletoListo();
 
   if (usingParentFallback) {
     document.getElementById('page-title').textContent = found.parent.name;
@@ -4947,7 +4964,7 @@ function seleccionarVistaTodoElCatalogo(products) {
 }
 
 async function showAllProducts(filter, requestId) {
-  renderProductLoadingSkeleton();
+  var esqueletoListo = esqueletoSiTarda();
   var empty = document.getElementById('empty-state');
 
   var pool = [];
@@ -4960,6 +4977,7 @@ async function showAllProducts(filter, requestId) {
     }
   }
   if (requestId !== productsRequestId) return;
+  esqueletoListo();
 
   var products = seleccionarVistaTodoElCatalogo(pool);
   dtActualizarAvisoUsados([]);
@@ -5014,7 +5032,7 @@ function renderRootView(options) {
 }
 
 async function showCategoryProducts(item, requestId) {
-  renderProductLoadingSkeleton();
+  var esqueletoListo = esqueletoSiTarda();
 
   var empty = document.getElementById('empty-state');
 
@@ -5034,6 +5052,7 @@ async function showCategoryProducts(item, requestId) {
     }
   }
   if (requestId !== productsRequestId) return;
+  esqueletoListo();
 
   var totalReal = products.length;
   products = ordenarParaVistaGeneralCategoria(products);

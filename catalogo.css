@@ -2350,3 +2350,27 @@ body::after {
   opacity: 1;
   animation: none;
 }
+
+/* Misma altura de cabecera con y sin banner. Antes "Todo el catalogo" (sin
+   banner) medía 104px y una categoria (con banner) 130px: al entrar o salir,
+   toda la grilla saltaba 26px. Mismos valores que .dt-cabecera.con-banner;
+   el id le gana al py-4 de Tailwind sin !important. */
+#dt-cabecera {
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+@media (min-width: 768px) {
+  #dt-cabecera {
+    /* 130px es lo que mide con banner (migas + "Categoria" + titulo) en
+       cualquier ancho de escritorio; sin banner se completa hasta ahi. */
+    min-height: 130px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  #dt-cabecera #page-title {
+    font-size: 1.875rem;
+    line-height: 1.15;
+  }
+}
