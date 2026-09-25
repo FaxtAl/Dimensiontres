@@ -741,7 +741,7 @@ body::after {
 
         <!-- Entrega y retiro -->
         <div id="prod-delivery-box" class="prod-delivery-box" hidden>
-          <p class="prod-delivery-title"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span id="prod-delivery-title-text"></span></p>
+          <p class="prod-delivery-title"><span class="material-symbols-outlined" aria-hidden="true">storefront</span><span id="prod-delivery-title-text"></span></p>
           <p id="prod-delivery-text" class="prod-delivery-text"></p>
           <p class="prod-delivery-hours">Retiro en Bartolomé Mitre 212, Villa María · Lunes a sábado de 9:00 a 13:00 y de 16:30 a 20:30.</p>
         </div>
@@ -902,10 +902,10 @@ var CATEGORY_SPECS = {
   ps3:      [['Plataforma','PS3'],['Conexión','Bluetooth/USB'],['Vibración','Doble'],['Estado','Usado/Genérico']],
   videogame_asset:[['Plataforma','Físico/Digital'],['Región','Argentina'],['Idioma','Español/Inglés'],['Estado','Nuevo/Usado']],
   digital:  [['Tipo','Código Digital'],['Entrega','Inmediata'],['Región','Argentina'],['Validez','Sin vencer']],
-  reparacion:[['Diagnóstico','Incluido'],['Garantía del trabajo','3 meses'],['Entrega','24-72hs'],['Domicilio','Villa María']],
-  consola:  [['Tipo','Custom FW'],['Riesgo','Consultar compatibilidad'],['Soporte','Post-servicio'],['Domicilio','Villa María']],
-  software: [['Entrega','Mismo día'],['Activación','Incluida'],['Versión','última'],['Domicilio','Villa María']],
-  pc:       [['Sistema','Windows'],['Entrega','24-48hs'],['Garantía del trabajo','3 meses'],['Domicilio','Villa María']],
+  reparacion:[['Diagnóstico','Incluido'],['Garantía del trabajo','3 meses'],['Entrega','24-72hs'],['Local','Villa María']],
+  consola:  [['Tipo','Custom FW'],['Riesgo','Consultar compatibilidad'],['Soporte','Post-servicio'],['Local','Villa María']],
+  software: [['Entrega','Mismo día'],['Activación','Incluida'],['Versión','última'],['Local','Villa María']],
+  pc:       [['Sistema','Windows'],['Entrega','24-48hs'],['Garantía del trabajo','3 meses'],['Local','Villa María']],
 };
 
 var CATEGORY_FEATURES = {
@@ -939,7 +939,7 @@ var CATEGORY_FEATURES = {
   ps3:       ['Funcional y revisado por técnico','Cable micro-USB incluido','Garantía de 3 meses'],
   videogame_asset:['Juego físico en buen estado','Compatible con la consola indicada','Sin región lock en Argentina'],
   digital:   ['Código enviado por WhatsApp','Sin vencimiento de validez','Recarga oficial PSN / Xbox'],
-  reparacion:['Presupuesto sin cargo previo','Piezas originales o equivalentes','Retiro a domicilio disponible'],
+  reparacion:['Presupuesto sin cargo previo','Piezas originales o equivalentes','Recepción en el local de Villa María'],
   consola:   ['Instalado por técnico especializado','Post-servicio con soporte','Consultar compatibilidad previa'],
   software:  ['Windows / Office originales','Activación permanente','Soporte post-instalación'],
   pc:        ['Diagnóstico completo incluido','Backup de datos disponible','Entrega el mismo día'],
@@ -1135,19 +1135,19 @@ function renderDeliveryBox(p) {
   if (productIsByOrder(p)) {
     box.classList.add('is-provider');
     title.textContent = 'Producto a pedido';
-    text.textContent = 'Lo encargamos al proveedor y te confirmamos la fecha antes de cobrarte. Después lo retirás en el local o te lo enviamos a domicilio.';
+    text.textContent = 'Lo encargamos al proveedor y te confirmamos la fecha antes de cobrarte. Después lo retirás en el local.';
     return;
   }
 
   if (productIsProvider(p)) {
     box.classList.add('is-provider');
     title.textContent = 'Llega al local en 48 hs';
-    text.textContent = 'No lo tenemos en el local: lo pedimos al depósito y llega en 48 hs hábiles. Te avisamos cuando está y lo retirás en Villa María, o te lo enviamos a domicilio.';
+    text.textContent = 'No lo tenemos en el local: lo pedimos al depósito y llega en 48 hs hábiles. Te avisamos cuando está y lo retirás en Villa María.';
     return;
   }
 
   title.textContent = 'Lo tenemos en el local';
-  text.textContent = 'Podés pasar a retirarlo por Villa María el mismo día, o pedir envío a domicilio.';
+  text.textContent = 'Podés pasar a retirarlo por Villa María el mismo día.';
 }
 
 // Las cuotas salen de las tasas reales de Mercado Pago (api/mp-cuotas.php).
