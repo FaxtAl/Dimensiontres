@@ -610,3 +610,12 @@
   backdrop-filter: blur(16px) saturate(135%);
 }
 #servicios article:hover { border-color: rgba(143, 245, 255, 0.4); }
+
+/* En escritorio la fila 2 del nav mide 52px (no 80 como el md:pt-20 del
+   main): sobraba una franja gris de 28px entre el nav y el banner. */
+@media (min-width: 768px) {
+  main.pt-28 { padding-top: 52px; }
+}
+@media (max-width: 767px) {
+  main.pt-28 { padding-top: 56px; }
+}
