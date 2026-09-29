@@ -1131,3 +1131,19 @@ body > nav.fixed {
 #drawer-backdrop {
   background: rgba(0, 0, 0, 0.45);
 }
+
+/* ============================================================
+   Contenido centrado en una caja de ancho fijo (como gorilagames.com).
+   En monitores grandes el nav, las secciones y el pie ya no van de
+   punta a punta: quedan en el medio con aire a los costados. El banner
+   del inicio y la cinta de marcas siguen a todo el ancho.
+   "body" delante para ganarle a tailwind.generated.css, que se carga
+   despues. Los .container que ya traen su propio max-w-* (p. ej.
+   contacto con max-w-5xl) no se tocan.
+   ============================================================ */
+:root { --dt-ancho: 1320px; }
+body .dt-nav-top,
+body .max-w-\[1920px\],
+body .container:not([class*="max-w-"]) {
+  max-width: var(--dt-ancho);
+}
