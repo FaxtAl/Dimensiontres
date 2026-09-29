@@ -635,3 +635,61 @@
   #inicio.es-banner .home-hero-texto .flex { gap: 0.5rem; }
   #inicio.es-banner .home-hero-texto button { padding: 0.6rem 1.1rem; font-size: 0.75rem; }
 }
+
+/* Servicio tecnico: foto arriba de cada tarjeta (Pexels, licencia libre)
+   que se funde con el fondo, el icono montado sobre el borde de la foto y un
+   boton de WhatsApp con el mensaje ya escrito para ese servicio. */
+#servicios article {
+  display: flex;
+  flex-direction: column;
+}
+#servicios .servicio-foto {
+  height: 170px;
+  margin: -1.5rem -1.5rem 0;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: transform 0.5s ease;
+}
+#servicios .servicio-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(21,21,21,0.1) 30%, rgba(21,21,21,0.96) 100%);
+}
+@media (min-width: 768px) {
+  #servicios .servicio-foto { margin: -1.75rem -1.75rem 0; }
+}
+#servicios .servicio-foto + div {
+  position: relative;
+  z-index: 1;
+  margin-top: -1.6rem;
+  margin-bottom: 1.1rem;
+}
+#servicios .servicio-foto + div > div {
+  background: #10191b;
+}
+#servicios .servicio-wa {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid rgba(143, 245, 255, 0.35);
+  border-radius: 6px;
+  color: #8ff5ff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s;
+}
+#servicios .servicio-wa .material-symbols-outlined { font-size: 17px; }
+#servicios .servicio-wa:hover,
+#servicios .servicio-wa:focus-visible {
+  background: #8ff5ff;
+  color: #00363a;
+}
+#servicios article > ul { margin-bottom: 1.5rem; }
