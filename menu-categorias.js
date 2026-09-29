@@ -57,6 +57,11 @@ var DT_CATEGORIAS = [
     { id: "ups-energia", name: "UPS / Energia" },
     { id: "subcat-64", name: "Otros" }
   ] },
+  { id: "cat-notebooks", name: "Notebooks", children: [
+    { id: "invid-notebooks-gamer", name: "Gamer" },
+    { id: "invid-notebooks-consumo", name: "Uso diario" },
+    { id: "invid-notebooks-corporativa", name: "Empresas" }
+  ] },
   { id: "cat-perifericos-pc", name: "Periféricos PC", children: [
     { id: "subcat-57", name: "Monitores" },
     { id: "subcat-24", name: "Mouse" },
@@ -96,8 +101,8 @@ var DT_CATEGORIAS = [
   { id: "cat-parlantes", name: "Parlantes", children: [
     { id: "subcat-28", name: "Parlantes 2.1" }
   ] },
-  { id: "cat-silla-gamer", name: "Silla Gamer", children: [
-    { id: "subcat-16", name: "Silla Gamer" }
+  { id: "cat-setup-gamer", name: "Setup Gamer", children: [
+    { id: "subcat-16", name: "Sillas y escritorios" }
   ] },
   { id: "cat-otros", name: "Otros", children: [
     { id: "subcat-67", name: "Otros" }

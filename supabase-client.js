@@ -2064,6 +2064,7 @@
       'Cables',
       'Adaptadores',
       'Accesorio Celular',
+      'Setup Gamer',
       'Silla Gamer',
       'Otros'
     ]);
@@ -2422,6 +2423,12 @@
 
     if (categoryText === 'juegos originales') {
       return 'Juegos Fisicos';
+    }
+
+    // La categoria del local "Silla Gamer" se muestra como "Setup Gamer": junta
+    // las sillas del local con las sillas y escritorios de Invid.
+    if (categoryText === 'silla gamer' || categoryText === 'sillas gamer') {
+      return 'Setup Gamer';
     }
 
     if ((categoryText === 'memorias' || categoryText === 'almacenamiento') && isPcComponentStorageSubcategory(subcategory)) {

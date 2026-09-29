@@ -491,7 +491,7 @@
 <script src="shared.js?v=redes-20260918"></script>
 <script src="cookie-notice.js?v=20260918"></script>
 <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
-<script src="menu-categorias.js?v=sub-unica-20260923"></script>
+<script src="menu-categorias.js?v=notebooks-setup-20260929"></script>
 <script src="config.js?v=invid-1515-30-20260810"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="img/producto-imagenes-ml.js?v=ml-csv-20260603"></script>
@@ -499,7 +499,7 @@
 <script src="img/producto-imagenes-juegos-extra.js?v=map-juegos-ps4-hitman-20260812"></script>
 <script src="img/producto-imagenes-local.js?v=local-images-20260810c"></script>
 <script src="img/invid-imagenes-local.js?v=invid-webp-20260923"></script>
-<script src="supabase-client.js?v=sin-ii-20260923"></script>
+<script src="supabase-client.js?v=notebooks-setup-20260929"></script>
 <script src="search-ranking.js?v=search-ranking-20260805b"></script>
 <script src="cart.js?v=cart-gorila-20260922"></script>
 
@@ -705,13 +705,13 @@ var CATALOG = [
     ]
   },
   {
-    id: 'cat-silla-gamer',
+    id: 'cat-setup-gamer',
     accessCategoryId: '22',
     accessCategoryIds: ['22'],
-    name: 'Silla Gamer',
+    name: 'Setup Gamer',
     category: 'hardware',
     icon: 'chair',
-    subtitle: 'Sillas - Alfombras para setup',
+    subtitle: 'Sillas y escritorios gamer',
     image: 'img/silla-gamer.jpg',
     useChildrenForProducts: false,
     children: [
@@ -884,8 +884,11 @@ function getCatalogVisualMeta(item) {
   if (text.indexOf('auricular') !== -1 || text.indexOf('audio') !== -1) {
     return { icon: 'headphones', image: 'img/auriculares.jpg' };
   }
-  if (text.indexOf('silla') !== -1) {
+  if (text.indexOf('silla') !== -1 || text.indexOf('setup gamer') !== -1) {
     return { icon: 'chair', image: 'img/silla-gamer.jpg' };
+  }
+  if (text.indexOf('notebook') !== -1) {
+    return { icon: 'laptop', image: 'img/hadware.jpg' };
   }
   if (text.indexOf('powerbank') !== -1 || text.indexOf('power bank') !== -1 || text.indexOf('celular') !== -1) {
     return { icon: 'inventory_2', image: 'img/accesorio-celular.jpg' };
@@ -1325,6 +1328,7 @@ var CATALOG_ROOT_NAME_ORDER = [
   'Joysticks y Accesorios',
   'PC y Componentes',
   'Hardware',
+  'Notebooks',
   'Perifericos PC',
   'Almacenamiento',
   'Audio',
@@ -1335,6 +1339,7 @@ var CATALOG_ROOT_NAME_ORDER = [
   'Memorias',
   'Auriculares',
   'Parlantes',
+  'Setup Gamer',
   'Silla Gamer',
   'Otros'
 ];
@@ -1592,7 +1597,7 @@ function ensureInvidCatalogSubcategories(meta) {
   ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'gabinetes', name: 'Gabinetes', icon: 'desktop_windows', invidNames: INVID_CASE_NAMES });
   ensureInvidSubcategory(meta, { parentNames: pcParents, id: 'refrigeracion-coolers', name: 'Refrigeracion / Coolers', matchNames: ['Coolers', 'Refrigeracion'], icon: 'ac_unit', invidNames: INVID_COOLING_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC', 'PC y Componentes', 'Hardware'], id: 'monitores', name: 'Monitores', matchNames: ['Monitor'], icon: 'desktop_windows', invidNames: INVID_MONITOR_NAMES });
-  ensureInvidSubcategory(meta, { parentNames: ['Silla Gamer'], id: 'subcat-16', name: 'Silla Gamer', matchNames: ['Sillas Gamer'], icon: 'chair', image: 'img/silla-gamer.jpg', invidNames: INVID_CHAIR_NAMES });
+  ensureInvidSubcategory(meta, { parentNames: ['Setup Gamer', 'Silla Gamer'], id: 'subcat-16', name: 'Silla Gamer', matchNames: ['Sillas Gamer'], icon: 'chair', image: 'img/silla-gamer.jpg', invidNames: INVID_CHAIR_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'mouse', name: 'Mouse', icon: 'mouse', invidNames: INVID_MOUSE_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'teclados', name: 'Teclados', icon: 'keyboard', invidNames: INVID_KEYBOARD_NAMES });
   ensureInvidSubcategory(meta, { parentNames: ['Perifericos PC'], id: 'combos-teclado-mouse', name: 'Combos Teclado + Mouse', matchNames: ['Teclado + Mouse', 'Combos'], icon: 'keyboard', invidNames: INVID_KEYBOARD_MOUSE_COMBO_NAMES });
@@ -1607,12 +1612,61 @@ function ensureInvidCatalogSubcategories(meta) {
   ensureInvidSubcategory(meta, { parentNames: ['PC y Componentes', 'Hardware', 'Perifericos PC'], id: 'pcs-armadas-mini-pc', name: 'PCs Armadas / Mini PC', matchNames: ['Computadoras', 'Mini PC', 'PC Armada'], icon: 'desktop_windows', invidNames: INVID_PC_BUILD_NAMES });
 }
 
+// Categorias que en el local no existen y se arman solo con productos de Invid
+// (hoy Notebooks). La base devuelve sus grupos como "Notebooks Consumo",
+// "Notebooks Gamer", etc. (supabase_invid_notebooks_sillas.sql). Si Invid no
+// trae ninguno, la categoria no se crea: no queda una categoria vacia.
+var INVID_ROOT_CATEGORIES = [
+  {
+    id: 'cat-notebooks',
+    name: 'Notebooks',
+    category: 'notebooks',
+    icon: 'laptop',
+    children: [
+      { id: 'invid-notebooks-gamer', name: 'Gamer', invidNames: ['Notebooks Gamer'] },
+      { id: 'invid-notebooks-consumo', name: 'Uso diario', invidNames: ['Notebooks Consumo'] },
+      { id: 'invid-notebooks-corporativa', name: 'Empresas', invidNames: ['Notebooks Corporativa'] }
+    ]
+  }
+];
+
+function ensureInvidRootCategories(meta) {
+  INVID_ROOT_CATEGORIES.forEach(function(config) {
+    var children = [];
+    config.children.forEach(function(childConfig) {
+      var resolved = resolveInvidNames(childConfig.invidNames, meta);
+      if (!resolved.length) return;
+      var child = {
+        id: childConfig.id,
+        name: childConfig.name,
+        category: config.category,
+        icon: config.icon,
+        image: '',
+        children: null
+      };
+      addInvidNamesToItem(child, resolved, meta);
+      children.push(child);
+    });
+    if (!children.length) return;
+
+    var root = CATALOG.find(function(item) { return item.id === config.id; });
+    if (!root) {
+      root = { id: config.id, name: config.name, category: config.category, icon: config.icon, image: '', children: [], productCount: 0 };
+      CATALOG.push(root);
+    }
+    root.children = children;
+    root.productCount = children.reduce(function(sum, child) { return sum + Number(child.productCount || 0); }, 0);
+    root.subtitle = root.productCount + ' productos en ' + children.length + ' subcategorias';
+  });
+}
+
 function applyInvidCatalogToExistingTree(invidCatalog) {
   var children = collectInvidCatalogChildren(invidCatalog);
   if (!children.length) return false;
 
   var meta = createInvidMeta(children);
   ensureInvidCatalogSubcategories(meta);
+  ensureInvidRootCategories(meta);
   function walk(item) {
     if (!item) return;
     addInvidNamesToItem(item, getInvidNamesForCatalogNode(item, meta), meta);
@@ -3238,7 +3292,7 @@ var DT_BANNERS = {
   'cat-auriculares': 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826',
   'cat-parlantes': 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826',
 
-  'cat-silla-gamer': 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826',
+  'cat-setup-gamer': 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826',
   'cat-otros': 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826'
 };
 
@@ -5637,6 +5691,8 @@ function applyCatalogRoute(options) {
   var params = new URLSearchParams(window.location.search);
   var subcategory = (params.get('sub') || '').toLowerCase().trim();
   var categoryId = (params.get('catid') || '').toLowerCase().trim();
+  // "Silla Gamer" paso a llamarse "Setup Gamer": los links viejos siguen andando.
+  if (categoryId === 'cat-silla-gamer') categoryId = 'cat-setup-gamer';
   var category = (params.get('cat') || '').toLowerCase().trim();
   var query = (params.get('q') || '').toLowerCase().trim();
 
