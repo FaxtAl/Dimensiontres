@@ -313,3 +313,72 @@
     document.addEventListener('DOMContentLoaded', buildLink);
   }
 })();
+
+/* ============================================================
+   Reintento de imagenes. Si una foto falla por un corte momentaneo
+   (la conexion del local, el tunel, el proxy de Invid), antes la pagina
+   pasaba a la siguiente alternativa y, sin mas alternativas, la borraba
+   hasta recargar. Ahora se reintenta sola dos veces. Si es un archivo de
+   la propia web que de verdad no existe (404), no se espera: sigue el
+   manejo normal de cada pagina (su img.onerror) enseguida.
+   ============================================================ */
+(function () {
+  var ESPERAS = [1000, 3000];
+  var MARCA = /([?&])dtr=\d+(&|$)/;
+
+  function sinMarca(url) {
+    return String(url || '').replace(MARCA, function (_, antes, despues) {
+      return despues ? antes : '';
+    }).replace(/[?&]$/, '');
+  }
+
+  function dejarPasar(img) {
+    // Vuelve a disparar el error para que corra el onerror de la pagina.
+    img.dataset.dtrPasar = '1';
+    img.dispatchEvent(new Event('error'));
+  }
+
+  function reintentar(img, base, n) {
+    img.dataset.dtr = String(n + 1);
+    setTimeout(function () {
+      if (!img.isConnected) return;
+      // Si mientras tanto la pagina ya puso otra foto, no se toca.
+      if (sinMarca(img.getAttribute('src')) !== base) return;
+      img.src = base + (base.indexOf('?') === -1 ? '?' : '&') + 'dtr=' + (n + 1);
+    }, ESPERAS[n]);
+  }
+
+  document.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG') return;
+    if (img.dataset.dtrPasar === '1') { delete img.dataset.dtrPasar; return; }
+
+    var src = img.getAttribute('src') || '';
+    if (!src || src.indexOf('data:') === 0 || src.indexOf('blob:') === 0) return;
+
+    var base = sinMarca(src);
+    if (img.dataset.dtrBase !== base) {
+      img.dataset.dtrBase = base;
+      img.dataset.dtr = '0';
+    }
+    var n = Number(img.dataset.dtr || 0);
+    if (n >= ESPERAS.length) return; // ya se reintento: sigue la pagina
+
+    // Frena el onerror de la pagina mientras se decide.
+    e.stopImmediatePropagation();
+
+    var url;
+    try { url = new URL(base, location.href); } catch (err) { url = null; }
+    var mismaWeb = url && url.origin === location.origin;
+    if (!mismaWeb || !window.fetch) {
+      reintentar(img, base, n);
+      return;
+    }
+    fetch(url.href, { method: 'HEAD', cache: 'no-store' }).then(function (res) {
+      if (res.status === 404 || res.status === 410) dejarPasar(img);
+      else reintentar(img, base, n);
+    }, function () {
+      reintentar(img, base, n);
+    });
+  }, true);
+})();

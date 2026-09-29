@@ -19,8 +19,10 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Store","name":"DimensionTres","description":"Hardware, perifericos, consolas y servicio tecnico en Villa Maria, Cordoba.","url":"https://dimensiontres.com/","image":"https://dimensiontres.com/img/Inicio.jpg","telephone":"+5493534019085","priceRange":"$$","address":{"@type":"PostalAddress","streetAddress":"Bartolome Mitre 212","addressLocality":"Villa Maria","addressRegion":"Cordoba","postalCode":"X5901BDF","addressCountry":"AR"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"13:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"16:30","closes":"20:30"}]}
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="material-symbols-local.css?v=20260921">
+<link rel="preload" href="fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/material-symbols-outlined.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
 
 
   <link rel="stylesheet" href="shared.css?v=mega-solido-20260923">
@@ -854,6 +856,35 @@
 }
 @media (max-width: 767px) {
   .featured-products-grid .featured-card { flex-basis: min(78vw, 270px); }
+}
+/* Version compacta de "Mejora tu setup" (pedido del local): titulo, controles
+   y tarjetas mas chicos, menos aire entre filas. Todo acotado a #destacados. */
+#destacados .setup-product-group { margin-bottom: 1.6rem; }
+#destacados .setup-product-group:last-child { margin-bottom: 0; }
+#destacados .setup-cat-banner {
+  margin-bottom: 0.6rem;
+  padding: 0.5rem 1rem;
+  clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 100%, 0 100%);
+}
+#destacados .setup-cat-banner h3 { font-size: clamp(1rem, 1.6vw, 1.3rem); }
+#destacados .setup-group-toolbar { margin-bottom: 0.6rem; gap: 0.75rem; }
+#destacados .setup-group-all { font-size: 0.88rem; }
+#destacados .setup-carousel-btn { width: 32px; height: 32px; }
+#destacados .setup-group-row { grid-template-columns: 150px minmax(0, 1fr); gap: 0.75rem; }
+#destacados .featured-products-grid { gap: 0.75rem; }
+#destacados .featured-products-grid .featured-card { flex-basis: calc((100% - 3.75rem) / 5.5); }
+#destacados .feat-img-wrap { margin: 6px 6px 0; }
+#destacados .feat-card-img { padding: 8px; }
+#destacados .feat-body { padding: 0.7rem 0.65rem 0.85rem; gap: 0.3rem; }
+#destacados .feat-name { font-size: 13px; }
+#destacados .feat-price { font-size: 17px; }
+@media (max-width: 1023px) {
+  #destacados .setup-group-row { grid-template-columns: 120px minmax(0, 1fr); }
+  #destacados .featured-products-grid .featured-card { flex-basis: calc((100% - 2.25rem) / 4.5); }
+}
+@media (max-width: 767px) {
+  #destacados .setup-group-row { grid-template-columns: minmax(0, 1fr); }
+  #destacados .featured-products-grid .featured-card { flex-basis: min(58vw, 210px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .featured-products-grid { scroll-behavior: auto; }
