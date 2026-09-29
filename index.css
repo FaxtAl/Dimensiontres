@@ -62,6 +62,7 @@
   display: flex;
   align-items: center;
   height: 1.8em;
+  padding: 0 clamp(2.5rem, 4.5vw, 4.5rem);
 }
 .marquee-item svg {
   display: block;
