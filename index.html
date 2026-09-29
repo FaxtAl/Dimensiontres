@@ -795,6 +795,19 @@
   border-radius: 4px;
   background: #0e0e0e;
 }
+/* Fotos de Pexels (licencia libre, uso comercial permitido) con un velo
+   oscuro abajo y a los costados para que se fundan con el fondo. */
+.setup-promo-procesadores,
+.setup-promo-perifericos,
+.setup-promo-consolas {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.setup-promo-procesadores { background-image: linear-gradient(180deg, rgba(14,14,14,0.05) 45%, rgba(14,14,14,0.85) 100%), url('img/setup/procesadores.webp'); }
+.setup-promo-perifericos { background-image: linear-gradient(180deg, rgba(14,14,14,0.05) 45%, rgba(14,14,14,0.85) 100%), url('img/setup/perifericos.webp'); }
+.setup-promo-consolas { background-image: linear-gradient(180deg, rgba(14,14,14,0.05) 45%, rgba(14,14,14,0.85) 100%), url('img/setup/consolas.webp'); }
 
 @media (max-width: 1023px) {
   .setup-group-row { grid-template-columns: 160px minmax(0, 1fr); }
@@ -902,7 +915,7 @@
     </div>
   </div>
   <div class="setup-group-row">
-    <div class="setup-group-promo" aria-hidden="true"></div>
+    <div class="setup-group-promo setup-promo-procesadores" aria-hidden="true"></div>
   <div class="setup-carousel-viewport">
     <div id="home-featured-processors" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -936,7 +949,7 @@
     </div>
   </div>
   <div class="setup-group-row">
-    <div class="setup-group-promo" aria-hidden="true"></div>
+    <div class="setup-group-promo setup-promo-perifericos" aria-hidden="true"></div>
   <div class="setup-carousel-viewport">
     <div id="home-featured-perifericos" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
@@ -970,7 +983,7 @@
     </div>
   </div>
   <div class="setup-group-row">
-    <div class="setup-group-promo" aria-hidden="true"></div>
+    <div class="setup-group-promo setup-promo-consolas" aria-hidden="true"></div>
   <div class="setup-carousel-viewport">
     <div id="home-featured-consolas" class="featured-products-grid">
       <div class="featured-card featured-loading" aria-hidden="true">
