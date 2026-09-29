@@ -53,6 +53,23 @@
 }
 .marquee-item:hover { color: #8ff5ff; }
 
+/* Logos de marcas en vez del nombre en texto. Cada logo trae su alto en --h
+   (en em, relativo al tamano de letra de la cinta) calculado para que todos
+   ocupen la misma superficie: las palabras largas (Sony, ASUS) mas bajas y
+   los iconos cuadrados (Razer, MSI) mas altos. El ancho sale de la forma. */
+.marcas-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.marquee-item {
+  display: flex;
+  align-items: center;
+  height: 1.8em;
+}
+.marquee-item svg {
+  display: block;
+  height: var(--h, 1em);
+  width: auto;
+  fill: currentColor;
+}
+
 /* ── Pulido visual home ── */
 #categorias .group,
 #servicios article,
