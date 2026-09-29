@@ -462,10 +462,14 @@
    el texto se acota a la mitad izquierda para no montarse encima. El titulo
    escala solo para entrar en ese ancho. */
 @media (min-width: 768px) {
-  #inicio.es-banner .home-hero-texto { max-width: 48%; }
+  /* El 48% del contenedor terminaba cerca del 50% de la pantalla y la bajada
+     se metia debajo de las tapas (que arrancan en el 35%). Se acota el texto
+     hasta el 34% de la pantalla, descontando el margen izquierdo del hero, y
+     el titulo escala con el ancho para entrar entero en esa columna. */
+  #inicio.es-banner .home-hero-texto { max-width: calc(34vw - clamp(2rem, 4vw, 5rem)); }
 
   #inicio.es-banner .home-hero-texto h1 {
-    font-size: clamp(2.4rem, 4.6vw, 4.4rem);
+    font-size: clamp(1.8rem, 4.1vw, 4.4rem);
     line-height: 0.92;
   }
 
@@ -618,4 +622,16 @@
 }
 @media (max-width: 767px) {
   main.pt-28 { padding-top: 56px; }
+}
+
+/* Tablets (768-1023): el banner mide ~350px de alto y la columna de texto
+   es angosta, asi que etiqueta + titulo + bajada + dos botones apilados no
+   entraban y la etiqueta quedaba pegada al nav. Se achican espacios y
+   botones solo en ese rango. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #inicio.es-banner .home-hero-texto > span:first-child { margin-bottom: 0.75rem; font-size: 0.7rem; }
+  #inicio.es-banner .home-hero-texto h1 { margin-bottom: 0.6rem; }
+  #inicio.es-banner .home-hero-texto p { margin-bottom: 1rem; font-size: 0.85rem; }
+  #inicio.es-banner .home-hero-texto .flex { gap: 0.5rem; }
+  #inicio.es-banner .home-hero-texto button { padding: 0.6rem 1.1rem; font-size: 0.75rem; }
 }
