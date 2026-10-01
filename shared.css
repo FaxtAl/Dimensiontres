@@ -1089,7 +1089,9 @@ body > nav.fixed {
 }
 
 @media (max-width: 420px) {
-  .dt-minicart { width: 100%; max-width: none; }
+  /* En celular tambien entra de costado: deja ver una franja de la pagina a
+     la izquierda (tocarla lo cierra), en vez de tapar toda la pantalla. */
+  .dt-minicart { width: 86%; max-width: 360px; }
   .dt-minicart-head { padding: 1rem; }
   .dt-minicart-share-wrap { padding-inline: 1rem; }
   .dt-minicart-item { padding-inline: 1rem; }
