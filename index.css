@@ -723,3 +723,13 @@
 #inicio.es-banner .home-hero-tinte,
 #inicio.es-banner .home-hero-velo-lat,
 #inicio.es-banner .home-hero-velo-abajo { display: none; }
+
+/* Celular: el banner entero quedaba de 125px de alto y las letras no se
+   leian. Se lo agranda casi al doble y se recorta lo que sobra a la derecha,
+   dejando a la vista lo importante de cada uno: en FC 27 el texto y las dos
+   primeras tapas; en GTA VI el titulo, la PS5 y la tarjeta del juego. */
+@media (max-width: 767px) {
+  #inicio.es-banner { aspect-ratio: 375 / 180; }
+  #inicio.es-banner .home-hero-rotating-image { object-fit: cover; object-position: 0% 50%; }
+  #inicio.es-banner[data-banner="gta6"] .home-hero-rotating-image { object-position: 30% 50%; }
+}
