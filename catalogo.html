@@ -51,7 +51,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
 <link rel="stylesheet" href="shared.css?v=buscador-20261001">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="catalogo.css?v=sin-saltos-20261001c">
+<link rel="stylesheet" href="catalogo.css?v=sin-banners-20261001">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -3331,6 +3331,8 @@ var DT_BANNERS = {
   'cat-otros': 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826'
 };
 
+var DT_MOSTRAR_BANNERS = false;
+
 function dtRenderBanner() {
   var caja = document.getElementById('dt-banner');
   if (!caja) return;
@@ -3348,7 +3350,10 @@ function dtRenderBanner() {
     });
   }
 
-  var src = DT_BANNERS[catId];
+  // Las categorias van sin banner de imagen: cabecera simple (miga, titulo y
+  // linea celeste) en todas, como Notebooks. Para volver a mostrarlos alcanza
+  // con poner DT_MOSTRAR_BANNERS en true.
+  var src = DT_MOSTRAR_BANNERS ? DT_BANNERS[catId] : '';
   caja.innerHTML = '';
   var cabecera = document.getElementById('dt-cabecera');
   if (!src) {
