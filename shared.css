@@ -64,10 +64,34 @@ textarea, [contenteditable="true"] { cursor: text; }
 .global-search-suggestion:last-child { border-bottom: 0; }
 
 .global-search-suggestion:hover,
-.global-search-suggestion:focus {
+.global-search-suggestion:focus,
+.global-search-suggestion.is-active {
   outline: none;
   background: rgba(143, 245, 255, 0.08);
 }
+.global-search-suggestion.is-active { box-shadow: inset 2px 0 0 #8ff5ff; }
+
+/* Palabras buscadas resaltadas en el nombre del producto. */
+.global-search-hl {
+  background: none;
+  color: #8ff5ff;
+}
+
+/* Disponibilidad en la vista rapida: lo primero que mira el cliente despues
+   del nombre. */
+.global-search-tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.global-search-tag.is-local { color: #9ff0b3; background: rgba(76, 217, 100, 0.12); }
+.global-search-tag.is-provider { color: #ffe38a; background: rgba(255, 198, 0, 0.12); }
+.global-search-tag.is-order { color: #ffd96a; background: rgba(255, 198, 0, 0.1); }
+.global-search-tag.is-out { color: #bdbdbd; background: rgba(255, 255, 255, 0.08); }
 
 .global-search-thumb {
   width: 42px;

@@ -49,7 +49,7 @@
 <link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/material-symbols-outlined.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
-<link rel="stylesheet" href="shared.css?v=ancho-centrado-20260929">
+<link rel="stylesheet" href="shared.css?v=buscador-20261001">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
 <link rel="stylesheet" href="catalogo.css?v=cabecera-fija-20260925">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
@@ -500,7 +500,7 @@
 <script src="img/producto-imagenes-local.js?v=local-images-20260810c"></script>
 <script src="img/invid-imagenes-local.js?v=invid-fotos-20260929"></script>
 <script src="supabase-client.js?v=notebooks-setup-20260929"></script>
-<script src="search-ranking.js?v=search-ranking-20260805b"></script>
+<script src="search-ranking.js?v=buscador-20261001"></script>
 <script src="cart.js?v=cart-gorila-20260922"></script>
 
 <script>
@@ -4743,6 +4743,9 @@ async function updateSearchSuggestions(input) {
       return String(a.name || '').localeCompare(String(b.name || ''), 'es');
     });
 
+  if (!results.length && window.DimensionTresSearch && window.DimensionTresSearch.similarProducts) {
+    results = window.DimensionTresSearch.similarProducts(pool, normalizedQuery, 5);
+  }
   renderSearchSuggestions(input, results, query);
 }
 
@@ -4846,6 +4849,23 @@ async function renderProductSearchResults(query, options) {
     currentSortOrder = 'relevance';
     renderProductCards(results);
   } else {
+    // Ningun producto tiene todas las palabras ("rtx 4060" cuando no hay 4060):
+    // se muestran los mas parecidos en vez de una pagina vacia.
+    var similar = window.DimensionTresSearch && window.DimensionTresSearch.similarProducts
+      ? window.DimensionTresSearch.similarProducts(pool, normalizedQuery, 24)
+      : [];
+    if (similar.length) {
+      setCatalogHeaderContext(
+        '',
+        'Productos parecidos',
+        'No encontramos "' + displayQuery.trim() + '" exacto. Estos se le parecen.'
+      );
+      document.getElementById('visible-count').textContent = similar.length;
+      empty.classList.add('hidden');
+      currentSortOrder = 'relevance';
+      renderProductCards(similar);
+      return;
+    }
     grid.style.display = 'none';
     empty.classList.remove('hidden');
     empty.querySelector('.material-symbols-outlined').textContent = 'search_off';

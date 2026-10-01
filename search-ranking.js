@@ -49,7 +49,12 @@
     { queries: ['motherboard', 'mother', 'placa madre', 'mainboard'], alternatives: ['motherboard', 'mother', 'placa madre', 'mainboard'] },
     { queries: ['procesador', 'cpu', 'micro'], alternatives: ['procesador', 'cpu', 'micro', 'ryzen', 'intel core'] },
     { queries: ['fuente', 'psu'], alternatives: ['fuente', 'psu', 'fuente gamer'] },
-    { queries: ['gabinete', 'case'], alternatives: ['gabinete', 'case', 'pc case'] }
+    { queries: ['gabinete', 'case'], alternatives: ['gabinete', 'case', 'pc case'] },
+    // Juegos: la gente busca por la sigla y el producto tiene el nombre largo.
+    { queries: ['gta'], alternatives: ['gta', 'grand theft auto'] },
+    { queries: ['call of duty', 'cod'], alternatives: ['call of duty', 'cod'] },
+    { queries: ['fifa'], alternatives: ['fifa', 'fc 24', 'fc 25', 'fc 26', 'ea sports fc'] },
+    { queries: ['celular', 'celu', 'telefono'], alternatives: ['celular', 'celu', 'telefono', 'smartphone'] }
   ];
 
   function normalize(value) {
@@ -173,8 +178,12 @@
       }
       var token = tokens[index];
       if (token.length >= 2 || (/^\d+$/.test(token) && tokens.length > 1)) {
+        var alternatives = [token];
+        // "1tb", "16gb", "650w": el producto puede decir "1 TB" o "16 Gb" separado.
+        var unit = token.match(/^(\d+)([a-z]+)$/);
+        if (unit) alternatives.push(unit[1] + ' ' + unit[2]);
         // Desde 4 letras ya vale corregir typos: "mose" -> "mouse".
-        requirements.push({ alternatives: [token], fuzzy: /^[a-z]+$/.test(token) && token.length >= 4 });
+        requirements.push({ alternatives: alternatives, fuzzy: /^[a-z]+$/.test(token) && token.length >= 4 });
       }
       index++;
     }
@@ -286,7 +295,71 @@
     if (!textScore) return 0;
 
     var nameScore = scoreFields(collectFields(product, ['name', 'nombre', 'title', 'titulo', 'producto']), query);
-    return textScore + (nameScore ? 700 : 0) + exactNameBonus(normalizedName, normalizedQuery);
+    return textScore + (nameScore ? 700 : 0) + exactNameBonus(normalizedName, normalizedQuery) +
+      productTypeBonus(normalizedName, normalizedQuery) + availabilityBonus(product);
+  }
+
+  // El nombre arranca con lo que se busco: es esa clase de producto. "Mouse Gamer
+  // Raptor" es un mouse; "Combo Teclado + Mouse" o "Disco Notebook" solo lo
+  // nombran. Pesa mas que la frase exacta en el medio del nombre: "Sist. Kelyx
+  // ... + Monitor 24" no es un monitor.
+  function productTypeBonus(normalizedName, normalizedQuery) {
+    if (!normalizedName) return 0;
+    var requirements = queryRequirements(normalizedQuery);
+    if (!requirements.length) return 0;
+    var nameTokens = normalizedName.split(' ').filter(Boolean);
+    if (!nameTokens.length) return 0;
+    var first = requirements[0];
+    if (scoreRequirement(first, targetTokens(nameTokens[0]))) return 1000;
+    // "memoria ram" tambien reconoce "Memoria DDR4 ..." y "Memoria SODIMM ...":
+    // alcanza con que el nombre arranque con la primera palabra de la frase.
+    var startsWithPhrase = first.alternatives.some(function(alternative) {
+      var tokens = normalize(alternative).split(' ').filter(Boolean);
+      return tokens.length > 1 && tokens[0].length >= 4 && sameToken(nameTokens[0], tokens[0]);
+    });
+    return startsWithPhrase ? 1000 : 0;
+  }
+
+  // Lo que se puede comprar ya va antes que lo que esta sin stock: quien busca
+  // quiere algo que pueda llevarse. Stock desconocido o "a pedido" queda en el medio.
+  function availabilityBonus(product) {
+    if (product.byOrder || product.producto_sinstock === true) return 1000;
+    var raw = product.stock;
+    if (raw === null || raw === undefined || raw === '') return 1000;
+    var stock = Number(raw);
+    if (!Number.isFinite(stock)) return 1000;
+    return stock > 0 ? 2000 : 0;
+  }
+
+  // Cuando ningun producto tiene TODAS las palabras ("rtx 4060" y no hay 4060),
+  // devuelve los que tienen la mayor cantidad, para mostrarlos como "parecidos"
+  // en vez de una lista vacia. Solo con dos palabras o mas.
+  function similarProducts(products, query, limit) {
+    var requirements = queryRequirements(normalize(query));
+    if (requirements.length < 2) return [];
+    var best = 0;
+    var scored = (products || []).map(function(product) {
+      var groups = collectFields(product, TEXT_FIELDS).map(normalize).filter(Boolean).map(targetTokens);
+      var matched = 0;
+      var points = 0;
+      requirements.forEach(function(requirement, index) {
+        var top = 0;
+        groups.forEach(function(tokens) { top = Math.max(top, scoreRequirement(requirement, tokens)); });
+        if (top) {
+          matched++;
+          // La primera palabra suele ser el tipo de producto: pesa mas.
+          points += top + (index === 0 ? 400 : 0);
+        }
+      });
+      if (matched > best) best = matched;
+      return { product: product, matched: matched, points: points + availabilityBonus(product) };
+    });
+    if (!best) return [];
+    return scored
+      .filter(function(entry) { return entry.matched === best; })
+      .sort(function(a, b) { return b.points - a.points; })
+      .slice(0, limit || 8)
+      .map(function(entry) { return entry.product; });
   }
 
   return {
@@ -294,6 +367,7 @@
     normalizeCode: normalizeCode,
     queryRequirements: queryRequirements,
     scoreFields: scoreFields,
-    scoreProduct: scoreProduct
+    scoreProduct: scoreProduct,
+    similarProducts: similarProducts
   };
 });

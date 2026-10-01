@@ -127,6 +127,57 @@
     return searchRanking ? searchRanking.scoreProduct(product, query) : 0;
   }
 
+  // Marca en el nombre las palabras que escribio el cliente, sin importar
+  // mayusculas ni acentos ("teclado mecanico" resalta "Teclado Mecánico").
+  function appendHighlighted(el, text, query) {
+    text = String(text || '');
+    var tokens = normalize(query).split(' ').filter(function(token) { return token.length >= 2; });
+    var plain = '';
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      plain += ch.length === 1 ? ch : text[i].toLowerCase();
+    }
+    var marks = new Array(text.length).fill(false);
+    tokens.forEach(function(token) {
+      var from = 0;
+      var at;
+      while ((at = plain.indexOf(token, from)) !== -1) {
+        for (var k = at; k < at + token.length; k++) marks[k] = true;
+        from = at + token.length;
+      }
+    });
+    var buffer = '';
+    var marked = false;
+    function flush() {
+      if (!buffer) return;
+      if (marked) {
+        var mark = document.createElement('mark');
+        mark.className = 'global-search-hl';
+        mark.textContent = buffer;
+        el.appendChild(mark);
+      } else {
+        el.appendChild(document.createTextNode(buffer));
+      }
+      buffer = '';
+    }
+    for (var j = 0; j < text.length; j++) {
+      if (marks[j] !== marked) { flush(); marked = marks[j]; }
+      buffer += text[j];
+    }
+    flush();
+  }
+
+  // Etiqueta corta de disponibilidad para la vista rapida.
+  function availabilityTag(product) {
+    product = product || {};
+    var raw = product.stock;
+    var known = raw !== null && raw !== undefined && raw !== '' && Number.isFinite(Number(raw));
+    if (!product.byOrder && known && Number(raw) <= 0) return { text: 'Sin stock', cls: 'is-out' };
+    if (product.byOrder) return { text: 'A pedido', cls: 'is-order' };
+    if (product.fulfillment === 'provider' || product.source === 'invid') return { text: 'Llega en 48 hs', cls: 'is-provider' };
+    return { text: 'En el local', cls: 'is-local' };
+  }
+
   function getSuggestions(products, query) {
     var normalized = normalize(query);
     if (normalized.length < 2) return [];
@@ -244,16 +295,25 @@
     box.appendChild(item);
   }
 
-  function renderSuggestions(input, products, query) {
+  function renderSuggestions(input, products, query, similar) {
     var box = ensureBox(input);
     if (!box) return;
 
     box.innerHTML = '';
     if (!products.length) {
-      box.innerHTML = '<div class="global-search-empty">No aparecio en la vista rapida.</div>';
+      var none = document.createElement('div');
+      none.className = 'global-search-empty';
+      none.textContent = 'No encontramos "' + String(query || '').trim() + '". Probá con otra palabra o con el código.';
+      box.appendChild(none);
       renderViewAll(input, query, box);
       box.classList.add('active');
       return;
+    }
+    if (similar) {
+      var note = document.createElement('div');
+      note.className = 'global-search-empty';
+      note.textContent = 'No encontramos "' + String(query || '').trim() + '" exacto. Te pueden servir:';
+      box.appendChild(note);
     }
 
     products.forEach(function(product) {
@@ -286,11 +346,16 @@
 
       var name = document.createElement('span');
       name.className = 'global-search-name';
-      name.textContent = productName || 'Producto';
+      appendHighlighted(name, productName || 'Producto', query);
 
       var meta = document.createElement('span');
       meta.className = 'global-search-meta';
-      meta.textContent = productMeta || 'En Catalogo';
+      var tag = availabilityTag(product);
+      var tagEl = document.createElement('span');
+      tagEl.className = 'global-search-tag ' + tag.cls;
+      tagEl.textContent = tag.text;
+      meta.appendChild(tagEl);
+      meta.appendChild(document.createTextNode(productMeta || 'En Catalogo'));
 
       var price = document.createElement('span');
       price.className = 'global-search-price';
@@ -331,10 +396,25 @@
     var host = input.closest('.relative') || input.parentElement;
     var button = host ? host.querySelector('button[aria-label="Buscar"], button') : null;
 
+    input.setAttribute('autocomplete', 'off');
     input.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
+      var box = ensureBox(input);
+      var items = box && box.classList.contains('active')
+        ? Array.prototype.slice.call(box.querySelectorAll('.global-search-suggestion'))
+        : [];
+      var current = items.findIndex(function(item) { return item.classList.contains('is-active'); });
+      if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && items.length) {
+        // Flechas para moverse por la vista rapida sin soltar el teclado.
         event.preventDefault();
-        goToCatalog(input);
+        var next = event.key === 'ArrowDown'
+          ? (current + 1) % items.length
+          : (current <= 0 ? items.length - 1 : current - 1);
+        items.forEach(function(item, index) { item.classList.toggle('is-active', index === next); });
+        items[next].scrollIntoView({ block: 'nearest' });
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (current >= 0 && items[current]) items[current].click();
+        else goToCatalog(input);
       } else if (event.key === 'Escape') {
         hideBox(input);
       }
@@ -356,7 +436,13 @@
             renderCatalogShortcut(input, query);
             return;
           }
-          renderSuggestions(input, getSuggestions(products, query), query);
+          var found = getSuggestions(products, query);
+          var similar = false;
+          if (!found.length && searchRanking && searchRanking.similarProducts) {
+            found = searchRanking.similarProducts(products, query, 6);
+            similar = found.length > 0;
+          }
+          renderSuggestions(input, found, query, similar);
         } catch (error) {
           console.warn('No se pudo cargar la busqueda global:', error);
           renderCatalogShortcut(input, query);
