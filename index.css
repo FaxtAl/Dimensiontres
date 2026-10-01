@@ -693,3 +693,33 @@
   color: #00363a;
 }
 #servicios article > ul { margin-bottom: 1.5rem; }
+
+/* ============================================================
+   Portada con banners que ya traen su texto (FC 27, GTA VI).
+   - El titulo, la bajada y los botones del sitio no se dibujan encima:
+     quedan solo para lectores de pantalla y buscadores.
+   - El alto sigue la proporcion del banner (2000x668) en todos los
+     tamanos, asi se ve entero: con alto propio el recorte se comia el
+     texto del banner.
+   - Sin velos ni oscurecido: el banner se ve con sus colores.
+   ============================================================ */
+#inicio.es-banner {
+  min-height: 0 !important;
+  aspect-ratio: 2000 / 668;
+}
+#inicio.es-banner > .relative.z-10 {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+#inicio.es-banner .home-hero-rotating-image { filter: none; }
+#inicio.es-banner .home-hero-rotating-image.is-switching { filter: none; }
+#inicio.es-banner .home-hero-tinte,
+#inicio.es-banner .home-hero-velo-lat,
+#inicio.es-banner .home-hero-velo-abajo { display: none; }

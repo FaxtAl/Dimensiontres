@@ -13,14 +13,13 @@ function handleViewCatalog() {
   window.location.href = 'catalogo.html';
 }
 
-// Carrusel de imagenes para el fondo de Inicio. El texto y los botones se
-// mantienen fijos para que la portada siga siendo clara y facil de usar.
-// Solo banners en la portada. Van sin palabras adentro: el titulo, la bajada
-// y los botones son HTML del sitio y se dibujan encima.
+// Carrusel de banners de Inicio. Los banners traen su propio texto
+// ("Disponibles en el local", "Dimension Tres VI"), asi que el titulo y los
+// botones del sitio no se dibujan encima: se ven enteros, sin recorte ni velo.
+// Cada uno tiene una version de 1000px para celular.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/proximos-estrenos.webp?v=banners-limpios-20260826', alt: 'Proximos estrenos de juegos para PS5', banner: true },
-  { src: 'img/banners/perifericos-logitech.webp?v=banners-limpios-20260826', alt: 'Perifericos Logitech G', banner: true },
-  { src: 'img/banners/arma-tu-pc.webp?v=banners-limpios-20260826', alt: 'Arma tu PC ideal con componentes seleccionados', banner: true }
+  { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
+  { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
 ];
 
 function initHomeHeroCarousel() {
@@ -46,6 +45,7 @@ function initHomeHeroCarousel() {
   function applyNextImage(nextIndex, next) {
     image.classList.add('is-switching');
     window.setTimeout(function() {
+      image.srcset = next.srcSmall ? next.srcSmall + ' 1000w, ' + next.src + ' 2000w' : '';
       image.src = next.src;
       image.alt = next.alt;
       currentIndex = nextIndex;
@@ -80,6 +80,10 @@ function initHomeHeroCarousel() {
       window.clearTimeout(fallbackTimer);
       applyNextImage(nextIndex, next);
     };
+    if (next.srcSmall) {
+      preload.sizes = '100vw';
+      preload.srcset = next.srcSmall + ' 1000w, ' + next.src + ' 2000w';
+    }
     preload.src = next.src;
   }
 
