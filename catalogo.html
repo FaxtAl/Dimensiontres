@@ -51,7 +51,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
 <link rel="stylesheet" href="shared.css?v=buscador-20261001">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="catalogo.css?v=cabecera-fija-20260925">
+<link rel="stylesheet" href="catalogo.css?v=sin-saltos-20261001b">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -3488,6 +3488,10 @@ function esqueletoSiTarda() {
   var hecho = false;
   var token = productRenderToken;
   var timer = setTimeout(function() {
+    // Si el esqueleto ya esta en pantalla (goToRoot lo pone al toque) no se
+    // vuelve a dibujar: rehacerlo reinicia el brillo y se nota como un parpadeo.
+    var grid = document.getElementById('categories-grid');
+    if (grid && grid.querySelector('.product-card-skeleton')) return;
     if (!hecho && token === productRenderToken) renderProductLoadingSkeleton();
   }, 200);
   return function() {
@@ -5482,6 +5486,12 @@ function goToRoot(options) {
     // Ocultar botón volver
     document.getElementById('back-to-root').classList.remove('visible');
     syncRootControls();
+
+    // Volver a "Todo el catalogo" desde una categoria: si los productos todavia
+    // no estan cargados, se pone el esqueleto ya. Antes la grilla reaparecia
+    // con los productos de la categoria anterior, despues venia el esqueleto y
+    // recien ahi todo el catalogo: tres cambios seguidos que se veian como titileo.
+    if (!currentSearch && !productSearchCache['all']) renderProductLoadingSkeleton();
 
     renderRootView({ animate: true });
     scrollCatalogTop();

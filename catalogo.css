@@ -2374,3 +2374,22 @@ body::after {
     line-height: 1.15;
   }
 }
+
+/* ============================================================
+   Sin saltos al cargar "Todo el catalogo". Arriba de la grilla habia tres
+   barras que se prendian y apagaban en distintos momentos (controles viejos
+   de la raiz, la barra de orden y la linea "Mostrando X de Y") y cada una
+   empujaba los productos: subian 66px y despues bajaban 72px. Ahora cada una
+   tiene su lugar reservado desde el primer pintado.
+   ============================================================ */
+/* Los controles de la raiz ya no se usan: el orden lo trae la barra de
+   productos y la busqueda la del nav. Se mostraban un instante al cargar. */
+#desktop-controls { display: none !important; }
+
+/* La linea de resultados ocupa su renglon aunque todavia este vacia. */
+.dt-resultados { line-height: 1.4; min-height: 1.4em; }
+
+@media (min-width: 1024px) {
+  /* En escritorio la barra de orden siempre esta: se reserva su alto. */
+  .catalog-results-toolbar { min-height: 2.75rem; }
+}
