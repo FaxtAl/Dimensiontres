@@ -2408,3 +2408,14 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .category-tree.dt-aparece { animation: none; }
 }
+
+/* Sin animacion de entrada en las tarjetas. Cada tarjeta entraba subiendo
+   20px; pasaba con los rellenos y otra vez con los productos, y en las
+   categorias la grilla se dibuja dos veces seguidas, asi que los productos
+   aparecian, bajaban y volvian a subir: ese ir y venir era el titileo.
+   Ahora aparecen directo en su lugar. */
+#categories-grid .product-card,
+#categories-grid .cat-card {
+  opacity: 1;
+  animation: none;
+}

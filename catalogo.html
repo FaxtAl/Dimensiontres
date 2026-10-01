@@ -51,7 +51,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
 <link rel="stylesheet" href="shared.css?v=minicarrito-lado-20261001">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="catalogo.css?v=sin-banners-20261001">
+<link rel="stylesheet" href="catalogo.css?v=sin-entrada-20261001">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -353,9 +353,38 @@
           <span class="material-symbols-outlined">keyboard_arrow_up</span>
           <span>Categorias</span>
         </div>
-        <div id="category-tree" class="category-tree">
-          <!-- El arbol se renderiza con JS -->
+        <!-- La lista de la raiz ya viene escrita: asi aparece desde el primer
+             pintado (antes estaba vacia hasta que llegaba el catalogo y aparecia
+             de golpe). Despues renderCategorySidebar() la vuelve a dibujar igual
+             con los datos reales. En una categoria o busqueda se borra antes de
+             pintar, porque ahi se muestra otra lista. -->
+        <div id="category-tree" class="category-tree dt-desde-cache">
+          <a href="catalogo.html" class="category-tree-todas">Todas las categorías</a>
+          <button type="button" data-catid="cat-consolas-de-juegos" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Consolas de juegos</span></button>
+          <button type="button" data-catid="cat-juegos-fisicos" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Juegos Fisicos</span></button>
+          <button type="button" data-catid="cat-accesorios-consolas" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Accesorios Consolas</span></button>
+          <button type="button" data-catid="cat-pc-y-componentes" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">PC y Componentes</span></button>
+          <button type="button" data-catid="cat-notebooks" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Notebooks</span></button>
+          <button type="button" data-catid="cat-perifericos-pc" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Periféricos PC</span></button>
+          <button type="button" data-catid="cat-almacenamiento" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Almacenamiento</span></button>
+          <button type="button" data-catid="cat-cables" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Cables</span></button>
+          <button type="button" data-catid="cat-adaptadores" class="category-tree-row is-leaf" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">chevron_right</span><span class="category-tree-label">Adaptadores</span></button>
+          <button type="button" data-catid="cat-accesorio-celular" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Accesorio Celular</span></button>
+          <button type="button" data-catid="cat-auriculares" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Auriculares</span></button>
+          <button type="button" data-catid="cat-parlantes" class="category-tree-row is-leaf" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">chevron_right</span><span class="category-tree-label">Parlantes</span></button>
+          <button type="button" data-catid="cat-setup-gamer" class="category-tree-row is-leaf" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">chevron_right</span><span class="category-tree-label">Setup Gamer</span></button>
+          <button type="button" data-catid="cat-otros" class="category-tree-row is-leaf" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">chevron_right</span><span class="category-tree-label">Otros</span></button>
         </div>
+        <script>
+          (function() {
+            var p = new URLSearchParams(window.location.search || '');
+            if (p.has('catid') || p.has('sub') || p.has('q')) {
+              var t = document.getElementById('category-tree');
+              t.innerHTML = '';
+              t.classList.remove('dt-desde-cache');
+            }
+          })();
+        </script>
 
         <!-- Rango de precio. Lo prepara dtBuildPriceFilter() con los precios reales
              de lo que se esta mostrando; se oculta solo si no hay rango que elegir. -->
@@ -1876,11 +1905,13 @@ var DT_BARRA_RAIZ_KEY = 'dt-barra-raiz-v1';
 // guardados no tienen su funcion todavia: un clic lleva a la categoria por URL.
 function dtRestaurarBarraRaiz() {
   var tree = document.getElementById('category-tree');
-  if (!tree || tree.children.length) return;
-  var html = '';
-  try { html = localStorage.getItem(DT_BARRA_RAIZ_KEY) || ''; } catch (error) { html = ''; }
-  if (!html) return;
-  tree.innerHTML = html;
+  if (!tree) return;
+  if (!tree.querySelector('.category-tree-row')) {
+    var html = '';
+    try { html = localStorage.getItem(DT_BARRA_RAIZ_KEY) || ''; } catch (error) { html = ''; }
+    if (!html) return;
+    tree.innerHTML = html;
+  }
   tree.classList.add('dt-desde-cache');
   tree.addEventListener('click', function(event) {
     if (!tree.classList.contains('dt-desde-cache')) return;
@@ -3578,13 +3609,39 @@ function renderProductLoadingSkeleton() {
   }
 }
 
+// Cabecera de una categoria/subcategoria/busqueda desde el primer pintado,
+// con el mismo rotulo y titulo que pone despues la vista ya cargada. Antes
+// decia "Cargando catalogo" sin rotulo y al llegar los datos aparecia
+// "Categoria" arriba y empujaba el titulo: se veia como un salto.
+function dtCabeceraInicial(params) {
+  var catId = params.get('catid') || '';
+  var subId = params.get('sub') || '';
+  var q = params.get('q') || '';
+  if (q) {
+    setCatalogHeaderContext('', 'Resultados', 'Productos encontrados para "' + q.trim() + '".');
+    return;
+  }
+  var cat = null, sub = null;
+  if (typeof DT_CATEGORIAS !== 'undefined') {
+    DT_CATEGORIAS.forEach(function(c) {
+      if (c.id === catId) cat = c;
+      (c.children || []).forEach(function(h) {
+        if (h.id === subId) { cat = c; sub = h; }
+      });
+    });
+  }
+  if (sub) setCatalogHeaderContext('Subcategoria', sub.name, 'Productos de ' + sub.name + '.');
+  else if (cat) setCatalogHeaderContext('Categoría', cat.name, 'Todos los productos de ' + cat.name + '.');
+  else setCatalogHeaderContext('Categoría', 'Cargando catálogo', '');
+}
+
 function prepareInitialCatalogRouteLoading() {
   var params = new URLSearchParams(window.location.search || '');
   var esRaiz = !params.has('catid') && !params.has('sub') && !params.has('q');
   // La raiz ahora tambien muestra productos: las tarjetas de carga van desde
   // el primer momento, si no la grilla quedaba vacia medio segundo y despues
   // aparecian de golpe.
-  if (!esRaiz) setCatalogHeaderContext('', 'Cargando catalogo', '');
+  if (!esRaiz) dtCabeceraInicial(params);
   else dtRestaurarBarraRaiz();
   updateGridHelper('');
   renderProductLoadingSkeleton();
