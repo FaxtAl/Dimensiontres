@@ -24,75 +24,104 @@ var HOME_HERO_IMAGES = [
 
 function initHomeHeroCarousel() {
   var image = document.getElementById('home-hero-image');
+  var seccion = document.getElementById('inicio');
   var dots = Array.from(document.querySelectorAll('[data-home-hero-dot]'));
-  if (!image || HOME_HERO_IMAGES.length < 2) return;
+  if (!image || !seccion) return;
+  seccion.classList.add('es-banner');
+  if (HOME_HERO_IMAGES.length < 2) return;
 
-  var currentIndex = 0;
+  // Los banners van uno al lado del otro en una tira que se corre de costado,
+  // como pasar de pagina. Al final hay una copia del primero: se desliza hasta
+  // ella y ahi se vuelve al primero sin animacion, asi siempre avanza hacia
+  // el mismo lado en vez de rebobinar.
+  var total = HOME_HERO_IMAGES.length;
+  var track = document.createElement('div');
+  track.className = 'home-hero-track';
+  image.parentNode.replaceChild(track, image);
+
+  HOME_HERO_IMAGES.concat([HOME_HERO_IMAGES[0]]).forEach(function(item, index) {
+    var img = index === 0 ? image : document.createElement('img');
+    img.classList.add('home-hero-slide');
+    img.dataset.banner = item.id || '';
+    if (index > 0) {
+      img.className = 'home-hero-slide';
+      img.decoding = 'async';
+      img.sizes = '100vw';
+      if (item.srcSmall) img.srcset = item.srcSmall + ' 1000w, ' + item.src + ' 2000w';
+      img.src = item.src;
+      img.alt = index === total ? '' : item.alt;
+      if (index === total) img.setAttribute('aria-hidden', 'true');
+    }
+    track.appendChild(img);
+  });
+
+  var current = 0;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function setActiveDot() {
     dots.forEach(function(dot, index) {
-      dot.classList.toggle('is-active', index === currentIndex);
+      dot.classList.toggle('is-active', index === current % total);
     });
   }
-  var seccion = document.getElementById('inicio');
 
-  // El texto del sitio se muestra siempre: los banners van sin palabras y el
-  // titulo, la bajada y los botones viven en HTML encima.
-  function aplicarModoBanner(item) {
-    if (!seccion) return;
-    seccion.classList.toggle('es-banner', item.banner === true);
-    // En celular cada banner se recorta distinto (ver index.css): se avisa cual es.
-    seccion.dataset.banner = item.id || '';
+  function goTo(index, animate) {
+    track.style.transition = animate && !reduceMotion
+      ? 'transform 0.75s cubic-bezier(0.65, 0, 0.35, 1)'
+      : 'none';
+    track.style.transform = 'translateX(' + (-index * 100) + '%)';
+    current = index;
+    setActiveDot();
   }
 
-  function applyNextImage(nextIndex, next) {
-    image.classList.add('is-switching');
-    window.setTimeout(function() {
-      image.srcset = next.srcSmall ? next.srcSmall + ' 1000w, ' + next.src + ' 2000w' : '';
-      image.src = next.src;
-      image.alt = next.alt;
-      currentIndex = nextIndex;
-      setActiveDot();
-      aplicarModoBanner(next);
-      image.classList.remove('is-switching');
-    }, 430);
-  }
-
-  // El primero del arreglo es un banner, asi que el modo se aplica de entrada.
-  aplicarModoBanner(HOME_HERO_IMAGES[0]);
-  function showNextImage() {
-    if (document.hidden) return;
-    var nextIndex = (currentIndex + 1) % HOME_HERO_IMAGES.length;
-    var next = HOME_HERO_IMAGES[nextIndex];
-    var preload = new Image();
-    var handled = false;
-    var fallbackTimer = window.setTimeout(function() {
-      if (handled) return;
-      handled = true;
-      applyNextImage(nextIndex, next);
-    }, 900);
-    preload.onload = function() {
-      if (handled) return;
-      handled = true;
-      window.clearTimeout(fallbackTimer);
-      applyNextImage(nextIndex, next);
-    };
-    preload.onerror = function() {
-      if (handled) return;
-      handled = true;
-      window.clearTimeout(fallbackTimer);
-      applyNextImage(nextIndex, next);
-    };
-    if (next.srcSmall) {
-      preload.sizes = '100vw';
-      preload.srcset = next.srcSmall + ' 1000w, ' + next.src + ' 2000w';
+  // Parado en la copia del final: se salta al primero sin que se note.
+  function normalize() {
+    if (current === total) {
+      goTo(0, false);
+      void track.offsetWidth;
     }
-    preload.src = next.src;
+  }
+  track.addEventListener('transitionend', normalize);
+
+  function next() {
+    normalize();
+    goTo(current + 1, true);
   }
 
-  setActiveDot();
-  // 3 segundos era muy poco: no daba tiempo a mirar el banner ni a leer el
-  // texto de encima antes de que cambiara.
-  window.setInterval(showNextImage, 7000);
+  function prev() {
+    if (current === 0) {
+      goTo(total, false);
+      void track.offsetWidth;
+    }
+    goTo(current - 1, true);
+  }
+
+  var timer = null;
+  function restart() {
+    window.clearInterval(timer);
+    timer = window.setInterval(function() {
+      if (!document.hidden) next();
+    }, 7000);
+  }
+
+  // En celular se puede pasar con el dedo, para los dos lados.
+  var startX = null;
+  var startY = null;
+  seccion.addEventListener('touchstart', function(event) {
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+  }, { passive: true });
+  seccion.addEventListener('touchend', function(event) {
+    if (startX === null) return;
+    var dx = event.changedTouches[0].clientX - startX;
+    var dy = event.changedTouches[0].clientY - startY;
+    startX = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) next(); else prev();
+    restart();
+  });
+
+  goTo(0, false);
+  restart();
 }
 
 (function initDestCarousel() {
