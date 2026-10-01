@@ -395,10 +395,17 @@ body::after {
 }
 
 #breadcrumb-trail,
-#level-label:not(.visible),
-#page-subtitle:not(.visible) {
+#level-label:not(.visible) {
   display: none !important;
 }
+
+/* El subtitulo ocupa su renglon aunque este vacio: si se ocultaba con
+   display:none, al aparecer empujaba el titulo hacia arriba. */
+#page-subtitle {
+  display: block !important;
+  min-height: 1.5em;
+}
+#page-subtitle:not(.visible) { visibility: hidden; }
 
 #level-label.visible {
   display: block !important;
@@ -2392,4 +2399,12 @@ body::after {
 @media (min-width: 1024px) {
   /* En escritorio la barra de orden siempre esta: se reserva su alto. */
   .catalog-results-toolbar { min-height: 2.75rem; }
+}
+
+/* Primera vez que se llena la lista de categorias: fundido corto en vez de
+   aparecer de golpe. */
+.category-tree.dt-aparece { animation: dtBarraAparece 0.25s ease-out both; }
+@keyframes dtBarraAparece { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .category-tree.dt-aparece { animation: none; }
 }

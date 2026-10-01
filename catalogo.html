@@ -51,7 +51,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
 <link rel="stylesheet" href="shared.css?v=buscador-20261001">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="catalogo.css?v=sin-saltos-20261001b">
+<link rel="stylesheet" href="catalogo.css?v=sin-saltos-20261001c">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
@@ -226,7 +226,7 @@
               </h1>
             </div>
           </div>
-          <p id="page-subtitle" class="text-on-surface-variant font-body text-sm md:text-base ml-5 md:ml-6">
+          <p id="page-subtitle" class="visible text-on-surface-variant font-body text-sm md:text-base ml-5 md:ml-6">
             Todos los productos de la tienda.
           </p>
         </div>
@@ -1836,6 +1836,8 @@ function renderCategorySidebar() {
   if (layout) layout.classList.add('has-sidebar');
 
   if (!tree) return;
+  var estabaVacia = !tree.children.length;
+  tree.classList.remove('dt-desde-cache');
   tree.innerHTML = '';
 
   // Solo la rama donde estas. En la referencia el panel de filtros muestra
@@ -1854,6 +1856,38 @@ function renderCategorySidebar() {
   (rama.length ? rama : CATALOG).forEach(function(item) {
     appendSidebarItem(tree, item, 0, activeIds);
   });
+
+  // La lista de la raiz se guarda para la proxima visita: asi aparece al toque
+  // en vez de estar vacia hasta que llega el catalogo (eso se veia como un
+  // golpe). La primera vez entra con un fundido corto.
+  if (!rama.length) {
+    try { localStorage.setItem(DT_BARRA_RAIZ_KEY, tree.innerHTML); } catch (error) {}
+  }
+  if (estabaVacia) {
+    tree.classList.remove('dt-aparece');
+    void tree.offsetWidth;
+    tree.classList.add('dt-aparece');
+  }
+}
+
+var DT_BARRA_RAIZ_KEY = 'dt-barra-raiz-v1';
+
+// Pone la lista de categorias guardada mientras carga el catalogo. Los botones
+// guardados no tienen su funcion todavia: un clic lleva a la categoria por URL.
+function dtRestaurarBarraRaiz() {
+  var tree = document.getElementById('category-tree');
+  if (!tree || tree.children.length) return;
+  var html = '';
+  try { html = localStorage.getItem(DT_BARRA_RAIZ_KEY) || ''; } catch (error) { html = ''; }
+  if (!html) return;
+  tree.innerHTML = html;
+  tree.classList.add('dt-desde-cache');
+  tree.addEventListener('click', function(event) {
+    if (!tree.classList.contains('dt-desde-cache')) return;
+    var row = event.target.closest('[data-catid]');
+    if (!row || !row.dataset.catid) return;
+    window.location.href = 'catalogo.html?catid=' + encodeURIComponent(row.dataset.catid);
+  });
 }
 
 function appendSidebarItem(container, item, depth, activeIds) {
@@ -1866,6 +1900,7 @@ function appendSidebarItem(container, item, depth, activeIds) {
   var row = document.createElement('button');
 
   row.type = 'button';
+  row.dataset.catid = item.id || '';
   row.className = 'category-tree-row' +
     (hasVisibleChildren ? ' has-children' : ' is-leaf') +
     (isActive ? ' active' : '') +
@@ -3545,6 +3580,7 @@ function prepareInitialCatalogRouteLoading() {
   // el primer momento, si no la grilla quedaba vacia medio segundo y despues
   // aparecian de golpe.
   if (!esRaiz) setCatalogHeaderContext('', 'Cargando catalogo', '');
+  else dtRestaurarBarraRaiz();
   updateGridHelper('');
   renderProductLoadingSkeleton();
 }
