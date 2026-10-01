@@ -18,8 +18,8 @@ function handleViewCatalog() {
 // botones del sitio no se dibujan encima: se ven enteros, sin recorte ni velo.
 // Cada uno tiene una version de 1000px para celular.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', srcMobile: 'img/banners/fc27-disponibles-celular.webp?v=banners-celular2-20261001', id: 'fc27', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
-  { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', srcMobile: 'img/banners/gta6-dimension-tres-celular.webp?v=banners-celular3-20261001', id: 'gta6', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
+  { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', srcMobile: 'img/banners/fc27-disponibles-celular.webp?v=banners-nitido-20261001', id: 'fc27', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
+  { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', srcMobile: 'img/banners/gta6-dimension-tres-celular.webp?v=banners-nitido-20261001', id: 'gta6', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
 ];
 
 function initHomeHeroCarousel() {
