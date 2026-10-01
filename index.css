@@ -729,8 +729,8 @@
    dejando a la vista lo importante de cada uno: en FC 27 el texto y las dos
    primeras tapas; en GTA VI el titulo, la PS5 y la tarjeta del juego. */
 @media (max-width: 767px) {
-  /* Version para celular de cada banner (1000x620): se ve entera. */
-  #inicio.es-banner { aspect-ratio: 1000 / 620; }
+  /* Version vertical para celular de cada banner (1092x1440): se ve entera. */
+  #inicio.es-banner { aspect-ratio: 1092 / 1440; }
 }
 
 /* Tira de banners que se desliza de costado (index.js). */
