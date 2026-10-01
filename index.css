@@ -755,3 +755,31 @@
   filter: none;
 }
 #inicio #home-hero-picture { display: block; width: 100%; height: 100%; }
+
+/* Boton chico debajo de "Explora por categoria". */
+.home-ver-catalogo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.home-ver-catalogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid rgba(143, 245, 255, 0.35);
+  border-radius: 6px;
+  color: #8ff5ff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s;
+}
+.home-ver-catalogo .material-symbols-outlined { font-size: 17px; }
+.home-ver-catalogo:hover,
+.home-ver-catalogo:focus-visible {
+  background: #8ff5ff;
+  color: #00363a;
+}
