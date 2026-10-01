@@ -18,8 +18,8 @@ function handleViewCatalog() {
 // botones del sitio no se dibujan encima: se ven enteros, sin recorte ni velo.
 // Cada uno tiene una version de 1000px para celular.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', id: 'fc27', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
-  { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', id: 'gta6', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
+  { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', srcMobile: 'img/banners/fc27-disponibles-celular.webp?v=banners-20261001', id: 'fc27', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
+  { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', srcMobile: 'img/banners/gta6-dimension-tres-celular.webp?v=banners-20261001', id: 'gta6', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
 ];
 
 function initHomeHeroCarousel() {
@@ -37,22 +37,49 @@ function initHomeHeroCarousel() {
   var total = HOME_HERO_IMAGES.length;
   var track = document.createElement('div');
   track.className = 'home-hero-track';
-  image.parentNode.replaceChild(track, image);
+  // La primera imagen viene en el HTML dentro de su <picture>: se reemplaza
+  // el <picture> entero por la tira y se lo reusa como primera diapositiva.
+  var firstPicture = image.parentNode && image.parentNode.tagName === 'PICTURE' ? image.parentNode : null;
+  (firstPicture || image).parentNode.replaceChild(track, firstPicture || image);
+
+  // Cada banner va en un <picture>: en celular usa su version armada para
+  // pantalla angosta (texto arriba, productos abajo) en vez de recortar el
+  // banner ancho, que dejaba logos y tapas cortados a la mitad.
+  function slideFor(item, index) {
+    if (index === 0 && firstPicture) {
+      firstPicture.removeAttribute('id');
+      firstPicture.className = 'home-hero-slide';
+      firstPicture.dataset.banner = item.id || '';
+      image.removeAttribute('id');
+      image.className = '';
+      return firstPicture;
+    }
+    var picture = document.createElement('picture');
+    picture.className = 'home-hero-slide';
+    picture.dataset.banner = item.id || '';
+    if (item.srcMobile) {
+      var source = document.createElement('source');
+      source.media = '(max-width: 767px)';
+      source.srcset = item.srcMobile;
+      picture.appendChild(source);
+    }
+    var img = index === 0 ? image : document.createElement('img');
+    img.removeAttribute('id');
+    img.className = '';
+    if (index > 0) {
+      img.decoding = 'async';
+      img.alt = index === total ? '' : item.alt;
+      if (index === total) picture.setAttribute('aria-hidden', 'true');
+    }
+    img.sizes = '100vw';
+    if (item.srcSmall) img.srcset = item.srcSmall + ' 1000w, ' + item.src + ' 2000w';
+    img.src = item.src;
+    picture.appendChild(img);
+    return picture;
+  }
 
   HOME_HERO_IMAGES.concat([HOME_HERO_IMAGES[0]]).forEach(function(item, index) {
-    var img = index === 0 ? image : document.createElement('img');
-    img.classList.add('home-hero-slide');
-    img.dataset.banner = item.id || '';
-    if (index > 0) {
-      img.className = 'home-hero-slide';
-      img.decoding = 'async';
-      img.sizes = '100vw';
-      if (item.srcSmall) img.srcset = item.srcSmall + ' 1000w, ' + item.src + ' 2000w';
-      img.src = item.src;
-      img.alt = index === total ? '' : item.alt;
-      if (index === total) img.setAttribute('aria-hidden', 'true');
-    }
-    track.appendChild(img);
+    track.appendChild(slideFor(item, index));
   });
 
   var current = 0;
