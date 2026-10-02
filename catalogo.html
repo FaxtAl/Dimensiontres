@@ -56,9 +56,9 @@
 </head>
 <body style="background:#0e0e0e" class="bg-background text-on-surface font-body">
 
-<!-- NAVBAR -->
+<!-- Nav -->
 <nav class="fixed top-0 w-full z-50 " style="background:#0e0e0e; border-bottom: 1px solid rgba(0,240,255,0.08);">
-  <!-- FILA 1 (solo escritorio): logo + buscador ancho + redes -->
+  <!-- Fila 1 (escritorio): logo, buscador y redes -->
   <div class="dt-nav-top">
     <a href="index.html" class="dt-nav-top-logo">DimensionTres</a>
 <div class="dt-nav-buscador">
@@ -81,7 +81,7 @@
   </div>
 
   <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
-    <!-- IZQUIERDA (solo celular): hamburguesa + lupa -->
+    <!-- Izquierda (celular): menú y lupa -->
     <div class="dt-nav-side">
       <button id="menu-btn" onclick="toggleMenu()"
         class="flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
@@ -98,7 +98,7 @@
     <a href="index.html" class="dt-nav-logo text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">
       DimensionTres
     </a>
-    <!-- Desplegable "Productos": solo escritorio. Lo llena menu-categorias.js -->
+    <!-- Desplegable "Productos" (escritorio). Lo completa menu-categorias.js -->
     <div class="dt-mega-wrap">
       <button id="dt-mega-toggle" type="button" class="dt-mega-toggle"
               onclick="dtToggleMegaMenu()" aria-expanded="false" aria-haspopup="true">
@@ -124,11 +124,9 @@
 </div>
   </div>
 
-  <!-- Buscador de celular: lo despliega la lupa. -->
+  <!-- Buscador de celular, se abre con la lupa -->
   <div id="dt-mobile-search" class="dt-mobile-search md:hidden px-5 pb-3">
-    <!-- En el catalogo la lupa del nav filtra en vivo (como la barra de
-         escritorio): el buscador que habia dentro de la pagina se oculto
-         para no repetir. search-global.js no se carga en esta pagina. -->
+    <!-- En el catálogo la lupa del nav filtra los productos en vivo -->
     <div class="relative w-full flex items-center catalog-search-shell">
       <input id="search-nav-mobile" type="text" placeholder="Buscar productos..."
         class="w-full bg-[#1a1919] border border-outline-variant/30 text-on-surface placeholder:text-outline font-body text-sm px-4 py-2.5 pr-12 focus:ring-0 focus:border-primary/50 transition-colors outline-none"
@@ -144,9 +142,7 @@
 
 </nav>
 
-<!-- -- DRAWER MOBILE ---------------------------------------------
-     Se desliza desde la izquierda con backdrop oscuro.
-     ========================================================== -->
+<!-- Menú lateral de celular -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -159,7 +155,7 @@
     <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
   </div>
 
-    <!-- Cuerpo scrolleable: links sueltos + todas las categorias -->
+    <!-- Contenido con scroll: enlaces y categorías -->
     <div class="dt-drawer-body">
 
       <nav class="flex flex-col gap-1 px-5 pt-4 pb-2">
@@ -172,12 +168,12 @@
 
       <p class="dt-menu-titulo">Categorías</p>
 
-      <!-- Lo llena menu-categorias.js -->
+      <!-- Lo completa menu-categorias.js -->
       <div id="dt-menu-categorias"></div>
 
     </div>
 
-    <!-- Pie fijo -->
+    <!-- Pie del menú -->
     <div class="dt-drawer-foot p-5 border-t border-[rgba(72,72,71,0.15)]">
       <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
       <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
@@ -187,10 +183,10 @@
   </div>
 </div>
 
-<!-- MAIN -->
+<!-- Contenido principal -->
 <main class="pt-16 md:pt-20 min-h-screen">
 
-  <!-- Page Header -->
+  <!-- Encabezado de la página -->
   <section class="relative overflow-hidden" style="background: linear-gradient(180deg, #0a0a0a 0%, #0e0e0e 100%); border-bottom: 1px solid rgba(72,72,71,0.15);">
     <div style="position:absolute; top:-80px; left:-80px; width:400px; height:400px;
       background: radial-gradient(circle, rgba(0,240,255,0.06) 0%, transparent 70%);
@@ -200,16 +196,15 @@
       pointer-events:none;"></div>
 
     <div id="dt-cabecera" class="dt-cabecera container mx-auto px-5 md:px-8 py-4 md:py-4 max-w-[1920px]">
-      <!-- Breadcrumb dinámico -->
+      <!-- Migas de pan -->
       <div id="breadcrumb-trail" class="font-headline text-xs uppercase tracking-widest mb-3">
         <span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Inicio</span>
         <span class="breadcrumb-sep">/</span>
         <span id="bc-catalog" class="bc-item text-[#8ff5ff]" onclick="goToRoot()">Catálogo</span>
-        <!-- Los niveles extra se insertan aquí dinámicamente -->
+        <!-- Niveles adicionales (dinámicos) -->
       </div>
 
-      <!-- Banner de la categoria. Lo llena dtRenderBanner() y solo aparece
-           en las categorias que tienen uno asignado. -->
+      <!-- Banner de la categoría (dtRenderBanner) -->
       <div id="dt-banner" class="dt-banner"></div>
 
       <nav id="dt-migas" class="dt-migas" aria-label="Ruta de navegacion"></nav>
@@ -240,7 +235,7 @@
     </div>
   </section>
 
-  <!-- Filter Bar (mobile) - solo en nivel raíz -->
+  <!-- Barra de filtros (celular) -->
   <section id="filter-bar-mobile" class="catalog-mobile-bar">
     <div class="container mx-auto px-5 max-w-[1920px]">
       <div class="mobile-catalog-search catalog-search-shell">
@@ -251,9 +246,7 @@
         </button>
       </div>
       <div class="mobile-catalog-actions">
-        <!-- Un solo boton, como en la referencia: abre la misma barra lateral
-             del escritorio, que ya tiene categorias, precio y los filtros.
-             Antes eran dos botones y dos paneles distintos. -->
+        <!-- Abre la barra lateral con categorías, precio y filtros -->
         <button type="button" class="mobile-catalog-action" onclick="dtToggleFiltrosMovil()" aria-controls="catalog-sidebar">
           <span class="material-symbols-outlined">filter_list</span>
           <span>Filtrar</span>
@@ -338,10 +331,10 @@
     </div>
   </aside>
 
-  <!-- Category Grid -->
+  <!-- Grilla de productos -->
   <section class="container mx-auto px-5 md:px-8 py-8 md:py-5 max-w-[1920px]">
 
-    <div class="catalog-layout has-sidebar"><!-- con barra desde el inicio: si aparecia a los 0,5 s empujaba toda la grilla -->
+    <div class="catalog-layout has-sidebar"><!-- Con barra lateral desde el inicio -->
       <aside id="catalog-sidebar" class="catalog-sidebar" aria-label="Filtros del catalogo">
         <div class="dt-filtros-cabecera">
           <span>Filtros</span>
@@ -353,11 +346,8 @@
           <span class="material-symbols-outlined">keyboard_arrow_up</span>
           <span>Categorias</span>
         </div>
-        <!-- La lista de la raiz ya viene escrita: asi aparece desde el primer
-             pintado (antes estaba vacia hasta que llegaba el catalogo y aparecia
-             de golpe). Despues renderCategorySidebar() la vuelve a dibujar igual
-             con los datos reales. En una categoria o busqueda se borra antes de
-             pintar, porque ahi se muestra otra lista. -->
+        <!-- Lista de categorías de la raíz (renderCategorySidebar la vuelve a dibujar).
+             En categorías y búsquedas se vacía antes de pintar. -->
         <div id="category-tree" class="category-tree dt-desde-cache">
           <a href="catalogo.html" class="category-tree-todas">Todas las categorías</a>
           <button type="button" data-catid="cat-consolas-de-juegos" class="category-tree-row has-children" style="--depth: 0;"><span class="category-tree-chevron material-symbols-outlined notranslate" translate="no">keyboard_arrow_down</span><span class="category-tree-label">Consolas de juegos</span></button>
@@ -386,8 +376,7 @@
           })();
         </script>
 
-        <!-- Rango de precio. Lo prepara dtBuildPriceFilter() con los precios reales
-             de lo que se esta mostrando; se oculta solo si no hay rango que elegir. -->
+        <!-- Rango de precio (dtBuildPriceFilter); se oculta si no hay rango -->
         <div id="dt-precio-filtro" class="dt-precio" style="display:none;">
           <div class="dt-precio-titulo">Precio</div>
           <div class="dt-precio-slider">
@@ -397,13 +386,12 @@
           <div id="dt-precio-etiqueta" class="dt-precio-etiqueta"></div>
         </div>
 
-        <!-- Grupos de filtros como radios. Son un espejo de los <select> de
-             arriba: la logica de filtrado no cambia, solo la presentacion. -->
+        <!-- Grupos de filtros (reflejan los select superiores) -->
         <div id="dt-filtros-panel" class="dt-filtros"></div>
       </aside>
 
       <div class="catalog-results">
-        <!-- Desktop search + sort (solo en nivel raiz) -->
+        <!-- Búsqueda y orden de la raíz (sin uso) -->
         <div id="desktop-controls" class="hidden md:flex items-center justify-between mb-8 gap-4">
           <div class="relative flex items-center max-w-xs w-full catalog-search-shell">
             <input id="search-catalog" type="text" placeholder="Buscar productos..."
@@ -425,7 +413,7 @@
           </div>
         </div>
 
-        <!-- Boton volver + label de nivel sub -->
+        <!-- Botón volver y aviso de usados -->
         <div class="catalog-results-toolbar">
           <div class="dt-toolbar-left">
             <div id="back-to-root" onclick="goToRoot()">
@@ -488,19 +476,18 @@
           Tocá un producto para ver el detalle.
         </div>
 
-        <!-- Va fuera de #grid-wrapper: ese wrapper es flex en fila, y adentro
-             la linea quedaba como una columna al costado de los productos. -->
+        <!-- Línea de resultados (fuera de #grid-wrapper) -->
         <p id="dt-resultados" class="dt-resultados"></p>
 
-        <!-- Wrapper animado del grid -->
+        <!-- Contenedor de la grilla -->
         <div id="grid-wrapper">
           <div id="categories-grid"
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-6 w-full">
-            <!-- Las cards se renderizan con JS -->
+            <!-- Tarjetas generadas por JS -->
           </div>
         </div>
 
-        <!-- Empty state -->
+        <!-- Estado vacío -->
         <div id="empty-state" class="hidden text-center py-24">
           <span class="material-symbols-outlined text-[64px] text-[#484847] block mb-4">search_off</span>
           <p class="font-headline font-bold uppercase tracking-widest text-on-surface-variant">No se encontraron productos</p>
@@ -533,9 +520,7 @@
 <script src="cart.js?v=cart-gorila-20260922"></script>
 
 <script>
-/* ======================================================
-   DATOS - Árbol de categorías / sub-categorías
-   ====================================================== */
+/* Árbol de categorías y subcategorías */
 var CATALOG = [
   {
     id: 'cat-consolas-de-juegos',
@@ -764,11 +749,9 @@ var CATALOG = [
   }
 ];
 
-/* ======================================================
-   ESTADO
-   ====================================================== */
-var currentLevel = 'root';       // 'root' | id de categoría padre
-var currentParent = null;        // objeto del nivel actual
+/* Estado */
+var currentLevel = 'root';       // 'root' o id de la categoría padre
+var currentParent = null;        // Nivel actual
 var currentFilter = 'all';
 var currentSearch = '';
 var currentSearchDisplay = '';
@@ -830,9 +813,7 @@ var EXAMPLE_PRODUCTS = [
   { name: 'RAM DDR4 16GB Kit 3600', slug: 'ram-ddr4-16gb-kit-3600', price: 52000, rootCategory: 'hardware', section: 'pc-componentes', category: 'ram', icon: 'sim_card', subtitle: '2x8GB RGB', sourceLabel: 'Componentes PC', image: '', stock: 3 }
 ];
 
-/* ======================================================
-   RENDER ENGINE
-   ====================================================== */
+/* Render */
 function getItems() {
   if (currentLevel === 'root') return CATALOG;
   return currentParent ? (currentParent.children || []) : CATALOG;
@@ -1641,10 +1622,9 @@ function ensureInvidCatalogSubcategories(meta) {
   ensureInvidSubcategory(meta, { parentNames: ['PC y Componentes', 'Hardware', 'Perifericos PC'], id: 'pcs-armadas-mini-pc', name: 'PCs Armadas / Mini PC', matchNames: ['Computadoras', 'Mini PC', 'PC Armada'], icon: 'desktop_windows', invidNames: INVID_PC_BUILD_NAMES });
 }
 
-// Categorias que en el local no existen y se arman solo con productos de Invid
-// (hoy Notebooks). La base devuelve sus grupos como "Notebooks Consumo",
-// "Notebooks Gamer", etc. (supabase_invid_notebooks_sillas.sql). Si Invid no
-// trae ninguno, la categoria no se crea: no queda una categoria vacia.
+// Categorías armadas solo con productos de Invid (Notebooks).
+// Grupos de la base: "Notebooks Consumo", "Notebooks Gamer", etc.
+// Sin productos no se crea la categoría.
 var INVID_ROOT_CATEGORIES = [
   {
     id: 'cat-notebooks',
@@ -1713,8 +1693,7 @@ async function loadAccessCatalog() {
     return;
   }
 
-  // Pedimos Access e Invid juntos. Antes era secuencial y una fuente lenta
-  // retrasaba toda la pantalla del catalogo.
+  // Access e Invid se consultan en paralelo.
   var accessCatalogPromise = window.SupabaseStore.fetchAccessCatalogTree();
   var invidCatalogPromise = window.SupabaseStore.fetchInvidPcCatalogTree
     ? window.SupabaseStore.fetchInvidPcCatalogTree()
@@ -1770,11 +1749,7 @@ function updateCatalogHistory(state, replace) {
     window.history.pushState(payload, '', catalogUrl(state));
   }
 
-  // La cabecera (banner + migas) se arma leyendo la URL, asi que se
-  // redibuja aca, despues de que la direccion quedo actualizada. Antes
-  // solo corria en DOMContentLoaded: al entrar a una categoria desde el
-  // catalogo la navegacion es interna, no recarga, y el banner no
-  // aparecia hasta apretar F5.
+  // Actualiza la cabecera (migas y banner) después de cambiar la URL.
   dtActualizarCabecera();
 }
 
@@ -1789,8 +1764,7 @@ function setBackAction(label, handler) {
 }
 
 function getCatalogSearchInputIds() {
-  // search-catalog y search-mobile-catalog quedan ocultos por CSS (se busca
-  // desde el nav), pero se siguen sincronizando: otras partes leen su valor.
+  // search-catalog y search-mobile-catalog están ocultos pero se sincronizan.
   return ['search-input', 'search-nav-mobile', 'search-catalog', 'search-mobile-catalog'];
 }
 
@@ -1857,8 +1831,7 @@ function renderCategorySidebar() {
     });
   }
 
-  // La raiz ahora tambien muestra productos, asi que lleva la misma barra
-  // lateral y el boton "Filtrar" que una categoria.
+  // La raíz también usa la barra lateral y el botón "Filtrar".
   var acciones = document.querySelector('.mobile-catalog-actions');
 
   if (acciones) acciones.style.display = '';
@@ -1869,10 +1842,7 @@ function renderCategorySidebar() {
   tree.classList.remove('dt-desde-cache');
   tree.innerHTML = '';
 
-  // Solo la rama donde estas. En la referencia el panel de filtros muestra
-  // las subcategorias de la categoria actual, no las 13 enteras: aca estas
-  // filtrando adentro de una categoria, no navegando entre todas. Para
-  // saltar de categoria esta el desplegable "Productos" del nav.
+  // En una categoría se muestra solo su rama.
   var raizActiva = activeIds.length ? activeIds[0] : '';
   var rama = CATALOG.filter(function(item) { return item.id === raizActiva; });
 
@@ -1886,9 +1856,8 @@ function renderCategorySidebar() {
     appendSidebarItem(tree, item, 0, activeIds);
   });
 
-  // La lista de la raiz se guarda para la proxima visita: asi aparece al toque
-  // en vez de estar vacia hasta que llega el catalogo (eso se veia como un
-  // golpe). La primera vez entra con un fundido corto.
+  // Guarda la lista de la raíz para la próxima visita.
+  // La primera vez aparece con un fundido.
   if (!rama.length) {
     try { localStorage.setItem(DT_BARRA_RAIZ_KEY, tree.innerHTML); } catch (error) {}
   }
@@ -1901,8 +1870,8 @@ function renderCategorySidebar() {
 
 var DT_BARRA_RAIZ_KEY = 'dt-barra-raiz-v1';
 
-// Pone la lista de categorias guardada mientras carga el catalogo. Los botones
-// guardados no tienen su funcion todavia: un clic lleva a la categoria por URL.
+// Muestra la lista guardada mientras carga el catálogo.
+// Hasta que se dibuja la definitiva, un clic navega por URL.
 function dtRestaurarBarraRaiz() {
   var tree = document.getElementById('category-tree');
   if (!tree) return;
@@ -1924,8 +1893,7 @@ function dtRestaurarBarraRaiz() {
 function appendSidebarItem(container, item, depth, activeIds) {
   var hasChildren = item.children && item.children.length > 0;
   var isActive = activeIds.indexOf(item.id) !== -1;
-  // Una sola subcategoria no se despliega: la categoria ya muestra todos sus
-  // productos (Parlantes -> Parlantes 2.1, Silla Gamer -> Silla Gamer...).
+  // Con una sola subcategoría no se despliega.
   var hasVisibleChildren = hasChildren && item.children.length > 1;
   var shouldShowChildren = hasVisibleChildren && isActive;
   var row = document.createElement('button');
@@ -1998,7 +1966,7 @@ function closeCatalogPanel(unlockBody) {
 }
 
 function catalogIsByOrderProduct(product) {
-  // Compatibilidad: la web ya no muestra ni aplica el estado "A pedido".
+  // El estado "A pedido" ya no se aplica.
   return false;
 }
 
@@ -2145,10 +2113,8 @@ function isProviderProduct(product) {
   return !!product && (product.sourceIntegration === 'invid' || product.source === 'invid');
 }
 
-// No hay un campo aparte para condicion (usado/nuevo) en Access: el local
-// carga la palabra directo en el nombre del producto ("PlayStation 3 Slim
-// Usada", "Joystick original usado Ps4"). Se detecta ahi mismo. Mismo
-// criterio que dtProductoEsUsado en producto.html.
+// Producto usado: se detecta por la palabra en el nombre
+// (mismo criterio que dtProductoEsUsado en producto.html).
 function dtProductoEsUsado(product) {
   if (!product) return false;
   var texto = (String(product.name || '') + ' ' + String(product.description || '') + ' ' + String(product.subtitle || '')).toLowerCase();
@@ -2157,10 +2123,7 @@ function dtProductoEsUsado(product) {
          palabras.indexOf('usados') !== -1 || palabras.indexOf('usadas') !== -1;
 }
 
-// Prende el aviso "Productos usados" al lado del boton volver cuando
-// al menos uno de los productos que se estan mostrando es usado. Se llama
-// desde las dos vistas que tienen ese boton (categoria completa y
-// subcategoria puntual).
+// Muestra el aviso "Productos usados" si alguno de los productos lo es.
 function dtActualizarAvisoUsados(products) {
   var el = document.getElementById('dt-usados-hint');
   if (!el) return;
@@ -2228,7 +2191,7 @@ function getProductCoreSpecText(product) {
   ].filter(Boolean).join(' '));
 }
 
-// Detecta filtros tecnicos utiles desde el texto del producto.
+// Filtros técnicos detectados en el nombre del producto.
 // Ejemplos: Ryzen 5, Intel Core Ultra 7, DDR4/DDR5, 550W, SSD SATA 2.5, monitor 24 pulgadas.
 function getProductSpecOption(product) {
   var text = getProductFilterSearchText(product);
@@ -2455,7 +2418,7 @@ function getCascadeModeConfig(mode) {
   return configs[mode] || configs.ram;
 }
 
-// Extrae las tres facetas que alimentan los filtros en cascada de cada rubro técnico.
+// Facetas de los filtros en cascada de cada rubro técnico.
 function getProductCascadeFacets(product) {
   var text = getProductFilterSearchText(product);
   var coreText = getProductCoreSpecText(product) || text;
@@ -2473,7 +2436,7 @@ function getProductCascadeFacets(product) {
   ].filter(Boolean).join(' '));
   var result = { mode: '', primary: null, secondary: null, capacity: null };
 
-  // Refrigeración se evalúa antes que CPU porque varios nombres incluyen "CPU Cooler".
+  // Refrigeración antes que CPU ("CPU Cooler").
   var coolerContext = /\b(water\s+cooling|cpu\s+cooler|fan\s+cooler|swafan|coreliquid|aio)\b/.test(identityText);
   if (coolerContext) {
     result.mode = 'cooler';
@@ -2505,7 +2468,7 @@ function getProductCascadeFacets(product) {
     return result;
   }
 
-  // Monitores se evalúan antes que GPU para no confundir Radeon FreeSync o NVIDIA G-Sync.
+  // Monitores antes que GPU (Radeon FreeSync, NVIDIA G-Sync).
   var monitorContext = /\bmonitor\b/.test(identityText);
   if (monitorContext) {
     result.mode = 'monitor';
@@ -2551,8 +2514,8 @@ function getProductCascadeFacets(product) {
     return result;
   }
 
-  // Periféricos: primero se separan por conectividad y luego por tipo de equipo.
-  // Los productos sin una conectividad clara siguen visibles en "Toda la conectividad".
+  // Periféricos: primero por conectividad y después por tipo.
+  // Sin conectividad clara: quedan en "Toda la conectividad".
   var peripheralContext = /\b(teclados?|keyboard|mouse|mouses|raton|padmouse|mouse\s*pad|combos?\s+(?:pc|teclado|periferico)|joysticks?|gamepads?|web\s*cam|webcams?|microfonos?|headsets?|auriculares?)\b/.test(identityText);
   if (peripheralContext) {
     result.mode = 'peripheral';
@@ -2596,8 +2559,8 @@ function getProductCascadeFacets(product) {
 
   var caseContext = /\b(gabinete|chassis)\b/.test(identityText);
 
-  // Placas madre se evalúan antes que RAM porque sus nombres suelen incluir DDR4 o DDR5.
-  // Si el producto es un gabinete, una compatibilidad Micro ATX no debe reclasificarlo.
+  // Placas madre antes que RAM (mencionan DDR4/DDR5).
+  // Un gabinete Micro ATX no se reclasifica como placa madre.
   var motherboardContext = /\b(mother|motherboard|placa\s+madre)\b/.test(identityText);
   if (motherboardContext && !caseContext) {
     result.mode = 'motherboard';
@@ -2635,8 +2598,8 @@ function getProductCascadeFacets(product) {
     return result;
   }
 
-  // Placas de video se evalúan antes que RAM por modelos antiguos con DDR3/GDDR4.
-  // Un procesador con video integrado puede mencionar Radeon, pero debe seguir siendo CPU.
+  // Placas de video antes que RAM (DDR3/GDDR4).
+  // Un procesador con video integrado sigue siendo CPU.
   var cpuContext = /\b(procesadores?|proces|microprocesador|cpu)\b/.test(identityText)
     || /\b(amd\s+ryzen|intel\s+core(?:\s+ultra)?|ryzen\s*[3579])\b/.test(identityText);
   var powerContext = /\b(fuente|fuentes|psu|power\s+supply|alimentacion)\b/.test(identityText);
@@ -2713,7 +2676,7 @@ function getProductCascadeFacets(product) {
     return result;
   }
 
-  // Gabinetes se evalúan antes que fuentes para los modelos que ya incluyen una PSU.
+  // Gabinetes antes que fuentes (algunos incluyen fuente).
   if (caseContext) {
     result.mode = 'case';
     if (/\b(micro\s+atx|micro\s+chassis|matx)\b/.test(text)) {
@@ -2855,7 +2818,7 @@ function detectProductCascadeMode(products) {
   return '';
 }
 
-// Abre la ficha de producto en otra pestana para no perder el catalogo filtrado.
+// Abre la ficha del producto.
 function openCatalogProduct(product) {
   if (!product || !product.slug) return;
   window.open('producto.html?id=' + encodeURIComponent(product.slug), '_blank', 'noopener');
@@ -2903,12 +2866,8 @@ function resetProductFilters() {
   dtSyncPriceInputs();
 }
 
-// ============================================================
-// Panel de filtros como radios en la barra lateral.
-// Es un espejo de los <select> que ya existian: se leen sus opciones y su
-// valor, y al elegir un radio se llama al mismo setter de siempre. Asi la
-// logica de filtrado queda intacta y solo cambia como se ve.
-// ============================================================
+// Filtros como opciones en la barra lateral.
+// Reflejan los select existentes y usan los mismos setters.
 
 var DT_FILTROS_MAPA = [
   { sel: 'brand-filter-select',       titulo: 'Marca',   fn: 'setProductBrandFilter' },
@@ -2919,7 +2878,7 @@ var DT_FILTROS_MAPA = [
   { sel: 'cascade-capacity-select',   etiqueta: 'cascade-capacity-label',  fn: 'capacity',  wrap: 'cascade-capacity-wrap',  cascada: true }
 ];
 
-// En celular la barra lateral se comporta como panel deslizante.
+// En celular la barra lateral funciona como panel deslizante.
 function dtToggleFiltrosMovil(forzarCerrado) {
   var panel = document.getElementById('catalog-sidebar');
   var fondo = document.getElementById('dt-filtros-fondo');
@@ -2941,14 +2900,14 @@ function dtRenderFiltrosPanel() {
     var select = document.getElementById(f.sel);
     if (!select) return;
 
-    // Si el filtro esta oculto arriba, tampoco va aca.
+    // Si el filtro está oculto arriba, tampoco se muestra aquí.
     if (f.wrap) {
       var wrap = document.getElementById(f.wrap);
       if (!wrap || wrap.classList.contains('is-hidden')) return;
     }
 
     var opciones = Array.prototype.slice.call(select.options);
-    // Con una sola opcion no hay nada que elegir.
+    // Con una sola opción no se muestra.
     if (opciones.length < 2) return;
 
     var titulo = f.titulo;
@@ -3015,7 +2974,7 @@ function syncProductFilterControls() {
       if (select) select.value = currentProductFilters[stateKey] || 'all';
     });
   });
-  // Los radios se rearman al final: los <select> ya tienen el valor correcto.
+  // Las opciones se regeneran al final con el valor de los select.
   dtRenderFiltrosPanel();
 }
 
@@ -3124,8 +3083,8 @@ function buildCascadeFilterOptions(products) {
   fillCascadeControlPair('capacity', capacityOptions, currentProductFilters.cascadeCapacity);
 }
 
-// Arma los selectores de filtros del catalogo segun los productos visibles.
-// "SINMARCA" y variantes no se muestran como marca, pero esos productos siguen en "Todas".
+// Arma los selectores de filtros según los productos visibles.
+// "SINMARCA" no se muestra como marca (esos productos siguen en "Todas").
 function buildProductFilterOptions(products) {
   products = products || [];
   var brandMap = {};
@@ -3228,7 +3187,7 @@ function productCardMatchesFilters(card) {
   if (brand !== 'all' && card.dataset.brandKey !== brand) return false;
   if (fulfillment !== 'all' && card.dataset.fulfillment !== fulfillment) return false;
   if (spec !== 'all' && card.dataset.specKey !== spec) return false;
-  // Rango de precio: card.dataset.price ya lo escribe appendProductCard.
+  // Rango de precio: card.dataset.price lo define appendProductCard.
   if (currentProductFilters.priceMin !== null || currentProductFilters.priceMax !== null) {
     var precio = Number(card.dataset.price || 0);
     if (currentProductFilters.priceMin !== null && precio < currentProductFilters.priceMin) return false;
@@ -3246,11 +3205,7 @@ function productCardMatchesFilters(card) {
   return true;
 }
 
-// ============================================================
-// Filtro por rango de precio.
-// El catalogo tenia "Precio: menor/mayor", que ordena pero no filtra.
-// Esto agrega el rango con dos manijas, como en la referencia.
-// ============================================================
+// Filtro por rango de precio con dos controles deslizantes.
 
 var dtPrecioTope = { min: 0, max: 0 };
 
@@ -3266,7 +3221,7 @@ function dtBuildPriceFilter(products) {
     return typeof v === 'number' && isFinite(v) && v > 0;
   });
 
-  // Con menos de dos precios distintos el control no aporta nada.
+  // Con menos de dos precios distintos no se muestra.
   var min = Math.min.apply(null, precios);
   var max = Math.max.apply(null, precios);
   if (!precios.length || min === max) {
@@ -3316,7 +3271,7 @@ function dtCambiarPrecio() {
 
   var a = Number(desde.value);
   var b = Number(hasta.value);
-  // Si el usuario cruza las manijas, se las devuelve al lugar correcto.
+  // Si los controles se cruzan, se reubican.
   if (a > b) { var t = a; a = b; b = t; desde.value = a; hasta.value = b; }
 
   currentProductFilters.priceMin = a <= dtPrecioTope.min ? null : a;
@@ -3326,23 +3281,12 @@ function dtCambiarPrecio() {
   applyProductFilters();
 }
 
-// ============================================================
-// Migas de pan: Inicio > Categoria > Subcategoria.
-// Sale de leer catid/sub de la URL contra DT_CATEGORIAS, el mismo arbol
-// que usa el menu. Si no hay nada seleccionado no se dibuja.
-// ============================================================
+// Migas de pan: Inicio > Categoría > Subcategoría.
+// Se arman con catid/sub de la URL y DT_CATEGORIAS.
 
-// ============================================================
-// Banner por categoria.
-// Solo se muestra donde tiene sentido: los banners son de PlayStation, asi
-// que en Cables o Adaptadores quedarian fuera de lugar. Para sumar mas,
-// alcanza con agregar la linea al mapa.
-// ============================================================
+// Banner por categoría.
 
-// Todavia no hay una foto propia por categoria: mientras tanto se reusan
-// los 3 banners de la portada, repartidos por tema (componentes de PC,
-// perifericos Logitech, juegos de consola). Cuando lleguen fotos propias
-// de cada categoria, se reemplaza aca sin tocar nada mas.
+// Banners asignados por categoría.
 var DT_BANNERS = {
   'cat-consolas-de-juegos': 'img/banners/cat-consolas.webp?v=cat-20260826',
   'cat-juegos-fisicos': 'img/banners/cat-consolas.webp?v=cat-20260826',
@@ -3372,7 +3316,7 @@ function dtRenderBanner() {
   var catId = params.get('catid') || '';
   var subId = params.get('sub') || '';
 
-  // Una subcategoria hereda el banner de su categoria madre.
+  // Una subcategoría usa el banner de su categoría.
   if (!catId && subId && typeof DT_CATEGORIAS !== 'undefined') {
     DT_CATEGORIAS.forEach(function(c) {
       (c.children || []).forEach(function(h) {
@@ -3381,9 +3325,8 @@ function dtRenderBanner() {
     });
   }
 
-  // Las categorias van sin banner de imagen: cabecera simple (miga, titulo y
-  // linea celeste) en todas, como Notebooks. Para volver a mostrarlos alcanza
-  // con poner DT_MOSTRAR_BANNERS en true.
+  // Banners desactivados: cabecera simple en todas las categorías.
+  // Para mostrarlos, poner DT_MOSTRAR_BANNERS en true.
   var src = DT_MOSTRAR_BANNERS ? DT_BANNERS[catId] : '';
   caja.innerHTML = '';
   var cabecera = document.getElementById('dt-cabecera');
@@ -3405,8 +3348,7 @@ function dtRenderBanner() {
   if (cabecera) cabecera.classList.add('con-banner');
 }
 
-// Todo lo de la cabecera que depende de la URL, junto: si se agrega algo
-// mas que dependa de la categoria activa, va aca y se actualiza solo.
+// Actualiza todo lo de la cabecera que depende de la URL.
 function dtActualizarCabecera() {
   dtRenderBanner();
   if (typeof dtRenderMigas === 'function') dtRenderMigas();
@@ -3495,8 +3437,8 @@ function applyProductFilters() {
   }
 }
 
-// Solo applyProductFilters escribe el "Mostrando X de Y"; las vistas que no pasan
-// por ahi (categorias, busqueda sin resultados) lo borran para no dejar el de antes.
+// Solo applyProductFilters escribe "Mostrando X de Y";
+// las demás vistas borran la línea.
 function clearResultsLine() {
   var linea = document.getElementById('dt-resultados');
   if (linea) linea.textContent = '';
@@ -3551,16 +3493,12 @@ function clearProductFilters() {
   applyProductFilters();
 }
 
-// Al navegar (entrar a una categoria, volver al catalogo) los productos suelen
-// estar en memoria y llegan en milisegundos. Mostrar los recuadros de carga
-// igual hacia que la grilla pasara productos -> recuadros -> productos: el
-// titileo. Ahora solo aparecen si la carga tarda mas de 200 ms de verdad.
+// El relleno de carga solo aparece si la carga tarda más de 200 ms.
 function esqueletoSiTarda() {
   var hecho = false;
   var token = productRenderToken;
   var timer = setTimeout(function() {
-    // Si el esqueleto ya esta en pantalla (goToRoot lo pone al toque) no se
-    // vuelve a dibujar: rehacerlo reinicia el brillo y se nota como un parpadeo.
+    // Si el relleno ya está en pantalla no se vuelve a dibujar.
     var grid = document.getElementById('categories-grid');
     if (grid && grid.querySelector('.product-card-skeleton')) return;
     if (!hecho && token === productRenderToken) renderProductLoadingSkeleton();
@@ -3609,10 +3547,8 @@ function renderProductLoadingSkeleton() {
   }
 }
 
-// Cabecera de una categoria/subcategoria/busqueda desde el primer pintado,
-// con el mismo rotulo y titulo que pone despues la vista ya cargada. Antes
-// decia "Cargando catalogo" sin rotulo y al llegar los datos aparecia
-// "Categoria" arriba y empujaba el titulo: se veia como un salto.
+// Cabecera inicial de categoría, subcategoría o búsqueda,
+// igual a la que muestra la vista cargada.
 function dtCabeceraInicial(params) {
   var catId = params.get('catid') || '';
   var subId = params.get('sub') || '';
@@ -3638,29 +3574,23 @@ function dtCabeceraInicial(params) {
 function prepareInitialCatalogRouteLoading() {
   var params = new URLSearchParams(window.location.search || '');
   var esRaiz = !params.has('catid') && !params.has('sub') && !params.has('q');
-  // La raiz ahora tambien muestra productos: las tarjetas de carga van desde
-  // el primer momento, si no la grilla quedaba vacia medio segundo y despues
-  // aparecian de golpe.
+  // La raíz muestra el relleno de carga desde el inicio.
   if (!esRaiz) dtCabeceraInicial(params);
   else dtRestaurarBarraRaiz();
   updateGridHelper('');
   renderProductLoadingSkeleton();
 }
 
-// Renderiza productos en tandas: primero lo visible, despues el resto.
-// Asi Invid no bloquea la pantalla cargando cientos de imagenes juntas.
+// Renderiza los productos en tandas: primero los visibles.
 function renderProductCards(products, options) {
   var grid = document.getElementById('categories-grid');
   options = options || {};
   products = products || [];
   var renderToken = ++productRenderToken;
-  // La entrada animada (aparecer deslizando) solo la primera vez. Al volver a
-  // "Todo el catalogo", cambiar un filtro o el orden, las tarjetas arrancaban
-  // invisibles y entraban de nuevo: eso era el parpadeo.
+  // La animación de entrada solo se usa la primera vez.
   grid.classList.toggle('sin-entrada', catalogoYaMostroProductos);
   if (products.length) {
-    // Se marca un poco despues: al abrir la pagina la grilla se dibuja dos
-    // veces seguidas y la segunda no tiene que cortar la animacion inicial.
+    // Se marca con demora porque al abrir la página la grilla se dibuja dos veces.
     setTimeout(function() { catalogoYaMostroProductos = true; }, 800);
   }
   currentProductFilterPool = products.slice();
@@ -3697,13 +3627,10 @@ function renderProductCards(products, options) {
     var needsConsult = catalogNeedsWhatsAppConsult(p, stockState);
     var hasStockValue = p.stock !== undefined && p.stock !== null && p.stock !== '';
     var cascadeFacets = getProductCascadeFacets(p);
-    // Link real: asi Google puede entrar a cada ficha y el cliente puede copiar
-    // la direccion del producto. Se mantiene la pestana nueva para no perder
-    // el catalogo filtrado, igual que antes.
+    // Enlace real a la ficha (abre en otra pestaña).
     var card = document.createElement('a');
     card.className = 'product-card' + (byOrder ? ' is-by-order' : '') + (outOfStock ? ' is-out-of-stock' : '') + (needsConsult ? ' is-consult' : '');
-    // Tambien los sin stock: se entra a la ficha y ahi esta el boton de
-    // WhatsApp. Antes la tarjeta abria WhatsApp directo y no dejaba ver nada.
+    // Los productos sin stock también abren la ficha.
     if (p.slug) {
       card.href = 'producto.html?id=' + encodeURIComponent(p.slug);
       card.target = '_blank';
@@ -3719,17 +3646,15 @@ function renderProductCards(products, options) {
     card.dataset.cascadePrimary = cascadeFacets.primary ? cascadeFacets.primary.value : '';
     card.dataset.cascadeSecondary = cascadeFacets.secondary ? cascadeFacets.secondary.value : '';
     card.dataset.cascadeCapacity = cascadeFacets.capacity ? cascadeFacets.capacity.value : '';
-    // sourceText se usa solo para ordenar por seccion real; no usar subtitulo
-    // porque textos como "Switch Red" no significan que el producto sea de Red.
+    // sourceText se usa solo para ordenar por sección.
     card.dataset.sourceText = normalizeSearchValue([p.sourceLabel, p.category, p.subcategory, p.originalCategory, p.originalSubcategory].filter(Boolean).join(' '));
     card.dataset.order = idx;
     card.dataset.price = String(getProductPrice(p));
     card.dataset.stockStatus = stockState.status;
-    // Tope al escalonado: con idx * 0.035 la tarjeta 150 esperaba 5 s
-    // invisible y al bajar rapido se veian huecos que aparecian de a uno.
+    // Retraso escalonado con tope.
     card.style.animationDelay = (Math.min(idx, 6) * 0.03) + 's';
     card.onclick = function() {
-      // Con href el propio link navega; esto cubre las tarjetas sin slug.
+      // Para tarjetas sin enlace.
       if (!card.getAttribute('href')) openCatalogProduct(p);
     };
 
@@ -3756,9 +3681,7 @@ function renderProductCards(products, options) {
       soldOut.textContent = 'Sin stock';
       media.appendChild(soldOut);
     } else {
-      // Disponibilidad como una sola pildora sobre la foto. Antes eran dos
-      // cajas ("En local" arriba y otra de stock a todo el ancho). Sin stock
-      // no se muestra: ya lo dice el cartel "Sin stock".
+      // Etiqueta de disponibilidad sobre la foto (no se muestra sin stock).
       var availability = document.createElement('span');
       availability.className = 'product-card-availability ' + (isProviderProduct(p) ? 'is-provider' : 'is-local');
       availability.textContent = isProviderProduct(p) ? 'Llega en 48 hs' : getProductAvailabilityLabel(p);
@@ -3774,18 +3697,14 @@ function renderProductCards(products, options) {
     source.textContent = displayCatalogText(p.sourceLabel || 'Catalogo');
     body.appendChild(source);
 
-    // El cartel de "usado" por tarjeta se saco: ahora ese aviso vive solo
-    // arriba de la lista (dtActualizarAvisoUsados, junto al boton volver),
-    // no repetido en cada producto.
+    // El aviso de usados se muestra arriba de la lista (dtActualizarAvisoUsados).
 
     var title = document.createElement('h3');
     title.className = 'product-card-title';
     title.textContent = p.name;
     body.appendChild(title);
 
-    // Pie: precio (con "Quedan pocas" solo si el stock es bajo) y una sola
-    // accion. Se sacaron el subtitulo (repetia la categoria), la caja de
-    // stock a todo el ancho y la flecha, que competia con el boton.
+    // Pie: precio (con "Quedan pocas" si el stock es bajo) y botón de carrito.
     var foot = document.createElement('div');
     foot.className = 'product-card-foot';
     var priceWrap = document.createElement('div');
@@ -3817,8 +3736,7 @@ function renderProductCards(products, options) {
 
     body.appendChild(foot);
 
-    // Agregar al carrito sin entrar a la ficha. Mismo objeto de producto que
-    // ya usa index.js para los destacados, asi no hay dos formas de armarlo.
+    // Agregar al carrito desde la tarjeta (mismo objeto que index.js).
     if (!needsConsult && !outOfStock) {
       var addBtn = document.createElement('button');
       addBtn.type = 'button';
@@ -3827,7 +3745,7 @@ function renderProductCards(products, options) {
       addBtn.title = byOrder ? 'Pedir' : 'Agregar al carrito';
       addBtn.setAttribute('aria-label', 'Agregar ' + (p.name || 'producto') + ' al carrito');
       addBtn.addEventListener('click', function(event) {
-        // La tarjeta es un <a>: hay que frenar el link ademas de la burbuja.
+        // La tarjeta es un enlace: se detiene la navegación.
         event.preventDefault();
         event.stopPropagation();
         if (typeof addToCartUI !== 'function') return;
@@ -4419,8 +4337,8 @@ async function fetchAccessProductsForCatalogItem(item) {
   return normalizeStrictProductLabels(filterProductsForCatalogItem(uniqueProducts(products), item), item);
 }
 
-// Carga productos para una categoria/subcategoria.
-// Importante: Access/Supabase local e Invid se piden en paralelo para que no espere uno por el otro.
+// Carga los productos de una categoría o subcategoría.
+// Access e Invid se consultan en paralelo.
 async function fetchProductsForCatalogItem(item, includeChildren) {
   var groups = await Promise.all([
     fetchAccessProductsForCatalogItem(item),
@@ -4899,16 +4817,13 @@ async function renderProductSearchResults(query, options) {
   var requestId = ++productsRequestId;
   var normalizedQuery = normalizeSearchValue(query);
   if (!normalizedQuery) {
-    // Busqueda borrada: vuelve a todos los productos (antes, tarjetas de
-    // categorias). Se llama directo y no por renderRootView para no volver
-    // a entrar aca si quedo un espacio en la busqueda.
+    // Búsqueda vacía: muestra todos los productos.
     setCatalogHeaderContext('', 'Todo el Catálogo', 'Todos los productos de la tienda.');
     showAllProducts(currentFilter, requestId);
     return;
   }
 
-  // Buscar desde adentro de una subcategoria mira todo el catalogo, asi que no se
-  // puede titular "Resultados en categoria X": los resultados no son de ahi.
+  // La búsqueda abarca todo el catálogo.
   var contextLabel = options.global ? '' : getActiveCatalogContextLabel();
   var displayQuery = currentSearchDisplay || query;
   setCatalogHeaderContext(
@@ -4945,14 +4860,11 @@ async function renderProductSearchResults(query, options) {
   document.getElementById('visible-count').textContent = results.length;
   if (results.length) {
     empty.classList.add('hidden');
-    // Los resultados ya vienen ordenados por relevancia. Sin esto, sortCards los
-    // reordena por precio y el producto que el cliente busco queda enterrado entre
-    // accesorios baratos que apenas lo mencionan.
+    // Mantiene el orden por relevancia.
     currentSortOrder = 'relevance';
     renderProductCards(results);
   } else {
-    // Ningun producto tiene todas las palabras ("rtx 4060" cuando no hay 4060):
-    // se muestran los mas parecidos en vez de una pagina vacia.
+    // Sin resultados exactos: se muestran productos parecidos.
     var similar = window.DimensionTresSearch && window.DimensionTresSearch.similarProducts
       ? window.DimensionTresSearch.similarProducts(pool, normalizedQuery, 24)
       : [];
@@ -5089,12 +5001,8 @@ async function showSubcategoryComingSoon(found, options) {
   }
 }
 
-// Tope para la vista general de una categoria (todo mezclado, con
-// subcategorias incluidas). "PC y Componentes" sola llega a 606
-// productos entre lo local y lo de Invid, y renderizar esa cantidad de
-// tarjetas de una sola vez es lo que hacia sentir lenta la pagina.
-// Pedido puntual: en esta vista los productos de Invid van primero y
-// los del local (entrega inmediata) despues.
+// Tope de productos en la vista general de una categoría.
+// En esta vista los productos de Invid van primero.
 var LIMITE_VISTA_GENERAL_CATEGORIA = 200;
 
 function ordenarParaVistaGeneralCategoria(products) {
@@ -5103,20 +5011,14 @@ function ordenarParaVistaGeneralCategoria(products) {
   (products || []).forEach(function(p) {
     if (isProviderProduct(p)) invid.push(p); else locales.push(p);
   });
-  // Los locales van garantizados: si Invid solo ya llena el tope (pasa en
-  // categorias grandes como PC y Componentes, con 587 de Invid contra 19
-  // locales), los locales quedaban afuera siempre. Se reserva su lugar y
-  // se completa el resto con Invid.
+  // Se reserva lugar para los productos del local.
   var lugarParaInvid = Math.max(0, LIMITE_VISTA_GENERAL_CATEGORIA - locales.length);
   return invid.slice(0, lugarParaInvid).concat(locales).slice(0, LIMITE_VISTA_GENERAL_CATEGORIA);
 }
 
-// "Todo el catalogo" ya no muestra tarjetas de categorias (para eso esta el
-// menu Productos): muestra productos. Con stock primero, y local e Invid
-// alternados para que los 200 no sean todos del mismo lado.
+// "Todo el catálogo": productos con stock primero, alternando local e Invid.
 function seleccionarVistaTodoElCatalogo(products) {
-  // Primero lo que se puede comprar ya; despues "precio a consultar"; al
-  // final lo sin stock (no se esconde: en la ficha esta el boton de WhatsApp).
+  // Orden: con stock, a consultar y sin stock.
   var conStock = [];
   var consultar = [];
   var sinStock = [];
@@ -5161,8 +5063,7 @@ async function showAllProducts(filter, requestId) {
   dtActualizarAvisoUsados([]);
   if (products.length) {
     empty.classList.add('hidden');
-    // Como en la busqueda: se respeta el orden armado (local e Invid
-    // alternados). Con "menor precio" arriba quedaban solo cables del local.
+    // Respeta el orden armado (local e Invid alternados).
     currentSortOrder = 'relevance';
     document.querySelectorAll('[data-sort-select]').forEach(function(select) {
       select.value = 'relevance';
@@ -5183,8 +5084,8 @@ async function showAllProducts(filter, requestId) {
   }
 }
 
-// "Mas relevante" solo tiene sentido en la busqueda y en todo el catalogo. Al
-// entrar a una categoria vuelve el orden de siempre (menor precio).
+// "Más relevante" solo en búsqueda y en todo el catálogo;
+// en una categoría vuelve a "menor precio".
 function restaurarOrdenDeCategoria() {
   if (currentSortOrder !== 'relevance') return;
   currentSortOrder = 'price-low';
@@ -5193,11 +5094,11 @@ function restaurarOrdenDeCategoria() {
   });
 }
 
-// La raiz: con busqueda, los resultados; sin busqueda, todos los productos.
+// Raíz: resultados de búsqueda o todos los productos.
 function renderRootView(options) {
   options = options || {};
   var deskCtrl = document.getElementById('desktop-controls');
-  // El orden lo trae la barra de productos; el de la raiz quedaba repetido.
+  // El orden está en la barra de productos.
   if (deskCtrl) deskCtrl.style.display = 'none';
   if (currentSearch) {
     renderProductSearchResults(currentSearch, options);
@@ -5236,11 +5137,7 @@ async function showCategoryProducts(item, requestId) {
   products = ordenarParaVistaGeneralCategoria(products);
 
   document.getElementById('visible-count').textContent = products.length;
-  // A pedido: en la vista general de la categoria (todo mezclado, ej.
-  // "Consolas de juegos" completa) NO se muestra el aviso de usados.
-  // Se apaga por si quedo prendido de una navegacion anterior. Solo
-  // queda en la vista puntual de una subcategoria (ej. Consola PS4),
-  // que sigue llamando a dtActualizarAvisoUsados como antes.
+  // En la vista general de una categoría no se muestra el aviso de usados.
   dtActualizarAvisoUsados([]);
   if (products.length) {
     empty.classList.add('hidden');
@@ -5266,10 +5163,7 @@ function buildCard(item, delay) {
   var visual = getCatalogVisualMeta(item);
   var displayImage = item.image || visual.image;
   var displayIcon = visual.icon || item.icon || 'category';
-  // Link real, igual que las fichas de producto. catalogo.html esta en el
-  // sitemap y hasta ahora Google entraba y no encontraba una sola forma de
-  // llegar a una categoria: las 13 tarjetas eran divs con onclick.
-  // El href se arma con catalogUrl(), la misma funcion que usa el historial.
+  // Enlace real a la categoría (catalogUrl).
   var card = document.createElement('a');
   card.href = catalogUrl(hasChildren
     ? { view: 'category', id: item.id }
@@ -5280,12 +5174,10 @@ function buildCard(item, delay) {
   card.dataset.order = String(delay || 0);
   card.style.animationDelay = delay + 's';
 
-  // Se conserva la navegacion interna animada: el href queda de respaldo para
-  // el rastreador, el clic con rueda y "copiar direccion del enlace".
-  // En captura, para que corra antes que cualquier otro handler y no lo pise
-  // una asignacion posterior de onclick.
+  // Mantiene la navegación interna; el href queda para buscadores y nuevas pestañas.
+  // En captura para ejecutarse antes que otros handlers.
   card.addEventListener('click', function(event) {
-    // Ctrl/Cmd/rueda: que el navegador abra la pestana nueva como siempre.
+    // Ctrl/Cmd/rueda: el navegador abre una pestaña nueva.
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) return;
     event.preventDefault();
     event.stopPropagation();
@@ -5332,7 +5224,7 @@ function buildCard(item, delay) {
 
   card.appendChild(imgArea);
 
-  // Info
+  // Información
   var info = document.createElement('div');
   info.className = 'cat-card-info';
 
@@ -5453,9 +5345,7 @@ function resetEmptyState() {
   }
 }
 
-/* ======================================================
-   NAVEGACIÓN
-   ====================================================== */
+/* Navegación */
 function openSubcategory(item, options) {
   var found = findSubcategory(item.id);
   if (found) showSubcategoryComingSoon(found, options);
@@ -5480,7 +5370,7 @@ function drillInto(item, options) {
       updateCatalogHistory(currentRouteState, options.replaceHistory === true);
     }
 
-    // Actualizar header
+    // Actualiza el encabezado
     document.getElementById('page-title').textContent = item.name;
     document.getElementById('page-subtitle').textContent = 'Todos los productos de ' + item.name + '.';
     updateGridHelper('Toca una subcategoria del menu si queres ver solo ese grupo.');
@@ -5490,16 +5380,16 @@ function drillInto(item, options) {
     ll.textContent = 'Categoría';
     ll.classList.add('visible');
 
-    // Breadcrumb
+    // Migas de pan
     updateBreadcrumb(item);
 
-    // Ocultar controles de filtro raíz
+    // Oculta los controles de la raíz
     var deskCtrl = document.getElementById('desktop-controls');
     var mobileBar = document.getElementById('filter-bar-mobile');
     if (deskCtrl) deskCtrl.style.display = 'none';
     if (mobileBar) mobileBar.style.display = '';
 
-    // Mostrar botón volver
+    // Muestra el botón volver
     var found = findSubcategory(item.id);
     var parent = found && found.parent !== item ? found.parent : null;
     setBackAction(parent ? 'Volver a ' + parent.name : 'Volver a Catálogo', goBackOneLevel);
@@ -5568,27 +5458,25 @@ function goToRoot(options) {
     ll.textContent = '';
     ll.classList.remove('visible');
 
-    // Restaurar breadcrumb
+    // Restaura las migas de pan
     var trail = document.getElementById('breadcrumb-trail');
     trail.innerHTML =
       '<span class="bc-item text-[#adaaaa] hover:text-[#00f0ff] transition-colors" onclick="goToRoot()">Inicio</span>' +
       '<span class="breadcrumb-sep">/</span>' +
       '<span id="bc-catalog" class="bc-item text-[#8ff5ff]" onclick="goToRoot()">Catálogo</span>';
 
-    // Mostrar controles raíz
+    // Muestra los controles de la raíz
     var deskCtrl = document.getElementById('desktop-controls');
     var mobileBar = document.getElementById('filter-bar-mobile');
     if (deskCtrl) deskCtrl.style.display = '';
     if (mobileBar) mobileBar.style.display = '';
 
-    // Ocultar botón volver
+    // Oculta el botón volver
     document.getElementById('back-to-root').classList.remove('visible');
     syncRootControls();
 
-    // Volver a "Todo el catalogo" desde una categoria: si los productos todavia
-    // no estan cargados, se pone el esqueleto ya. Antes la grilla reaparecia
-    // con los productos de la categoria anterior, despues venia el esqueleto y
-    // recien ahi todo el catalogo: tres cambios seguidos que se veian como titileo.
+    // Si los productos no están cargados, muestra el relleno de carga
+    // en lugar de los productos de la categoría anterior.
     if (!currentSearch && !productSearchCache['all']) renderProductLoadingSkeleton();
 
     renderRootView({ animate: true });
@@ -5610,9 +5498,7 @@ function updateBreadcrumb(item) {
     '<span class="bc-item text-[#8ff5ff]">' + item.name + '</span>';
 }
 
-/* ======================================================
-   FILTROS (solo nivel raíz)
-   ====================================================== */
+/* Filtros */
 function setFilter(filter, btn) {
   currentFilter = filter;
   document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
@@ -5634,9 +5520,7 @@ function setFilter(filter, btn) {
   closeCatalogPanel();
 }
 
-// El buscador de la barra del catalogo (el que se ve en celular) y la lupa entran
-// por aca. Era una copia de handleSearchLive sin el caso de subcategoria, asi que
-// buscar desde ahi seguia borrando los productos: ahora usan la misma logica.
+// Búsqueda desde la barra del catálogo y la lupa (misma lógica que handleSearchLive).
 function filterBySearch(query) {
   handleSearchLive(query);
 }
@@ -5653,12 +5537,8 @@ function handleSearchLive(query) {
     return;
   }
 
-  // Dentro de una subcategoria la grilla muestra productos, no categorias. Antes se
-  // la reemplazaba por las subcategorias hermanas que coincidian: escribir "ps2"
-  // parado en "Accesorios Ps3" borraba los 3 productos y dejaba una tarjeta de
-  // "Accesorios Ps2", con el titulo y el "Mostrando 3 de 3" de la vista anterior.
-  // Ahora busca productos igual que en la raiz, y al borrar el texto vuelve a la
-  // subcategoria en la que estaba.
+  // Dentro de una subcategoría la búsqueda muestra productos;
+  // al borrar el texto vuelve a la subcategoría.
   if (currentLevel === 'products') {
     clearTimeout(productSearchTimer);
     productSearchTimer = setTimeout(function() {
@@ -5693,8 +5573,8 @@ function isNetworkCatalogContext() {
   return /\b(red|redes|wifi|wi fi|router|routers|placa de red|placas de red)\b/.test(context);
 }
 
-// Prioridad visual de orden: en vistas generales manda productos de Red/WiFi al final.
-// Si el usuario entra especificamente a Red, no se cambia el orden.
+// En vistas generales los productos de redes van al final.
+// Dentro de la categoría de redes no se cambia el orden.
 function getCardCategoryPriority(card) {
   if (!card || !card.classList || !card.classList.contains('product-card')) return 0;
   if (isNetworkCatalogContext()) return 0;
@@ -5711,7 +5591,7 @@ function compareCardsByPrice(a, b, descending) {
   var outOfStockA = (a.dataset.stockStatus || '') === 'out';
   var outOfStockB = (b.dataset.stockStatus || '') === 'out';
 
-  // Sin stock siempre al final, sin importar su precio.
+  // Sin stock siempre al final.
   if (outOfStockA !== outOfStockB) return outOfStockA ? 1 : -1;
 
   var priceA = Number(a.dataset.price || 0);
@@ -5719,7 +5599,7 @@ function compareCardsByPrice(a, b, descending) {
   var hasPriceA = Number.isFinite(priceA) && priceA > 0;
   var hasPriceB = Number.isFinite(priceB) && priceB > 0;
 
-  // Los productos sin precio web muestran "Consultar" y siempre van al final.
+  // Sin precio web ("Consultar") siempre al final.
   if (hasPriceA !== hasPriceB) return hasPriceA ? -1 : 1;
   if (!hasPriceA && !hasPriceB) {
     return (a.dataset.name || '').localeCompare(b.dataset.name || '', 'es', { numeric: true });
@@ -5730,7 +5610,7 @@ function compareCardsByPrice(a, b, descending) {
   return (a.dataset.name || '').localeCompare(b.dataset.name || '', 'es', { numeric: true });
 }
 
-// El orden predeterminado prioriza disponibilidad; los órdenes de precio son estrictos.
+// El orden predeterminado prioriza la disponibilidad; los de precio son estrictos.
 function sortCards(order) {
   currentSortOrder = order || 'price-low';
   document.querySelectorAll('[data-sort-select]').forEach(function(select) {
@@ -5739,9 +5619,7 @@ function sortCards(order) {
   var grid = document.getElementById('categories-grid');
   var cards = Array.from(grid.querySelectorAll('.cat-card, .product-card'));
   if (order === 'relevance') {
-    // Orden en que ya vinieron rankeados (relevancia de la busqueda), con lo que no
-    // hay stock al final. No se aplica prioridad por categoria: si alguien busca algo,
-    // manda lo que mejor coincide.
+    // Orden por relevancia de la búsqueda, con los productos sin stock al final.
     cards.sort(function(a, b) {
       var outA = (a.dataset.stockStatus || '') === 'out';
       var outB = (b.dataset.stockStatus || '') === 'out';
@@ -5819,7 +5697,7 @@ function applyCatalogRoute(options) {
   var params = new URLSearchParams(window.location.search);
   var subcategory = (params.get('sub') || '').toLowerCase().trim();
   var categoryId = (params.get('catid') || '').toLowerCase().trim();
-  // "Silla Gamer" paso a llamarse "Setup Gamer": los links viejos siguen andando.
+  // "Silla Gamer" ahora es "Setup Gamer": los enlaces anteriores siguen funcionando.
   if (categoryId === 'cat-silla-gamer') categoryId = 'cat-setup-gamer';
   var category = (params.get('cat') || '').toLowerCase().trim();
   var query = (params.get('q') || '').toLowerCase().trim();
@@ -5891,9 +5769,7 @@ function getLegacyHomeSearchRoute(query) {
   return routes[text] || null;
 }
 
-/* ======================================================
-   INIT
-   ====================================================== */
+/* Inicio */
 document.addEventListener('DOMContentLoaded', async function() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
@@ -5909,8 +5785,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 window.addEventListener('popstate', function() {
   applyCatalogRoute({ updateHistory: false, scroll: true });
-  // Con atras/adelante el navegador ya cambio la URL por su cuenta y no se
-  // pasa por updateCatalogHistory, asi que la cabecera se refresca aparte.
+  // Con atrás/adelante la URL ya cambió: se actualiza la cabecera.
   dtActualizarCabecera();
 });
 </script>
