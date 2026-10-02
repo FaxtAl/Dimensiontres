@@ -1,6 +1,6 @@
 /**
- * Evita que los traductores automaticos alteren los nombres de los iconos
- * tipograficos de Material Symbols o la marca DimensionTres.
+ * Evita que los traductores automáticos cambien los nombres de los íconos
+ * de Material Symbols y la marca DimensionTres.
  */
 (function initTranslationGuard() {
   var CANDIDATE_SELECTOR = '.material-symbols-outlined, [data-dt-notranslate], title, a, h1, h2, h3, p, span, div, strong';
@@ -23,7 +23,7 @@
         document.documentElement.classList.add('dt-symbol-font-ready');
       }
     }).catch(function() {
-      // Si la fuente no carga, los nombres internos permanecen ocultos.
+      // Si la fuente no carga, los nombres internos quedan ocultos.
     });
   }
 
