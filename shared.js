@@ -1,7 +1,6 @@
 /**
- * shared.js — Componentes compartidos | Dimensión Tres
- * Footer unificado + botón "Volver atrás" + Page Transitions
- * Incluir en todas las páginas con: <script src="shared.js"></script>
+ * shared.js - Componentes compartidos por todas las páginas.
+ * Footer, botón volver y transiciones entre páginas.
  */
 
 (function initScrollRestoration() {
@@ -20,9 +19,7 @@
   });
 })();
 
-/* ══════════════════════════════════════════════════════════════
-   PAGE TRANSITIONS — Fade entre rutas
-   ══════════════════════════════════════════════════════════════ */
+/* Transiciones entre páginas */
 (function initPageTransitions() {
   if (window.self !== window.top) return;
 
@@ -197,7 +194,7 @@
   window.closeContactEmailModal = closeContactEmailModal;
 })();
 
-/* ─── FOOTER UNIFICADO ───────────────────────────────────────── */
+/* Footer */
 (function injectFooter() {
   var footer = document.querySelector('footer');
   if (!footer) return;
@@ -314,14 +311,8 @@
   }
 })();
 
-/* ============================================================
-   Reintento de imagenes. Si una foto falla por un corte momentaneo
-   (la conexion del local, el tunel, el proxy de Invid), antes la pagina
-   pasaba a la siguiente alternativa y, sin mas alternativas, la borraba
-   hasta recargar. Ahora se reintenta sola dos veces. Si es un archivo de
-   la propia web que de verdad no existe (404), no se espera: sigue el
-   manejo normal de cada pagina (su img.onerror) enseguida.
-   ============================================================ */
+/* Reintento de imágenes: hasta dos reintentos ante errores de red.
+   Si el archivo propio no existe (404), se pasa al onerror de la página. */
 (function () {
   var ESPERAS = [1000, 3000];
   var MARCA = /([?&])dtr=\d+(&|$)/;
@@ -333,7 +324,7 @@
   }
 
   function dejarPasar(img) {
-    // Vuelve a disparar el error para que corra el onerror de la pagina.
+    // Vuelve a disparar el error para ejecutar el onerror de la página.
     img.dataset.dtrPasar = '1';
     img.dispatchEvent(new Event('error'));
   }
@@ -342,7 +333,7 @@
     img.dataset.dtr = String(n + 1);
     setTimeout(function () {
       if (!img.isConnected) return;
-      // Si mientras tanto la pagina ya puso otra foto, no se toca.
+      // No reemplaza una imagen que la página ya cambió.
       if (sinMarca(img.getAttribute('src')) !== base) return;
       img.src = base + (base.indexOf('?') === -1 ? '?' : '&') + 'dtr=' + (n + 1);
     }, ESPERAS[n]);
@@ -362,9 +353,9 @@
       img.dataset.dtr = '0';
     }
     var n = Number(img.dataset.dtr || 0);
-    if (n >= ESPERAS.length) return; // ya se reintento: sigue la pagina
+    if (n >= ESPERAS.length) return; // Sin más reintentos: sigue el onerror de la página.
 
-    // Frena el onerror de la pagina mientras se decide.
+    // Detiene el onerror de la página mientras se decide.
     e.stopImmediatePropagation();
 
     var url;
