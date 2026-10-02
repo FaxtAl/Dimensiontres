@@ -1,5 +1,5 @@
-// producto-imagenes-juegos-extra.js - portadas extra para juegos fisicos sin match en DixGamer.
-// Las URLs externas se descargan como archivos locales para que el catalogo no dependa de servidores externos.
+// producto-imagenes-juegos-extra.js - Portadas de juegos físicos sin coincidencia en DixGamer.
+// Las imágenes se guardan localmente.
 (function() {
   var existing = window.DT_PRODUCT_IMAGE_MAP || {};
   var extraById =   {
