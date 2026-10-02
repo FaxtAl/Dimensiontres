@@ -1,10 +1,10 @@
 /**
- * carrito.js — Lógica de la página del carrito | Dimensión Tres
- * Requiere: config.js, cart.js (cargados antes en el HTML)
+ * carrito.js - Página del carrito.
+ * Requiere config.js y cart.js cargados antes.
  */
 
-// CONFIG viene de config.js cargado como script normal antes que este archivo.
-// Los precios que llegan desde Access ya incluyen IVA, asi que el carrito no suma impuesto extra.
+// CONFIG se define en config.js.
+// Los precios de Access ya incluyen IVA: el carrito no suma impuestos.
 var TAX         = 0;
 var mercadoPagoInstallments = 12;
 var transferProofFileName = '';
@@ -82,9 +82,7 @@ function handleTransferProof(input) {
     : 'Cuando termines, mandamos el pedido por WhatsApp para adjuntar el comprobante.';
 }
 
-// Los datos para transferir arrancan plegados y se abren al elegir el metodo.
-// Desplegados de entrada estiraban el resumen a 1217px contra 900 de pantalla,
-// asi que el total y los medios de pago nunca se veian juntos.
+// Los datos de transferencia se muestran al elegir ese medio de pago.
 function focusTransferPanel() {
   var panel = document.querySelector('.transfer-panel');
   if (!panel) return;
@@ -240,7 +238,7 @@ function getCartItemMeta(item) {
   return parts.join(' · ');
 }
 
-/* ─── RENDER ─────────────────────────────── */
+/* Render */
 async function hydrateCartImages() {
   if (!window.SupabaseStore || !window.SupabaseStore.fetchAccessProductById || !CartStore.replaceAll) {
     return false;
@@ -368,7 +366,7 @@ function renderCheckoutSummary(grid, empty) {
   updateTotals();
 }
 
-/* ─── BUILD ROW ──────────────────────────── */
+/* Fila de producto */
 function buildRow(item) {
   var lineTotal = item.price * item.qty;
   var tr = document.createElement('tr');
@@ -377,7 +375,7 @@ function buildRow(item) {
 
   var meta = getCartItemMeta(item);
 
-  /* ── Celda principal ── */
+  /* Celda principal */
   var mainCell = document.createElement('td');
   mainCell.className = 'cart-main-cell px-4 md:px-6 py-6';
 
@@ -394,7 +392,7 @@ function buildRow(item) {
   img.onerror = function() { this.style.display = 'none'; };
   imgDiv.appendChild(img);
 
-  // Info
+  // Información
   var infoDiv = document.createElement('div');
   infoDiv.className = 'cart-item-info';
   var h3 = document.createElement('h3');
@@ -427,7 +425,7 @@ function buildRow(item) {
   priceP.textContent = formatMoney(lineTotal);
   infoDiv.appendChild(priceP);
 
-  // Controles mobile
+  // Controles para celular
   var controlsDiv = document.createElement('div');
   controlsDiv.className = 'flex items-center gap-3 mt-3 md:hidden';
 
@@ -461,9 +459,7 @@ function buildRow(item) {
   mainCell.appendChild(flexDiv);
   tr.appendChild(mainCell);
 
-  /* ── Celda precio unitario (escritorio) ──
-     Antes solo se mostraba el total de la linea, asi que con cantidad
-     mayor a 1 no se veia cuanto vale la unidad. */
+  /* Precio unitario (escritorio) */
   var unitCell = document.createElement('td');
   unitCell.className = 'cart-unit-cell px-6 py-6 text-right hidden md:table-cell';
   var unitSpan = document.createElement('span');
@@ -472,7 +468,7 @@ function buildRow(item) {
   unitCell.appendChild(unitSpan);
   tr.appendChild(unitCell);
 
-  /* ── Celda cantidad desktop ── */
+  /* Cantidad (escritorio) */
   var qtyCell = document.createElement('td');
   qtyCell.className = 'cart-qty-cell px-6 py-6 hidden md:table-cell';
   var qtyFlex = document.createElement('div');
@@ -505,7 +501,7 @@ function buildRow(item) {
   qtyCell.appendChild(qtyFlex);
   tr.appendChild(qtyCell);
 
-  /* ── Celda precio desktop ── */
+  /* Precio (escritorio) */
   var priceCell = document.createElement('td');
   priceCell.className = 'cart-price-cell px-6 py-6 text-right hidden md:table-cell';
   var priceSpan = document.createElement('span');
@@ -515,7 +511,7 @@ function buildRow(item) {
   priceCell.appendChild(priceSpan);
   tr.appendChild(priceCell);
 
-  /* ── Celda eliminar ── */
+  /* Eliminar */
   var deleteCell = document.createElement('td');
   deleteCell.className = 'cart-delete-cell px-4 md:px-6 py-6 text-right';
   var deleteBtn = document.createElement('button');
@@ -529,13 +525,12 @@ function buildRow(item) {
   deleteCell.appendChild(deleteBtn);
   tr.appendChild(deleteCell);
 
-  return tr; // ← FALTABA
+  return tr;
 }
 
-/* ─── UPDATE TOTALS (función propia, separada de buildRow) ── */
+/* Totales */
 /**
- * Aviso de demora en el resumen. Cada producto ya avisa en su fila, pero al
- * pagar se pasaba por alto: esto lo dice una vez, arriba de los medios de pago.
+ * Aviso de demora en el resumen, arriba de los medios de pago.
  */
 function updateDelayNote() {
   var note = document.getElementById('cart-delay-note');
@@ -575,7 +570,7 @@ function updateTotals() {
   updatePaymentMethodAmounts(totals);
 }
 
-/* ─── CAMBIAR CANTIDAD ───────────────────── */
+/* Cambiar cantidad */
 function changeQty(id, delta) {
   var result = CartStore.updateQty(id, delta);
   if (result && !result.ok && result.reason === 'pedido') {
@@ -613,7 +608,7 @@ function changeQty(id, delta) {
   updateCartBadge();
 }
 
-/* ─── ELIMINAR CON ANIMACIÓN ─────────────── */
+/* Eliminar con animación */
 function animRemove(id) {
   var row = document.querySelector('tr[data-id="' + id + '"]');
   if (!row) return;
@@ -643,7 +638,7 @@ function warnByOrderCheckout() {
   showCartNotice('Tenes productos a pedido. Sacalos del carrito y consultanos por WhatsApp para reservarlos.');
 }
 
-/* ─── CHECKOUT WHATSAPP ──────────────────── */
+/* Finalizar compra */
 function checkoutWhatsApp() {
   var items = CartStore.getAll();
   if (!items.length) return;
@@ -665,8 +660,8 @@ function checkoutUnavailable(methodName) {
   alert(methodName + ' queda para el siguiente paso.');
 }
 
-// Antes de comprar o guardar pedido siempre valida la sesion real de Supabase.
-// No alcanza con localStorage: si no hay sesion activa manda a cuenta.html.
+// Antes de comprar valida la sesión de Supabase;
+// sin sesión activa redirige a cuenta.html.
 async function resolveCheckoutUser() {
   if (window.SupabaseStore && window.SupabaseStore.getCurrentAccount) {
     try {
@@ -686,8 +681,8 @@ async function resolveCheckoutUser() {
   return null;
 }
 
-// Guarda el pedido web en Supabase. Despues la cuenta lo muestra en historial
-// y Mercado Pago usa este order_id para no pagar pedidos anonimos.
+// Guarda el pedido en Supabase. El historial de la cuenta y Mercado Pago
+// usan este order_id.
 async function createSavedOrder(method, notes) {
   var items = CartStore.getAll();
   if (!items.length) return { cancelled: true };
@@ -759,7 +754,7 @@ function restoreCheckoutButton(button, originalHtml) {
   button.innerHTML = originalHtml;
 }
 
-// Flujo de WhatsApp: guarda pedido en Supabase y abre el mensaje con el detalle.
+// WhatsApp: guarda el pedido y abre el mensaje con el detalle.
 async function checkoutSavedOrder(button, method) {
   var originalHtml = setCheckoutButtonLoading(button, 'Guardando pedido...');
 
@@ -804,7 +799,7 @@ async function checkoutSavedOrder(button, method) {
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 
-// Flujo de transferencia: guarda el pedido y abre WhatsApp para enviar el comprobante.
+// Transferencia: guarda el pedido y abre WhatsApp para enviar el comprobante.
 async function checkoutBankTransfer(button) {
   if (!transferProofFileName) {
     showCartNotice('Primero cargá el comprobante de transferencia para mandarlo por WhatsApp.');
@@ -874,7 +869,7 @@ async function checkoutBankTransfer(button) {
   window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
 }
 
-// Flujo de Mercado Pago: guarda pedido primero, valida sesion y recien ahi crea preferencia de pago.
+// Mercado Pago: guarda el pedido, valida la sesión y crea la preferencia de pago.
 async function checkoutMercadoPago(button) {
   var originalHtml = setCheckoutButtonLoading(button, 'Preparando pago...');
   var selectedInstallments = 12;
@@ -947,7 +942,7 @@ async function checkoutMercadoPago(button) {
   }
 }
 
-/* ─── INIT ───────────────────────────────── */
+/* Inicio */
 window.addEventListener('storage', function(e) { if (e.key === 'dt_cart_v1') render(); });
 document.addEventListener('DOMContentLoaded', function() {
   render();
