@@ -1,5 +1,5 @@
 /**
- * index.js - Logica del inicio | Dimension Tres
+ * index.js - Página de inicio.
  */
 
 function handleSearch() {
@@ -13,10 +13,8 @@ function handleViewCatalog() {
   window.location.href = 'catalogo.html';
 }
 
-// Carrusel de banners de Inicio. Los banners traen su propio texto
-// ("Disponibles en el local", "Dimension Tres VI"), asi que el titulo y los
-// botones del sitio no se dibujan encima: se ven enteros, sin recorte ni velo.
-// Cada uno tiene una version de 1000px para celular.
+// Carrusel de banners de inicio. Los banners incluyen su propio texto.
+// srcSmall: versión de 1000 px; srcMobile: versión vertical para celular.
 var HOME_HERO_IMAGES = [
   { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', srcMobile: 'img/banners/fc27-disponibles-celular.webp?v=banners-vertical-20261001', id: 'fc27', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
   { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', srcMobile: 'img/banners/gta6-dimension-tres-celular.webp?v=banners-vertical-20261001', id: 'gta6', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
@@ -30,21 +28,17 @@ function initHomeHeroCarousel() {
   seccion.classList.add('es-banner');
   if (HOME_HERO_IMAGES.length < 2) return;
 
-  // Los banners van uno al lado del otro en una tira que se corre de costado,
-  // como pasar de pagina. Al final hay una copia del primero: se desliza hasta
-  // ella y ahi se vuelve al primero sin animacion, asi siempre avanza hacia
-  // el mismo lado en vez de rebobinar.
+  // Los banners van en una tira horizontal que se desliza.
+  // Al final hay una copia del primero para que el avance sea continuo.
   var total = HOME_HERO_IMAGES.length;
   var track = document.createElement('div');
   track.className = 'home-hero-track';
-  // La primera imagen viene en el HTML dentro de su <picture>: se reemplaza
-  // el <picture> entero por la tira y se lo reusa como primera diapositiva.
+  // La primera imagen viene en el HTML dentro de un <picture>:
+  // se reemplaza por la tira y se reutiliza como primera diapositiva.
   var firstPicture = image.parentNode && image.parentNode.tagName === 'PICTURE' ? image.parentNode : null;
   (firstPicture || image).parentNode.replaceChild(track, firstPicture || image);
 
-  // Cada banner va en un <picture>: en celular usa su version armada para
-  // pantalla angosta (texto arriba, productos abajo) en vez de recortar el
-  // banner ancho, que dejaba logos y tapas cortados a la mitad.
+  // Cada banner va en un <picture> con su versión para celular.
   function slideFor(item, index) {
     if (index === 0 && firstPicture) {
       firstPicture.removeAttribute('id');
@@ -100,7 +94,7 @@ function initHomeHeroCarousel() {
     setActiveDot();
   }
 
-  // Parado en la copia del final: se salta al primero sin que se note.
+  // Desde la copia final vuelve al primero sin animación.
   function normalize() {
     if (current === total) {
       goTo(0, false);
@@ -130,7 +124,7 @@ function initHomeHeroCarousel() {
     }, 7000);
   }
 
-  // En celular se puede pasar con el dedo, para los dos lados.
+  // Deslizamiento táctil en ambas direcciones.
   var startX = null;
   var startY = null;
   seccion.addEventListener('touchstart', function(event) {
@@ -521,7 +515,7 @@ function homeCategoryMeta(name) {
 }
 
 function pickHomeCategories(tree) {
-  // Diez accesos visuales a categorias reales del catalogo.
+  // Accesos a las categorías del catálogo.
   var wanted = [
     { title: 'Consolas', source: 'Consolas de juegos', href: 'catalogo.html?catid=cat-consolas-de-juegos' },
     { title: 'Juegos físicos', source: 'Juegos Fisicos', href: 'catalogo.html?catid=cat-juegos-fisicos' },
@@ -535,7 +529,7 @@ function pickHomeCategories(tree) {
     { title: 'Auriculares', source: 'Auriculares', href: 'catalogo.html?catid=cat-auriculares' }
   ];
 
-  // Fallbacks estaticos (mismo slugify que catalogSlug del supabase-client.js)
+  // Valores fijos de respaldo (mismo slug que catalogSlug de supabase-client.js).
   function slug(name) {
     return 'cat-' + String(name || '')
       .toLowerCase()
@@ -584,8 +578,7 @@ function renderHomeCategories(tree) {
     media.appendChild(img);
     card.appendChild(media);
 
-    // Sin texto debajo: la tarjeta es solo la foto. El nombre de la categoria
-    // sigue en el aria-label para quien navega con lector de pantalla.
+    // La tarjeta muestra solo la foto; el nombre va en aria-label.
     grid.appendChild(card);
   });
 }
@@ -610,10 +603,7 @@ function renderHomePromo(tree) {
   var text = promo.querySelector('.setup-promo-text');
   var link = promo.querySelector('.setup-promo-link');
 
-  // Antes decia siempre "Productos del catalogo", un texto decorativo
-  // que no cambiaba nunca. Se reemplaza por un dato real: cuantos
-  // productos tiene esa categoria, que ya viene calculado en el arbol
-  // (item.productCount).
+  // Cantidad de productos de la categoría (item.productCount).
   var cantidad = Number(item.productCount || 0);
   if (kicker) {
     kicker.textContent = cantidad > 0
@@ -709,8 +699,7 @@ function createFeaturedProductCard(product) {
     media.appendChild(icon);
     hydrateFeaturedProductImage(product, media);
   }
-  // Misma tarjeta que el catalogo: disponibilidad como pildora sobre la foto,
-  // categoria y nombre, y un pie con precio (+ "Quedan pocas") y boton-icono.
+  // Tarjeta de producto, igual a la del catálogo.
   var esProveedor = product.fulfillment === 'provider' || product.sourceIntegration === 'invid';
   var disponibilidad = document.createElement('span');
   disponibilidad.className = 'feat-availability' + (esProveedor ? ' is-provider' : ' is-local');
@@ -721,8 +710,7 @@ function createFeaturedProductCard(product) {
   var body = document.createElement('div');
   body.className = 'feat-body';
 
-  // Chip de stock debajo de la foto (verde disponible / ambar pocas /
-  // gris sin stock), como en la referencia que paso el dueño.
+  // Etiqueta de stock (disponible / pocas unidades / sin stock).
   var stockState = typeof getProductStockState === 'function' ? getProductStockState(product) : null;
   if (stockState && stockState.status !== 'unknown') {
     var stockChip = document.createElement('span');
@@ -736,8 +724,7 @@ function createFeaturedProductCard(product) {
 
   var tag = document.createElement('p');
   tag.className = 'feat-tag';
-  // Access trae "Accessorios" mal escrito; el catalogo lo corrige con
-  // displayCatalogText y ahora, sin mayusculas forzadas, se notaba aca.
+  // Corrige textos de categoría mal escritos en Access (displayCatalogText).
   tag.textContent = String(product.sourceLabel || product.category || 'Catálogo')
     .replace(/\bAccessorios\b/gi, 'Accesorios')
     .replace(/\bAccessorio\b/gi, 'Accesorio');
@@ -765,9 +752,7 @@ function createFeaturedProductCard(product) {
       priceWrap.appendChild(stockLabel);
     }
   }
-  // Linea chica bajo el precio, como el "Incluye 15% OFF..." de la
-  // referencia. Aca decimos lo que es cierto en DimensionTres: por
-  // transferencia se paga lo mismo (ver legales.html).
+  // Aclaración bajo el precio: por transferencia se paga lo mismo.
   var note = document.createElement('p');
   note.className = 'feat-note';
   note.textContent = 'Transferencia: mismo precio';
@@ -934,16 +919,13 @@ function pickPreferredHomeFeaturedProducts(products) {
   return selected.slice(0, 6);
 }
 
-/* ── "Mejora tu setup": una fila por categoria ──────────────────────────
-   Cada fila es un carrusel horizontal con productos reales, del local
-   (Access) y del proveedor (Invid). Antes el HTML tenia tres filas pero el
-   JS solo llenaba una grilla vieja (#home-featured-grid) que ya no existe:
-   por eso quedaban en "Cargando producto". */
+/* "Mejorá tu setup": una fila por categoría.
+   Cada fila es un carrusel con productos del local (Access) y de Invid. */
 var SETUP_GROUPS = [
   { gridId: 'home-featured-processors', words: ['procesador'], invid: ['AMD', 'Intel'] },
-  // Perifericos solo de Invid (pedido del local): words vacio = no busca en Access.
+  // Periféricos solo de Invid (words vacío: no busca en Access).
   { gridId: 'home-featured-perifericos', words: [], invid: ['Mouse', 'Teclados', 'Teclado + Mouse', 'Mousepads', 'Web Cam', 'Micrófonos'] },
-  // "consolas de juegos" y no "consola": si no agarra "Accesorios Consolas".
+  // "consolas de juegos" para no incluir "Accesorios Consolas".
   { gridId: 'home-featured-consolas', words: ['consolas de juegos'] }
 ];
 
@@ -993,8 +975,7 @@ function renderSetupGroup(gridId, products) {
   if (!grid) return;
   var section = grid.closest('.setup-product-group');
 
-  // Sin productos se esconde la fila entera: peor que no mostrarla es
-  // dejar las tarjetas de "Cargando producto" para siempre.
+  // Sin productos se oculta la fila.
   if (!products.length) {
     if (section) section.style.display = 'none';
     return;
@@ -1015,11 +996,11 @@ async function loadHomeSetupGroups(tree) {
   startSetupAutoplay();
 }
 
-var SETUP_AUTOPLAY_MS = 2500; // 4,5 s se sentia lento
+var SETUP_AUTOPLAY_MS = 2500;
 var setupAutoplayTimers = {};
 
-// Las filas avanzan solas, pero se frenan mientras la persona mira o toca
-// una fila, con la pestaña en segundo plano o si pidio menos movimiento.
+// Avance automático; se pausa con hover, foco, toque, pestaña oculta
+// o preferencia de movimiento reducido.
 function startSetupAutoplay() {
   var menosMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (menosMovimiento) return;
@@ -1073,8 +1054,7 @@ function reanudarSetupAutoplay(gridId) {
   }, SETUP_AUTOPLAY_MS);
 }
 
-/* Flechas de cada fila. El HTML las llama con el id de la grilla, asi que
-   cada carrusel se mueve por su cuenta. */
+/* Flechas de cada fila (reciben el id de la grilla). */
 function moveSetupCarousel(gridId, direction) {
   var grid = document.getElementById(gridId);
   var card = grid && grid.querySelector('.featured-card');
@@ -1094,8 +1074,8 @@ function moveSetupCarousel(gridId, direction) {
   var from = grid.scrollLeft;
   grid.scrollTo({ left: target, behavior: 'smooth' });
 
-  // Si el navegador no anima (pestaña en segundo plano, "reducir movimiento"),
-  // movemos la fila de una sola vez para que la flecha siempre responda.
+  // Si el navegador no anima el desplazamiento, se mueve directo
+  // para que la flecha siempre responda.
   window.setTimeout(function () {
     if (Math.abs(grid.scrollLeft - from) < 2) {
       var snap = grid.style.scrollSnapType;
@@ -1162,10 +1142,8 @@ function setHomeAdminLinksVisible(visible) {
   });
 }
 
-// Cartelito rojo con la cantidad de pedidos pendientes al lado de "Admin",
-// mismo estilo que el .dt-badge del carrito (cart.js). Solo se llama
-// cuando ya se confirmo que el usuario es admin, asi que a un cliente
-// normal no le pega ni un solo pedido a la base por esto.
+// Contador de pedidos pendientes junto a "Admin" (mismo estilo que .dt-badge).
+// Solo se consulta si el usuario es administrador.
 function setHomeAdminBadge(cantidad) {
   document.querySelectorAll('[data-admin-link]').forEach(function(link) {
     link.style.position = 'relative';
@@ -1198,7 +1176,7 @@ async function checkHomePendingOrders(token) {
     var pendientes = (orders || []).filter(function(o) { return o && o.estado === 'pendiente'; }).length;
     setHomeAdminBadge(pendientes);
   } catch (error) {
-    // Sin badge si algo falla; no es critico para el resto de la pagina.
+    // Si falla, no se muestra el contador.
   }
 }
 
@@ -1213,7 +1191,7 @@ async function checkHomeAdminAccess() {
     var token = await window.SupabaseStore.getAccessToken();
     if (!token) return;
 
-    // El boton interno solo se muestra si la base confirma que la sesion es admin.
+    // El botón de administración solo se muestra con sesión de administrador.
     var response = await fetch(cfg.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/admin_current_user', {
       method: 'POST',
       headers: {
@@ -1243,17 +1221,11 @@ document.addEventListener('DOMContentLoaded', function() {
   checkHomeAdminAccess();
 });
 
-/* ═══════════════════════════════════════════════════════════
-   APARICION AL SCROLLEAR
-   Marca los bloques principales y los enciende cuando entran en
-   pantalla. Con IntersectionObserver, que no cuesta nada: no hay
-   un listener de scroll corriendo todo el tiempo.
-   ═══════════════════════════════════════════════════════════ */
+/* Aparición de secciones al hacer scroll (IntersectionObserver). */
 
 (function initRevelado() {
   function arrancar() {
-    // El hero queda afuera a proposito: es lo primero que se ve y no
-    // corresponde que aparezca con retardo.
+    // El hero no se anima.
     var selectores = [
       '#categorias > .container > *',
       '#categorias > *:not(.dt-halo)',
@@ -1273,12 +1245,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!bloques.length) return;
 
-    // Sin soporte, se muestra todo y listo.
+    // Sin soporte: se muestra todo.
     if (!('IntersectionObserver' in window)) return;
 
     bloques.forEach(function(el, i) {
       el.classList.add('dt-reveal');
-      // Escalonado corto: los de mas abajo entran apenas despues.
+      // Pequeño retraso escalonado.
       el.style.transitionDelay = Math.min(i % 4, 3) * 70 + 'ms';
     });
 
@@ -1292,9 +1264,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     bloques.forEach(function(el) { obs.observe(el); });
 
-    // Red de seguridad: si por lo que sea el observador no dispara (pestaña en
-    // segundo plano, navegador raro, un error mas arriba), a los 2 segundos se
-    // muestra todo igual. Un efecto lindo no puede dejar la pagina en blanco.
+    // Respaldo: a los 2 segundos se muestra todo aunque el observador no dispare.
     window.setTimeout(function() {
       bloques.forEach(function(el) { el.classList.add('dt-visible'); });
     }, 2000);
