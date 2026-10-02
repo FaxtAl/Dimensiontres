@@ -1,7 +1,6 @@
 /**
- * Relevancia compartida del buscador de DimensionTres.
- * Mantiene las palabras escritas como requisitos y usa los alias solamente
- * como alternativas controladas. No mezcla stock, entrega ni origen.
+ * search-ranking.js - Relevancia del buscador.
+ * Todas las palabras escritas son obligatorias; los alias son alternativas.
  */
 (function(root, factory) {
   var api = factory();
@@ -50,7 +49,7 @@
     { queries: ['procesador', 'cpu', 'micro'], alternatives: ['procesador', 'cpu', 'micro', 'ryzen', 'intel core'] },
     { queries: ['fuente', 'psu'], alternatives: ['fuente', 'psu', 'fuente gamer'] },
     { queries: ['gabinete', 'case'], alternatives: ['gabinete', 'case', 'pc case'] },
-    // Juegos: la gente busca por la sigla y el producto tiene el nombre largo.
+    // Juegos: siglas habituales y su nombre completo.
     { queries: ['gta'], alternatives: ['gta', 'grand theft auto'] },
     { queries: ['call of duty', 'cod'], alternatives: ['call of duty', 'cod'] },
     { queries: ['fifa'], alternatives: ['fifa', 'fc 24', 'fc 25', 'fc 26', 'ea sports fc'] },
@@ -130,8 +129,7 @@
       for (j = 1; j <= b.length; j++) {
         var cost = a[i - 1] === b[j - 1] ? 0 : 1;
         current[j] = Math.min(current[j - 1] + 1, previous[j] + 1, previous[j - 1] + cost);
-        // Dos letras cambiadas de lugar cuentan como un solo error: "tecaldo"
-        // esta a distancia 1 de "teclado", no a 2. Es el typo mas comun al tipear rapido.
+        // Dos letras invertidas cuentan como un solo error ("tecaldo" -> "teclado").
         if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
           current[j] = Math.min(current[j], beforePrevious[j - 2] + 1);
         }
@@ -155,9 +153,7 @@
   });
   QUERY_ALIASES.sort(function(a, b) { return b.tokens.length - a.tokens.length; });
 
-  // Nexos que la gente escribe sin pensar ("control de play", "auricular con cable").
-  // Si se exigen como el resto de las palabras, dejan afuera a todos los productos
-  // que no las tengan en el nombre, que son casi todos.
+  // Palabras de enlace que no se exigen en el resultado.
   var STOPWORDS = ['de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'unos', 'unas',
     'con', 'sin', 'para', 'por', 'y', 'o', 'a', 'en', 'al'];
 
@@ -179,10 +175,10 @@
       var token = tokens[index];
       if (token.length >= 2 || (/^\d+$/.test(token) && tokens.length > 1)) {
         var alternatives = [token];
-        // "1tb", "16gb", "650w": el producto puede decir "1 TB" o "16 Gb" separado.
+        // Unidades pegadas al número: "1tb" también encuentra "1 TB".
         var unit = token.match(/^(\d+)([a-z]+)$/);
         if (unit) alternatives.push(unit[1] + ' ' + unit[2]);
-        // Desde 4 letras ya vale corregir typos: "mose" -> "mouse".
+        // Corrección de errores de tipeo desde 4 letras ("mose" -> "mouse").
         requirements.push({ alternatives: alternatives, fuzzy: /^[a-z]+$/.test(token) && token.length >= 4 });
       }
       index++;
@@ -205,13 +201,12 @@
       var token = alternativeTokens[0];
       targetTokens.forEach(function(target) {
         if (token.length >= 4 && target.indexOf(token) === 0) {
-          // El producto empieza con lo que escribio el cliente: "tecla" -> "teclado".
+          // Coincidencia por comienzo de palabra ("tecla" -> "teclado").
           best = Math.max(best, 80);
           hits++;
         } else if (target.length >= 5 && token.indexOf(target) === 0) {
-          // Escribio de mas y el producto usa la forma corta: "monitores" -> "monitor".
-          // El minimo de 5 letras en la palabra del producto es lo que evita que "red"
-          // (cable de red, placa de red) matchee con "redragon", o "cam" con "webcam".
+          // Forma larga contra forma corta ("monitores" -> "monitor").
+          // Mínimo de 5 letras para evitar falsos positivos ("red" / "redragon").
           best = Math.max(best, 60);
         } else if (requirement.fuzzy && target.length >= 5) {
           var maxDistance = token.length >= 10 ? 2 : 1;
@@ -219,9 +214,8 @@
         }
       });
     });
-    // "placa de video" abre en vga, radeon, geforce, rtx. Una "VGA Gigabyte Radeon"
-    // pega en varios de esos; un "Cable VGA" en uno solo. El que pega en mas es el
-    // que realmente es esa clase de producto, y no el que la nombra al pasar.
+    // Suma puntos por cada alternativa que coincide: prioriza el tipo de producto
+    // sobre los que solo lo mencionan.
     return best ? best + Math.min(Math.max(hits - 1, 0), 3) * 45 : 0;
   }
 
@@ -263,8 +257,7 @@
     return /\d/.test(raw) && /^[a-z0-9._\/-]+$/i.test(raw) && normalizeCode(raw).length >= 4;
   }
 
-  // El producto se llama exactamente lo que se busco. Quien escribe "ps5" quiere la
-  // consola, no la funda para ps5 ni el juego de ps5, aunque los tres digan "ps5".
+  // Bonificación cuando el nombre es exactamente lo buscado.
   function exactNameBonus(normalizedName, normalizedQuery) {
     if (!normalizedName) return 0;
     if (normalizedName === normalizedQuery) return 1500;
@@ -299,10 +292,7 @@
       productTypeBonus(normalizedName, normalizedQuery) + availabilityBonus(product);
   }
 
-  // El nombre arranca con lo que se busco: es esa clase de producto. "Mouse Gamer
-  // Raptor" es un mouse; "Combo Teclado + Mouse" o "Disco Notebook" solo lo
-  // nombran. Pesa mas que la frase exacta en el medio del nombre: "Sist. Kelyx
-  // ... + Monitor 24" no es un monitor.
+  // Bonificación cuando el nombre empieza con lo buscado (tipo de producto).
   function productTypeBonus(normalizedName, normalizedQuery) {
     if (!normalizedName) return 0;
     var requirements = queryRequirements(normalizedQuery);
@@ -311,8 +301,7 @@
     if (!nameTokens.length) return 0;
     var first = requirements[0];
     if (scoreRequirement(first, targetTokens(nameTokens[0]))) return 1000;
-    // "memoria ram" tambien reconoce "Memoria DDR4 ..." y "Memoria SODIMM ...":
-    // alcanza con que el nombre arranque con la primera palabra de la frase.
+    // Acepta que el nombre empiece con la primera palabra de una frase alias.
     var startsWithPhrase = first.alternatives.some(function(alternative) {
       var tokens = normalize(alternative).split(' ').filter(Boolean);
       return tokens.length > 1 && tokens[0].length >= 4 && sameToken(nameTokens[0], tokens[0]);
@@ -320,8 +309,7 @@
     return startsWithPhrase ? 1000 : 0;
   }
 
-  // Lo que se puede comprar ya va antes que lo que esta sin stock: quien busca
-  // quiere algo que pueda llevarse. Stock desconocido o "a pedido" queda en el medio.
+  // Prioriza los productos con stock. Stock desconocido o a pedido queda en el medio.
   function availabilityBonus(product) {
     if (product.byOrder || product.producto_sinstock === true) return 1000;
     var raw = product.stock;
@@ -331,9 +319,8 @@
     return stock > 0 ? 2000 : 0;
   }
 
-  // Cuando ningun producto tiene TODAS las palabras ("rtx 4060" y no hay 4060),
-  // devuelve los que tienen la mayor cantidad, para mostrarlos como "parecidos"
-  // en vez de una lista vacia. Solo con dos palabras o mas.
+  // Productos parecidos: los que tienen más palabras de la búsqueda.
+  // Se usa cuando ningún producto las tiene todas.
   function similarProducts(products, query, limit) {
     var requirements = queryRequirements(normalize(query));
     if (requirements.length < 2) return [];
@@ -347,7 +334,7 @@
         groups.forEach(function(tokens) { top = Math.max(top, scoreRequirement(requirement, tokens)); });
         if (top) {
           matched++;
-          // La primera palabra suele ser el tipo de producto: pesa mas.
+          // La primera palabra suele indicar el tipo de producto.
           points += top + (index === 0 ? 400 : 0);
         }
       });
