@@ -1,4 +1,4 @@
-// config.js - Configuración centralizada para Dimensión Tres
+// config.js - Configuración general del sitio
 var CONFIG = {
   // Contacto
   CONTACT_PHONE: "5493534019085",
@@ -16,21 +16,19 @@ var CONFIG = {
   // API (futuro)
   API_BASE_URL: 'http://localhost:3000',
 
-  // Cache publico del catalogo.
-  // Antes estaba en 240 minutos y podia mostrar stock viejo demasiado tiempo.
-  // Para el local conviene corto: si cambias stock en Access, la web refresca rapido.
+  // Caché público del catálogo (minutos). Corto para que los cambios de stock se vean rápido.
   LOW_EGRESS_MODE: true,
   PUBLIC_CATALOG_CACHE_MINUTES: 1,
   PUBLIC_CATALOG_TIMEOUT_MS: 9000,
   MERCADO_LIBRE_AUTO_IMAGE_SEARCH: false,
 
-  // Invid: precios del proveedor en USD -> venta web en ARS.
-  // Cambiar INVID_USD_RATE cuando actualicen la cotización interna.
+  // Invid: precios del proveedor en USD convertidos a ARS para la venta web.
+  // Cotización de respaldo; la web usa el dólar cargado en Access.
   INVID_USD_RATE: 1515,
   INVID_MARKUP_RATE: 0.30,
   INVID_MIN_WEB_PRICE: 30000,
 
-  // Supabase local publicado por Cloudflare Tunnel (clave publica para navegador)
+  // Supabase publicado por Cloudflare Tunnel (clave pública para el navegador)
   SUPABASE_URL: 'https://api.dimensiontres.com',
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_ACJWLzQHlZjBrEguHvfOxg_3BJgxAaH',
 
