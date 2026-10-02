@@ -1,12 +1,10 @@
-/* ─────────────────────────────────────────────────────────
-   carrito.css — Estilos específicos del Carrito | Dimensión Tres
-   ───────────────────────────────────────────────────────── */
+/* carrito.css - Estilos de la página del carrito. */
 
-/* ── Neon glow ── */
+/* Brillo neón */
 .neon-glow { box-shadow: 0 0 15px rgba(0,240,255,.4); }
 .neon-glow:hover { box-shadow: 0 0 25px rgba(0,240,255,.7); }
 
-/* ── Animaciones de filas ── */
+/* Animación de filas */
 @keyframes rowIn {
   from { opacity: 0; transform: translateX(14px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -32,7 +30,7 @@
 .total-flash { animation: totalFlash .4s ease; }
 .fade-up   { animation: fadeUp .5s cubic-bezier(.25,.46,.45,.94) forwards; }
 
-/* ── Botones de cantidad ── */
+/* Botones de cantidad */
 .qty-btn {
   width: 32px;
   height: 32px;
@@ -51,7 +49,7 @@
   border-color: #00eefc;
 }
 
-/* ── Input de promo con foco ── */
+/* Campo de cupón con foco */
 #promo-input:focus {
   outline: none;
   box-shadow: 0 0 0 1px #00f0ff;
@@ -433,30 +431,23 @@
   }
 }
 
-/* ============================================================
-   Resumen de orden.
-   El sticky estaba en top:112px, heredado de cuando el nav media
-   80px. Con el nav de dos filas mide 153, asi que al scrollear el
-   resumen se metia abajo de la barra. Se ata al alto real del nav
-   en vez de a un numero suelto.
-   ============================================================ */
+/* Resumen de la orden: sticky según el alto real del nav. */
 
 @media (min-width: 1024px) {
   .dt-resumen {
-    /* fila 1 (72) + fila 2 (80) + aire */
+    /* Fila 1 (72) + fila 2 (80) + margen */
     top: calc(var(--dt-nav-fila1, 72px) + 80px + 1rem);
   }
 }
 
-/* Aire entre el bloque del total y los medios de pago. Al compactar el
-   resumen quedaron pegados y "TOTAL" se leia como parte de "Elegi como pagar". */
+/* Separación entre el total y los medios de pago. */
 .dt-resumen .payment-methods {
   margin-top: 1.75rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(72, 72, 71, 0.2);
 }
 
-/* Tira de medios de pago del resumen */
+/* Medios de pago del resumen */
 .dt-medios-pago {
   display: flex;
   align-items: flex-start;
@@ -491,9 +482,7 @@
   color: #8f8e8d;
 }
 
-/* Anchos de la tabla del carrito. Con la columna de precio unitario nueva
-   son 5 columnas, y sin repartir el nombre del producto se partia en tres
-   lineas mientras las de numeros sobraban de ancho. */
+/* Anchos de columnas de la tabla del carrito. */
 @media (min-width: 768px) {
   #cart-tbody + *, .cart-main-cell { width: auto; }
 
@@ -513,13 +502,7 @@
   #cart-grid table td:nth-child(5) { width: 8%; }
 }
 
-/* ============================================================
-   Resumen compacto en escritorio.
-   El bloque medía 1217px contra 900 de pantalla, asi que el
-   cliente nunca veia el total y los medios de pago juntos.
-   Se recorta el aire sin sacar informacion ni cambiar como
-   funciona: los mismos elementos, mas juntos.
-   ============================================================ */
+/* Resumen compacto en escritorio. */
 
 @media (min-width: 1024px) {
   .dt-resumen .payment-method {
@@ -549,19 +532,16 @@
     margin-top: 8px;
   }
 
-  /* La tira de medios de pago pierde una linea: la de cuotas ya la dice
-     el boton de Mercado Pago justo arriba. */
+  /* Se oculta la línea de cuotas (ya figura en el botón de Mercado Pago). */
   .dt-resumen .dt-medios-pago { padding: 0.85rem 1.1rem; }
   .dt-resumen .dt-medios-pago small:last-child { display: none; }
 }
 
-/* Datos para transferir: plegados hasta que se elige el metodo. */
+/* Datos de transferencia: visibles al elegir ese medio. */
 .transfer-panel { display: none; }
 .transfer-panel.is-open { display: block; }
 
-/* ============================================================
-   Carrito compacto y checkout separado
-   ============================================================ */
+/* Carrito compacto y checkout separado */
 .dt-sr-only {
   position: absolute;
   width: 1px;
@@ -769,8 +749,7 @@
   font-size: 1.65rem;
 }
 
-/* Aviso cuando el pedido incluye productos del proveedor (demora 48 hs).
-   Mismo ambar que la disponibilidad "Llega en 48 hs" del catalogo. */
+/* Aviso de productos del proveedor (demora de 48 hs). */
 .dt-cart-delay-note {
   display: flex;
   align-items: flex-start;
@@ -993,7 +972,7 @@
   }
 }
 
-/* Pago integrado en el resumen del carrito */
+/* Pago integrado en el resumen */
 .dt-cart-layout { grid-template-columns: minmax(0, 1fr) 410px; }
 
 .dt-coupon {
