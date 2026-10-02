@@ -1,8 +1,8 @@
 /**
- * catalogo.js — Filtros, búsqueda y sort del Catálogo | Dimensión Tres
+ * catalogo.js - Filtros, búsqueda y orden del catálogo.
  */
 
-/* ── Estado global del filtro ── */
+/* Estado del filtro */
 var currentFilter = 'all';
 var currentSearch = '';
 
@@ -54,9 +54,9 @@ function smartCardMatches(text, query) {
 }
 
 /**
- * setFilter — activa un filtro de categoría.
- * @param {string} filter - slug del filtro ('all', 'hardware', etc.)
- * @param {HTMLElement} btn - botón clickeado para activar el estilo
+ * setFilter - Activa un filtro de categoría.
+ * @param {string} filter - Slug del filtro ('all', 'hardware', etc.)
+ * @param {HTMLElement} btn - Botón presionado
  */
 function setFilter(filter, btn) {
   currentFilter = filter;
@@ -72,8 +72,8 @@ function setFilter(filter, btn) {
 }
 
 /**
- * filterBySearch — filtra las tarjetas por texto de búsqueda.
- * @param {string} query - texto ingresado por el usuario
+ * filterBySearch - Filtra las tarjetas por texto.
+ * @param {string} query - Texto ingresado
  */
 function filterBySearch(query) {
   currentSearch = normalizeSmartSearch(query);
@@ -81,7 +81,7 @@ function filterBySearch(query) {
 }
 
 /**
- * applyFilters — aplica el filtro activo Y la búsqueda simultáneamente.
+ * applyFilters - Aplica el filtro activo y la búsqueda.
  */
 function applyFilters() {
   var cards = document.querySelectorAll('.cat-card');
@@ -106,7 +106,7 @@ function applyFilters() {
 }
 
 /**
- * sortCards — reordena las tarjetas dentro del grid.
+ * sortCards - Reordena las tarjetas.
  * @param {string} order - 'az', 'za', 'default'
  */
 function sortCards(order) {
@@ -129,7 +129,7 @@ function sortCards(order) {
 }
 
 /**
- * resetFilters — reinicia búsqueda y filtro activo.
+ * resetFilters - Reinicia la búsqueda y el filtro.
  */
 function resetFilters() {
   currentFilter = 'all';
@@ -145,7 +145,7 @@ function resetFilters() {
 }
 
 /**
- * handleSearch — filtra en la misma página.
+ * handleSearch - Filtra en la misma página.
  */
 function handleSearch(query) {
   if (!query || !query.trim()) return;
@@ -154,7 +154,7 @@ function handleSearch(query) {
   if (el) el.focus();
 }
 
-/* ── Init ── */
+/* Inicio */
 document.addEventListener('DOMContentLoaded', function() {
   updateCartBadge();
 });
