@@ -88,3 +88,10 @@ img/invid/download-summary.json
 img/juegos-dixgamer-fuentes-*.json
 img/invid-imagenes-no-disponibles.json
 img/productos/imagen3*
+api/
+admin*.html
+admin.js
+admin.css
+.htaccess
+package.json
+package-lock.json

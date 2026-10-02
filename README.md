@@ -17,7 +17,7 @@ Tienda online de **DimensionTres**: hardware, gaming y servicio técnico en Vill
 
 - HTML, CSS y JavaScript, con Tailwind CSS compilado.
 - [Supabase](https://supabase.com) para el catálogo, las cuentas y los pedidos.
-- PHP en el servidor para los pagos con Mercado Pago y los avisos de pedidos.
+- Pagos con Mercado Pago.
 
 ## Estructura
 
@@ -25,16 +25,8 @@ Tienda online de **DimensionTres**: hardware, gaming y servicio técnico en Vill
 |---|---|
 | `index.html`, `catalogo.html`, `producto.html`, `carrito.html`, `cuenta.html` | Páginas del sitio |
 | `*.css`, `*.js` | Estilos y lógica de cada página |
-| `api/` | Servicios del servidor (pagos, cuotas, pedidos e imágenes) |
 | `img/` | Imágenes del sitio y de los productos |
 | `fonts/` | Tipografías locales |
-
-## Configuración
-
-Las claves privadas no forman parte del repositorio. Para instalar el sitio en un servidor:
-
-1. Copiar `api/payment-config.example.php` como `api/payment-config.php` y completar los datos.
-2. Revisar `config.js` (URL pública de Supabase y datos de contacto).
 
 ## Contacto
 
