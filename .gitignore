@@ -64,3 +64,27 @@ xmlrpc.php
 
 # Config local de Claude Code
 .claude/
+
+# Archivos internos que no forman parte del sitio publicado
+scripts/
+tests/
+test-results/
+PAQUETE_*/
+ENTREGA_*/
+99_ARCHIVO_HISTORICO/
+LISTO_PARA_LAPTOP/
+supabase_*.sql
+*.txt
+!robots.txt
+*.md
+!README.md
+*.vbs
+*.csv
+.vscode/
+.claude/
+index.php
+readme.html
+img/invid/download-summary.json
+img/juegos-dixgamer-fuentes-*.json
+img/invid-imagenes-no-disponibles.json
+img/productos/imagen3*
