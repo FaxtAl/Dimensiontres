@@ -1,8 +1,6 @@
-/* bot.css - "Tito", el bot de preguntas de DimensionTres.
-   Usa la misma paleta del sitio: negro, cyan #8ff5ff y esquinas casi rectas.
-   Va abajo a la izquierda para no chocar con el boton de WhatsApp (derecha). */
+/* bot.css - Asistente "Tito". Abajo a la izquierda, junto al botón de WhatsApp. */
 
-/* Boton redondo con la foto de Tito (img/bot-tito.jpg). */
+/* Botón redondo con la foto (img/bot-tito.jpg). */
 .dt-bot-launcher {
   position: fixed;
   left: clamp(16px, 2vw, 28px);
@@ -33,7 +31,7 @@
   object-fit: cover;
 }
 
-/* Sin foto: la inicial sobre el circulo cyan. */
+/* Sin foto: inicial sobre círculo celeste. */
 .dt-bot-launcher-img.is-fallback,
 .dt-bot-avatar-img.is-fallback {
   display: flex;
@@ -59,7 +57,7 @@
   outline-offset: 3px;
 }
 
-/* El cursor de terminal: la unica animacion que corre sola. */
+/* Cursor parpadeante. */
 .dt-bot-cursor {
   display: inline-block;
   width: 8px;
@@ -82,7 +80,7 @@ body.dt-modal-open .dt-bot-panel {
   pointer-events: none;
 }
 
-/* -- Panel -- */
+/* Panel */
 .dt-bot-panel {
   position: fixed;
   left: clamp(16px, 2vw, 28px);
@@ -177,7 +175,7 @@ body.dt-modal-open .dt-bot-panel {
   stroke-linecap: round;
 }
 
-/* -- Conversacion -- */
+/* Conversación */
 .dt-bot-log {
   flex: 1;
   overflow-y: auto;
@@ -298,7 +296,7 @@ body.dt-modal-open .dt-bot-panel {
   color: #8ff5ff;
 }
 
-/* -- Respuestas rapidas y campo de texto -- */
+/* Respuestas rápidas y campo de texto */
 .dt-bot-chips {
   display: flex;
   flex-wrap: wrap;
@@ -341,7 +339,7 @@ body.dt-modal-open .dt-bot-panel {
   height: 42px;
   padding: 0 12px;
   font-family: 'Manrope', system-ui, sans-serif;
-  font-size: 16px; /* 16px evita el zoom automatico de iOS al enfocar */
+  font-size: 16px; /* 16 px evita el zoom automático de iOS al enfocar. */
   color: #ffffff;
   background: #161616;
   border: 1px solid rgba(143, 245, 255, 0.18);
@@ -384,7 +382,7 @@ body.dt-modal-open .dt-bot-panel {
   white-space: nowrap;
 }
 
-/* -- Celular -- */
+/* Celular */
 @media (max-width: 767px) {
   .dt-bot-launcher {
     left: 16px;
@@ -393,8 +391,7 @@ body.dt-modal-open .dt-bot-panel {
     height: 54px;
   }
 
-  /* En la ficha de producto la barra de "Agregar" ocupa el borde de abajo:
-     el bot sube igual que el boton de WhatsApp. */
+  /* En la ficha de producto sube por encima de la barra "Agregar". */
   body.has-mobile-cta .dt-bot-launcher {
     bottom: 88px;
   }
