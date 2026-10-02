@@ -34,7 +34,7 @@
   body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; }
   .font-headline { font-family: 'Space Grotesk', sans-serif; }
 
-  /* -- Animations -- */
+  /* Animaciones */
   @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
   @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
@@ -48,7 +48,7 @@
   .animate-slide-in { animation: slideIn .4s ease forwards; }
   .animate-scale-in { animation: scaleIn .4s cubic-bezier(.25,.46,.45,.94) forwards; }
 
-  /* -- Split Layout -- */
+  /* Diseño en dos columnas */
   .split-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -150,7 +150,7 @@
     flex-shrink: 0;
   }
 
-  /* -- Right Panel (Form) -- */
+  /* Panel derecho (formulario) */
   .split-right {
     display: flex;
     align-items: center;
@@ -160,7 +160,7 @@
     min-height: 100vh;
   }
 
-  /* Mobile: compensate for fixed nav height */
+  /* Celular: compensa el alto del nav fijo */
   @media (min-width: 900px) {
     .split-right {
       padding-top: 2rem;
@@ -184,7 +184,7 @@
     .form-wrapper { max-width: 560px; }
   }
 
-  /* -- Tab Switcher -- */
+  /* Selector de pestañas */
   .auth-tabs {
     display: flex;
     background: var(--surface);
@@ -217,7 +217,7 @@
 
   .auth-tab:not(.active):hover { color: var(--text); }
 
-  /* -- Form Card -- */
+  /* Tarjeta del formulario */
   .form-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -242,7 +242,7 @@
     margin-bottom: 1.75rem;
   }
 
-  /* -- Google Button -- */
+  /* Botón de Google */
   .google-btn {
     width: 100%;
     display: flex;
@@ -270,7 +270,7 @@
 
   .google-btn:active { transform: translateY(0); }
 
-  /* -- Divider -- */
+  /* Separador */
   .divider {
     display: flex;
     align-items: center;
@@ -291,7 +291,7 @@
     color: var(--text-dim);
   }
 
-  /* -- Input Group -- */
+  /* Campos */
   .input-group { margin-bottom: 1rem; }
 
   .create-fields {
@@ -375,7 +375,7 @@
   .input-field.has-error { border-color: var(--error); }
   .input-field.has-error + .input-error-msg { display: block; }
 
-  /* -- Submit Button -- */
+  /* Botón de envío */
   .submit-btn {
     width: 100%;
     padding: 0.95rem;
@@ -407,7 +407,7 @@
     transform: none;
   }
 
-  /* -- Forgot / Extra Links -- */
+  /* Enlaces extra */
   .form-links {
     display: flex;
     justify-content: space-between;
@@ -427,7 +427,7 @@
 
   .form-link:hover { color: var(--cyan); }
 
-  /* -- Status Message -- */
+  /* Mensaje de estado */
   .status-msg {
     padding: 0.85rem 1rem;
     border-radius: 6px;
@@ -459,9 +459,7 @@
     color: #8ff5ff;
   }
 
-  /* ======================================
-     DASHBOARD (logueado)
-     ====================================== */
+  /* Panel de la cuenta (con sesión) */
 
   #dashboard {
     display: none;
@@ -477,7 +475,7 @@
     padding: 0 1.5rem 3rem;
   }
 
-  /* -- Header -- */
+  /* Encabezado */
   .dash-header {
     display: flex;
     flex-direction: column;
@@ -536,7 +534,7 @@
     background: rgba(255,113,108,0.05);
   }
 
-  /* -- User Card -- */
+  /* Tarjeta del usuario */
   .user-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -619,7 +617,7 @@
     margin-top: 0.5rem;
   }
 
-  /* -- Section Tabs -- */
+  /* Pestañas de secciones */
   .section-tabs {
     display: flex;
     gap: 0;
@@ -657,11 +655,11 @@
 
   .section-tab .material-symbols-outlined { font-size: 18px; }
 
-  /* -- Section Panels -- */
+  /* Paneles de secciones */
   .section-panel { display: none; animation: fadeUp .35s ease forwards; }
   .section-panel.active { display: block; }
 
-  /* -- Stats Grid -- */
+  /* Estadísticas */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -710,7 +708,7 @@
     color: var(--text-dim);
   }
 
-  /* -- Order List -- */
+  /* Lista de pedidos */
   .orders-list {
     display: flex;
     flex-direction: column;
@@ -946,7 +944,7 @@
 
   .order-item.expanded .expand-icon { transform: rotate(180deg); }
 
-  /* -- Empty State -- */
+  /* Estado vacío */
   .empty-state {
     text-align: center;
     padding: 3rem 2rem;
@@ -996,7 +994,7 @@
 
   .empty-action:hover { box-shadow: 0 0 30px rgba(0,240,255,0.4); transform: translateY(-1px); }
 
-  /* -- Profile Form -- */
+  /* Formulario de datos */
   .profile-form {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1068,7 +1066,7 @@
   .save-msg.visible { opacity: 1; }
   .save-msg.error { color: var(--error); }
 
-  /* -- Password Section -- */
+  /* Cambio de contraseña */
   .password-section {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -1119,13 +1117,13 @@
     border-color: rgba(143,245,255,0.3);
   }
 
-  /* -- Scrollbar -- */
+  /* Barra de desplazamiento */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }
   ::-webkit-scrollbar-thumb:hover { background: #484847; }
 
-  /* -- Noise -- */
+  /* Textura de ruido */
   body::after {
     content: '';
     position: fixed;
@@ -1136,7 +1134,7 @@
     opacity: 0.5;
   }
 
-  /* Mobile polish */
+  /* Ajustes para celular */
   @media (max-width: 639px) {
     .split-right {
       align-items: flex-start;
@@ -1401,7 +1399,7 @@
     }
   }
 
-  /* -- Login centrado con vidrio oscuro -- */
+  /* Ingreso centrado con fondo translúcido */
   #auth-view.split-container {
     position: relative;
     display: flex;
@@ -1578,19 +1576,17 @@
     }
   }
 
-  /* -- Material Symbols -- */
+  /* Material Symbols */
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 </style>
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body>
 
-<!-- ======================================
-     SPLIT LAYOUT (no logueado)
-     ====================================== -->
+<!-- Acceso (sin sesión) -->
 <div id="auth-view" class="split-container">
 
-  <!-- Formulario de acceso centrado -->
+  <!-- Formulario de acceso -->
   <div class="split-right">
     <div class="form-wrapper">
 
@@ -1599,14 +1595,14 @@
         <div class="auth-brand">DimensionTres</div>
       </div>
 
-      <!-- Tab Switcher -->
+      <!-- Selector de pestañas -->
       <div class="auth-tabs">
         <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Ingresar</button>
         <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Activar DNI</button>
         <button class="auth-tab" id="tab-create" onclick="switchAuthTab('create')">Crear cuenta</button>
       </div>
 
-      <!-- -- LOGIN FORM -- -->
+      <!-- Ingresar -->
       <form id="panel-login" class="form-card" onsubmit="event.preventDefault();handleDniLogin();">
         <h2 class="form-title">Iniciar sesión</h2>
         <p class="form-subtitle">Ingresá con tu DNI y contraseña. Si ya pasaste por el local, tus datos pueden estar cargados para activar la cuenta.</p>
@@ -1646,7 +1642,7 @@
         </div>
       </form>
 
-      <!-- -- REGISTER FORM -- -->
+      <!-- Activar cuenta -->
       <form id="panel-register" class="form-card" style="display:none;" onsubmit="event.preventDefault();handleDniRegister();">
         <h2 class="form-title">Activar DNI</h2>
         <p class="form-subtitle">Si ya fuiste al local y te registraron, ingresá tu DNI para encontrar tus datos y crear tu contraseña.</p>
@@ -1676,7 +1672,7 @@
         </div>
       </form>
 
-      <!-- -- CREATE FORM -- -->
+      <!-- Crear cuenta -->
       <form id="panel-create" class="form-card" style="display:none;" onsubmit="event.preventDefault();handleNormalRegister();">
         <h2 class="form-title">Crear cuenta</h2>
         <p class="form-subtitle">Creá una cuenta nueva con tus datos. Si tu DNI ya está cargado, usá Activar DNI para vincularlo.</p>
@@ -1730,12 +1726,10 @@
   </div>
 </div>
 
-<!-- ======================================
-     DASHBOARD (logueado)
-     ====================================== -->
+<!-- Panel de la cuenta (con sesión) -->
 <div id="dashboard">
 
-  <!-- Header -->
+  <!-- Encabezado -->
   <div class="dash-container">
     <div class="dash-header">
       <div class="dash-title-wrap">
@@ -1748,7 +1742,7 @@
       </button>
     </div>
 
-    <!-- User Card -->
+    <!-- Tarjeta del usuario -->
     <div class="user-card">
       <div class="user-avatar-wrap">
         <img id="user-avatar" class="user-avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Avatar de usuario" style="display:none" onerror="this.style.display='none'; document.getElementById('user-avatar-fb').style.display='flex';"/>
@@ -1767,7 +1761,7 @@
       </div>
     </div>
 
-    <!-- Section Tabs -->
+    <!-- Pestañas de secciones -->
     <div class="section-tabs">
       <button class="section-tab active" onclick="switchSection('pedidos', this)">
         <span class="material-symbols-outlined">receipt_long</span>
@@ -1783,10 +1777,10 @@
       </button>
     </div>
 
-    <!-- -- SECTION: PEDIDOS -- -->
+    <!-- Sección: pedidos -->
     <div id="section-pedidos" class="section-panel">
       <div class="orders-list" id="orders-list">
-        <!-- Llenado por JS -->
+        <!-- Se completa por JS -->
       </div>
       <div id="orders-empty" class="empty-state" style="display:none;">
         <span class="material-symbols-outlined empty-icon">receipt_long</span>
@@ -1799,10 +1793,10 @@
       </div>
     </div>
 
-    <!-- -- SECTION: REPARACIONES -- -->
+    <!-- Sección: reparaciones -->
     <div id="section-reparaciones" class="section-panel">
       <div class="orders-list" id="repairs-list">
-        <!-- Llenado por JS -->
+        <!-- Se completa por JS -->
       </div>
       <div id="repairs-empty" class="empty-state" style="display:none;">
         <span class="material-symbols-outlined empty-icon">construction</span>
@@ -1811,7 +1805,7 @@
       </div>
     </div>
 
-    <!-- -- SECTION: DATOS -- -->
+    <!-- Sección: datos -->
     <div id="section-datos" class="section-panel">
       <div class="profile-form">
         <div class="profile-section-title">Datos personales</div>
@@ -1852,7 +1846,7 @@
 
       <form class="profile-form" style="margin-top:1.5rem;" onsubmit="event.preventDefault();changePassword();">
         <div class="profile-section-title">Seguridad</div>
-        <!-- Sin este campo el gestor de contraseñas no sabe a que cuenta pertenece la clave nueva. -->
+        <!-- Usuario para el gestor de contraseñas -->
         <input type="text" id="pf-username" autocomplete="username" readonly tabindex="-1" aria-hidden="true" style="display:none"/>
         <div class="profile-form-grid">
           <div class="full-width">
@@ -1876,11 +1870,9 @@
   </div>
 </div>
 
-<!-- ======================================
-     NAV (completo, igual que index.html)
-     ====================================== -->
+<!-- Nav -->
 <nav class="fixed top-0 w-full z-50 " style="background:#0e0e0e; border-bottom:1px solid rgba(0,240,255,0.08);">
-  <!-- FILA 1 (solo escritorio): logo + buscador ancho + redes -->
+  <!-- Fila 1 (escritorio): logo, buscador y redes -->
   <div class="dt-nav-top">
     <a href="index.html" class="dt-nav-top-logo">DimensionTres</a>
 <div class="dt-nav-buscador">
@@ -1899,7 +1891,7 @@
   </div>
 
   <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
-    <!-- IZQUIERDA (solo celular): hamburguesa + lupa -->
+    <!-- Izquierda (celular): menú y lupa -->
     <div class="dt-nav-side">
       <button id="menu-btn" onclick="toggleMenu()"
         class="flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
@@ -1914,7 +1906,7 @@
     </div>
 
     <a href="index.html" class="dt-nav-logo text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline shrink-0">DimensionTres</a>
-    <!-- Desplegable "Productos": solo escritorio. Lo llena menu-categorias.js -->
+    <!-- Desplegable "Productos" (escritorio). Lo completa menu-categorias.js -->
     <div class="dt-mega-wrap">
       <button id="dt-mega-toggle" type="button" class="dt-mega-toggle"
               onclick="dtToggleMegaMenu()" aria-expanded="false" aria-haspopup="true">
@@ -1948,9 +1940,7 @@
   </div>
 </nav>
 
-<!-- -- DRAWER MOBILE ---------------------------------------------
-     Se desliza desde la izquierda con backdrop oscuro.
-     ========================================================== -->
+<!-- Menú lateral de celular -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -1963,7 +1953,7 @@
     <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
   </div>
 
-    <!-- Cuerpo scrolleable: links sueltos + todas las categorias -->
+    <!-- Contenido con scroll: enlaces y categorías -->
     <div class="dt-drawer-body">
 
       <nav class="flex flex-col gap-1 px-5 pt-4 pb-2">
@@ -1976,12 +1966,12 @@
 
       <p class="dt-menu-titulo">Categorías</p>
 
-      <!-- Lo llena menu-categorias.js -->
+      <!-- Lo completa menu-categorias.js -->
       <div id="dt-menu-categorias"></div>
 
     </div>
 
-    <!-- Pie fijo -->
+    <!-- Pie del menú -->
     <div class="dt-drawer-foot p-5 border-t border-[rgba(72,72,71,0.15)]">
       <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
       <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
@@ -2009,21 +1999,19 @@
 <script src="search-global.js?v=buscador-20261001"></script>
 <script src="cart.js?v=cart-gorila-20260922"></script>
 <script>
-// ==============================================================
-//  CUENTA - Rediseño completo | Dimensión Tres
-// ==============================================================
+// Cuenta del cliente
 
 let currentUser = null;
 let profileComplete = false;
 let googleStatusTarget = 'create-status';
 
-// -- Historial desde Supabase --
+// Historial desde Supabase
 let accountOrders = [];
 let accountRepairs = [];
 let ordersLoaded = false;
 let repairsLoaded = false;
 
-// -- Auth Tab Switching --
+// Cambio de pestañas de acceso
 function switchAuthTab(tab) {
   const loginTab = document.getElementById('tab-login');
   const registerTab = document.getElementById('tab-register');
@@ -2129,15 +2117,15 @@ function withAccountTimeout(promise, message, ms) {
   ]);
 }
 
-// -- Section Switching --
+// Cambio de secciones
 
-// -- Login / Register por DNI --
+// Ingreso y registro por DNI
 function cleanDni(value) {
   return String(value || '').replace(/\D/g, '');
 }
 
-// Login principal del local: el cliente entra con DNI y contrasena.
-// Supabase busca ese DNI contra los clientes sincronizados desde Access.
+// Ingreso con DNI y contraseña.
+// El DNI se busca entre los clientes sincronizados desde Access.
 async function handleDniLogin() {
   const account = document.getElementById('login-dni').value.trim();
   const dni = cleanDni(account);
@@ -2183,7 +2171,7 @@ async function handleDniLogin() {
   }
 }
 
-// Activa un DNI que ya existe en Access/Supabase y le crea contrasena web.
+// Activa un DNI existente en Access y le asigna una contraseña web.
 async function handleDniRegister() {
   const dni = cleanDni(document.getElementById('reg-dni').value);
   const pass = document.getElementById('reg-pass').value;
@@ -2225,7 +2213,7 @@ async function handleDniRegister() {
   loginUser(result.user);
 }
 
-// Crea una cuenta nueva desde la web. El DNI permite vincularla despues al historial local.
+// Crea una cuenta nueva; el DNI permite vincularla al historial del local.
 async function handleNormalRegister() {
   const name = document.getElementById('create-name').value.trim();
   const email = document.getElementById('create-email').value.trim().toLowerCase();
@@ -2251,9 +2239,7 @@ async function handleNormalRegister() {
     showStatus(status, 'Las contraseñas no coinciden.', 'error');
     return;
   }
-  // DNI y telefono obligatorios, igual que en "Datos personales": el
-  // telefono hace falta para avisar por WhatsApp cuando hay un pedido, y
-  // antes una cuenta nueva podia llegar al checkout sin ninguno de los dos.
+  // DNI y teléfono obligatorios (el teléfono se usa para avisos por WhatsApp).
   if (dni.length < 7) {
     showStatus(status, 'Ingresá un DNI válido.', 'error');
     return;
@@ -2298,9 +2284,9 @@ function getAuthReturnUrl() {
   return /^[a-z0-9_-]+\.html(?:[?#].*)?$/i.test(target) ? target : '';
 }
 
-// -- Login User --
-// Guarda la sesion visible para la web y muestra el panel de cuenta.
-// La sesion real igualmente vive en Supabase Auth.
+// Inicio de sesión
+// Guarda la sesión visible y muestra el panel.
+// La sesión real está en Supabase Auth.
 function loginUser(user) {
   currentUser = user;
   localStorage.setItem('d3_user', JSON.stringify(user));
@@ -2312,7 +2298,7 @@ function loginUser(user) {
   renderDashboard(user);
 }
 
-// -- Logout --
+// Cerrar sesión
 async function signOut() {
   currentUser = null;
   localStorage.removeItem('d3_user');
@@ -2322,13 +2308,13 @@ async function signOut() {
   showAuthView();
 }
 
-// -- Render Dashboard --
+// Mostrar el panel
 function renderDashboard(user) {
-  // Hide auth view, show dashboard
+  // Oculta el acceso y muestra el panel
   document.getElementById('auth-view').style.display = 'none';
   document.getElementById('dashboard').classList.add('visible');
 
-  // User card
+  // Tarjeta del usuario
   const nameEl = document.getElementById('user-name-display');
   const emailEl = document.getElementById('user-email-display');
   const avatarEl = document.getElementById('user-avatar');
@@ -2349,7 +2335,7 @@ function renderDashboard(user) {
     providerEl.textContent = user.provider === 'dni' ? 'DNI' : 'Email';
   }
 
-  // Profile form
+  // Formulario de datos
   const parts = user.name.split(' ');
   document.getElementById('pf-name').value = user.firstName || parts[0] || '';
   document.getElementById('pf-lastname').value = user.lastName || parts.slice(1).join(' ') || '';
@@ -2359,7 +2345,7 @@ function renderDashboard(user) {
   document.getElementById('pf-username').value = user.dni || user.email || '';
   document.getElementById('pf-email').value = user.email || '';
 
-  // Load saved profile data
+  // Carga los datos guardados
   const saved = JSON.parse(localStorage.getItem('d3_profile_' + user.id) || '{}');
   if (saved.firstName && !document.getElementById('pf-name').value) document.getElementById('pf-name').value = saved.firstName;
   if (saved.lastName && !document.getElementById('pf-lastname').value) document.getElementById('pf-lastname').value = saved.lastName;
@@ -2367,19 +2353,19 @@ function renderDashboard(user) {
   document.getElementById('pf-phone').value = user.phone || saved.phone || '';
   document.getElementById('pf-address').value = user.address || saved.address || '';
 
-  // Check if profile is complete (email and phone required)
+  // Verifica que el perfil esté completo (email y teléfono)
   profileComplete = !!(
     document.getElementById('pf-email').value &&
     document.getElementById('pf-phone').value
   );
 
-  // If profile incomplete, show datos tab and show warning
+  // Perfil incompleto: abre la pestaña de datos con un aviso
   if (!profileComplete) {
     const datosTab = document.querySelector('.section-tab[onclick*="datos"]');
     const pedidosTab = document.querySelector('.section-tab[onclick*="pedidos"]');
     if (datosTab) switchSection('datos', datosTab);
 
-    // Add warning banner
+    // Aviso
     let warning = document.getElementById('profile-warning');
     if (!warning) {
       warning = document.createElement('div');
@@ -2390,19 +2376,18 @@ function renderDashboard(user) {
       if (tabsEl) tabsEl.parentNode.insertBefore(warning, tabsEl.nextSibling);
     }
   } else {
-    // Show pedidos tab if profile complete
+    // Perfil completo: abre la pestaña de pedidos
     const pedidosTab = document.querySelector('.section-tab[onclick*="pedidos"]');
     if (pedidosTab) switchSection('pedidos', pedidosTab);
   }
 
-  // Render orders only
+  // Solo pedidos
   renderOrders();
   renderRepairs();
   loadAccountHistory();
 }
 
 function renderStats() {
-  // REMOVED - stats no longer shown
 }
 
 function escapeHtml(value) {
@@ -2689,9 +2674,9 @@ async function cleanupPendingOrdersNotInCart() {
 }
 
 // Carga el historial de la cuenta:
-// - compras/facturas desde Access sincronizado
-// - pedidos web guardados desde carrito
-// - reparaciones del local si el DNI/cliente coincide
+// - compras y facturas sincronizadas desde Access
+// - pedidos web
+// - reparaciones del local (por DNI o cliente)
 async function loadAccountHistory() {
   if (!window.SupabaseStore) {
     ordersLoaded = true;
@@ -2854,7 +2839,7 @@ function toggleOrderDetail(el) {
   el.classList.toggle('expanded');
 }
 
-// -- Save Profile --
+// Guardar datos
 async function saveProfile() {
   if (!currentUser) return;
 
@@ -2865,11 +2850,8 @@ async function saveProfile() {
   const phone = document.getElementById('pf-phone').value.trim();
   const address = document.getElementById('pf-address').value.trim();
 
-  // Antes se podia guardar con cualquier campo vacio -- nombre, telefono,
-  // lo que sea -- sin ningun aviso. El telefono en particular hace falta
-  // despues para armar el pedido y avisar por WhatsApp, asi que se
-  // valida aca, antes de guardar, en vez de descubrirlo recien en el
-  // checkout. La direccion sigue opcional (lo dice su propio campo).
+  // Valida los campos obligatorios antes de guardar
+  // (la dirección es opcional).
   const msgValidacion = document.getElementById('save-msg');
   function mostrarErrorValidacion(texto) {
     msgValidacion.classList.remove('visible', 'error');
@@ -2943,7 +2925,7 @@ async function saveProfile() {
   });
   localStorage.setItem('d3_user', JSON.stringify(currentUser));
 
-  // Check if profile is now complete
+  // Verifica si el perfil quedó completo
   if (email && phone) {
     profileComplete = true;
     const warning = document.getElementById('profile-warning');
@@ -2956,16 +2938,16 @@ async function saveProfile() {
   setTimeout(() => msg.classList.remove('visible'), 3000);
 }
 
-// -- Section Switch with profile check --
+// Cambio de sección con control de perfil
 function switchSection(name, btn) {
-  // If trying to access pedidos and profile incomplete, show warning and redirect
+  // Pedidos con perfil incompleto: aviso y pestaña de datos
   if ((name === 'pedidos' || name === 'reparaciones') && !profileComplete && !accountOrders.length && !accountRepairs.length) {
     const warning = document.getElementById('profile-warning');
     if (warning) {
       warning.style.display = '';
       warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-    // Force switch to datos
+    // Cambia a datos
     const datosTab = document.querySelector('.section-tab[onclick*="datos"]');
     if (datosTab) switchSection('datos', datosTab);
     return;
@@ -3010,21 +2992,19 @@ async function changePassword() {
   alert('Contraseña actualizada.');
 }
 
-// -- Show Auth View --
+// Mostrar acceso
 function showAuthView() {
   document.getElementById('auth-view').style.display = '';
   document.getElementById('dashboard').classList.remove('visible');
   switchAuthTab('login');
-  // Si llego rebotado del carrito, avisarle por que: si no, aterriza en un
-  // login sin explicacion en medio de la compra.
+  // Aviso cuando se llega desde el carrito.
   if (getAuthReturnUrl()) {
     showStatus(document.getElementById('login-status'), 'Iniciá sesión para completar tu compra. Después te devolvemos al carrito.', 'info');
   }
 }
 
-// -- INIT --
-// Al abrir Mi Cuenta primero intenta restaurar sesion real de Supabase.
-// Esto evita que el checkout pida iniciar sesion si el cliente ya habia entrado.
+// Inicio
+// Intenta restaurar la sesión de Supabase al abrir la página.
 document.addEventListener('DOMContentLoaded', async function() {
   updateCartBadge();
 
@@ -3052,7 +3032,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch (e) {}
   }
 
-  // No user logged in ? show auth view
+  // Sin sesión: muestra el acceso
   showAuthView();
 });
 </script>
