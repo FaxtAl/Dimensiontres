@@ -1,9 +1,9 @@
 /**
- * cart.js — Motor del carrito | Dimensión Tres
- * Incluir en todas las páginas con: <script src="cart.js"></script>
+ * cart.js - Carrito de compras.
+ * Se incluye en todas las páginas.
  */
 
-/* ─── STORE ─────────────────────────────────── */
+/* Almacenamiento */
 function normalizeCartStock(value) {
   if (value === null || value === undefined || value === '') return null;
   var parsed = Number(String(value).replace(',', '.'));
@@ -63,8 +63,7 @@ function readByOrderFlag(item) {
 }
 
 function isByOrderProduct(item) {
-  // La marca historica "A pedido" ya no se usa en la web.
-  // Disponibilidad y compra dependen unicamente del stock real.
+  // La disponibilidad y la compra dependen solo del stock real.
   return false;
 }
 
@@ -341,7 +340,7 @@ function ensureUserLoggedIn(action) {
   return false;
 }
 
-/* ─── BADGE ──────────────────────────────────── */
+/* Contador del ícono */
 function updateCartBadge() {
   const count = CartStore.getCount();
   document.querySelectorAll('[data-cart-btn]').forEach(btn => {
@@ -362,7 +361,7 @@ function updateCartBadge() {
 window.addEventListener('cart:updated', updateCartBadge);
 document.addEventListener('DOMContentLoaded', updateCartBadge);
 
-/* ─── FLY ANIMATION ──────────────────────────── */
+/* Animación al agregar */
 function flyToCart(sourceEl, imgSrc) {
   const dest = document.querySelector('[data-cart-btn]');
   if (!dest) return;
@@ -389,30 +388,25 @@ function flyToCart(sourceEl, imgSrc) {
   });
 }
 
-/* ─── TOAST ──────────────────────────────────── */
+/* Aviso de producto agregado */
 function cartToast(name) {
   let wrap = document.getElementById('dt-toast-wrap');
   if (!wrap) { wrap = document.createElement('div'); wrap.id='dt-toast-wrap'; wrap.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none'; document.body.appendChild(wrap); }
   const t = document.createElement('div');
   t.style.cssText = 'background:#1a1919;border-left:2px solid #8ff5ff;border:1px solid rgba(143,245,255,.2);color:#fff;font-family:"Space Grotesk",sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:11px 18px;display:flex;align-items:center;gap:8px;max-width:min(90vw,420px);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s';
   
-  // Crear elementos seguros en lugar de innerHTML
+  // Se crean los elementos sin usar innerHTML.
   const iconSpan = document.createElement('span');
   iconSpan.style.cssText = "color:#8ff5ff;font-family:'Material Symbols Outlined';font-size:15px;vertical-align:middle";
   iconSpan.textContent = 'check_circle';
   
-  // El nombre del producto puede ser larguisimo ("PROCESADOR INTEL CORE
-  // ULTRA 7 265KF 20 CORES S/VIDEO S/COOLER S1851..."). Con nowrap y sin
-  // ancho maximo el cartel se estiraba mas que la pantalla del celular.
-  // Ahora se corta con puntos suspensivos en una sola linea; el min-width
-  // en 0 es lo que habilita el recorte dentro de un flex.
+  // El nombre se corta en una línea con puntos suspensivos
+  // (min-width: 0 permite el recorte dentro del flex).
   const textSpan = document.createElement('span');
   textSpan.style.cssText = 'min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
   textSpan.textContent = ` ${name}`;
 
-  // "agregado" va en su propio span que no se encoge: si fuera parte del
-  // mismo texto, los puntos suspensivos se lo comerian y el cartel quedaria
-  // sin decir que paso.
+  // "agregado" va en un span aparte para que no lo corte el recorte del nombre.
   const accionSpan = document.createElement('span');
   accionSpan.style.cssText = 'flex-shrink:0';
   accionSpan.textContent = 'agregado';
@@ -426,7 +420,7 @@ function cartToast(name) {
   setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(8px)'; setTimeout(()=>t.remove(),300); }, 2600);
 }
 
-/* ─── ADD TO CART (API pública) ──────────────── */
+/* Agregar al carrito (API pública) */
 
 function cartToastMessage(message, tone) {
   let wrap = document.getElementById('dt-toast-wrap');
@@ -489,9 +483,9 @@ function cartOpenProductWhatsApp(product) {
 }
 
 /**
- * addToCart — wrapper llamado desde los sub-catálogos.
+ * addToCart - Atajo usado desde los subcatálogos.
  * Firma: addToCart(name, price, img, event)
- * Genera un id estable desde el nombre del producto.
+ * Genera un id estable a partir del nombre.
  */
 function addToCart(name, price, img, event) {
   const product = {
@@ -501,7 +495,7 @@ function addToCart(name, price, img, event) {
     image: img || ''
   };
 
-  // Tomamos el botón del evento si fue pasado, o lo buscamos en el DOM
+  // Usa el botón del evento o lo busca en el DOM.
   const btn = (event && event.currentTarget)
     ? event.currentTarget
     : document.querySelector(`button.btn-add[onclick*="${name.substring(0, 10)}"]`);
@@ -509,7 +503,7 @@ function addToCart(name, price, img, event) {
   if (btn) {
     addToCartUI(btn, product);
   } else {
-    // Fallback sin animación de botón
+    // Sin botón: se agrega sin animación.
     const result = CartStore.add(product);
     if (!result.ok && result.reason === 'pedido') {
       cartOpenProductWhatsApp(product);
@@ -556,7 +550,7 @@ function addToCartUI(btn, product) {
   flyToCart(btn, card?.querySelector('img')?.src || null);
   const orig = btn.innerHTML;
   
-  // Crear elementos seguros
+  // Se crean los elementos sin usar innerHTML.
   const checkSpan = document.createElement('span');
   checkSpan.style.cssText = "font-family:'Material Symbols Outlined';font-size:14px;vertical-align:middle";
   checkSpan.textContent = 'check';
@@ -575,15 +569,11 @@ function addToCartUI(btn, product) {
   else cartToast(product.name);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   MINI CARRITO LATERAL
-   Se arma por JS y no en el HTML porque el nav esta repetido en
-   cinco paginas: asi hay una sola copia y no se pueden
-   desincronizar. Se abre con el icono del carrito del nav.
-   ═══════════════════════════════════════════════════════════ */
+/* Mini carrito lateral.
+   Se genera por JS para no repetir el markup en cada página.
+   Se abre con el ícono del carrito del nav. */
 
-// formatMoney vive en carrito.js, que solo se carga en la pagina del carrito.
-// El mini carrito corre en todas, asi que trae el suyo.
+// Formato de moneda propio (carrito.js solo se carga en carrito.html).
 function dtPlata(valor) {
   return '$' + Math.round(Number(valor) || 0).toLocaleString('es-AR');
 }
@@ -760,7 +750,7 @@ function dtToggleMiniCart(forzarCerrado) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // En carrito.html el icono no abre el panel: ya estas viendo el carrito.
+  // En carrito.html el ícono no abre el panel.
   var enCarrito = /carrito\.html$/i.test(window.location.pathname);
 
   document.querySelectorAll('[data-cart-btn]').forEach(function(btn) {
