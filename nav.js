@@ -1,5 +1,5 @@
 /**
- * nav.js — Menú drawer mobile | Dimensión Tres
+ * nav.js - Menú lateral para celular.
  */
 
 function toggleMenu() {
@@ -57,10 +57,8 @@ function closeMenu() {
   document.body.classList.remove('dt-mobile-menu-open');
 }
 
-// Al abrir el menu se bloquea el scroll del body, y ese bloqueo salta la
-// pagina al tope. Eso disparaba este mismo listener y cerraba el menu de
-// inmediato: si estabas scrolleado, el menu no abria. Ahora se guarda la
-// posicion al abrir y solo se cierra si el scroll se movio de verdad.
+// Cierra el menú solo si el scroll cambió desde que se abrió
+// (al abrirlo se bloquea el scroll del body).
 var dtScrollAlAbrir = 0;
 
 window.addEventListener('scroll', function() {
@@ -71,9 +69,8 @@ window.addEventListener('scroll', function() {
 });
 
 /**
- * Buscador de celular: lo despliega la lupa del nav.
- * El input lleva data-global-search, asi que search-global.js le
- * engancha solo las sugerencias.
+ * Buscador para celular, se abre con la lupa del nav.
+ * Usa data-global-search para las sugerencias.
  */
 function dtToggleMobileSearch() {
   var box = document.getElementById('dt-mobile-search');
