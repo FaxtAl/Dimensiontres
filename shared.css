@@ -1,16 +1,12 @@
-/* ─────────────────────────────────────────────────────────
-   shared.css — Estilos compartidos | Dimensión Tres
-   Incluir en todas las páginas con: <link rel="stylesheet" href="shared.css">
-   ───────────────────────────────────────────────────────── */
+/* shared.css - Estilos compartidos por todas las páginas. */
 
-/* ── Material Symbols ── */
+/* Material Symbols */
 :root {
   --dt-product-image-bg: #ffffff;
   --dt-product-image-border: rgba(255, 255, 255, 0.92);
 }
 
-/* La flecha se mantiene sobre texto y zonas visuales. El cursor de escritura
-   queda reservado exclusivamente para campos en los que realmente se puede escribir. */
+/* Cursor de flecha en todo el sitio; el de texto solo en campos editables. */
 body, body * { cursor: default; }
 a, button, [role="button"], label[for], summary,
 select, input[type="checkbox"], input[type="radio"], input[type="range"] { cursor: pointer; }
@@ -21,13 +17,13 @@ textarea, [contenteditable="true"] { cursor: text; }
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* ── Scrollbar personalizada ── */
+/* Barra de desplazamiento */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #0e0e0e; }
 ::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #484847; }
 
-/* Buscador global con recomendaciones */
+/* Sugerencias del buscador */
 .global-search-host { position: relative; }
 
 .global-search-suggestions {
@@ -71,14 +67,13 @@ textarea, [contenteditable="true"] { cursor: text; }
 }
 .global-search-suggestion.is-active { box-shadow: inset 2px 0 0 #8ff5ff; }
 
-/* Palabras buscadas resaltadas en el nombre del producto. */
+/* Palabras buscadas resaltadas en el nombre. */
 .global-search-hl {
   background: none;
   color: #8ff5ff;
 }
 
-/* Disponibilidad en la vista rapida: lo primero que mira el cliente despues
-   del nombre. */
+/* Etiqueta de disponibilidad en las sugerencias. */
 .global-search-tag {
   display: inline-block;
   margin-right: 6px;
@@ -448,25 +443,20 @@ body.dt-modal-open .dt-whatsapp-float {
   }
 }
 
-/* ============================================================
-   NAV estilo Gorila Games: en celular la hamburguesa y la lupa
-   van a la izquierda, el logo queda centrado y el carrito con la
-   cuenta a la derecha. En escritorio no cambia nada.
-   Se escribe en CSS plano y no con clases nuevas de Tailwind
-   porque el sitio usa tailwind.generated.css ya compilado: una
-   clase que no este ahi adentro no existiria.
-   ============================================================ */
+/* Nav en celular: menú y lupa a la izquierda, logo centrado,
+   carrito y cuenta a la derecha. En escritorio no cambia.
+   Se usa CSS propio porque tailwind.generated.css ya está compilado. */
 
 .dt-nav-row { position: relative; }
 
-/* Grupo izquierdo: solo celular */
+/* Grupo izquierdo (solo celular) */
 .dt-nav-side {
   display: flex;
   align-items: center;
   gap: 0.85rem;
 }
 
-/* Logo centrado en celular; en escritorio vuelve a su lugar */
+/* Logo centrado en celular */
 @media (max-width: 767px) {
   .dt-nav-logo {
     position: absolute;
@@ -481,13 +471,12 @@ body.dt-modal-open .dt-whatsapp-float {
   .dt-nav-side { display: none; }
 }
 
-/* Buscador de celular: colapsado hasta que se toca la lupa */
+/* Buscador de celular, oculto hasta tocar la lupa */
 .dt-mobile-search {
   display: none;
 }
 
-/* El .is-open solo vale en celular. Si no, al pasar a escritorio le gana
-   por especificidad al md:hidden de Tailwind y la barra queda colgada. */
+/* .is-open solo aplica en celular. */
 @media (max-width: 767px) {
   .dt-mobile-search.is-open {
     display: block;
@@ -505,14 +494,9 @@ body.dt-modal-open .dt-whatsapp-float {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================================
-   Menu de categorias del drawer.
-   Reemplaza el recorrido "tarjeta -> tarjeta -> productos" por
-   un desplegable con todo a la vista, como gorilagames.com.
-   ============================================================ */
+/* Menú de categorías del panel lateral (desplegable). */
 
-/* El drawer pasa a columna: cabecera y pie fijos, el medio scrollea.
-   Sin esto, con 13 categorias abiertas el pie tapaba el contenido. */
+/* Panel en columna: cabecera y pie fijos, contenido con scroll. */
 .dt-drawer-shell {
   display: flex;
   flex-direction: column;
@@ -587,7 +571,7 @@ body.dt-modal-open .dt-whatsapp-float {
 
 .dt-cat-link:hover { color: #00f0ff; background: #1a1919; }
 
-/* "Ver todo" arranca la lista: entrar a la categoria entera es un toque. */
+/* "Ver todo" al comienzo de cada lista. */
 .dt-cat-link-todo {
   color: #00f0ff;
   font-weight: 600;
@@ -599,9 +583,7 @@ body.dt-modal-open .dt-whatsapp-float {
   box-shadow: inset 2px 0 0 #00f0ff;
 }
 
-/* ============================================================
-   Desplegable "Productos" del nav de escritorio.
-   ============================================================ */
+/* Desplegable "Productos" del nav de escritorio. */
 
 .dt-mega-wrap { position: relative; display: none; }
 
@@ -644,8 +626,7 @@ body.dt-modal-open .dt-whatsapp-float {
   left: 0;
   z-index: 60;
   display: none;
-  /* Casi solido: con 0.82 el banner de la portada se veia a traves y costaba
-     leer las categorias. Mantiene el desenfoque y el borde del nav. */
+  /* Fondo casi opaco para que el contenido de atrás no moleste la lectura. */
   background: rgba(7, 8, 9, 0.96);
   -webkit-backdrop-filter: blur(16px) saturate(135%);
   backdrop-filter: blur(16px) saturate(135%);
@@ -724,19 +705,13 @@ body.dt-modal-open .dt-whatsapp-float {
   box-shadow: inset 2px 0 0 #00f0ff;
 }
 
-/* ============================================================
-   Nav de escritorio en dos filas, como gorilagames.com:
-   arriba logo + buscador ancho + redes, abajo Productos + links
-   + carrito. En celular la fila 1 no existe y queda la barra
-   unica con el logo centrado.
-   ============================================================ */
+/* Nav de escritorio en dos filas: logo, buscador y redes arriba;
+   Productos, enlaces y carrito abajo. En celular solo hay una fila. */
 
 .dt-nav-top { display: none; }
 
 @media (min-width: 768px) {
-  /* Alto fijo para la fila 1. Es lo que se le suma al body como padding:
-     con alto automatico el valor dependeria del contenido y el nav, que es
-     fixed, terminaria tapando el inicio de cada pagina. */
+  /* Alto fijo de la fila 1 (se suma como padding del body). */
   :root { --dt-nav-fila1: 72px; }
 
   .dt-nav-top {
@@ -750,14 +725,12 @@ body.dt-modal-open .dt-whatsapp-float {
     padding: 0 2rem;
   }
 
-  /* El logo de la fila 2 se apaga: ya esta arriba y tenerlo dos veces
-     desordena la fila de abajo. */
+  /* El logo de la fila 2 se oculta (ya está en la fila 1). */
   .dt-nav-logo { display: none; }
 
   .dt-nav-row { gap: 1.25rem; }
 
-  /* La fila 2 conserva su alto de siempre (md:h-20), asi el pt-20 que ya
-     tenian las paginas sigue alcanzando. Solo se compensa la fila nueva. */
+  /* La fila 2 mantiene su alto (md:h-20); solo se compensa la fila 1. */
   body { padding-top: var(--dt-nav-fila1); }
 }
 
@@ -776,8 +749,7 @@ body.dt-modal-open .dt-whatsapp-float {
 .dt-nav-buscador {
   display: flex;
   align-items: center;
-  /* Acotado y centrado entre el logo y las redes. A ancho completo se comia
-     toda la fila y quedaba desproporcionado. */
+  /* Buscador centrado entre el logo y las redes. */
   flex: 0 1 auto;
   width: min(50%, 540px);
   min-width: 0;
@@ -813,11 +785,7 @@ body.dt-modal-open .dt-whatsapp-float {
 .dt-social-link:focus-visible { outline: 2px solid #8ff5ff; outline-offset: 3px; }
 .dt-social-link svg { display: block; width: 22px; height: 22px; }
 
-/* ============================================================
-   Navegacion compacta y translúcida.
-   Las alturas se fijan aca porque las paginas usan un Tailwind compilado
-   y todavia conservan las clases h-16 / md:h-20 en el marcado.
-   ============================================================ */
+/* Nav compacto y translúcido (alturas fijadas aquí). */
 
 body > nav.fixed {
   background: rgba(7, 8, 9, 0.82) !important;
@@ -867,10 +835,7 @@ body > nav.fixed {
   }
 }
 
-/* ============================================================
-   Mini carrito lateral. El markup lo arma cart.js, asi que
-   existe en todas las paginas sin repetirlo en cada HTML.
-   ============================================================ */
+/* Mini carrito lateral (lo genera cart.js). */
 
 .dt-minicart-fondo {
   position: fixed;
@@ -1025,8 +990,7 @@ body > nav.fixed {
   margin-bottom: 0.25rem;
 }
 
-/* Solo el span del detalle, no cualquier span: el de adentro del boton de
-   quitar es el icono, y con esta fuente encima mostraba la palabra "close". */
+/* Solo el span del detalle (el del botón quitar es un ícono). */
 .dt-minicart-item > div > span {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.82rem;
@@ -1089,8 +1053,7 @@ body > nav.fixed {
 }
 
 @media (max-width: 420px) {
-  /* En celular tambien entra de costado: deja ver una franja de la pagina a
-     la izquierda (tocarla lo cierra), en vez de tapar toda la pantalla. */
+  /* En celular también se abre de costado. */
   .dt-minicart { width: 86%; max-width: 360px; }
   .dt-minicart-head { padding: 1rem; }
   .dt-minicart-share-wrap { padding-inline: 1rem; }
@@ -1121,18 +1084,7 @@ body > nav.fixed {
 
 .dt-minicart-pagar:hover { filter: brightness(1.08); }
 
-/* ============================================================
-   HUECO NEGRO BAJO EL NAV EN CELULAR
-   index.html tiene <main class="pt-28 md:pt-20">, o sea 112px
-   reservados arriba. En celular el nav mide 65px, asi que
-   sobraban 47px de fondo negro entre la barra y el banner del
-   inicio. Se veia como un rectangulo pegado abajo del nav.
-   En escritorio pt-20 (80px) si corresponde con la fila 2, y la
-   fila 1 ya se compensa con el padding del body de mas arriba.
-   El selector lleva el tag delante (main.pt-28) para ganarle a
-   la utilidad .pt-28 de tailwind.generated.css, que se carga
-   despues de esta hoja.
-   ============================================================ */
+/* Espacio superior del main en celular (alto real del nav). */
 @media (max-width: 767px) {
   main.pt-28 { padding-top: 64px; }
 }
@@ -1145,9 +1097,7 @@ body > nav.fixed {
   font: 750 .66rem/1.3 "Manrope", sans-serif;
 }
 
-/* Menu hamburguesa con el mismo vidrio que el nav (body > nav.fixed):
-   antes era negro solido. El fondo de atras se aclara un poco para que la
-   transparencia se note. Los ids le ganan a las clases de Tailwind del HTML. */
+/* Menú lateral con el mismo fondo translúcido que el nav. */
 #mobile-drawer {
   background: rgba(7, 8, 9, 0.82);
   border-right: 1px solid rgba(143, 245, 255, 0.12);
@@ -1158,15 +1108,8 @@ body > nav.fixed {
   background: rgba(0, 0, 0, 0.45);
 }
 
-/* ============================================================
-   Contenido centrado en una caja de ancho fijo (como gorilagames.com).
-   En monitores grandes el nav, las secciones y el pie ya no van de
-   punta a punta: quedan en el medio con aire a los costados. El banner
-   del inicio y la cinta de marcas siguen a todo el ancho.
-   "body" delante para ganarle a tailwind.generated.css, que se carga
-   despues. Los .container que ya traen su propio max-w-* (p. ej.
-   contacto con max-w-5xl) no se tocan.
-   ============================================================ */
+/* Contenido centrado con ancho máximo. El banner y la cinta de marcas
+   ocupan todo el ancho. Se antepone body para ganarle a Tailwind. */
 :root { --dt-ancho: 1320px; }
 body .dt-nav-top,
 body .max-w-\[1920px\],
