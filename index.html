@@ -31,14 +31,9 @@
   <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" data-mode="connect" style="scroll-padding-top:5rem; overflow-x:hidden;">
-<!-- =======================================
-     BARRA DE NAVEGACIÓN
-     - Desktop: logo | links | íconos
-     - Mobile:  logo | íconos | hamburguesa 
-     barra de navegacin entre 
-     ======================================= -->
+<!-- Barra de navegación -->
 <nav class="fixed top-0 w-full z-50" style="background:#0e0e0e; border-bottom: 1px solid rgba(0,240,255,0.08);">
-  <!-- FILA 1 (solo escritorio): logo + buscador ancho + redes -->
+  <!-- Fila 1 (escritorio): logo, buscador y redes -->
   <div class="dt-nav-top">
     <a href="index.html" class="dt-nav-top-logo">DimensionTres</a>
 <div class="dt-nav-buscador">
@@ -72,7 +67,7 @@
   <!-- Contenedor principal del nav -->
   <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
 
-    <!-- IZQUIERDA (solo celular): hamburguesa + lupa -->
+    <!-- Izquierda (celular): menú y lupa -->
     <div class="dt-nav-side">
       <button
         id="menu-btn"
@@ -99,7 +94,7 @@
       DimensionTres
     </a>
 
-    <!-- Desplegable "Productos": solo escritorio. Lo llena menu-categorias.js -->
+    <!-- Desplegable "Productos" (escritorio). Lo completa menu-categorias.js -->
     <div class="dt-mega-wrap">
       <button id="dt-mega-toggle" type="button" class="dt-mega-toggle"
               onclick="dtToggleMegaMenu()" aria-expanded="false" aria-haspopup="true">
@@ -110,7 +105,7 @@
       <div id="dt-mega-menu" class="dt-mega-panel"></div>
     </div>
 
-    <!-- Links de secciones: solo en escritorio (md+) -->
+    <!-- Enlaces de secciones (escritorio) -->
     <div class="hidden md:flex items-center space-x-6 lg:space-x-8 font-headline tracking-tight uppercase font-bold text-sm lg:text-base">
       <a class="text-[#00f0ff] border-b-2 border-[#00f0ff] pb-1 transition-all" href="#inicio">Inicio</a>
       <a class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="#categorias">Categorías</a>
@@ -119,10 +114,10 @@
       <a data-admin-link class="text-[#adaaaa] hover:text-[#00f0ff] transition-all" href="admin.html" style="display:none;">Admin</a>
     </div>
 
-    <!-- Buscador: solo en escritorio (md+) -->
+    <!-- Buscador (escritorio) -->
     
 
-    <!-- DERECHA: carrito y cuenta, en ese orden como en la referencia -->
+    <!-- Derecha: carrito y cuenta -->
     <div class="flex items-center gap-3 md:gap-4">
 
       <div class="relative">
@@ -136,7 +131,7 @@
     </div>
   </div>
 
-  <!-- Buscador de celular: lo despliega la lupa. Mismo motor global que el catalogo. -->
+  <!-- Buscador de celular, se abre con la lupa -->
   <div id="dt-mobile-search" class="dt-mobile-search md:hidden px-5 pb-3">
     <div class="relative w-full flex items-center global-search-host">
       <input
@@ -159,22 +154,20 @@
 
 </nav>
 
-<!-- -- DRAWER MOBILE ---------------------------------------------
-     Se desliza desde la izquierda con backdrop oscuro.
-     ========================================================== -->
+<!-- Menú lateral de celular -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
 
   <div class="dt-drawer-shell">
 
-    <!-- Cabecera del drawer -->
+    <!-- Cabecera del menú -->
     <div class="flex items-center justify-between px-5 h-16 border-b border-[rgba(0,240,255,0.08)] shrink-0">
       <a href="index.html" class="text-lg font-black text-[#00f0ff] italic tracking-tighter uppercase font-headline">DimensionTres</a>
       <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]" aria-label="Cerrar menú">close</button>
     </div>
 
-    <!-- Cuerpo scrolleable: links sueltos + todas las categorias -->
+    <!-- Contenido con scroll: enlaces y categorías -->
     <div class="dt-drawer-body">
 
       <nav class="flex flex-col gap-1 px-5 pt-4 pb-2">
@@ -185,7 +178,7 @@
 
       <p class="dt-menu-titulo">Categorías</p>
 
-      <!-- Lo llena menu-categorias.js -->
+      <!-- Lo completa menu-categorias.js -->
       <div id="dt-menu-categorias"></div>
 
       <nav class="flex flex-col gap-1 px-5 pt-3 pb-5">
@@ -195,7 +188,7 @@
 
     </div>
 
-    <!-- Pie fijo -->
+    <!-- Pie del menú -->
     <div class="dt-drawer-foot p-5 border-t border-[rgba(72,72,71,0.15)]">
       <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
         <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
@@ -205,10 +198,8 @@
   </div>
 </div>
 
-<!-- Script del menú mobile animación hamburguesa -> X y despliegue -->
-<!-- cambio de imagen cada 7 segundos color blue -->
 <main class="pt-28 md:pt-20">
-<!-- Hero Section -->
+<!-- Portada -->
 <section id="inicio" class="relative w-full overflow-hidden flex items-center">
 <div class="absolute inset-0 z-0">
 <picture id="home-hero-picture"><source media="(max-width: 767px)" srcset="img/banners/fc27-disponibles-celular.webp?v=banners-vertical-20261001"><img id="home-hero-image" alt="EA Sports FC 27, Assassin's Creed Black Flag Resynced y Wolverine disponibles en el local" class="home-hero-rotating-image w-full h-full object-cover" data-alt="Carrusel de banners de DimensionTres." src="img/banners/fc27-disponibles.webp?v=banners-20261001" srcset="img/banners/fc27-disponibles-1000.webp?v=banners-20261001 1000w, img/banners/fc27-disponibles.webp?v=banners-20261001 2000w" sizes="100vw" fetchpriority="high"></picture>
@@ -234,18 +225,11 @@
 </div>
 </div>
 </section>
-<!-- Brand Carousel (Static for UI) -->
-<!-- ===========================
-     CARRUSEL DE MARCAS INFINITO
-     Usa CSS @keyframes marquee para
-     desplazamiento sin JavaScript.
-     ============================ -->
+<!-- Cinta de marcas -->
 <section class="py-5 md:py-5 bg-surface-container-lowest border-y border-outline-variant/5 overflow-hidden">
   
 
-  <!-- Wrapper con overflow:hidden ? el track corre dentro sin romper el layout -->
-  <!-- Logos de marcas (Simple Icons, licencia CC0). Se definen una sola vez y
-       la cinta los reusa con <use>; el color sale de currentColor. -->
+  <!-- Logos de marcas (Simple Icons, licencia CC0). Se reutilizan con <use>. -->
   <svg class="marcas-sprite" width="0" height="0" aria-hidden="true" focusable="false">
     <symbol id="marca-sony" viewBox="-0.150 9.738 24.300 4.524"><path d="M8.5505 9.8881c.921 0 1.6574.2303 2.2209.7423.3848.3485.5999.8454.5939 1.3665a1.9081 1.9081 0 0 1-.5939 1.3726c-.5272.4848-1.3483.7423-2.221.7423-.8725 0-1.6785-.2575-2.2148-.7423-.3908-.3485-.609-.8484-.603-1.3726 0-.518.2182-1.015.603-1.3665.5-.4545 1.3847-.7423 2.2149-.7423zm.003 3.6692c.4606 0 .8878-.1606 1.1878-.4575.2999-.2999.4332-.6605.4332-1.1029 0-.4242-.1484-.821-.4333-1.1029-.2938-.2908-.7332-.4545-1.1877-.4545s-.8938.1637-1.1907.4545c-.2848.2818-.4333.6787-.4333 1.103-.006.409.1485.806.4333 1.1029.2969.2939.7332.4575 1.1907.4575zm-4.8418-1.9665c.1605.0424.315.094.4666.1636a1.352 1.352 0 0 1 .3787.2576c.197.206.309.4817.306.7665a.9643.9643 0 0 1-.3787.7788 2.0662 2.0662 0 0 1-.709.3485 3.7231 3.7231 0 0 1-1.1938.1697c-.352 0-.5467-.0406-.8138-.0962l-.077-.016c-.294-.0666-.5817-.1575-.8575-.2787a.0695.0695 0 0 0-.0424-.0121c-.0454 0-.0818.0394-.0818.0848v.203H.1212v-1.4786h.5242a.7559.7559 0 0 0 .1363.418c.2121.2607.4394.3607.6575.4395.3666.1212.7514.1848 1.1362.1969.5526 0 .8756-.134.9455-.163l.009-.0037.0062-.0023c.0616-.0226.3119-.1143.3119-.3916 0-.2743-.2338-.334-.387-.373l-.022-.0058c-.1708-.046-.562-.0872-.9897-.1323l-.1526-.016c-.4848-.0515-.9696-.1273-1.1968-.1758-.4977-.1097-.6942-.2917-.816-.4045l-.0082-.0076A1.0192 1.0192 0 0 1 0 11.1608c0-.497.3394-.797.7575-.9817.4454-.2.9756-.288 1.4392-.288.8211.0031 1.4877.2697 1.727.394.097.0515.1455-.0121.1455-.0606v-.1484h.5272v1.2876h-.4727a.9056.9056 0 0 0-.2939-.4909 1.289 1.289 0 0 0-.297-.1787c-.3968-.1667-.821-.2515-1.2513-.2455-.4423 0-.8665.085-1.0786.2153-.1333.0818-.2.1848-.2.306 0 .1727.1454.2424.2182.2636.1967.0597.6328.103.972.1369.0736.0073.1426.0142.2036.0206.3272.0334 1.012.1243 1.315.2zm18.1673-.9966v-.4787H24v.4696h-.4757c-.1727 0-.2424.0334-.3727.1788l-1.4271 1.63a.098.098 0 0 0-.0182.0698v.7423a1.106 1.106 0 0 0 .0121.103.1496.1496 0 0 0 .1.0909.9368.9368 0 0 0 .1303.009h.4848v.4698h-2.5724v-.4697h.4606a.9343.9343 0 0 0 .1302-.0091.1627.1627 0 0 0 .1031-.091.5626.5626 0 0 0 .009-.1v-.7422c0-.0242 0-.0242-.0333-.0636a606.7592 606.7592 0 0 0-1.4119-1.6028c-.0758-.0788-.2061-.2061-.406-.2061h-.4576v-.4696h2.5876v.4696h-.3121c-.0697 0-.1182.0697-.0576.1455 0 0 .8696 1.0392.8787 1.0513.0091.0122.0152.0122.0273.003.0121-.009.8938-1.0453.8999-1.0543a.0912.0912 0 0 0-.0182-.1273.1095.1095 0 0 0-.0606-.0182zm-6.284-.0031h.4848c.2212 0 .2606.0848.2636.2909l.0273 1.5664-2.5815-2.324H11.944v.4697h.412c.297 0 .3182.1636.3182.309v2.2138c.0004.1285.0009.295-.1818.295h-.506v.4667h2.1634v-.4697h-.5273c-.212 0-.2211-.097-.2242-.303v-1.8816l2.9724 2.6511h.7575l-.0394-2.9966c.003-.218.0182-.2908.2424-.2908h.4726v-.4697H15.595Z"/></symbol>
     <symbol id="marca-redragon" viewBox="-0.150 3.927 24.300 16.146"><path d="M13.995 4.077v.06A10.963 10.963 0 0 1 16.22 8.42c.605 2.167.876 4.414.805 6.662a1.01 1.01 0 0 1 0 .113 6.278 6.278 0 0 0-.721-1.846 4.39 4.39 0 0 0-1.367-1.45c.025.064.059.113.059.168a7.04 7.04 0 0 1 .528 2.245 4.703 4.703 0 0 1-1.076 3.41 1.38 1.38 0 0 0-.113.203l-.069-.065a3.949 3.949 0 0 0-.138-2.374c-.578 2.216-2.068 3.538-4.047 4.437 2.404-.01 4.723-.375 6.697-1.856.015.533-.148.958-.696 1.841 1.673-.839 2.403-2.23 2.586-4.012.45.536.755 1.178.888 1.866.128.656.192 1.327.286 1.974.71-1.747.686-3.593.444-5.512 2.137 1.248 3.02 3.266 3.701 5.428a25.023 25.023 0 0 0-.133-3.494c-.17-1.698-.59-3.36-1.248-4.935a11.844 11.844 0 0 0-6.638-6.583 8.79 8.79 0 0 0-1.973-.563zm-2.734.11c-.306.522-.587 1.06-.933 1.539a18.019 18.019 0 0 1-1.14 1.524 1.313 1.313 0 0 1-.943.43l.445-2.083a.626.626 0 0 0-.143.188c-.3.46-.592.928-.908 1.372a.632.632 0 0 1-.726.247c-.493-.144-.987-.282-1.48-.44a.257.257 0 0 0-.326.08A18.356 18.356 0 0 1 3.785 8.42c-1.076.953-2.24 1.746-3.785 1.638v.065c.434 1.026.864 2.053 1.318 3.074a1.648 1.648 0 0 0 .69.74 12.216 12.216 0 0 1-.183-1.283c-.024-.523.094-.617.617-.667a.168.168 0 0 1 .203.129c.074.187.163.37.246.558.104-.227.193-.44.296-.642a.301.301 0 0 1 .149-.133c.222-.094.45-.168.686-.257l.177.356c.153-.35.296-.696.46-1.037a.375.375 0 0 1 .468-.173v.242a4.935 4.935 0 0 0 .493 2.626 4.244 4.244 0 0 1 .281 1.046c.04.162-.043.257-.196.257l-.4.044a1.655 1.655 0 0 1 .27.247c.075.094.179.27.144.32a.918.918 0 0 1-.39.267.536.536 0 0 1-.315 0 9.746 9.746 0 0 1-.81-.272 3.64 3.64 0 0 1-.414-.212l-.08.094.716.612a1.554 1.554 0 0 0 1.24.41.987.987 0 0 0 .986-.988c.045-.306.005-.616.045-.922a2.704 2.704 0 0 1 .927-1.974 2.561 2.561 0 0 0-1.214.74 6.366 6.366 0 0 1-.079-1.135 1.545 1.545 0 0 1 1.402-1.653 20.515 20.515 0 0 1 1.648-.281c.805-.08 1.599-.246 2.369-.494a4.367 4.367 0 0 0 1.406-.794 17.83 17.83 0 0 1-2.872.38 8.882 8.882 0 0 0 3.4-4.777c-1.056 1.48-2.202 2.867-3.87 3.701a22.7 22.7 0 0 0 1.447-4.086zM5.443 8.07c-.03.153-.054.305-.094.454-.074.29-.163.577-.237.868a.197.197 0 0 1-.198.178c-.384.045-.764.103-1.183.157zM9.4 10.775a4.206 4.206 0 0 0-.577.053 2.897 2.897 0 0 0-1.48.523.987.987 0 0 0-.43.923 1.1 1.1 0 0 1 .972-.671 3.065 3.065 0 0 1 1.762.34c.49.234.772.76.696 1.298a2.338 2.338 0 0 1-.687 1.377 5.797 5.797 0 0 1-1.914 1.308 9.695 9.695 0 0 0-2.32 1.41 3.95 3.95 0 0 0-1.396 2.567h5.921a2.023 2.023 0 0 1 .987-2.551l-.26 1.115a5.428 5.428 0 0 0 1.243-2.665c.171.407.245.848.216 1.288a5.615 5.615 0 0 0 .44-2.866l.518.561c-.049-.4-.09-.755-.134-1.11a3.097 3.097 0 0 0-1.865-2.585 4.197 4.197 0 0 0-1.692-.315z"/></symbol>
@@ -258,8 +242,7 @@
     <symbol id="marca-hyperx" viewBox="-0.150 5.084 24.300 13.833"><path d="M22.428 5.234c-.036-.005-.055.05-.055.05-.935 2.297-2.446 4.096-4.25 5.503-2.157-1.445-4.476-2.16-6.477-2.5l.508-1.695H10.56l-.445 1.496c-2.12-.194-3.61.004-3.664.008-.085.007-.108.027-.106.056.004.042.084.043.084.043 4.228.324 7.684 1.789 10.367 3.528C9.926 16.098.15 15.826.15 15.826c-.123-.002-.149.019-.15.065-.004.07.113.07.113.07 12.395 1.527 17.776-2.796 18.238-3.143 3.685 2.82 5.513 5.867 5.513 5.867.034.05.069.092.105.079.056-.02.02-.106.02-.106-1.062-3.053-2.666-5.243-4.475-6.808 2.846-2.757 2.926-6.242 2.945-6.499.01-.113-.01-.115-.03-.117zM4.939 6.592l-1.313 4.384h1.582l1.314-4.384Zm1.39 2.023-.222.748h3.625c-.09.297-.483 1.613-.483 1.613h1.594l.422-1.414a21.95 21.949 0 0 0-4.936-.947z"/></symbol>
   </svg>
   <div class="marquee-wrapper">
-    <!-- El track tiene 4 sets idénticos:
-         suficiente para cubrir cualquier pantalla ancha sin gaps -->
+    <!-- Cuatro copias de la lista para cubrir pantallas anchas -->
     <div class="marquee-track">
       <!-- Set 1 -->
       <span class="marquee-item" role="img" aria-label="Sony"><svg aria-hidden="true" focusable="false" viewBox="0 0 24.300 4.524" style="--h:0.82em"><use href="#marca-sony"/></svg></span>
@@ -304,7 +287,7 @@
     </div>
   </div>
 </section>
-<!-- Category Bento Grid -->
+<!-- Categorías -->
 <section id="categorias" class="dt-seccion py-14 md:py-28 container mx-auto px-4 md:px-8">
 <div class="dt-halo" aria-hidden="true"></div>
 <div class="flex justify-between items-end mb-8 md:mb-12">
@@ -379,11 +362,7 @@
   bottom: 1.5rem;
   z-index: 2;
 }
-/* Morado suelto antes: no significaba nada en el resto del sitio (el
-   morado ya se usa para el badge "Nuevo" en otro lado). Ahora es cyan,
-   el mismo tono que el subrayado del titulo de la seccion y el resto
-   de los acentos de esta zona -- y el texto pasa a ser un dato real
-   (cantidad de productos), no una etiqueta decorativa fija. */
+/* Color celeste del sitio. */
 .setup-kicker {
   display: inline-flex;
   align-items: center;
@@ -435,9 +414,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
-/* Misma tarjeta "oscura prolija" que el catalogo (catalogo.css): foto sobre
-   placa clara con margen, pildora de disponibilidad sobre la foto, precio
-   protagonista y boton-icono de carrito. */
+/* Tarjeta de producto, igual a la del catálogo (catalogo.css). */
 .featured-card {
   background: #131313;
   border: 1px solid rgba(255,255,255,0.07);
@@ -486,10 +463,8 @@
   gap: 0.5rem;
   flex: 1;
 }
-/* Mismos colores que la disponibilidad del catalogo (verde local, ambar
-   proveedor) para que signifique lo mismo en todo el sitio. */
-/* Etiqueta de entrega arriba a la izquierda de la foto, como en la
-   referencia ("producto a pedido" / "disponible en 24-48 hs"). */
+/* Colores de disponibilidad: verde (local) y ámbar (proveedor). */
+/* Etiqueta de entrega sobre la foto. */
 .feat-availability {
   position: absolute;
   z-index: 2;
@@ -520,8 +495,7 @@
 }
 .feat-availability.is-local::before { background: #4cd964; }
 .feat-availability.is-provider::before { background: #ffc600; }
-/* Chip de stock debajo de la foto, como el "DISPONIBLE" verde de la
-   referencia. El color lo pone index.js segun el stock real. */
+/* Etiqueta de stock (el color lo define index.js). */
 .feat-stock {
   align-self: flex-start;
   display: inline-flex;
@@ -632,7 +606,7 @@
 .feat-btn .material-symbols-outlined {
   font-size: 20px;
 }
-/* addToCartUI (cart.js) pone "check + Agregado" 1,8 s: solo entra el check. */
+/* En el botón solo se muestra el ícono de confirmación. */
 .feat-btn span + span { display: none; }
 .feat-btn:hover { background: #ffffff; }
 .feat-btn:active { transform: scale(0.96); }
@@ -704,8 +678,7 @@
     gap: 0.9rem;
     align-content: start;
   }
-  /* Foto un poco mas baja en escritorio: las 6 tarjetas comparten alto con
-     la tarjeta promo de la izquierda. */
+  /* Foto más baja en escritorio. */
   .feat-img-wrap {
     aspect-ratio: 4/3;
   }
@@ -736,8 +709,8 @@
   text-transform: uppercase;
 }
 .featured-showcase { display: block; }
-/* Cada categoria: barra de titulo con el corte en diagonal, fila de
-   "Ver todos" + linea + flechas, y una imagen vertical a la izquierda. */
+/* Cada categoría: barra de título, fila con "Ver todos" y flechas,
+   e imagen lateral. */
 .setup-product-group { margin-bottom: 2.75rem; }
 .setup-product-group:last-child { margin-bottom: 0; }
 
@@ -791,15 +764,14 @@
   gap: 1rem;
   align-items: stretch;
 }
-/* Columna lateral sin foto: solo el panel negro al costado de la fila. */
+/* Columna lateral */
 .setup-group-promo {
   display: block;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 4px;
   background: #0e0e0e;
 }
-/* Fotos de Pexels (licencia libre, uso comercial permitido) con un velo
-   oscuro abajo y a los costados para que se fundan con el fondo. */
+/* Fotos de Pexels (licencia libre) con velo oscuro inferior. */
 .setup-promo-procesadores,
 .setup-promo-perifericos,
 .setup-promo-consolas {
@@ -816,10 +788,10 @@
   .setup-group-row { grid-template-columns: 160px minmax(0, 1fr); }
 }
 @media (max-width: 767px) {
-  /* En celular la imagen se saca: ocupa mucho y el carrusel ya ocupa el ancho. */
+  /* En celular se oculta la imagen lateral. */
   .setup-group-row { grid-template-columns: minmax(0, 1fr); }
   .setup-group-promo { display: none; }
-  /* En celular el titulo necesita todo el ancho para no cortarse. */
+  /* En celular el título usa todo el ancho. */
   .setup-cat-banner { width: 100%; clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 100%, 0 100%); }
   .setup-group-all { font-size: 0.88rem; }
   .setup-carousel-btn { width: 34px; height: 34px; }
@@ -854,8 +826,7 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
-  /* "proximity" y no "mandatory": con el ajuste obligatorio, el desplazamiento
-     de las flechas se cancelaba y la fila volvia sola al principio. */
+  /* scroll-snap en "proximity" para que las flechas funcionen. */
   scroll-snap-type: x proximity;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -863,7 +834,7 @@
 }
 .featured-products-grid::-webkit-scrollbar { display: none; }
 .featured-products-grid .featured-card {
-  /* 4,5 tarjetas a la vista: apenas mas angostas y se ve que la fila sigue. */
+  /* 4,5 tarjetas visibles. */
   flex: 0 0 calc((100% - 3.5rem) / 4.5);
   scroll-snap-align: start;
 }
@@ -873,8 +844,7 @@
 @media (max-width: 767px) {
   .featured-products-grid .featured-card { flex-basis: min(78vw, 270px); }
 }
-/* Version compacta de "Mejora tu setup" (pedido del local): titulo, controles
-   y tarjetas mas chicos, menos aire entre filas. Todo acotado a #destacados. */
+/* Versión compacta de "Mejorá tu setup" (solo en #destacados). */
 #destacados .setup-product-group { margin-bottom: 1.6rem; }
 #destacados .setup-product-group:last-child { margin-bottom: 0; }
 #destacados .setup-cat-banner {
@@ -1142,31 +1112,31 @@
   </div>
 </section>
 
-<!-- Sección: Horarios + Mapa + Contacto -->
+<!-- Horarios, mapa y contacto -->
 <section id="contacto" class="dt-seccion py-14 md:py-24 border-t border-outline-variant/10">
 <div class="dt-halo" aria-hidden="true"></div>
   <div class="container mx-auto px-5 md:px-8 max-w-5xl">
 
-    <!-- Título de sección -->
+    <!-- Título de la sección -->
     <div class="mb-10 md:mb-14">
       <h2 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tight text-on-surface mb-2">Encontranos</h2>
       <div class="h-1 w-20 bg-primary"></div>
     </div>
 
-    <!-- Grid principal: 3 columnas en desktop, 1 en mobile -->
+    <!-- Grilla: 3 columnas en escritorio, 1 en celular -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
 
-      <!-- Columna 1: Estado + Horarios -->
+      <!-- Columna 1: estado y horarios -->
       <div class="flex flex-col gap-6">
 
-        <!-- Badge dinámico ABIERTO / CERRADO -->
+        <!-- Indicador abierto / cerrado -->
         <div id="store-status" class="inline-flex items-center gap-2 px-4 py-2 border font-headline font-bold text-sm uppercase tracking-widest w-fit"></div>
 
         <div>
           <p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant mb-1">Horarios de atención</p>
           <p class="font-body text-xs uppercase tracking-widest text-primary mb-4">Lunes a sábado</p>
 
-          <!-- Franja mañana -->
+          <!-- Horario de mañana -->
           <div class="flex items-center justify-between py-3 border-b border-outline-variant/20">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">wb_sunny</span>
@@ -1175,7 +1145,7 @@
             <span class="font-body text-on-surface-variant text-sm">9:00 - 13:00</span>
           </div>
 
-          <!-- Franja tarde -->
+          <!-- Horario de tarde -->
           <div class="flex items-center justify-between py-3 border-b border-outline-variant/20">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">partly_cloudy_day</span>
@@ -1187,7 +1157,6 @@
         
 
         <!-- Dirección -->
-        <!-- Cambia la dirección por la real del local -->
         <div class="flex items-start gap-3">
           <span class="material-symbols-outlined text-primary mt-0.5" style="font-size:1.2rem;">location_on</span>
           <div>
@@ -1203,7 +1172,7 @@
 
       </div>
 
-      <!-- Columna 2 y 3: Mapa (ocupa 2 columnas en desktop) -->
+      <!-- Columnas 2 y 3: mapa -->
       <div class="md:col-span-2 overflow-hidden border border-outline-variant/20" style="min-height: 320px;">
         <iframe
           data-dt-map-frame
@@ -1229,7 +1198,7 @@
   </div>
 </section>
 
-<!-- Script: lógica de horarios con hora de Argentina (UTC-3) -->
+<!-- Horarios con hora de Argentina (UTC-3) -->
 
 
 </main>
