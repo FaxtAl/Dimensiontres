@@ -102,7 +102,7 @@ body::after {
 .mobile-sticky-price {
   min-width:0;min-height:48px;display:flex;align-items:center;
 }
-/* La barra fija de compra tapa el boton flotante de WhatsApp: lo subimos por encima. */
+/* La barra fija de compra sube el botón de WhatsApp. */
 @media (max-width: 767px) {
   body.has-mobile-cta .dt-whatsapp-float { bottom: 88px; }
 }
@@ -126,7 +126,7 @@ body::after {
 @media (min-width: 1280px) {
   .related-products-grid { grid-template-columns:repeat(5, minmax(0, 1fr)); }
 }
-/* Relacionados: misma tarjeta "oscura prolija" que el catalogo y la home. */
+/* Productos relacionados: misma tarjeta que el catálogo. */
 .related-products-grid .acc-card {
   display:flex;flex-direction:column;
   border:1px solid rgba(255,255,255,.07);border-radius:4px;
@@ -238,7 +238,7 @@ body::after {
 ::-webkit-scrollbar-track { background:#0e0e0e; }
 ::-webkit-scrollbar-thumb { background:#262626; }
 
-/* Product icon display */
+/* Ícono del producto */
 .product-icon-wrap {
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#0f0f0f 0%,#1a1a1a 50%,#0d0d0d 100%);position:relative;z-index:1;
@@ -285,15 +285,7 @@ body::after {
   .product-image { padding:12px; }
 }
 
-/* ============================================================
-   Boton mini para que el admin cambie la foto sin salir de la
-   ficha del producto (antes habia que ir a admin-imagenes.html
-   y buscar el producto ahi). Vive en .main-img-wrap, no adentro
-   de #img-area, porque ese innerHTML se borra y se reconstruye
-   cada vez que cambia la imagen (setProductPageImage, el
-   fallback a icono, etc): si el boton estuviera adentro,
-   desaparecia solo despues de guardar.
-   ============================================================ */
+/* Botón de administrador para cambiar la foto desde la ficha. */
 .dt-foto-admin-btn {
   position:absolute;top:12px;right:12px;z-index:20;
   width:40px;height:40px;border-radius:50%;
@@ -313,8 +305,7 @@ body::after {
   font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#605f5e;
 }
 
-/* Entrega: el aviso de "48 hs" solo no alcanzaba, la gente pregunta si puede
-   pasar a buscarlo y en que horario. */
+/* Entrega y retiro */
 .prod-delivery-box {
   border:1px solid rgba(255,255,255,.07);
   border-left:3px solid #8ff5ff;
@@ -336,7 +327,7 @@ body::after {
   margin:.45rem 0 0;font-family:'Manrope',sans-serif;font-size:.78rem;line-height:1.45;color:#767575;
 }
 
-/* Cuotas: son las tasas reales que cobra Mercado Pago (api/mp-cuotas.php). */
+/* Cuotas con las tasas de Mercado Pago (api/mp-cuotas.php). */
 .prod-installments {
   border:1px solid rgba(255,255,255,.07);
   background:#131313;
@@ -558,20 +549,20 @@ body::after {
 #features-block { border-radius:8px; }
 .side-secondary-block { display:none; }
 
-/* Service tag */
+/* Etiqueta de servicio */
 .is-service .product-big-icon { color:rgba(185,10,252,0.2); }
 .is-service .spec-chip { border-left-color:#d575ff; }
 
-/* Not found state */
+/* Producto no encontrado */
 #not-found { display:none; }
 </style>
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-[#0e0e0e] text-white" style="font-family:'Manrope',sans-serif;">
 
-<!-- NAV -->
+<!-- Nav -->
 <nav class="fixed top-0 w-full z-50 " style="background:#0e0e0e; border-bottom:1px solid rgba(0,240,255,0.08);">
-  <!-- FILA 1 (solo escritorio): logo + buscador ancho + redes -->
+  <!-- Fila 1 (escritorio): logo, buscador y redes -->
   <div class="dt-nav-top">
     <a href="index.html" class="dt-nav-top-logo">DimensionTres</a>
 <div class="dt-nav-buscador">
@@ -590,7 +581,7 @@ body::after {
   </div>
 
   <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
-    <!-- IZQUIERDA (solo celular): hamburguesa + lupa -->
+    <!-- Izquierda (celular): menú y lupa -->
     <div class="dt-nav-side">
       <button id="menu-btn" onclick="toggleMenu()"
         class="flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
@@ -605,7 +596,7 @@ body::after {
     </div>
 
     <a href="index.html" class="dt-nav-logo text-xl md:text-2xl font-black text-[#00f0ff] italic tracking-tighter uppercase shrink-0" style="font-family:'Space Grotesk',sans-serif;">DimensionTres</a>
-    <!-- Desplegable "Productos": solo escritorio. Lo llena menu-categorias.js -->
+    <!-- Desplegable "Productos" (escritorio). Lo completa menu-categorias.js -->
     <div class="dt-mega-wrap">
       <button id="dt-mega-toggle" type="button" class="dt-mega-toggle"
               onclick="dtToggleMegaMenu()" aria-expanded="false" aria-haspopup="true">
@@ -644,9 +635,7 @@ body::after {
   </div>
 </nav>
 
-<!-- -- DRAWER MOBILE ---------------------------------------------
-     Se desliza desde la izquierda con backdrop oscuro.
-     ---------------------------------------------------------- -->
+<!-- Menú lateral de celular -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -659,7 +648,7 @@ body::after {
     <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
   </div>
 
-    <!-- Cuerpo scrolleable: links sueltos + todas las categorias -->
+    <!-- Contenido con scroll: enlaces y categorías -->
     <div class="dt-drawer-body">
 
       <nav class="flex flex-col gap-1 px-5 pt-4 pb-2">
@@ -672,12 +661,12 @@ body::after {
 
       <p class="dt-menu-titulo">Categorías</p>
 
-      <!-- Lo llena menu-categorias.js -->
+      <!-- Lo completa menu-categorias.js -->
       <div id="dt-menu-categorias"></div>
 
     </div>
 
-    <!-- Pie fijo -->
+    <!-- Pie del menú -->
     <div class="dt-drawer-foot p-5 border-t border-[rgba(72,72,71,0.15)]">
       <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
       <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
@@ -687,10 +676,10 @@ body::after {
   </div>
 </div>
 
-<!-- MAIN -->
+<!-- Contenido principal -->
 <main class="pt-32 md:pt-24 pb-32 md:pb-20 max-w-[1920px] mx-auto">
 
-  <!-- Not Found -->
+  <!-- Producto no encontrado -->
   <div id="not-found" class="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-8">
     <span class="material-symbols-outlined text-[80px] text-[#262626]">search_off</span>
     <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:2rem;text-transform:uppercase;">Producto no encontrado</h2>
@@ -698,10 +687,10 @@ body::after {
     <a href="catalogo.html" class="btn-primary px-8 py-4 inline-block">Ver Catálogo</a>
   </div>
 
-  <!-- Product Content (hidden until loaded) -->
+  <!-- Ficha del producto (oculta hasta cargar) -->
   <div id="product-content" style="display:none;">
 
-    <!-- Breadcrumb -->
+    <!-- Migas de pan -->
     <div class="px-5 md:px-8 py-5 fade-up" style="font-family:'Space Grotesk',sans-serif;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;">
       <div class="flex items-center gap-2 text-[#adaaaa] flex-wrap">
         <a href="index.html" class="hover:text-[#8ff5ff] transition-colors">Inicio</a>
@@ -714,10 +703,10 @@ body::after {
       </div>
     </div>
 
-    <!-- Product Grid -->
+    <!-- Grilla del producto -->
     <div class="px-5 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10">
 
-      <!-- LEFT: Image -->
+      <!-- Izquierda: imagen -->
       <div class="lg:col-span-6 flex flex-col gap-4 fade-up-1">
         <div class="main-img-wrap" style="aspect-ratio:16/10;">
           <div class="product-icon-wrap" id="img-area">
@@ -727,15 +716,15 @@ body::after {
         </div>
       </div>
 
-      <!-- RIGHT: Info -->
+      <!-- Derecha: información -->
       <div class="lg:col-span-6 flex flex-col gap-6 fade-up-2 product-side-summary" id="prod-info-col">
 
-        <!-- Category label -->
+        <!-- Categoría -->
         <div class="flex items-center gap-3">
           <span id="prod-category-label" style="font-family:'Space Grotesk',sans-serif;font-size:.65rem;font-weight:700;color:#484847;text-transform:uppercase;letter-spacing:.15em;"></span>
         </div>
 
-        <!-- Title -->
+        <!-- Título -->
         <div>
           <h1 id="prod-title" style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:clamp(1.6rem,4vw,2.8rem);line-height:1;text-transform:uppercase;letter-spacing:-.02em;"></h1>
           <p id="prod-subtitle-tag" style="font-family:'Manrope',sans-serif;font-size:.8rem;color:#767575;margin-top:.4rem;letter-spacing:.04em;"></p>
@@ -748,7 +737,7 @@ body::after {
           <p class="prod-delivery-hours">Retiro en Bartolomé Mitre 212, Villa María · Lunes a sábado de 9:00 a 13:00 y de 16:30 a 20:30.</p>
         </div>
 
-        <!-- Price -->
+        <!-- Precio -->
         <div class="flex items-end gap-4">
           <span id="prod-price" class="price-tag"></span>
         </div>
@@ -773,19 +762,19 @@ body::after {
 
         <div style="height:1px;background:rgba(72,72,71,0.16);"></div>
 
-        <!-- Specs -->
+        <!-- Especificaciones -->
         <div id="specs-block" class="side-secondary-block">
           <p style="font-family:'Space Grotesk',sans-serif;font-size:.65rem;font-weight:700;color:#484847;text-transform:uppercase;letter-spacing:.2em;margin-bottom:.75rem;">Detalles del Producto</p>
           <div id="specs-grid" class="grid grid-cols-2 gap-2"></div>
         </div>
 
-        <!-- Features -->
+        <!-- Características -->
         <div id="features-block" class="side-secondary-block" style="background:#131313;padding:1.2rem;border:1px solid rgba(72,72,71,0.15); margin-bottom:1.5rem;">
           <p style="font-family:'Space Grotesk',sans-serif;font-size:.65rem;font-weight:700;color:#484847;text-transform:uppercase;letter-spacing:.2em;margin-bottom:.8rem;">Incluye</p>
           <ul id="features-list" style="list-style:none;display:flex;flex-direction:column;gap:.6rem;"></ul>
         </div>
 
-        <!-- Qty + Add ? Desktop -->
+        <!-- Cantidad y agregar (escritorio) -->
         <div id="desktop-purchase-block" class="hidden md:block">
           <div class="purchase-row">
             <div>
@@ -809,12 +798,11 @@ body::after {
           </div>
         </div>
         
-<!-- Mobile sticky CTA -->
-      </div><!-- /right col -->
+      </div>
       
-    </div><!-- /product grid -->
+    </div>
 
-    <!-- Related Products -->
+    <!-- Productos relacionados -->
     <section id="related-products-section" class="mt-20 md:mt-28 px-5 md:px-8 fade-up-3">
       <div class="flex items-end justify-between mb-8 md:mb-12">
         <div>
@@ -828,11 +816,11 @@ body::after {
       <div id="related-grid" class="related-products-grid"></div>
     </section>
 
-  </div><!-- /product-content -->
+  </div>
 
 </main>
 
-<!-- Mobile sticky CTA -->
+<!-- Barra fija de compra (celular) -->
 <div class="mobile-sticky-cta md:hidden fade-up-4" id="mobile-cta" style="display:none!important;">
   <div class="mobile-sticky-price">
     <span id="mob-price" style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;color:#fff;line-height:1;"></span>
@@ -865,14 +853,10 @@ body::after {
 <script src="cart.js?v=cart-gorila-20260922"></script>
 
 <script>
-// -------------------------------------------------------
-//  PRODUCTS DATABASE - generado automáticamente
-// -------------------------------------------------------
+// Base de productos
 var PRODUCTS_DB = {"cable-hdmi-2-0-1-5m":{"name":"Cable HDMI 2.0 1.5m","price":4500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-hdmi-2-0-1-5m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-hdmi-2-1-2m":{"name":"Cable HDMI 2.1 2m","price":8500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-hdmi-2-1-2m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-usb-c-1m-65w":{"name":"Cable USB-C 1m 65W","price":3500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-usb-c-1m-65w","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-displayport-2m":{"name":"Cable DisplayPort 2m","price":6500,"category":"cable","icon":"cable","subtitle":"Descripcion","badge":"","image":"","source":"sub-accesorios","slug":"cable-displayport-2m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cable-usb-a-3-0-1m":{"name":"Cable USB-A 3.0 1m","price":2500,"category":"cable","icon":"cable","subtitle":"Transfer 5Gbps","badge":"","image":"","source":"sub-accesorios","slug":"cable-usb-a-3-0-1m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"base-cargadora-ps5":{"name":"Base Cargadora PS5","price":18000,"category":"cargador","icon":"battery_charging_full","subtitle":"Dual DualSense","badge":"","image":"","source":"sub-accesorios","slug":"base-cargadora-ps5","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"base-cargadora-ps4":{"name":"Base Cargadora PS4","price":12000,"category":"cargador","icon":"battery_charging_full","subtitle":"Dual DualShock","badge":"","image":"","source":"sub-accesorios","slug":"base-cargadora-ps4","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"cargador-usb-c-gan-65w":{"name":"Cargador USB-C GaN 65W","price":14000,"category":"cargador","icon":"power","subtitle":"Compacto Viaje","badge":"","image":"","source":"sub-accesorios","slug":"cargador-usb-c-gan-65w","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"hub-usb-3-0-7-puertos":{"name":"Hub USB 3.0 7 puertos","price":18000,"category":"adaptador","icon":"hub","subtitle":"Con Alimentacion","badge":"","image":"","source":"sub-accesorios","slug":"hub-usb-3-0-7-puertos","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"adaptador-hdmi-a-vga":{"name":"Adaptador HDMI a VGA","price":4500,"category":"adaptador","icon":"settings_input_hdmi","subtitle":"Full HD 1080p","badge":"","image":"","source":"sub-accesorios","slug":"adaptador-hdmi-a-vga","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"adaptador-usb-c-a-hdmi":{"name":"Adaptador USB-C a HDMI","price":8500,"category":"adaptador","icon":"settings_input_hdmi","subtitle":"4K 60Hz","badge":"","image":"","source":"sub-accesorios","slug":"adaptador-usb-c-a-hdmi","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"tira-led-rgb-5m":{"name":"Tira LED RGB 5m","price":12000,"category":"led","icon":"light_mode","subtitle":"USB Control App","badge":"","image":"","source":"sub-accesorios","slug":"tira-led-rgb-5m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"tira-led-monitor-1m":{"name":"Tira LED Monitor 1m","price":7500,"category":"led","icon":"light_mode","subtitle":"Retroiluminacion TV","badge":"","image":"","source":"sub-accesorios","slug":"tira-led-monitor-1m","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"kit-tiras-led-gaming":{"name":"Kit Tiras LED Gaming","price":22000,"category":"led","icon":"light_mode","subtitle":"Habitacion 20m2","badge":"","image":"","source":"sub-accesorios","slug":"kit-tiras-led-gaming","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-monitor-vesa":{"name":"Soporte Monitor VESA","price":28000,"category":"soporte","icon":"monitor","subtitle":"Articulado Simple","badge":"","image":"","source":"sub-accesorios","slug":"soporte-monitor-vesa","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-dual-monitor":{"name":"Soporte Dual Monitor","price":45000,"category":"soporte","icon":"monitor","subtitle":"2 Pantallas VESA","badge":"","image":"","source":"sub-accesorios","slug":"soporte-dual-monitor","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"soporte-auriculares":{"name":"Soporte Auriculares","price":8500,"category":"soporte","icon":"headphones","subtitle":"Escritorio Madera","badge":"","image":"","source":"sub-accesorios","slug":"soporte-auriculares","sourceLabel":"Accesorios","sourceFile":"catalogo.html?cat=accesorios"},"ssd-240gb-sata":{"name":"SSD 240GB SATA","price":22000,"category":"ssd","icon":"storage","subtitle":"2.5\" 550MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-240gb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"ssd-480gb-sata":{"name":"SSD 480GB SATA","price":35000,"category":"ssd","icon":"storage","subtitle":"2.5\" 550MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-480gb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"ssd-1tb-sata":{"name":"SSD 1TB SATA","price":58000,"category":"ssd","icon":"storage","subtitle":"2.5\" 560MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"ssd-1tb-sata","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-500gb":{"name":"NVMe M.2 500GB","price":42000,"category":"ssd","icon":"memory","subtitle":"PCIe 3.0 3500MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-500gb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-1tb":{"name":"NVMe M.2 1TB","price":72000,"category":"ssd","icon":"memory","subtitle":"PCIe 3.0 3500MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-1tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"nvme-m-2-2tb-pcie-4-0":{"name":"NVMe M.2 2TB PCIe 4.0","price":135000,"category":"ssd","icon":"memory","subtitle":"7000MB/s Gen4","badge":"","image":"","source":"sub-almacenamiento","slug":"nvme-m-2-2tb-pcie-4-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-1tb-7200rpm":{"name":"HDD 1TB 7200rpm","price":28000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" SATA III","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-1tb-7200rpm","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-2tb-7200rpm":{"name":"HDD 2TB 7200rpm","price":42000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" SATA III","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-2tb-7200rpm","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"hdd-4tb-nas":{"name":"HDD 4TB NAS","price":75000,"category":"hdd","icon":"hard_drive","subtitle":"3.5\" WD Red","badge":"","image":"","source":"sub-almacenamiento","slug":"hdd-4tb-nas","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-32gb-usb-3-0":{"name":"Pendrive 32GB USB 3.0","price":6500,"category":"pendrive","icon":"usb","subtitle":"Lectura 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-32gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-64gb-usb-3-0":{"name":"Pendrive 64GB USB 3.0","price":9500,"category":"pendrive","icon":"usb","subtitle":"Lectura 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-64gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"pendrive-128gb-usb-3-0":{"name":"Pendrive 128GB USB 3.0","price":14000,"category":"pendrive","icon":"usb","subtitle":"Lectura 150MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"pendrive-128gb-usb-3-0","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"memoria-sd-64gb-c10":{"name":"Memoria SD 64GB C10","price":8000,"category":"sd","icon":"sd_card","subtitle":"UHS-I 100MB/s","badge":"","image":"","source":"sub-almacenamiento","slug":"memoria-sd-64gb-c10","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"memoria-sd-128gb-u3-4k":{"name":"Memoria SD 128GB U3 4K","price":14000,"category":"sd","icon":"sd_card","subtitle":"170MB/s Video","badge":"","image":"","source":"sub-almacenamiento","slug":"memoria-sd-128gb-u3-4k","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"disco-externo-1tb":{"name":"Disco Externo 1TB","price":45000,"category":"externo","icon":"hard_drive_2","subtitle":"USB 3.0 Portatil","badge":"","image":"","source":"sub-almacenamiento","slug":"disco-externo-1tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"disco-externo-2tb":{"name":"Disco Externo 2TB","price":65000,"category":"externo","icon":"hard_drive_2","subtitle":"USB 3.0 Portatil","badge":"","image":"","source":"sub-almacenamiento","slug":"disco-externo-2tb","sourceLabel":"Almacenamiento","sourceFile":"catalogo.html?cat=hardware"},"auricular-over-ear-hifi":{"name":"Auricular Over-Ear HiFi","price":38000,"category":"auricular","icon":"headphones","subtitle":"Estudio 50mm Driver","badge":"","image":"","source":"sub-audio","slug":"auricular-over-ear-hifi","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auricular-gamer-7-1":{"name":"Auricular Gamer 7.1","price":32000,"category":"auricular","icon":"headset","subtitle":"Surround USB RGB","badge":"","image":"","source":"sub-audio","slug":"auricular-gamer-7-1","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auricular-sony-mdr-zx110":{"name":"Auricular Sony MDR-ZX110","price":18000,"category":"auricular","icon":"headphones","subtitle":"Alambrico 3.5mm","badge":"","image":"","source":"sub-audio","slug":"auricular-sony-mdr-zx110","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"in-ear-monitor-dual-driver":{"name":"In-Ear Monitor Dual Driver","price":55000,"category":"auricular","icon":"hearing","subtitle":"IEM Profesional","badge":"","image":"","source":"sub-audio","slug":"in-ear-monitor-dual-driver","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"auriculares-bluetooth-anc":{"name":"Auriculares Bluetooth ANC","price":72000,"category":"inalambrico","icon":"headphones","subtitle":"Noise Cancelling","badge":"Nuevo","image":"","source":"sub-audio","slug":"auriculares-bluetooth-anc","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"tws-earbuds":{"name":"TWS Earbuds","price":28000,"category":"inalambrico","icon":"earbuds","subtitle":"True Wireless IPX5","badge":"","image":"","source":"sub-audio","slug":"tws-earbuds","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-bluetooth-20w":{"name":"Parlante Bluetooth 20W","price":32000,"category":"parlante","icon":"speaker","subtitle":"Portatil IPX5","badge":"","image":"","source":"sub-audio","slug":"parlante-bluetooth-20w","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-bluetooth-40w":{"name":"Parlante Bluetooth 40W","price":55000,"category":"parlante","icon":"speaker","subtitle":"Estereo Potente","badge":"","image":"","source":"sub-audio","slug":"parlante-bluetooth-40w","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"barra-de-sonido-2-1":{"name":"Barra de Sonido 2.1","price":88000,"category":"parlante","icon":"speaker_group","subtitle":"HDMI ARC 120W","badge":"Nuevo","image":"","source":"sub-audio","slug":"barra-de-sonido-2-1","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"parlante-pc-2-0-usb":{"name":"Parlante PC 2.0 USB","price":18000,"category":"parlante","icon":"speaker","subtitle":"10W Escritorio","badge":"","image":"","source":"sub-audio","slug":"parlante-pc-2-0-usb","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"sistema-2-1-subwoofer":{"name":"Sistema 2.1 Subwoofer","price":42000,"category":"parlante","icon":"speaker_group","subtitle":"PC/TV 42W Total","badge":"","image":"","source":"sub-audio","slug":"sistema-2-1-subwoofer","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"microfono-usb-condensador":{"name":"Microfono USB Condensador","price":42000,"category":"micro","icon":"mic","subtitle":"Cardioide Studio","badge":"","image":"","source":"sub-audio","slug":"microfono-usb-condensador","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"microfono-dinamico-podcast":{"name":"Microfono Dinamico Podcast","price":55000,"category":"micro","icon":"mic_external_on","subtitle":"Broadcast XLR/USB","badge":"Nuevo","image":"","source":"sub-audio","slug":"microfono-dinamico-podcast","sourceLabel":"Audio","sourceFile":"catalogo.html?cat=audio"},"ryzen-5-5600x":{"name":"Ryzen 5 5600X","price":115000,"category":"cpu","icon":"memory","subtitle":"AMD AM4 6 Nucleos","badge":"","image":"","source":"sub-componentes-pc","slug":"ryzen-5-5600x","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ryzen-7-5700x":{"name":"Ryzen 7 5700X","price":148000,"category":"cpu","icon":"memory","subtitle":"AMD AM4 8 Nucleos","badge":"","image":"","source":"sub-componentes-pc","slug":"ryzen-7-5700x","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"core-i5-12400f":{"name":"Core i5-12400F","price":128000,"category":"cpu","icon":"memory","subtitle":"Intel LGA1700 6C","badge":"","image":"","source":"sub-componentes-pc","slug":"core-i5-12400f","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"core-i7-12700kf":{"name":"Core i7-12700KF","price":220000,"category":"cpu","icon":"memory","subtitle":"Intel LGA1700 12C","badge":"","image":"","source":"sub-componentes-pc","slug":"core-i7-12700kf","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-8gb-3200":{"name":"RAM DDR4 8GB 3200","price":28000,"category":"ram","icon":"sim_card","subtitle":"Single Stick","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-8gb-3200","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-16gb-kit-3600":{"name":"RAM DDR4 16GB Kit 3600","price":52000,"category":"ram","icon":"sim_card","subtitle":"2x8GB RGB","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-16gb-kit-3600","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ram-ddr4-32gb-kit":{"name":"RAM DDR4 32GB Kit","price":95000,"category":"ram","icon":"sim_card","subtitle":"2x16GB 3200MHz","badge":"","image":"","source":"sub-componentes-pc","slug":"ram-ddr4-32gb-kit","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-b450m-ds3h":{"name":"Placa B450M DS3H","price":55000,"category":"mb","icon":"developer_board","subtitle":"AMD AM4 mATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-b450m-ds3h","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-b550-atx-gaming":{"name":"Placa B550 ATX Gaming","price":88000,"category":"mb","icon":"developer_board","subtitle":"AMD AM4 Full ATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-b550-atx-gaming","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"placa-h610m-intel":{"name":"Placa H610M Intel","price":65000,"category":"mb","icon":"developer_board","subtitle":"Intel LGA1700 mATX","badge":"","image":"","source":"sub-componentes-pc","slug":"placa-h610m-intel","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rx-6600-8gb-gddr6":{"name":"RX 6600 8GB GDDR6","price":210000,"category":"gpu","icon":"display_settings","subtitle":"AMD RDNA2","badge":"","image":"","source":"sub-componentes-pc","slug":"rx-6600-8gb-gddr6","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rx-6700-xt-12gb":{"name":"RX 6700 XT 12GB","price":310000,"category":"gpu","icon":"display_settings","subtitle":"AMD RDNA2","badge":"","image":"","source":"sub-componentes-pc","slug":"rx-6700-xt-12gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"gtx-1660-super-6gb":{"name":"GTX 1660 Super 6GB","price":175000,"category":"gpu","icon":"display_settings","subtitle":"NVIDIA Turing Usado","badge":"","image":"","source":"sub-componentes-pc","slug":"gtx-1660-super-6gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"rtx-3060-12gb":{"name":"RTX 3060 12GB","price":280000,"category":"gpu","icon":"display_settings","subtitle":"NVIDIA Ampere","badge":"","image":"","source":"sub-componentes-pc","slug":"rtx-3060-12gb","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"fuente-550w-80-bronze":{"name":"Fuente 550W 80+ Bronze","price":45000,"category":"fuente","icon":"power","subtitle":"ATX Semi-Modular","badge":"","image":"","source":"sub-componentes-pc","slug":"fuente-550w-80-bronze","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"fuente-750w-80-gold":{"name":"Fuente 750W 80+ Gold","price":78000,"category":"fuente","icon":"power","subtitle":"ATX Full Modular","badge":"","image":"","source":"sub-componentes-pc","slug":"fuente-750w-80-gold","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"cooler-air-120mm-tower":{"name":"Cooler Air 120mm Tower","price":22000,"category":"cooler","icon":"toys_fan","subtitle":"CPU 4 Heat Pipes","badge":"","image":"","source":"sub-componentes-pc","slug":"cooler-air-120mm-tower","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"cooler-liquido-240mm-aio":{"name":"Cooler Liquido 240mm AIO","price":65000,"category":"cooler","icon":"water_drop","subtitle":"RGB Dual Fan","badge":"","image":"","source":"sub-componentes-pc","slug":"cooler-liquido-240mm-aio","sourceLabel":"Componentes PC","sourceFile":"catalogo.html?cat=hardware"},"ps5-slim-digital":{"name":"PS5 Slim Digital","price":680000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 5","badge":"","image":"","source":"sub-consolas","slug":"ps5-slim-digital","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps5-slim-con-lector":{"name":"PS5 Slim con Lector","price":780000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 5","badge":"","image":"","source":"sub-consolas","slug":"ps5-slim-con-lector","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps4-pro-1tb":{"name":"PS4 Pro 1TB","price":210000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 4","badge":"","image":"","source":"sub-consolas","slug":"ps4-pro-1tb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps4-slim-500gb":{"name":"PS4 Slim 500GB","price":165000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 4","badge":"","image":"","source":"sub-consolas","slug":"ps4-slim-500gb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps3-slim-160gb":{"name":"PS3 Slim 160GB","price":85000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 3","badge":"","image":"","source":"sub-consolas","slug":"ps3-slim-160gb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"ps2-fat-original":{"name":"PS2 Fat Original","price":55000,"category":"playstation","icon":"sports_esports","subtitle":"PlayStation 2","badge":"","image":"","source":"sub-consolas","slug":"ps2-fat-original","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-series-x":{"name":"Xbox Series X","price":720000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Series","badge":"","image":"","source":"sub-consolas","slug":"xbox-series-x","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-series-s":{"name":"Xbox Series S","price":480000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Series","badge":"","image":"","source":"sub-consolas","slug":"xbox-series-s","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-one-s-1tb":{"name":"Xbox One S 1TB","price":185000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox One","badge":"","image":"","source":"sub-consolas","slug":"xbox-one-s-1tb","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"xbox-360-slim":{"name":"Xbox 360 Slim","price":75000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox 360","badge":"","image":"","source":"sub-consolas","slug":"xbox-360-slim","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-oled":{"name":"Nintendo Switch OLED","price":420000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-oled","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-v2":{"name":"Nintendo Switch V2","price":320000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-v2","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"nintendo-switch-lite":{"name":"Nintendo Switch Lite","price":260000,"category":"nintendo","icon":"videogame_asset","subtitle":"Nintendo","badge":"","image":"","source":"sub-consolas","slug":"nintendo-switch-lite","sourceLabel":"Consolas","sourceFile":"catalogo.html?cat=consolas"},"dualsense-blanco":{"name":"DualSense Blanco","price":68000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-blanco","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-negro":{"name":"DualSense Negro","price":68000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-negro","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-cosmic-red":{"name":"DualSense Cosmic Red","price":72000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-cosmic-red","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualsense-edge":{"name":"DualSense Edge","price":160000,"category":"ps5","icon":"sports_esports","subtitle":"PS5 Pro Controller","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"dualsense-edge","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualshock-4-blanco":{"name":"DualShock 4 Blanco","price":35000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Original","badge":"","image":"","source":"sub-joysticks","slug":"dualshock-4-blanco","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"dualshock-4-negro":{"name":"DualShock 4 Negro","price":35000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Original","badge":"","image":"","source":"sub-joysticks","slug":"dualshock-4-negro","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps4-generico":{"name":"Control PS4 Generico","price":16000,"category":"ps4","icon":"sports_esports","subtitle":"PS4 Compatible","badge":"","image":"","source":"sub-joysticks","slug":"control-ps4-generico","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps3-original":{"name":"Control PS3 Original","price":20000,"category":"ps3","icon":"sports_esports","subtitle":"PS3 Usado","badge":"","image":"","source":"sub-joysticks","slug":"control-ps3-original","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-ps3-generico":{"name":"Control PS3 Generico","price":12000,"category":"ps3","icon":"sports_esports","subtitle":"PS3 Compatible","badge":"","image":"","source":"sub-joysticks","slug":"control-ps3-generico","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"xbox-series-controller":{"name":"Xbox Series Controller","price":65000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Original","badge":"Nuevo","image":"","source":"sub-joysticks","slug":"xbox-series-controller","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"xbox-one-controller":{"name":"Xbox One Controller","price":40000,"category":"xbox","icon":"sports_esports","subtitle":"Xbox Original Usado","badge":"","image":"","source":"sub-joysticks","slug":"xbox-one-controller","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"control-pc-usb":{"name":"Control PC USB","price":14000,"category":"pc","icon":"sports_esports","subtitle":"PC / Android","badge":"","image":"","source":"sub-joysticks","slug":"control-pc-usb","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"gamepad-bluetooth":{"name":"Gamepad Bluetooth","price":18000,"category":"pc","icon":"sports_esports","subtitle":"PC / Celular","badge":"","image":"","source":"sub-joysticks","slug":"gamepad-bluetooth","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"joystick-arcade-usb":{"name":"Joystick Arcade USB","price":22000,"category":"pc","icon":"joystick","subtitle":"PC Retro Gaming","badge":"","image":"","source":"sub-joysticks","slug":"joystick-arcade-usb","sourceLabel":"Joysticks","sourceFile":"catalogo.htmljoysticks"},"teclado-mecanico-rgb-tkl":{"name":"Teclado Mecanico RGB TKL","price":45000,"category":"teclado","icon":"keyboard","subtitle":"Switch Red 80%","badge":"","image":"","source":"sub-periféricos","slug":"teclado-mecanico-rgb-tkl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-mecanico-full-rgb":{"name":"Teclado Mecanico Full RGB","price":52000,"category":"teclado","icon":"keyboard","subtitle":"Switch Blue 100%","badge":"","image":"","source":"sub-periféricos","slug":"teclado-mecanico-full-rgb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-membrana-rgb":{"name":"Teclado Membrana RGB","price":18000,"category":"teclado","icon":"keyboard","subtitle":"Full Size USB","badge":"","image":"","source":"sub-periféricos","slug":"teclado-membrana-rgb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"teclado-inalambrico":{"name":"Teclado Inalambrico","price":28000,"category":"teclado","icon":"keyboard","subtitle":"Bluetooth/USB 2.4G","badge":"","image":"","source":"sub-periféricos","slug":"teclado-inalambrico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-gamer-6400dpi":{"name":"Mouse Gamer 6400DPI","price":22000,"category":"mouse","icon":"mouse","subtitle":"RGB óptico","badge":"","image":"","source":"sub-periféricos","slug":"mouse-gamer-6400dpi","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-gamer-12400dpi":{"name":"Mouse Gamer 12400DPI","price":38000,"category":"mouse","icon":"mouse","subtitle":"RGB óptico Pro","badge":"","image":"","source":"sub-periféricos","slug":"mouse-gamer-12400dpi","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-inalambrico":{"name":"Mouse Inalambrico","price":26000,"category":"mouse","icon":"mouse","subtitle":"Silencioso 2.4G","badge":"","image":"","source":"sub-periféricos","slug":"mouse-inalambrico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-xl":{"name":"Mouse Pad XL","price":8500,"category":"pad","icon":"table_bar","subtitle":"900x400mm Cosido","badge":"","image":"","source":"sub-periféricos","slug":"mouse-pad-xl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-rgb-xl":{"name":"Mouse Pad RGB XL","price":18000,"category":"pad","icon":"table_bar","subtitle":"900x400mm LED USB","badge":"Nuevo","image":"","source":"sub-periféricos","slug":"mouse-pad-rgb-xl","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"mouse-pad-chico":{"name":"Mouse Pad Chico","price":4500,"category":"pad","icon":"table_bar","subtitle":"240x200mm","badge":"","image":"","source":"sub-periféricos","slug":"mouse-pad-chico","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"auricular-7-1-surround":{"name":"Auricular 7.1 Surround","price":32000,"category":"auricular","icon":"headset","subtitle":"Gaming USB RGB","badge":"","image":"","source":"sub-periféricos","slug":"auricular-7-1-surround","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"auricular-estereo":{"name":"Auricular Estereo","price":14000,"category":"auricular","icon":"headset","subtitle":"3.5mm Con Microfono","badge":"","image":"","source":"sub-periféricos","slug":"auricular-estereo","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"microfono-condensador-usb":{"name":"Microfono Condensador USB","price":42000,"category":"micro","icon":"mic","subtitle":"Cardioide Studio","badge":"","image":"","source":"sub-periféricos","slug":"microfono-condensador-usb","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"microfono-de-estudio":{"name":"Microfono de Estudio","price":75000,"category":"micro","icon":"mic_external_on","subtitle":"XLR/USB Pro","badge":"Nuevo","image":"","source":"sub-periféricos","slug":"microfono-de-estudio","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"webcam-full-hd-1080p":{"name":"Webcam Full HD 1080p","price":28000,"category":"webcam","icon":"videocam","subtitle":"30fps Autofocus","badge":"","image":"","source":"sub-periféricos","slug":"webcam-full-hd-1080p","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"},"webcam-4k-hdr":{"name":"Webcam 4K HDR","price":65000,"category":"webcam","icon":"videocam","subtitle":"2160p 30fps","badge":"Nuevo","image":"","source":"sub-periféricos","slug":"webcam-4k-hdr","sourceLabel":"Periféricos","sourceFile":"catalogo.html?cat=accesorios"}};
 
-// -------------------------------------------------------
-//  SPECS POR CATEGORÍA
-// -------------------------------------------------------
+// Especificaciones por categoría
 var CATEGORY_SPECS = {
   teclado:  [['Tipo','Mecánico/Membrana'],['Conexión','USB'],['Iluminación','RGB'],['Garantía','3 meses']],
   mouse:    [['DPI','Variable'],['Botones','6+'],['Conexión','USB/2.4G'],['Garantía','3 meses']],
@@ -947,9 +931,7 @@ var CATEGORY_FEATURES = {
   pc:        ['Diagnóstico completo incluido','Backup de datos disponible','Entrega el mismo día'],
 };
 
-// -------------------------------------------------------
-//  LÓGICA PRINCIPAL
-// -------------------------------------------------------
+// Lógica principal
 var PRODUCT = null;
 var qty = 1;
 
@@ -1086,11 +1068,8 @@ function productIsProvider(p) {
   return !!p && (p.sourceIntegration === 'invid' || p.source === 'invid' || p.fulfillment === 'provider');
 }
 
-// No hay un campo aparte para condicion (usado/nuevo) en Access: el local
-// carga la palabra directo en el nombre del producto ("PlayStation 3 Slim
-// Usada", "Joystick original usado Ps4"). Se compara palabra por palabra
-// (partiendo el texto en cualquier caracter que no sea letra/numero) para
-// no confundir con palabras que la contienen, como "reusado".
+// Detecta productos usados por la palabra "usado/usada" en el nombre
+// (Access no tiene un campo de condición). Compara palabras completas.
 function dtProductoEsUsado(p) {
   if (!p) return false;
   if (p.used === true) return true;
@@ -1111,8 +1090,7 @@ function getProductAvailabilityLabel(p) {
   return productIsProvider(p) ? '48 hs de demora' : 'En local';
 }
 
-// Explica en palabras lo que antes solo decia "48 hs de demora": si se puede
-// retirar, cuando y en que horario.
+// Texto de entrega: disponibilidad, retiro y horario.
 function renderDeliveryBox(p) {
   var box = document.getElementById('prod-delivery-box');
   if (!box) return;
@@ -1152,17 +1130,16 @@ function renderDeliveryBox(p) {
   text.textContent = 'Podés pasar a retirarlo por Villa María el mismo día.';
 }
 
-// Las cuotas salen de las tasas reales de Mercado Pago (api/mp-cuotas.php).
-// Las tasas no dependen del monto, asi que se piden una sola vez y despues se
-// recalcula solo con el precio y la cantidad.
+// Cuotas con las tasas de Mercado Pago (api/mp-cuotas.php).
+// Las tasas no dependen del monto: se consultan una vez y se aplican
+// al precio y la cantidad.
 var INSTALLMENT_RATES = null;
 var installmentRatesPromise = null;
 var INSTALLMENT_RATES_APPROX = false;
 
-// Ultimas tasas reales de Mercado Pago (tarjeta de credito, 23/09/2026).
-// Solo se usan si no se puede consultar api/mp-cuotas.php (Mercado Pago caido,
-// o la pagina abierta desde el disco sin servidor): asi la tabla aparece
-// siempre, marcada como aproximada.
+// Tasas de respaldo (tarjeta de crédito, 23/09/2026).
+// Se usan si no se puede consultar api/mp-cuotas.php; la tabla se marca
+// como aproximada.
 var INSTALLMENT_RATES_FALLBACK = [
   { installments: 1, rate: 0 },
   { installments: 3, rate: 19.69 },
@@ -1517,15 +1494,7 @@ async function hydrateProductPageImage(product) {
   if (PRODUCT === product) setProductPageImage(product, image);
 }
 
-/* ============================================================
-   Boton mini de foto en la ficha del producto.
-   Antes, para poner una imagen habia que ir a admin-imagenes.html
-   y buscar el producto ahi. Esto reusa exactamente el mismo
-   endpoint protegido (api/product-image-upload.php), la sesion
-   ya iniciada en el sitio (window.SupabaseStore.getAccessToken,
-   el mismo cliente de supabase-client.js) y el mismo chequeo de
-   administrador que ese panel.
-   ============================================================ */
+/* Botón de administrador para cambiar la foto desde la ficha. */
 
 async function dtEsAdminImagenes() {
   try {
@@ -1584,8 +1553,7 @@ function dtAplicarNuevaFoto(product, url) {
   var wrap = document.getElementById('img-area');
   if (!wrap || !url) return;
 
-  // Rompe la cache del navegador: si se reemplaza una foto que ya se habia
-  // visto en esta sesion, sin esto seguiria mostrando la version vieja.
+  // Parámetro para evitar la caché del navegador al reemplazar una foto.
   var conVersion = url + (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
 
   product.image = url;
@@ -1660,20 +1628,20 @@ function renderProduct(p) {
   var byOrder = productIsByOrder(p);
   var simpleDetail = useSimpleProductDetail(p);
 
-  // Breadcrumb
+  // Migas de pan
   var bcSub = document.getElementById('bc-sub');
   bcSub.textContent = p.sourceLabel;
   bcSub.href = getCatalogHref(p);
   document.getElementById('bc-name').textContent = cleanText(p.name);
 
-  // Mobile sub link
+  // Enlace a la subcategoría (celular)
   var mobSub = document.getElementById('mob-sub-link');
   if (mobSub) {
     mobSub.textContent = p.sourceLabel;
     mobSub.href = getCatalogHref(p);
   }
 
-  // Image or polished placeholder
+  // Imagen o placeholder
   var imgArea = document.getElementById('img-area');
   imgArea.innerHTML = '';
   imgArea.className = 'product-icon-wrap';
@@ -1707,7 +1675,7 @@ function renderProduct(p) {
     hydrateProductPageImage(p);
   }
 
-  // Badges
+  // Etiquetas
   var badgesEl = document.getElementById('prod-badges');
   if (byOrder) {
     badgesEl.innerHTML = '<span class="badge-new" style="color:#ffd96a;border-color:rgba(255,198,0,.28);background:rgba(255,198,0,.08);">A pedido</span>';
@@ -1720,18 +1688,15 @@ function renderProduct(p) {
   } else {
     badgesEl.innerHTML = '<span class="badge-new" style="color:#9ff0b3;border-color:rgba(76,217,100,.28);background:rgba(76,217,100,.08);">En local</span>';
   }
-  // No hay un campo aparte para "usado" en Access: el local carga la
-  // palabra directo en el nombre ("PlayStation 3 Slim Usada", "Joystick
-  // original usado Ps4"). Se detecta ahi mismo, asi que no hace falta
-  // que carguen nada nuevo para que aparezca el cartel.
+  // Producto usado: se detecta por la palabra en el nombre.
   if (dtProductoEsUsado(p)) {
     badgesEl.innerHTML += '<span class="badge-new" style="color:#ffb37a;border-color:rgba(255,148,60,.32);background:rgba(255,148,60,.09);margin-left:6px;">Usado</span>';
   }
 
-  // Category
+  // Categoría
   document.getElementById('prod-category-label').textContent = cleanText(p.sourceLabel || p.category);
 
-  // Title: split at last word for accent color
+  // Título: la última palabra va en color
   var displayName = cleanText(p.name);
   var words = displayName.split(' ');
   var last = words.pop();
@@ -1742,7 +1707,7 @@ function renderProduct(p) {
       ? cleanText(p.sourceLabel || p.subtitle || 'Producto disponible para consultar.')
       : (shortDescription || 'Producto disponible para consultar.');
 
-  // Price
+  // Precio
   document.getElementById('prod-price').textContent = formatProductPrice(p);
   renderDeliveryBox(p);
   renderInstallments(p);
@@ -1754,7 +1719,7 @@ function renderProduct(p) {
   if (warrantyText) warrantySummary.querySelector('a').textContent = warrantyText;
   setGeneratedDetailBlocksVisible(p);
 
-  // Mobile CTA
+  // Barra de compra (celular)
   document.getElementById('mob-price').textContent = formatProductPrice(p);
   var mobileCta = document.getElementById('mobile-cta');
   mobileCta.style.removeProperty('display');
@@ -1765,7 +1730,7 @@ function renderProduct(p) {
   }
   setPurchaseButtonsMode(p);
 
-  // Specs
+  // Especificaciones
   var specs = getSpecs(p.category).filter(function(s) {
     return s[0].indexOf('Garantía') !== 0;
   });
@@ -1781,7 +1746,7 @@ function renderProduct(p) {
     grid.appendChild(div);
   });
 
-  // Features
+  // Características
   var feats = getFeatures(p.category);
   var ul = document.getElementById('features-list');
   ul.innerHTML = '';
@@ -1793,18 +1758,16 @@ function renderProduct(p) {
     ul.appendChild(li);
   });
 
-  // Related products
+  // Productos relacionados
   renderRelated(p);
 
-  // Show content
+  // Mostrar la ficha
   document.getElementById('product-content').style.display = '';
   document.getElementById('not-found').style.display = 'none';
   updateCartBadge();
 
-  // Boton de admin para cambiar la foto sin salir de esta pagina. No se
-  // muestra a nadie mas: primero hay que estar logueado (si no hay sesion,
-  // no se llama ni al RPC, cero costo extra para el 99% de las visitas que
-  // no son admin) y despues confirmar admin_current_user en el servidor.
+  // Botón de cambio de foto: solo con sesión y si el servidor confirma
+  // que el usuario es administrador (admin_current_user).
   dtEsAdminImagenes().then(function(token) {
     if (token && PRODUCT === p) dtInsertarBotonFoto(p, token);
   });
@@ -1844,7 +1807,7 @@ function setPurchaseButtonsMode(p) {
 
 function addUniqueRelatedProduct(list, seen, current, product) {
   if (!product || product.slug === current.slug || product.id === current.id) return;
-  // En similares solo lo que se puede comprar ya: nada sin stock.
+  // En relacionados solo se muestran productos con stock.
   if (getProductStockStateForView(product).status === 'out') return;
   var key = product.slug || product.id || product.name;
   if (!key || seen[key]) return;
@@ -1887,8 +1850,7 @@ async function getRelatedProducts(current, limit) {
         }
       }
     } else if (productIsProvider(current) && window.SupabaseStore.fetchInvidPcProductsByCategory) {
-      // Los de Invid no tienen subcategoria de Access: se buscan por su propia
-      // categoria ("Placas de video", "Gabinetes con Fuente", etc.).
+      // Productos de Invid: se buscan por su categoría de Invid.
       var invidCategory = current.invidCategory || current.sourceLabel || '';
       if (invidCategory) {
         addGroup(await window.SupabaseStore.fetchInvidPcProductsByCategory(invidCategory));
@@ -1972,7 +1934,7 @@ function renderRelatedCard(p, i) {
       soldOut.textContent = 'Sin stock';
       media.appendChild(soldOut);
     } else {
-      // Misma pildora de disponibilidad que el catalogo y la home.
+      // Etiqueta de disponibilidad, igual que en el catálogo.
       var availability = document.createElement('span');
       availability.className = 'related-card-availability ' + (productIsProvider(p) ? 'is-provider' : 'is-local');
       availability.textContent = productIsProvider(p) ? 'Llega en 48 hs' : 'En local';
@@ -2194,9 +2156,7 @@ function addToCart(name, price, image, product) {
   cartToast(name);
 }
 
-// -------------------------------------------------------
-//  INIT - leer id de la URL
-// -------------------------------------------------------
+// Inicio: lee el id de la URL
 document.addEventListener('DOMContentLoaded', async function() {
   var params = new URLSearchParams(window.location.search);
   var id = params.get('id');
