@@ -1,26 +1,17 @@
 /**
- * menu-categorias.js - Menu de categorias del drawer | DimensionTres
+ * menu-categorias.js - Árbol de categorías del menú (celular y escritorio).
  *
- * El arbol es una foto del catalogo real. No se pide a Supabase en cada
- * pagina a proposito: el menu tiene que aparecer al instante y sin gastar
- * egress. Las categorias casi no cambian; los productos si, pero esos no
- * viven aca.
- *
- * PARA REGENERARLO cuando agregues o saques una categoria: abri
- * catalogo.html, espera a que cargue y corre en la consola:
+ * Es una copia fija del catálogo para que el menú cargue al instante.
+ * Para regenerarlo, abrir catalogo.html y ejecutar en la consola:
  *
  *   copy(JSON.stringify((window.CATALOG||[]).map(c => ({
  *     id: c.id, name: c.name,
  *     children: (c.children||[]).map(h => ({ id: h.id, name: h.name }))
  *   })), null, 2))
  *
- * y pega el resultado en DT_CATEGORIAS.
+ * y pegar el resultado en DT_CATEGORIAS.
  *
- * Los ids mezclan dos origenes a proposito: "subcat-NN" viene de Access y
- * los slugs tipo "placas-de-video" salen del arbol de Invid. Los dos
- * funcionan igual en catalogo.html?sub=...
- *
- * Capturado el 2026-08-26: 13 categorias, 52 subcategorias.
+ * Ids: "subcat-NN" viene de Access; los slugs ("placas-de-video") de Invid.
  */
 
 var DT_CATEGORIAS = [
@@ -109,14 +100,13 @@ var DT_CATEGORIAS = [
   ] }
 ];
 
-// Una categoria con una sola subcategoria no la muestra: la categoria ya
-// trae todos sus productos y la subcategoria repetia lo mismo.
+// Oculta la subcategoría cuando es la única de su categoría.
 function dtSubcategoriasVisibles(cat) {
   var hijos = (cat && cat.children) || [];
   return hijos.length > 1 ? hijos : [];
 }
 
-// Devuelve el id de categoria o subcategoria abierto ahora, para marcarlo.
+// Id de la categoría o subcategoría abierta, para marcarla.
 function dtCategoriaActiva() {
   var p = new URLSearchParams(window.location.search);
   return { cat: p.get('catid') || '', sub: p.get('sub') || '' };
@@ -146,16 +136,14 @@ function dtRenderMenuCategorias() {
     var body = document.createElement('div');
     body.className = 'dt-cat-body' + (abierta ? ' is-open' : '');
 
-    // "Ver todo" primero, como en la referencia: entrar a la categoria
-    // completa tiene que ser un toque, no obligar a elegir subcategoria.
+    // "Ver todo" va primero para entrar a la categoría completa.
     var todo = document.createElement('a');
     todo.href = 'catalogo.html?catid=' + encodeURIComponent(cat.id);
     todo.className = 'dt-cat-link dt-cat-link-todo' + (activo.cat === cat.id ? ' is-active' : '');
     todo.textContent = 'Ver todo en ' + cat.name;
     body.appendChild(todo);
 
-    // Con una sola subcategoria no se muestra: "Ver todo" ya lista lo mismo
-    // (Parlantes -> Parlantes 2.1, Silla Gamer -> Silla Gamer, etc.).
+    // Con una sola subcategoría no se lista ("Ver todo" muestra lo mismo).
     dtSubcategoriasVisibles(cat).forEach(function(hijo) {
       var a = document.createElement('a');
       a.href = 'catalogo.html?sub=' + encodeURIComponent(hijo.id);
@@ -180,14 +168,9 @@ function dtRenderMenuCategorias() {
 
 document.addEventListener('DOMContentLoaded', dtRenderMenuCategorias);
 
-/* ============================================================
-   Desplegable "Productos" del nav de escritorio.
-   Dos columnas: categorias a la izquierda, subcategorias de la
-   que estas señalando a la derecha. Se eligio esto en vez de
-   submenus anidados porque con 13 categorias los anidados
-   obligan a pasar el mouse por un pasillo muy fino.
-   Usa el mismo DT_CATEGORIAS que el drawer de celular.
-   ============================================================ */
+/* Desplegable "Productos" del nav de escritorio.
+   Dos columnas: categorías a la izquierda y subcategorías a la derecha.
+   Usa el mismo DT_CATEGORIAS que el menú de celular. */
 
 function dtRenderMegaMenu() {
   var panel = document.getElementById('dt-mega-menu');
@@ -240,7 +223,7 @@ function dtRenderMegaMenu() {
 
     b.addEventListener('mouseenter', elegir);
     b.addEventListener('focus', elegir);
-    // En pantallas tactiles con teclado/mouse el hover no siempre llega.
+    // En pantallas táctiles con mouse el hover no siempre llega.
     b.addEventListener('click', function() {
       elegir();
       window.location.href = 'catalogo.html?catid=' + encodeURIComponent(cat.id);
@@ -272,7 +255,7 @@ function dtToggleMegaMenu(forzarCerrado) {
 document.addEventListener('DOMContentLoaded', function() {
   dtRenderMegaMenu();
 
-  // Cerrar al hacer clic afuera o con Escape.
+  // Se cierra con un clic afuera o con Escape.
   document.addEventListener('click', function(e) {
     if (!e.target.closest('#dt-mega-menu') && !e.target.closest('#dt-mega-toggle')) {
       dtToggleMegaMenu(true);
