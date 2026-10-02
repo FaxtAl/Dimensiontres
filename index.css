@@ -1,20 +1,18 @@
-/* ─────────────────────────────────────────────────────────
-   index.css — Estilos específicos del Inicio | Dimensión Tres
-   ───────────────────────────────────────────────────────── */
+/* index.css - Estilos de la página de inicio. */
 
-/* ── Ocultar scrollbar (carrusel de marcas) ── */
+/* Oculta la barra de desplazamiento (cinta de marcas) */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-/* ── Glow de texto neon ── */
+/* Brillo de texto */
 .neon-text-glow {
   text-shadow: 0 0 10px rgba(143, 245, 255, 0.5);
 }
 
-/* ── Bento grid de categorías ── */
+/* Grilla de categorías */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -22,7 +20,7 @@
   gap: 1.5rem;
 }
 
-/* ── Carrusel de marcas infinito ── */
+/* Cinta de marcas en movimiento */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -53,10 +51,8 @@
 }
 .marquee-item:hover { color: #8ff5ff; }
 
-/* Logos de marcas en vez del nombre en texto. Cada logo trae su alto en --h
-   (en em, relativo al tamano de letra de la cinta) calculado para que todos
-   ocupen la misma superficie: las palabras largas (Sony, ASUS) mas bajas y
-   los iconos cuadrados (Razer, MSI) mas altos. El ancho sale de la forma. */
+/* Logos de marcas. Cada logo define su alto en --h para que todos
+   tengan un tamaño visual parecido. */
 .marcas-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 .marquee-item {
   display: flex;
@@ -71,7 +67,7 @@
   fill: currentColor;
 }
 
-/* ── Pulido visual home ── */
+/* Ajustes visuales del inicio */
 #categorias .group,
 #servicios article,
 #servicios .bg-\[\#080808\] {
@@ -108,7 +104,7 @@
   z-index: 2;
 }
 
-/* Grilla de categorias con producto visible y fondo translucido. */
+/* Grilla de categorías con fondo translúcido. */
 #home-category-grid.home-category-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -163,8 +159,7 @@
   overflow: hidden;
 }
 
-/* Con "place-items: center" la foto no se achicaba a la caja y se desbordaba
-   encima de la tarjeta de al lado. Con max-width/max-height siempre entra. */
+/* La foto se ajusta a la caja con max-width y max-height. */
 #home-category-grid .home-category-media img {
   position: static;
   display: block;
@@ -398,12 +393,7 @@
   #home-category-grid .home-category-media img { transition: none; }
 }
 
-/* ============================================================
-   Portada con banners.
-   Cuando toca un banner de los que traen su propio titulo y
-   boton dibujados, el hero se achica, aclara el velo y reduce
-   el texto del sitio: si no, quedaban dos titulos encimados.
-   ============================================================ */
+/* Portada con banners. */
 
 .home-hero-velo-lat {
   background: linear-gradient(90deg,
@@ -418,15 +408,12 @@
     rgba(14, 14, 14, 0.85) 100%);
 }
 
-/* --- Modo banner --- */
+/* Modo banner */
 
-/* El alto vivia en el atributo style del HTML, que le gana a cualquier clase:
-   por eso el modo banner no lograba achicarlo. Ahora vive aca. */
+/* Alto de la portada. */
 #inicio { min-height: 92svh; }
 
 #inicio.es-banner {
-  /* Con 92svh el alto sobraba tanto que el recorte se comia los costados y
-     se perdia la primera letra del titulo del banner. */
   min-height: min(70svh, calc(100vw / 2.2));
 }
 
@@ -444,13 +431,7 @@
     rgba(14, 14, 14, 0.92) 100%);
 }
 
-/* ============================================================
-   Texto de la portada sobre el banner.
-   Los banners van sin palabras adentro, asi que el titulo, la
-   bajada y los botones del sitio se dibujan encima a su tamaño
-   normal. Solo se agrega sombra para asegurar contraste sobre
-   cualquier imagen.
-   ============================================================ */
+/* Texto de la portada sobre el banner. */
 
 #inicio.es-banner .home-hero-texto h1,
 #inicio.es-banner .home-hero-texto p,
@@ -458,14 +439,8 @@
   text-shadow: 0 3px 20px rgba(0, 0, 0, 0.85);
 }
 
-/* En los tres banners los productos arrancan cerca del 35% del ancho, asi que
-   el texto se acota a la mitad izquierda para no montarse encima. El titulo
-   escala solo para entrar en ese ancho. */
+/* El texto ocupa la parte izquierda para no tapar los productos del banner. */
 @media (min-width: 768px) {
-  /* El 48% del contenedor terminaba cerca del 50% de la pantalla y la bajada
-     se metia debajo de las tapas (que arrancan en el 35%). Se acota el texto
-     hasta el 34% de la pantalla, descontando el margen izquierdo del hero, y
-     el titulo escala con el ancho para entrar entero en esa columna. */
   #inicio.es-banner .home-hero-texto { max-width: calc(34vw - clamp(2rem, 4vw, 5rem)); }
 
   #inicio.es-banner .home-hero-texto h1 {
@@ -477,9 +452,7 @@
 }
 
 @media (max-width: 767px) {
-  /* En celular el banner ocupa todo el ancho y no queda zona despejada, asi
-     que el texto cae sobre los productos. Se oscurece bastante mas para que
-     el titulo y los botones se lean sin pelear con el arte. */
+  /* En celular se oscurece el banner para que el texto se lea. */
   #inicio.es-banner .home-hero-velo-lat {
     background: linear-gradient(180deg,
       rgba(14, 14, 14, 0.55) 0%,
@@ -488,10 +461,7 @@
   }
 }
 
-/* El contenedor del hero estaba topado en 1920px y centrado, asi que en un
-   monitor mas ancho quedaban margenes grandes a los lados y el texto se iba
-   al centro. En la portada se suelta a todo el ancho: el texto se apoya
-   siempre cerca del borde izquierdo, como en los banners. */
+/* El hero usa todo el ancho de la pantalla. */
 @media (min-width: 768px) {
   #inicio > .relative.z-10 {
     max-width: none;
@@ -501,25 +471,16 @@
 }
 
 @media (max-width: 767px) {
-  /* En celular el ancho es chico, asi que atar el alto a la relacion del
-     banner (2,2:1) dejaba una portada de apenas 170px. Se le da altura
-     propia: casi cuadrada, topada para que no tape la pantalla entera. */
+  /* Alto propio de la portada en celular. */
   #inicio.es-banner { min-height: min(84svh, calc(100vw / 0.68)); }
 
-  /* Mas aire entre etiqueta, titulo, bajada y botones: apretados se leian
-     como un bloque solo. */
+  /* Separación entre los elementos del texto. */
   #inicio.es-banner .home-hero-texto > span:first-child { margin-bottom: 1.5rem; }
   #inicio.es-banner .home-hero-texto h1 { margin-bottom: 1.4rem; }
   #inicio.es-banner .home-hero-texto p { margin-bottom: 2rem; line-height: 1.6; }
 }
 
-/* ============================================================
-   EFECTOS DE SECCION
-   Toman el motivo que ya traen los banners: lineas finas en
-   escuadra, cyan arriba a la izquierda y violeta abajo a la
-   derecha. Es CSS puro, sin imagenes ni animacion continua:
-   no cuesta bateria ni se cansa a los diez segundos.
-   ============================================================ */
+/* Detalles decorativos de cada sección (líneas en escuadra). */
 
 .dt-seccion {
   position: relative;
@@ -537,7 +498,7 @@
   opacity: 0.55;
 }
 
-/* Escuadra cyan, arriba a la izquierda */
+/* Escuadra celeste, arriba a la izquierda */
 .dt-seccion::before {
   top: 0;
   left: 0;
@@ -557,8 +518,7 @@
   mask-image: linear-gradient(315deg, #000 0%, transparent 62%);
 }
 
-/* Halo suave detras del titulo de cada seccion, para dar profundidad al
-   fondo plano sin ensuciarlo. */
+/* Halo suave detrás del título de cada sección. */
 .dt-seccion > .dt-halo {
   position: absolute;
   top: -80px;
@@ -576,11 +536,7 @@
   .dt-seccion > .dt-halo { width: 320px; height: 240px; left: 0; }
 }
 
-/* ============================================================
-   APARICION AL SCROLLEAR
-   El bloque entra con un fade y una subida corta. Lo enciende
-   un IntersectionObserver desde index.js.
-   ============================================================ */
+/* Aparición de secciones al hacer scroll (se activa desde index.js). */
 
 .dt-reveal {
   opacity: 0;
@@ -595,8 +551,7 @@
   transform: none;
 }
 
-/* Quien pidio menos movimiento en su sistema no ve la animacion: el
-   contenido aparece directo. */
+/* Sin animación si el sistema pide movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
   .dt-reveal {
     opacity: 1;
@@ -605,8 +560,7 @@
   }
 }
 
-/* Tarjetas de Servicios con el mismo vidrio oscuro que el nav (shared.css,
-   body > nav.fixed): negro semitransparente, desenfoque y borde celeste. */
+/* Tarjetas de servicios con fondo translúcido como el nav. */
 #servicios article {
   background: rgba(7, 8, 9, 0.82);
   border-color: rgba(143, 245, 255, 0.12);
@@ -615,8 +569,7 @@
 }
 #servicios article:hover { border-color: rgba(143, 245, 255, 0.4); }
 
-/* En escritorio la fila 2 del nav mide 52px (no 80 como el md:pt-20 del
-   main): sobraba una franja gris de 28px entre el nav y el banner. */
+/* Espacio superior del main según el alto del nav. */
 @media (min-width: 768px) {
   main.pt-28 { padding-top: 52px; }
 }
@@ -624,10 +577,7 @@
   main.pt-28 { padding-top: 56px; }
 }
 
-/* Tablets (768-1023): el banner mide ~350px de alto y la columna de texto
-   es angosta, asi que etiqueta + titulo + bajada + dos botones apilados no
-   entraban y la etiqueta quedaba pegada al nav. Se achican espacios y
-   botones solo en ese rango. */
+/* Tablets (768-1023 px): espacios y botones más chicos en la portada. */
 @media (min-width: 768px) and (max-width: 1023px) {
   #inicio.es-banner .home-hero-texto > span:first-child { margin-bottom: 0.75rem; font-size: 0.7rem; }
   #inicio.es-banner .home-hero-texto h1 { margin-bottom: 0.6rem; }
@@ -636,9 +586,7 @@
   #inicio.es-banner .home-hero-texto button { padding: 0.6rem 1.1rem; font-size: 0.75rem; }
 }
 
-/* Servicio tecnico: foto arriba de cada tarjeta (Pexels, licencia libre)
-   que se funde con el fondo, el icono montado sobre el borde de la foto y un
-   boton de WhatsApp con el mensaje ya escrito para ese servicio. */
+/* Servicio técnico: foto en cada tarjeta y botón de WhatsApp. */
 #servicios article {
   display: flex;
   flex-direction: column;
@@ -694,15 +642,9 @@
 }
 #servicios article > ul { margin-bottom: 1.5rem; }
 
-/* ============================================================
-   Portada con banners que ya traen su texto (FC 27, GTA VI).
-   - El titulo, la bajada y los botones del sitio no se dibujan encima:
-     quedan solo para lectores de pantalla y buscadores.
-   - El alto sigue la proporcion del banner (2000x668) en todos los
-     tamanos, asi se ve entero: con alto propio el recorte se comia el
-     texto del banner.
-   - Sin velos ni oscurecido: el banner se ve con sus colores.
-   ============================================================ */
+/* Portada con banners que incluyen su propio texto.
+   El texto del sitio queda oculto (solo para lectores de pantalla)
+   y el alto sigue la proporción del banner (2000x668). */
 #inicio.es-banner {
   min-height: 0 !important;
   aspect-ratio: 2000 / 668;
@@ -724,16 +666,12 @@
 #inicio.es-banner .home-hero-velo-lat,
 #inicio.es-banner .home-hero-velo-abajo { display: none; }
 
-/* Celular: el banner entero quedaba de 125px de alto y las letras no se
-   leian. Se lo agranda casi al doble y se recorta lo que sobra a la derecha,
-   dejando a la vista lo importante de cada uno: en FC 27 el texto y las dos
-   primeras tapas; en GTA VI el titulo, la PS5 y la tarjeta del juego. */
 @media (max-width: 767px) {
-  /* Version vertical para celular de cada banner (1092x1440): se ve entera. */
+  /* Versión vertical de los banners para celular (1092x1440). */
   #inicio.es-banner { aspect-ratio: 1092 / 1440; }
 }
 
-/* Tira de banners que se desliza de costado (index.js). */
+/* Tira de banners que se desliza (index.js). */
 #inicio .home-hero-track {
   display: flex;
   width: 100%;
@@ -756,7 +694,7 @@
 }
 #inicio #home-hero-picture { display: block; width: 100%; height: 100%; }
 
-/* Boton chico debajo de "Explora por categoria". */
+/* Botón debajo de "Explorá por categoría". */
 .home-ver-catalogo-wrap {
   display: flex;
   justify-content: center;
