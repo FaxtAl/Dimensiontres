@@ -1,25 +1,20 @@
 /**
- * bot.js - "Tito", el tecnico de DimensionTres.
+ * bot.js - Asistente "Tito" de preguntas frecuentes.
  *
- * Bot de preguntas frecuentes con humor, 100% gratis: no usa ninguna IA paga.
- * Detecta palabras clave y responde con datos reales del local (horario,
- * direccion, pagos, reparaciones, garantia). Si la pregunta parece de un
- * producto, usa el buscador que ya tiene la web (search-global.js) para
- * mostrar precios reales; en las paginas donde ese buscador no se carga,
- * manda al catalogo.
- *
- * Todo el texto se arma con textContent / nodos del DOM, nunca con innerHTML
- * de lo que escribe el usuario.
+ * Responde por palabras clave con los datos del local (horario, dirección,
+ * pagos, reparaciones, garantía). Las consultas de productos usan el buscador
+ * del sitio (search-global.js) o llevan al catálogo.
+ * El texto se arma con textContent, sin innerHTML.
  */
 (function() {
   if (window.__dtBotLoaded) return;
   window.__dtBotLoaded = true;
 
-  // -- Datos del local (los mismos que muestran index.html y legales.html) --
+  // Datos del local (los mismos de index.html y legales.html)
   var STORE = {
     address: 'Bartolomé Mitre 212, Centro, Villa María',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Bartolomé Mitre 212, Villa María, Córdoba'),
-    // Lunes (1) a sabado (6). Minutos desde las 00:00, hora de Argentina.
+    // Lunes (1) a sábado (6). Minutos desde las 00:00, hora de Argentina.
     days: [1, 2, 3, 4, 5, 6],
     shifts: [[9 * 60, 13 * 60], [16 * 60 + 30, 20 * 60 + 30]],
     hoursText: 'lunes a sábado de 9:00 a 13:00 y de 16:30 a 20:30'
@@ -43,7 +38,7 @@
     { label: 'Contame un chiste', text: 'contame un chiste' }
   ];
 
-  // Foto del boton redondo y de la cabecera del chat.
+  // Foto del botón y de la cabecera del chat.
   var AVATAR_SRC = 'img/bot-tito.jpg?v=20260916';
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -76,7 +71,7 @@
     });
   }
 
-  // -- Horario: se calcula con la hora de Argentina, no la de la compu --
+  // Horario: se calcula con la hora de Argentina.
   function storeNow() {
     try {
       var parts = new Intl.DateTimeFormat('en-US', {
@@ -120,7 +115,7 @@
     return 'Ahora estamos cerrados' + (tomorrowOpen ? ', volvemos mañana a las 9:00' : ', volvemos el lunes a las 9:00') + '. Hasta los técnicos necesitan reiniciarse. Atendemos ' + STORE.hoursText + '.';
   }
 
-  // -- Armado de mensajes --
+  // Armado de mensajes
   function scrollToEnd() {
     els.log.scrollTop = els.log.scrollHeight;
   }
@@ -185,7 +180,7 @@
     return new Promise(function(resolve) { setTimeout(resolve, reduceMotion ? 0 : ms); });
   }
 
-  // -- Productos: usa el buscador de la web si esta en esta pagina --
+  // Productos: usa el buscador del sitio si está en la página.
   var FILLER = ['tenes', 'tenés', 'tienen', 'tiene', 'hay', 'precio', 'precios', 'cuanto', 'sale', 'salen', 'cuesta', 'cuestan',
     'busco', 'buscando', 'quiero', 'queria', 'necesito', 'vendes', 'venden', 'stock', 'de', 'del', 'la', 'el', 'los', 'las',
     'un', 'una', 'unos', 'unas', 'para', 'me', 'que', 'algun', 'alguna', 'con', 'y', 'o', 'por', 'favor', 'hola', 'buenas', 'en'];
@@ -248,7 +243,7 @@
     ];
   }
 
-  // -- Respuestas --
+  // Respuestas
   function reply(text) {
     var t = normalize(text);
 
@@ -272,7 +267,7 @@
     if (has(t, ['horario', 'horarios', 'abierto', 'abiertos', 'abren', 'abre', 'cierran', 'cierra', 'atienden', 'hora'])) {
       return { parts: hoursReply(), chips: [{ label: '¿Dónde están?', text: 'donde estan' }, { label: 'Busco un producto', text: 'busco un producto' }] };
     }
-    // Sin "local": "tenes joysticks en el local?" es una busqueda, no la direccion.
+    // "local" no se usa como palabra clave: suele ser parte de una búsqueda.
     if (has(t, ['donde', 'direccion', 'ubicacion', 'ubicados', 'mapa', 'como llego'])) {
       return {
         parts: ['Estamos en ' + STORE.address + '. Si te perdés, preguntá por los que saben de joysticks con drift.', links(link('Abrir en Google Maps', STORE.mapsUrl, true))],
@@ -294,7 +289,7 @@
         chips: QUICK
       };
     }
-    // Sin "pantalla": "busco una pantalla" es un producto; "reparar pantalla" entra por "reparar".
+    // "pantalla" no se usa como palabra clave: suele ser un producto.
     if (has(t, ['reparacion', 'reparaciones', 'reparar', 'arreglar', 'arreglo', 'tecnico', 'service', 'servicio', 'drift', 'no prende', 'limpieza', 'formatear'])) {
       return {
         parts: [
@@ -358,7 +353,7 @@
     if (els.panel.classList.contains('is-open')) els.input.focus();
   }
 
-  // -- Interfaz --
+  // Interfaz
   function avatarImg(className) {
     var img = document.createElement('img');
     img.className = className;
@@ -366,7 +361,7 @@
     img.alt = '';
     img.decoding = 'async';
     img.addEventListener('error', function() {
-      // Si la foto no esta, queda la inicial sobre el circulo cyan.
+      // Sin foto: inicial sobre círculo celeste.
       var fallback = document.createElement('span');
       fallback.className = className + ' is-fallback';
       fallback.textContent = 'T';
@@ -377,7 +372,7 @@
 
   function open() {
     els.panel.hidden = false;
-    // Un frame despues, para que la transicion de apertura se vea.
+    // Se espera un cuadro para que se vea la transición de apertura.
     requestAnimationFrame(function() { els.panel.classList.add('is-open'); });
     els.launcher.setAttribute('aria-expanded', 'true');
     document.body.classList.add('dt-bot-open');
