@@ -1,4 +1,4 @@
-// supabase-client.js - lectura publica del catalogo desde Supabase.
+// supabase-client.js - Lectura pública del catálogo y cuentas desde Supabase.
 (function() {
   var cfg = window.CONFIG || {};
   var client = null;
@@ -261,7 +261,7 @@
   function cleanSupplierCodeText(value) {
     return String(value || '')
       .replace(/\s*\(\d{3,}\)/g, ' ')
-      // "(II)" es una marca interna de Invid, no dice nada del producto.
+      // "(II)" es una marca interna de Invid; se quita del nombre.
       .replace(/\s*\(I{1,3}\)/g, ' ')
       .replace(/\s{2,}/g, ' ')
       .trim();
@@ -298,11 +298,8 @@
     if (LOCAL_PRODUCT_IMAGES[key]) return LOCAL_PRODUCT_IMAGES[key];
     if (key.length < 6) return '';
 
-    // Que el nombre de un archivo contenga el texto del producto solo vale si el
-    // texto es especifico (3+ palabras). Si no, una descripcion de Access como
-    // "Adaptador" se quedaba con la primera foto que dijera "adaptador" (el cargador
-    // Samsung salia con la foto de un adaptador Bluetooth) y "PlayStation 5" con la
-    // de la lectora aunque fuera la digital.
+    // La coincidencia por nombre de archivo solo cuenta con textos específicos
+    // (3 palabras o más) para no asignar fotos de otros productos.
     var keyIsSpecific = key.split(' ').length >= 3;
     for (var i = 0; i < LOCAL_PRODUCT_IMAGE_KEYS.length; i++) {
       var localKey = LOCAL_PRODUCT_IMAGE_KEYS[i];
@@ -358,18 +355,8 @@
     return entry.image || entry.imagen || entry.url || '';
   }
 
-  // Las fotos manuales ahora se guardan como URL completa (con dominio),
-  // porque la base exige que imagen_url empiece con http(s). Antes de esto
-  // se guardaban como ruta relativa ("img/productos/..."), que es el
-  // formato que estas dos funciones esperaban. Sin este ajuste, una foto
-  // recien subida para un juego fisico se rechazaba en silencio: pasaba el
-  // guardado en Supabase pero nunca se mostraba, porque quedaba fuera de
-  // la lista de fuentes "confiables" para juegos.
-  // No depende de window.location: compara por estructura de la URL, no
-  // por si coincide con el dominio donde se esta ejecutando. Asi funciona
-  // igual en produccion, en el servidor local o probando desde otra
-  // maquina. "https://cualquier-dominio/img/productos/x.webp" y
-  // "img/productos/x.webp" dan el mismo resultado: "img/productos/x.webp".
+  // Normaliza las URL de fotos manuales a ruta relativa ("img/productos/...").
+  // No depende del dominio: funciona igual en producción y en local.
   function stripSameOriginPrefix(url) {
     url = String(url || '');
     var m = url.match(/^https?:\/\/[^/]+(\/.*)$/i);
@@ -468,11 +455,8 @@
     return '';
   }
 
-  // Fotos cargadas a mano desde admin-imagenes. Se guardaban bien en
-  // producto_imagenes, pero no siempre se veian: en Access la foto local que
-  // coincide por nombre ganaba ("Arcade Doble Multiconsola" seguia con la vieja)
-  // y los productos de Invid ni siquiera las leian (solo la foto del proveedor).
-  // Se traen una vez por pagina y ganan sobre cualquier otra foto.
+  // Fotos cargadas desde admin-imagenes (tabla producto_imagenes).
+  // Tienen prioridad sobre cualquier otra foto. Se leen una vez por página.
   var manualProductImages = { byId: {}, byCode: {} };
   var manualProductImagesPromise = null;
 
@@ -492,7 +476,7 @@
           console.warn('Supabase fotos manuales error:', result.error.message);
           return manualProductImages;
         }
-        // Vienen de la mas nueva a la mas vieja: se queda la primera de cada producto.
+        // Ordenadas de la más nueva a la más vieja: se toma la primera de cada producto.
         (result.data || []).forEach(function(row) {
           var url = String(row.imagen_url || '').trim();
           if (!url) return;
@@ -527,16 +511,15 @@
     }
     var mappedImage = findMappedProductImage(row);
 
-    // Para juegos fisicos preferimos la copia local descargada. Asi la web no
-    // depende de que DixGamer u otra fuente externa responda justo en ese momento.
+    // Juegos físicos: se prefiere la copia local descargada.
     if (mappedImage && isPhysicalGameImageRow(row)) {
       if (row && row.imagen_url && isLocalCatalogImageUrl(row.imagen_url) && isAllowedMappedGameImage(row, row.imagen_url)) return row.imagen_url;
       if (row && row.image_url && isLocalCatalogImageUrl(row.image_url) && isAllowedMappedGameImage(row, row.image_url)) return row.image_url;
       return mappedImage;
     }
 
-    // La imagen cargada desde admin-imagenes queda en Supabase y debe ganar
-    // sobre mapas viejos generados por CSV/DixGamer para productos no juego.
+    // La foto cargada desde admin-imagenes tiene prioridad sobre los mapas
+    // generados por CSV/DixGamer.
     if (row && row.imagen_url && isAllowedMappedGameImage(row, row.imagen_url)) return row.imagen_url;
     if (row && row.image_url && isAllowedMappedGameImage(row, row.image_url)) return row.image_url;
     if (row && row.invid_imagen_url && isAllowedMappedGameImage(row, row.invid_imagen_url)) return dtProxyInvidUrl(row.invid_imagen_url);
@@ -567,9 +550,8 @@
       return ['img/invid/' + encodeURIComponent(exactLocalFile).replace(/%2F/g, '/')];
     }
 
-    // El manifiesto se genera desde los archivos que existen realmente.
-    // Si el ID no esta ahi, no inventamos extensiones: continuamos con la
-    // URL explicita del proveedor y, si falla, la interfaz usa el placeholder.
+    // El manifiesto lista solo archivos existentes. Si el ID no está,
+    // se usa la URL del proveedor y, si falla, el placeholder.
     return [];
   }
 
@@ -639,13 +621,8 @@
     return candidates[0] || '';
   }
 
-  // Las fotos de Invid llegan sin optimizar (200-240 KB, contra los
-  // 40-60 KB de las propias del sitio) porque viven en el servidor del
-  // proveedor, no en el nuestro. api/invid-image-proxy.php las baja una
-  // sola vez, las comprime y las guarda en el propio servidor; esta
-  // funcion arma esa URL en vez de la directa. Los visitantes siguientes
-  // (de cualquier categoria) ya la reciben liviana, sin volver a pedirle
-  // nada a Invid.
+  // Las fotos de Invid pasan por api/invid-image-proxy.php, que las comprime
+  // y las guarda en el servidor para servirlas livianas.
   function dtProxyInvidUrl(url) {
     url = String(url || '').trim();
     if (!url) return url;
@@ -654,8 +631,8 @@
   }
 
   var ML_IMAGE_CACHE_PREFIX = 'dt-ml-image-';
-  // Cache corto porque stock/precios cambian desde Access durante el dia.
-  // Cambiar el prefijo fuerza al navegador a ignorar caches viejos.
+  // Caché corto: stock y precios cambian durante el día.
+  // Cambiar el prefijo invalida los cachés anteriores.
   var PUBLIC_CATALOG_CACHE_PREFIX = 'dt-public-catalog-v20260630-batch-catalog-';
   var PUBLIC_CATALOG_CACHE_TTL_MS = Math.max(1, Number(cfg.PUBLIC_CATALOG_CACHE_MINUTES || 1)) * 60 * 1000;
   var PUBLIC_CATALOG_LOCAL_CACHE_MAX_BYTES = Math.max(0, Number(cfg.PUBLIC_CATALOG_CACHE_MAX_KB || 220)) * 1024;
@@ -761,7 +738,7 @@
           return true;
         } catch (innerError) {}
       }
-      // El cache es opcional; si el navegador lo bloquea seguimos igual.
+      // El caché es opcional; si el navegador lo bloquea se sigue sin él.
     }
     return false;
   }
@@ -770,7 +747,7 @@
     try {
       if (window.localStorage) window.localStorage.removeItem(key);
     } catch (error) {
-      // Sin localStorage, simplemente no cacheamos.
+      // Sin localStorage no se guarda caché.
     }
   }
 
@@ -838,7 +815,7 @@
     publicCatalogPending[key] = (async function() {
       var value;
       try {
-        // Los productos se arman adentro de loader() y ahi se elige la foto.
+        // La foto de cada producto se elige dentro de loader().
         await ensureManualProductImages();
         value = await withPublicCatalogTimeout(loader(), key);
       } catch (error) {
@@ -1130,9 +1107,8 @@
     if (!sb) return { user: null, error: { message: 'Supabase no esta disponible.' } };
     if (!name || !email || !password) return { user: null, error: { message: 'Completá todos los campos.' } };
 
-    // DNI y telefono obligatorios: el telefono se guarda en los metadatos de
-    // la cuenta, de donde lo leen "Datos personales" (buildEmailAccountUser)
-    // y el armado del pedido (order_create_account_value en order-create.php).
+    // DNI y teléfono obligatorios. El teléfono se guarda en los metadatos de la
+    // cuenta (lo usan buildEmailAccountUser y order-create.php).
     if (!cleanDni || cleanDni.length < 7) return { user: null, error: { message: 'Ingresá un DNI válido.' } };
     if (phone.replace(/\D/g, '').length < 8) return { user: null, error: { message: 'Ingresá un teléfono válido.' } };
 
@@ -1232,8 +1208,8 @@
     return refreshResult.data && refreshResult.data.session ? refreshResult : sessionResult;
   }
 
-  // Devuelve la cuenta actualmente logueada en Supabase Auth.
-  // Si el email interno es dni-XXXX@dimension3.local, tambien busca el cliente local por DNI.
+  // Devuelve la cuenta con sesión iniciada en Supabase Auth.
+  // Con email interno dni-XXXX@dimension3.local también busca el cliente por DNI.
   async function getCurrentAccount() {
     var sb = getClient();
     if (!sb) return { user: null, error: null };
@@ -1276,8 +1252,8 @@
     return { user: user, error: null };
   }
 
-  // Activa una cuenta web usando un DNI que ya vino desde Access.
-  // Sirve para que el cliente vea compras/reparaciones historicas del local.
+  // Activa una cuenta web con un DNI existente en Access
+  // para mostrar compras y reparaciones históricas.
   async function registerCustomerByDni(dni, password) {
     var sb = getClient();
     var cleanDni = normalizeDni(dni);
@@ -1329,7 +1305,7 @@
     };
   }
 
-  // Login por DNI: convierte el DNI al email interno y autentica contra Supabase.
+  // Ingreso por DNI: convierte el DNI al email interno y autentica en Supabase.
   async function loginCustomerByDni(dni, password) {
     var sb = getClient();
     var cleanDni = normalizeDni(dni);
@@ -1487,7 +1463,7 @@
     var text = normalizeCatalogText(status || '');
     if (text) {
       if (text.indexOf('sin stock') !== -1 || text.indexOf('agot') !== -1) return 0;
-      // Estado nuevo de Invid, llega sin numero de stock: cuenta como con stock.
+      // Estado de Invid sin número de stock: cuenta como con stock.
       if (text.indexOf('menos de') !== -1) return 10;
       if (text.indexOf('bajo stock') !== -1) return 2;
       if (text.indexOf('stock ok') !== -1 || text.indexOf('dispon') !== -1 || text.indexOf('stock') !== -1) return 10;
@@ -1728,7 +1704,7 @@
     };
   }
 
-  // Historial de compras: combina facturas sincronizadas desde Access con pedidos web.
+  // Historial de compras: facturas de Access y pedidos web.
   async function fetchAccountOrders(limit) {
     var sb = getClient();
     if (!sb) return { orders: [], error: { message: 'Supabase no esta disponible.' } };
@@ -1825,7 +1801,7 @@
     };
   }
 
-  // Historial de reparaciones: lee ordenes del local sincronizadas desde Access.
+  // Historial de reparaciones: órdenes del local sincronizadas desde Access.
   async function fetchAccountRepairs(limit) {
     var sb = getClient();
     if (!sb) return { repairs: [], error: { message: 'Supabase no esta disponible.' } };
@@ -1975,7 +1951,7 @@
     'Juegos Xbox one original',
     'Juegos Digitales Ps3 Ps4 Ps5',
     '701179990048',
-    // Duplicados de joystick PS5: se conserva publicada la ficha anterior.
+    // Joystick PS5 duplicado: se mantiene publicada la ficha anterior.
     '711719023197',
     '711719023227',
     'Seña Dolares'
@@ -2425,8 +2401,8 @@
       return 'Juegos Fisicos';
     }
 
-    // La categoria del local "Silla Gamer" se muestra como "Setup Gamer": junta
-    // las sillas del local con las sillas y escritorios de Invid.
+    // La categoría "Silla Gamer" del local se muestra como "Setup Gamer"
+    // junto con sillas y escritorios de Invid.
     if (categoryText === 'silla gamer' || categoryText === 'sillas gamer') {
       return 'Setup Gamer';
     }
@@ -2578,8 +2554,7 @@
       source: 'invid',
       sourceIntegration: 'invid',
       sourceLabel: cleanSourceLabel,
-      // Nombre crudo de la categoria de Invid: hace falta para volver a pedirle
-      // productos de la misma categoria (relacionados en la ficha).
+      // Categoría original de Invid, usada para buscar productos relacionados.
       invidCategory: row.subcategoria || '',
       invidParentCategory: row.categoria || '',
       sourceFile: 'catalogo.html?sub=' + encodeURIComponent('invid-cat-' + catalogSlug(row.subcategoria || 'invid-pc')),
@@ -2969,7 +2944,7 @@
     return null;
   }
 
-  // Guarda un pedido creado en la web. Requiere sesion real para evitar pedidos anonimos.
+  // Guarda un pedido web. Requiere sesión para evitar pedidos anónimos.
   async function createWebOrder(data) {
     var sb = getClient();
     if (!sb) return { order: null, error: { message: 'Supabase no esta disponible.' } };
