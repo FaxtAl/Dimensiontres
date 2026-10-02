@@ -1,9 +1,7 @@
-/* ─────────────────────────────────────────────────────────
-   tailwind.config.js — Configuración de Tailwind | Dimensión Tres
-   Incluir DESPUÉS del CDN de Tailwind:
+/* tailwind.config.js - Configuración de Tailwind.
+   Se incluye después del CDN de Tailwind:
      <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-     <script src="tailwind.config.js"></script>
-   ───────────────────────────────────────────────────────── */
+     <script src="tailwind.config.js"></script> */
 
 tailwind.config = {
   darkMode: "class",
