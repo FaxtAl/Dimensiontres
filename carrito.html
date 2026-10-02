@@ -19,9 +19,9 @@
 </head>
 <body class="bg-background text-on-surface font-body">
 
-<!-- NAV -->
+<!-- Nav -->
 <nav class="fixed top-0 w-full z-50 " style="background:#0e0e0e; border-bottom: 1px solid rgba(0,240,255,0.08);">
-  <!-- FILA 1 (solo escritorio): logo + buscador ancho + redes -->
+  <!-- Fila 1 (escritorio): logo, buscador y redes -->
   <div class="dt-nav-top">
     <a href="index.html" class="dt-nav-top-logo">DimensionTres</a>
 <div class="dt-nav-buscador">
@@ -40,7 +40,7 @@
   </div>
 
   <div class="dt-nav-row flex items-center justify-between px-5 md:px-8 h-16 md:h-20 w-full max-w-[1920px] mx-auto">
-    <!-- IZQUIERDA (solo celular): hamburguesa + lupa -->
+    <!-- Izquierda (celular): menú y lupa -->
     <div class="dt-nav-side">
       <button id="menu-btn" onclick="toggleMenu()"
         class="flex flex-col justify-center items-center w-8 h-8 gap-1.5 text-[#adaaaa] hover:text-[#00f0ff] transition-all"
@@ -59,7 +59,7 @@
       DimensionTres
     </a>
 
-    <!-- Desplegable "Productos": solo escritorio. Lo llena menu-categorias.js -->
+    <!-- Desplegable "Productos" (escritorio). Lo completa menu-categorias.js -->
     <div class="dt-mega-wrap">
       <button id="dt-mega-toggle" type="button" class="dt-mega-toggle"
               onclick="dtToggleMegaMenu()" aria-expanded="false" aria-haspopup="true">
@@ -99,9 +99,7 @@
 
 </nav>
 
-<!-- -- DRAWER MOBILE ---------------------------------------------
-     Se desliza desde la izquierda con backdrop oscuro.
-     ========================================================== -->
+<!-- Menú lateral de celular -->
 <div id="drawer-backdrop" onclick="closeMenu()" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" style="transition: opacity 0.3s;"></div>
 
 <div id="mobile-drawer" data-open="false" class="fixed top-0 left-0 z-[70] h-full w-[85%] max-w-[320px] bg-[#0e0e0e] border-r border-[rgba(0,240,255,0.08)] transition-transform duration-300 ease-out md:hidden" style="transform: translateX(-100%); box-shadow: 4px 0 30px rgba(0,0,0,0.5);">
@@ -114,7 +112,7 @@
     <button onclick="closeMenu()" class="material-symbols-outlined text-[#adaaaa] hover:text-[#00f0ff] transition-all text-[22px]">close</button>
   </div>
 
-    <!-- Cuerpo scrolleable: links sueltos + todas las categorias -->
+    <!-- Contenido con scroll: enlaces y categorías -->
     <div class="dt-drawer-body">
 
       <nav class="flex flex-col gap-1 px-5 pt-4 pb-2">
@@ -127,12 +125,12 @@
 
       <p class="dt-menu-titulo">Categorías</p>
 
-      <!-- Lo llena menu-categorias.js -->
+      <!-- Lo completa menu-categorias.js -->
       <div id="dt-menu-categorias"></div>
 
     </div>
 
-    <!-- Pie fijo -->
+    <!-- Pie del menú -->
     <div class="dt-drawer-foot p-5 border-t border-[rgba(72,72,71,0.15)]">
       <a href="https://wa.me/5493534019085?text=Hola!%20Quiero%20consultar%20por%20un%20servicio%20técnico" target="_blank" class="flex items-center justify-center gap-2 py-3 bg-primary/10 border border-primary/30 text-primary font-headline text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary-fixed transition-all rounded-lg">
       <span class="material-symbols-outlined text-[18px]">chat</span> Consultar por WhatsApp
@@ -188,8 +186,7 @@
       <div class="dt-cart-summary-line"><span>Extras</span><strong>$0</strong></div>
       <div class="dt-cart-summary-line dt-cart-summary-total"><span>Total</span><strong id="sum-total">$0</strong></div>
 
-      <!-- Aviso de demora: lo muestra updateTotals() cuando el carrito tiene
-           productos que vienen del proveedor (48 hs). -->
+      <!-- Aviso de demora para productos del proveedor (lo muestra updateTotals) -->
       <p id="cart-delay-note" class="dt-cart-delay-note" hidden>
         <span class="material-symbols-outlined">schedule</span>
         <span id="cart-delay-note-text"></span>
