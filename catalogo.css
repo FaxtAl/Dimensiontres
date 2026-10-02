@@ -1,9 +1,7 @@
-/* ─────────────────────────────────────────────────────────
-   catalogo.css — Estilos específicos del Catálogo | Dimensión Tres
-   ───────────────────────────────────────────────────────── */
+/* catalogo.css - Estilos de la página del catálogo. */
 
 
-/* ── Noise grain ── */
+/* Textura de ruido */
 body::after {
   content: '';
   position: fixed;
@@ -14,7 +12,7 @@ body::after {
   opacity: 0.6;
 }
 
-/* ── Category card ── */
+/* Tarjeta de categoría */
 .cat-card {
   position: relative;
   background:
@@ -217,7 +215,7 @@ body::after {
   transition: transform 0.25s;
 }
 
-/* ── Bottom cyan line indicator ── */
+/* Línea celeste inferior */
 .cat-line {
   position: absolute;
   bottom: 0; left: 0;
@@ -344,13 +342,13 @@ body::after {
   }
 }
 
-/* ── Stagger animation on load ── */
+/* Animación de entrada */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Filter pill buttons ── */
+/* Botones de filtro */
 .filter-pill {
   padding: 0.45rem 1.1rem;
   font-family: 'Space Grotesk', sans-serif;
@@ -373,8 +371,7 @@ body::after {
   background: rgba(143,245,255,0.06);
 }
 
-/* Buscador de escritorio dentro de la pagina: repetia la barra del nav.
-   Se oculta (el input queda en el DOM para el JS) y el orden va a la derecha. */
+/* Buscador interno oculto (se usa el del nav); el orden va a la derecha. */
 #desktop-controls .catalog-search-shell {
   display: none;
 }
@@ -399,8 +396,7 @@ body::after {
   display: none !important;
 }
 
-/* El subtitulo ocupa su renglon aunque este vacio: si se ocultaba con
-   display:none, al aparecer empujaba el titulo hacia arriba. */
+/* El subtítulo reserva su renglón aunque esté vacío. */
 #page-subtitle {
   display: block !important;
   min-height: 1.5em;
@@ -919,14 +915,14 @@ body::after {
   background-repeat: no-repeat;
 }
 
-/* ── Search glow on focus ── */
+/* Brillo del buscador con foco */
 #search-catalog:focus,
 #search-mobile-catalog:focus {
   box-shadow: 0 0 0 1px rgba(143,245,255,0.3), 0 0 20px rgba(143,245,255,0.06);
   border-color: rgba(143,245,255,0.4) !important;
 }
 
-/* ── Hidden cards for filter ── */
+/* Tarjetas ocultas por filtro */
 .cat-card.hidden-filter,
 .product-card.hidden-filter { display: none; }
 
@@ -955,8 +951,7 @@ body::after {
   align-items: stretch;
 }
 
-/* 155px y no 130px: con la tarjeta nueva (precio + boton en la misma fila)
-   las columnas de 130px dejaban el precio cortado en tablets. */
+/* Columnas de 155 px para que el precio no se corte en tablets. */
 .catalog-layout.has-sidebar #categories-grid {
   grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
 }
@@ -1152,10 +1147,10 @@ body::after {
   }
 }
 
-/* Tarjeta de producto "oscura prolija": foto sobre placa clara, una sola
-   pildora de disponibilidad, precio protagonista y un boton-icono de carrito. */
+/* Tarjeta de producto: foto sobre fondo claro, etiqueta de disponibilidad,
+   precio y botón de carrito. */
 .product-card {
-  /* Ahora la tarjeta es un <a>: hay que anular el subrayado y el color de link. */
+  /* La tarjeta es un enlace: sin subrayado ni color de link. */
   text-decoration: none;
   color: inherit;
   display: flex;
@@ -1169,8 +1164,7 @@ body::after {
   opacity: 0;
   animation: fadeSlideUp 0.45s ease forwards;
   transition: border-color 0.2s, background-color 0.2s;
-  /* Para ajustar precio, boton y pildora al ancho real de la tarjeta
-     (ver @container al final del archivo), no al de la pantalla. */
+  /* Tamaños según el ancho de la tarjeta (ver @container al final). */
   container-type: inline-size;
 }
 
@@ -1245,13 +1239,11 @@ body::after {
   opacity: 0.88;
 }
 
-/* Placa clara con margen dentro de la tarjeta oscura: casi todas las fotos
-   de Invid y Access vienen con fondo blanco, y pegadas al borde de una
-   tarjeta negra quedan como recuadros blancos cortados. */
+/* Fondo claro con margen para las fotos con fondo blanco. */
 .product-card-media {
   position: relative;
   margin: 8px 8px 0;
-  /* Una foto cuadrada acerca el alto de la tarjeta al de la referencia. */
+  /* Foto cuadrada. */
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
@@ -1346,7 +1338,7 @@ body::after {
   text-overflow: ellipsis;
 }
 
-/* Pildora de disponibilidad sobre la foto, abajo a la izquierda. */
+/* Etiqueta de disponibilidad sobre la foto. */
 .product-card-availability {
   position: absolute;
   z-index: 2;
@@ -1405,7 +1397,7 @@ body::after {
   justify-content: space-between;
   gap: 0.6rem;
   margin-top: auto;
-  /* Mas aire entre el nombre y el precio: tarjeta un poco mas alta. */
+  /* Separación entre el nombre y el precio. */
   padding-top: 1.1rem;
 }
 
@@ -1450,7 +1442,7 @@ body::after {
   font-size: 20px;
 }
 
-/* ── Custom select arrow ── */
+/* Flecha de los select */
 .custom-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23767575' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -1458,7 +1450,7 @@ body::after {
   background-position: right 12px center;
 }
 
-/* ── Breadcrumb separator ── */
+/* Separador de migas */
 .breadcrumb-sep { color: rgba(72,72,71,0.8); }
 
 .catalog-results-toolbar {
@@ -1469,8 +1461,7 @@ body::after {
   margin-bottom: 1rem;
 }
 
-/* Agrupa el boton volver + el aviso de usados como una sola unidad para
-   que el space-between del toolbar los reparta juntos, no separados. */
+/* Botón volver y aviso de usados agrupados. */
 .dt-toolbar-left {
   display: flex;
   align-items: center;
@@ -1478,9 +1469,7 @@ body::after {
   flex-wrap: wrap;
 }
 
-/* Aviso chico junto al boton volver: se prende solo cuando al menos un
-   producto de la lista que se esta mostrando es usado. Mismo naranja que
-   el resto de las señales de "usado" en la tarjeta y en la ficha. */
+/* Aviso de productos usados junto al botón volver. */
 .dt-usados-hint {
   display: inline-flex;
   align-items: center;
@@ -1624,9 +1613,7 @@ body::after {
     display: block;
   }
 
-  /* Oculto: en celular se busca con la lupa del nav, que en el catalogo
-     filtra igual (search-nav-mobile). El input sigue en el DOM porque el JS
-     lo sincroniza. */
+  /* Oculto en celular: se busca con la lupa del nav (el input sigue en el DOM). */
   .mobile-catalog-search {
     display: none;
   }
@@ -1882,12 +1869,7 @@ body::after {
   }
 }
 
-/* ============================================================
-   Filtro por rango de precio en la barra lateral.
-   Dos <input type="range"> superpuestos: el truco es que el
-   carril no reciba clics y si lo reciban las manijas, para que
-   se puedan agarrar las dos aunque esten encimadas.
-   ============================================================ */
+/* Filtro por rango de precio: dos input range superpuestos. */
 
 .dt-precio {
   margin-top: 1.5rem;
@@ -1968,9 +1950,7 @@ body::after {
   letter-spacing: 0.02em;
 }
 
-/* El arbol de categorias con scroll propio y acotado. Sin esto ocupa toda
-   la barra lateral y empuja el filtro de precio fuera de la vista: habia
-   que scrollear 50 filas para llegar a el. La referencia hace lo mismo. */
+/* Árbol de categorías con alto máximo y scroll propio. */
 .catalog-sidebar .category-tree {
   max-height: 46vh;
   overflow-y: auto;
@@ -1986,9 +1966,7 @@ body::after {
 }
 .catalog-sidebar .category-tree::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.4); }
 
-/* ============================================================
-   Grupos de filtros como radios en la barra lateral.
-   ============================================================ */
+/* Grupos de filtros en la barra lateral. */
 
 .dt-filtros { margin-top: 0.5rem; }
 
@@ -2051,8 +2029,7 @@ body::after {
 
 .dt-filtro-opcion:has(input:checked) { color: #00f0ff; }
 
-/* Los select de arriba quedan solo para celular: en escritorio los
-   reemplaza el panel lateral y tenerlos dos veces confunde. */
+/* Los select superiores solo se usan en celular. */
 @media (min-width: 768px) {
   .catalog-results-toolbar .product-filter-controls { display: none; }
 }
@@ -2080,12 +2057,7 @@ body::after {
   color: #8f8e8d;
 }
 
-/* ============================================================
-   En celular la barra lateral es un panel deslizante.
-   Se reusa el mismo <aside> del escritorio en vez de duplicar
-   categorias, precio y filtros en un panel aparte: asi hay una
-   sola copia de todo y no se pueden desincronizar.
-   ============================================================ */
+/* En celular la barra lateral es un panel deslizante (mismo aside). */
 
 .dt-filtros-cabecera { display: none; }
 
@@ -2113,7 +2085,7 @@ body::after {
     max-width: 340px;
     height: 100%;
     padding: 0 1.1rem 2rem;
-    /* Mismo vidrio que el nav y el resto de los paneles que flotan. */
+    /* Fondo translúcido como el nav. */
     background: rgba(7, 8, 9, 0.82);
     -webkit-backdrop-filter: blur(16px) saturate(135%);
     backdrop-filter: blur(16px) saturate(135%);
@@ -2157,13 +2129,11 @@ body::after {
 
   .dt-filtros-cabecera button:hover { color: #00f0ff; }
 
-  /* El arbol tambien va acotado en el panel. Con altura libre ocupaba las
-     50 filas enteras y empujaba Precio y los grupos de filtros fuera de la
-     vista: habia que scrollear todo el arbol para encontrarlos. */
+  /* Árbol con alto máximo también en el panel. */
   .catalog-sidebar .category-tree { max-height: 38vh; }
 }
 
-/* Link "Todas las categorias" arriba del arbol enfocado */
+/* Enlace "Todas las categorías" */
 .category-tree-todas {
   display: block;
   padding: 0.6rem 0.5rem 0.7rem;
@@ -2179,15 +2149,13 @@ body::after {
 
 .category-tree-todas:hover { color: #00f0ff; }
 
-/* Las tarjetas de categoria ahora son <a>: hay que anular el subrayado y el
-   color de link que el navegador aplica por defecto. Mismo ajuste que
-   necesito .product-card al dejar de ser un div. */
+/* Las tarjetas de categoría son enlaces: sin subrayado ni color de link. */
 .cat-card {
   text-decoration: none;
   color: inherit;
 }
 
-/* Boton-icono de agregar al carrito, al lado del precio. */
+/* Botón de agregar al carrito junto al precio. */
 .product-card-add {
   flex: none;
   width: 40px;
@@ -2206,8 +2174,7 @@ body::after {
 
 .product-card-add .material-symbols-outlined { font-size: 20px; }
 
-/* addToCartUI (cart.js) pone "check + Agregado" durante 1,8 s. En un
-   boton-icono solo entra el check: se oculta el texto. */
+/* En el botón solo se muestra el ícono de confirmación. */
 .product-card-add span + span { display: none; }
 
 .product-card-add:hover { background: #ffffff; }
@@ -2215,8 +2182,7 @@ body::after {
 .product-card-add:focus-visible { outline: 2px solid #8ff5ff; outline-offset: 2px; }
 .product-card-add:disabled { cursor: default; transform: none; }
 
-/* Tarjetas angostas (tablets, grillas con barra lateral): precio y boton
-   comparten fila, asi que se achican antes de que el precio se corte. */
+/* Tarjetas angostas: precio y botón más chicos. */
 @container (max-width: 200px) {
   .product-card-body { padding: 0.6rem 0.6rem 0.7rem; }
   .product-card-title { font-size: 13px; }
@@ -2232,26 +2198,17 @@ body::after {
   .product-card-add { margin-left: auto; }
 }
 
-/* El contador "104 PRODUCTOS" del encabezado sale de la vista: ocupaba una
-   fila entera y la misma cuenta la da "Mostrando X de Y resultados" arriba
-   de la grilla. Se oculta en lugar de borrarlo porque el JS le escribe desde
-   once lugares distintos y quitarlo del DOM los romperia. */
-/* Doble clase: tailwind.generated.css carga despues y su .flex le gana a
-   una sola clase. */
+/* Contador del encabezado oculto (se usa "Mostrando X de Y"). */
+/* Doble clase para ganarle a .flex de Tailwind. */
 .dt-contador-viejo.dt-contador-viejo { display: none; }
 
-/* Menos aire entre el encabezado y la grilla en escritorio. */
+/* Menos espacio entre el encabezado y la grilla en escritorio. */
 @media (min-width: 768px) {
   .catalog-results-toolbar { margin-bottom: 0.5rem; }
   .dt-resultados { margin-bottom: 0.6rem; }
 }
 
-/* ============================================================
-   Banner de categoria como portada: la imagen es el fondo de la
-   cabecera y las migas y el titulo van encima. Asi el banner se
-   ve grande sin sumar alto propio, que era el problema de
-   ponerlo arriba del texto.
-   ============================================================ */
+/* Banner de categoría como fondo de la cabecera. */
 
 .dt-cabecera { position: relative; }
 
@@ -2270,15 +2227,11 @@ body::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Los banners nuevos son de cuadro completo, no una franja con fondo
-     transparente como los anteriores. Se encuadra apenas abajo del centro:
-     los productos se apoyan en la mitad inferior y asi entran enteros. */
+  /* Encuadre del banner. */
   object-position: center 50%;
 }
 
-/* Velo oscuro para que el texto se lea sobre cualquier parte del arte.
-   En celular va vertical: con el degradado horizontal, en 375px de ancho el
-   velo tapaba casi todo el arte y no se veia nada del banner. */
+/* Velo oscuro para que el texto se lea (vertical en celular). */
 .dt-banner.is-visible::after {
   content: '';
   position: absolute;
@@ -2290,8 +2243,7 @@ body::after {
 }
 
 @media (min-width: 768px) {
-  /* Menos velo que antes: el texto ocupa el tercio izquierdo, asi que solo
-     ahi hace falta oscurecer. El resto del arte se ve limpio. */
+  /* Velo solo en la zona del texto. */
   .dt-banner.is-visible::after {
     background: linear-gradient(90deg,
       rgba(14, 14, 14, 0.88) 0%,
@@ -2301,13 +2253,9 @@ body::after {
   }
 }
 
-/* El alto sale de la franja de arte: 1080x203 es 5.32:1. Asi la imagen
-   entra completa y no quedan bandas oscuras arriba y abajo. Se limita el
-   maximo porque el archivo tiene 1080px de ancho: mas alla de eso se estira
-   y se nota. */
+/* Alto según la proporción del banner (1080x203), con máximo. */
 .dt-cabecera.con-banner {
-  /* En celular 215px ocupaba un cuarto de pantalla antes de ver un producto.
-     El texto (migas + titulo) necesita unos 120px; 140 deja ver el arte. */
+  /* Alto en celular. */
   min-height: 140px;
   display: flex;
   flex-direction: column;
@@ -2316,27 +2264,15 @@ body::after {
 
 @media (min-width: 768px) {
   .dt-cabecera.con-banner {
-    /* En pantalla ancha la cabecera comia demasiado alto y empujaba los
-       productos abajo del pliegue. Se baja el techo de 340 a 250: el banner
-       queda apenas mas alto que el bloque de migas + titulo, que es lo
-       que pidio el usuario: "al tamaño del texto de ahi". En celular no
-       se toca, por eso el cambio vive aca adentro. Cuarta vuelta de
-       achique: de 155 a 120 de techo. */
+    /* Alto máximo en pantallas anchas. */
     min-height: clamp(110px, calc(100vw / 14), 140px);
 
-    /* Quinta vuelta: bajar el min-height ya no achicaba nada mas, porque el
-       contenido (padding + migas + titulo) necesitaba mas alto que ese
-       techo y la caja crecia igual. .dt-cabecera trae py-4 de Tailwind
-       (1rem arriba y abajo); aca se pisa con menos, solo cuando hay banner.
-       .dt-cabecera.con-banner (2 clases) le gana en especificidad a .py-4
-       (1 clase) sin necesitar !important. */
+    /* Padding y alto mínimo de la cabecera con banner. */
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
 
-  /* El titulo con font-headline + text-4xl era el que mas alto sumaba.
-     Un escalon mas chico (misma familia, mismo peso) alcanza para que se
-     siga leyendo bien y el banner baje otro tanto. */
+  /* Título un poco más chico con banner. */
   .dt-cabecera.con-banner #page-title {
     font-size: 1.875rem;
     line-height: 1.15;
@@ -2351,17 +2287,13 @@ body::after {
 
 .dt-cabecera.con-banner #dt-migas { margin-bottom: 0.3rem; }
 
-/* Despues de la primera carga las tarjetas aparecen directo, sin volver a
-   entrar deslizando (ver renderProductCards, clase sin-entrada). */
+/* Sin animación de entrada después de la primera carga (clase sin-entrada). */
 #categories-grid.sin-entrada .product-card {
   opacity: 1;
   animation: none;
 }
 
-/* Misma altura de cabecera con y sin banner. Antes "Todo el catalogo" (sin
-   banner) medía 104px y una categoria (con banner) 130px: al entrar o salir,
-   toda la grilla saltaba 26px. Mismos valores que .dt-cabecera.con-banner;
-   el id le gana al py-4 de Tailwind sin !important. */
+/* Misma altura de cabecera con y sin banner. */
 #dt-cabecera {
   min-height: 140px;
   display: flex;
@@ -2370,8 +2302,7 @@ body::after {
 }
 @media (min-width: 768px) {
   #dt-cabecera {
-    /* 130px es lo que mide con banner (migas + "Categoria" + titulo) en
-       cualquier ancho de escritorio; sin banner se completa hasta ahi. */
+    /* Alto de la cabecera en escritorio. */
     min-height: 130px;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -2382,38 +2313,26 @@ body::after {
   }
 }
 
-/* ============================================================
-   Sin saltos al cargar "Todo el catalogo". Arriba de la grilla habia tres
-   barras que se prendian y apagaban en distintos momentos (controles viejos
-   de la raiz, la barra de orden y la linea "Mostrando X de Y") y cada una
-   empujaba los productos: subian 66px y despues bajaban 72px. Ahora cada una
-   tiene su lugar reservado desde el primer pintado.
-   ============================================================ */
-/* Los controles de la raiz ya no se usan: el orden lo trae la barra de
-   productos y la busqueda la del nav. Se mostraban un instante al cargar. */
+/* Espacios reservados arriba de la grilla para evitar saltos al cargar. */
+/* Controles de la raíz sin uso. */
 #desktop-controls { display: none !important; }
 
-/* La linea de resultados ocupa su renglon aunque todavia este vacia. */
+/* La línea de resultados reserva su renglón. */
 .dt-resultados { line-height: 1.4; min-height: 1.4em; }
 
 @media (min-width: 1024px) {
-  /* En escritorio la barra de orden siempre esta: se reserva su alto. */
+  /* Alto reservado para la barra de orden en escritorio. */
   .catalog-results-toolbar { min-height: 2.75rem; }
 }
 
-/* Primera vez que se llena la lista de categorias: fundido corto en vez de
-   aparecer de golpe. */
+/* Fundido al mostrar la lista de categorías por primera vez. */
 .category-tree.dt-aparece { animation: dtBarraAparece 0.25s ease-out both; }
 @keyframes dtBarraAparece { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .category-tree.dt-aparece { animation: none; }
 }
 
-/* Sin animacion de entrada en las tarjetas. Cada tarjeta entraba subiendo
-   20px; pasaba con los rellenos y otra vez con los productos, y en las
-   categorias la grilla se dibuja dos veces seguidas, asi que los productos
-   aparecian, bajaban y volvian a subir: ese ir y venir era el titileo.
-   Ahora aparecen directo en su lugar. */
+/* Tarjetas sin animación de entrada. */
 #categories-grid .product-card,
 #categories-grid .cat-card {
   opacity: 1;
