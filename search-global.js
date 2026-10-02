@@ -1,6 +1,6 @@
 /**
- * search-global.js - recomendaciones de productos fuera del catalogo.
- * Usa SupabaseStore para sugerir productos reales y redirige al catalogo.
+ * search-global.js - Sugerencias de productos en el buscador del nav.
+ * Busca en el catálogo real (SupabaseStore) y abre el catálogo con la búsqueda.
  */
 (function() {
   var productCache = null;
@@ -127,8 +127,7 @@
     return searchRanking ? searchRanking.scoreProduct(product, query) : 0;
   }
 
-  // Marca en el nombre las palabras que escribio el cliente, sin importar
-  // mayusculas ni acentos ("teclado mecanico" resalta "Teclado Mecánico").
+  // Resalta en el nombre las palabras buscadas, sin distinguir mayúsculas ni acentos.
   function appendHighlighted(el, text, query) {
     text = String(text || '');
     var tokens = normalize(query).split(' ').filter(function(token) { return token.length >= 2; });
@@ -167,7 +166,7 @@
     flush();
   }
 
-  // Etiqueta corta de disponibilidad para la vista rapida.
+  // Etiqueta de disponibilidad para la lista de sugerencias.
   function availabilityTag(product) {
     product = product || {};
     var raw = product.stock;
@@ -404,7 +403,7 @@
         : [];
       var current = items.findIndex(function(item) { return item.classList.contains('is-active'); });
       if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && items.length) {
-        // Flechas para moverse por la vista rapida sin soltar el teclado.
+        // Flechas arriba/abajo para recorrer las sugerencias.
         event.preventDefault();
         var next = event.key === 'ArrowDown'
           ? (current + 1) % items.length
