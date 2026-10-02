@@ -1,5 +1,5 @@
-// producto-imagenes-ml.js - mapa generado desde CSVs de Mercado Libre.
-// Si actualizas los CSV, regenera este archivo para refrescar las imagenes.
+// producto-imagenes-ml.js - Mapa generado desde los CSV de Mercado Libre.
+// Regenerar este archivo al actualizar los CSV.
 (function() {
   window.DT_PRODUCT_IMAGE_MAP = {
     "meta": {
