@@ -2456,7 +2456,16 @@
     return value;
   }
 
+  // Precios fijos por id de producto de Access: no dependen del dólar ni del IVA.
+  // Mantener igual que payment_access_precio_fijo() en api/payment-bootstrap.php.
+  var ACCESS_PRECIOS_FIJOS = {
+    '978': 1500000, // PlayStation 5 con Lectora
+    '979': 1300000  // PlayStation 5 Digital
+  };
+
   function safeAccessWebPrice(row, category, subcategory, name) {
+    var fixedPrice = ACCESS_PRECIOS_FIJOS[String((row && row.id_productos) || '').trim()];
+    if (fixedPrice) return fixedPrice;
     var price = parseMoney(row && row.precio_de_venta);
     var text = normalizeCatalogText([category, subcategory, name].filter(Boolean).join(' '));
     var isProcessor = text.indexOf('procesador') !== -1 ||
