@@ -1954,6 +1954,9 @@
     // Joystick PS5 duplicado: se mantiene publicada la ficha anterior.
     '711719023197',
     '711719023227',
+    // Procesadores que ya no se venden: Intel Core i7 12700KF e i5-12400.
+    '5032037234047',
+    'BX8071512400',
     'Seña Dolares'
   ].map(compactCatalogText);
 
