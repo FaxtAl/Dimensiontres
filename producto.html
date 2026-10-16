@@ -22,7 +22,7 @@
 <link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/material-symbols-outlined.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
-<link rel="stylesheet" href="shared.css?v=paneles-vidrio-20261016">
+<link rel="stylesheet" href="shared.css?v=paneles-livianos-20261016">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
 <style>
 body::after {
@@ -555,6 +555,13 @@ body::after {
 
 /* Producto no encontrado */
 #not-found { display:none; }
+/* Brillo suave de fondo detrás de los paneles. */
+body {
+  background-image:
+    radial-gradient(900px 520px at 85% 120px, rgba(0, 240, 255, 0.10), transparent 65%),
+    radial-gradient(800px 600px at 5% 700px, rgba(123, 47, 247, 0.09), transparent 65%);
+  background-repeat: no-repeat;
+}
 </style>
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>

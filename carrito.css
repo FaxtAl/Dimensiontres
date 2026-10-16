@@ -1190,3 +1190,11 @@
   .dt-cart-payment-methods .payment-method { align-items: flex-start; }
   .dt-cart-payment-methods .payment-method-price { font-size: .72rem; padding-top: 2px; }
 }
+
+/* Brillo suave de fondo detrás de los paneles. */
+body {
+  background-image:
+    radial-gradient(900px 520px at 85% 120px, rgba(0, 240, 255, 0.10), transparent 65%),
+    radial-gradient(800px 600px at 5% 700px, rgba(123, 47, 247, 0.09), transparent 65%);
+  background-repeat: no-repeat;
+}

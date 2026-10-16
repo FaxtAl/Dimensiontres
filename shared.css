@@ -1117,8 +1117,9 @@ body .container:not([class*="max-w-"]) {
   max-width: var(--dt-ancho);
 }
 
-/* Paneles con texto: mismo vidrio translúcido que el nav
-   (carrito, ficha de producto y Mi cuenta). */
+/* Paneles con texto: mismo tono translúcido que el nav (carrito, ficha de
+   producto y Mi cuenta). Sin desenfoque: sobre el fondo liso se ve igual y
+   evita redibujar en cada scroll. */
 .dt-cart-products,
 .dt-cart-summary,
 .dt-checkout-order,
@@ -1131,16 +1132,5 @@ body .container:not([class*="max-w-"]) {
 .profile-form,
 .empty-state {
   background: rgba(14, 15, 17, 0.62) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(135%);
-  backdrop-filter: blur(16px) saturate(135%);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
-}
-
-/* Brillo suave de fondo para que el vidrio se note en carrito y producto. */
-body:has(.dt-cart-products),
-body:has(#prod-installments) {
-  background-image:
-    radial-gradient(900px 520px at 85% 8%, rgba(0, 240, 255, 0.10), transparent 65%),
-    radial-gradient(800px 600px at 5% 70%, rgba(123, 47, 247, 0.09), transparent 65%) !important;
-  background-attachment: fixed !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
 }
