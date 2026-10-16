@@ -57,9 +57,19 @@ function fallbackCopy(text) {
   document.body.removeChild(input);
 }
 
-function copyTransferAlias() {
+function copyTransferAlias(button) {
   var alias = TRANSFER_PAYMENT.alias;
-  function done() { alert('Alias copiado: ' + alias); }
+  function done() {
+    var texto = button && button.querySelector('.transfer-alias-texto');
+    if (!texto) { alert('Alias copiado: ' + alias); return; }
+    button.classList.add('is-copied');
+    texto.textContent = '¡Copiado!';
+    clearTimeout(button._copiadoTimer);
+    button._copiadoTimer = setTimeout(function() {
+      button.classList.remove('is-copied');
+      texto.textContent = 'Copiar';
+    }, 2000);
+  }
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(alias).then(done).catch(function() {
       fallbackCopy(alias);
