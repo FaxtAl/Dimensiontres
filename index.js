@@ -997,7 +997,9 @@ async function loadHomeSetupGroups(tree) {
 }
 
 var SETUP_AUTOPLAY_MS = 2500;
-var setupAutoplayTimers = {};
+// Un solo reloj para todas las filas: avanzan juntas y al mismo ritmo.
+var setupAutoplayReloj = null;
+var setupAutoplayPausadas = {};
 
 // Avance automático; se pausa con hover, foco, toque, pestaña oculta
 // o preferencia de movimiento reducido.
@@ -1022,36 +1024,44 @@ function startSetupAutoplay() {
     section.addEventListener('focusout', seguir);
     grid.addEventListener('touchstart', frenar, { passive: true });
     grid.addEventListener('touchend', seguir, { passive: true });
-
-    reanudarSetupAutoplay(group.gridId);
   });
+
+  iniciarRelojSetup();
 
   if (!document.body.dataset.autoplayVisibilidad) {
     document.body.dataset.autoplayVisibilidad = '1';
     document.addEventListener('visibilitychange', function() {
-      SETUP_GROUPS.forEach(function(group) {
-        if (document.hidden) detenerSetupAutoplay(group.gridId);
-        else reanudarSetupAutoplay(group.gridId);
-      });
+      if (document.hidden) {
+        window.clearInterval(setupAutoplayReloj);
+        setupAutoplayReloj = null;
+      } else {
+        iniciarRelojSetup();
+      }
     });
   }
 }
 
-function detenerSetupAutoplay(gridId) {
-  if (setupAutoplayTimers[gridId]) {
-    window.clearInterval(setupAutoplayTimers[gridId]);
-    setupAutoplayTimers[gridId] = null;
-  }
+function iniciarRelojSetup() {
+  if (setupAutoplayReloj || document.hidden) return;
+  setupAutoplayReloj = window.setInterval(function() {
+    SETUP_GROUPS.forEach(function(group) {
+      var grid = document.getElementById(group.gridId);
+      if (!grid || grid.dataset.autoplayListo !== '1') return;
+      if (setupAutoplayPausadas[group.gridId]) return;
+      if (grid.scrollWidth <= grid.clientWidth + 4) return;
+      moveSetupCarousel(group.gridId, 1);
+    });
+  }, SETUP_AUTOPLAY_MS);
 }
 
+function detenerSetupAutoplay(gridId) {
+  setupAutoplayPausadas[gridId] = true;
+}
+
+// La fila retoma en el próximo paso del reloj común, así sigue sincronizada.
 function reanudarSetupAutoplay(gridId) {
-  detenerSetupAutoplay(gridId);
-  if (document.hidden) return;
-  var grid = document.getElementById(gridId);
-  if (!grid || grid.scrollWidth <= grid.clientWidth + 4) return;
-  setupAutoplayTimers[gridId] = window.setInterval(function() {
-    moveSetupCarousel(gridId, 1);
-  }, SETUP_AUTOPLAY_MS);
+  delete setupAutoplayPausadas[gridId];
+  iniciarRelojSetup();
 }
 
 /* Flechas de cada fila (reciben el id de la grilla). */
@@ -1066,10 +1076,12 @@ function moveSetupCarousel(gridId, direction) {
   var atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
   var atStart = grid.scrollLeft <= 4;
 
+  // El destino se calcula por número de tarjeta para que siempre quede
+  // alineada al borde, sin tarjetas cortadas a la izquierda.
   var target;
   if (direction > 0 && atEnd) target = 0;
   else if (direction < 0 && atStart) target = grid.scrollWidth;
-  else target = grid.scrollLeft + step * direction;
+  else target = Math.max(0, Math.round(grid.scrollLeft / step) + direction) * step;
 
   var from = grid.scrollLeft;
   grid.scrollTo({ left: target, behavior: 'smooth' });
