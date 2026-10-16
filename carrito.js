@@ -7,7 +7,6 @@
 // Los precios de Access ya incluyen IVA: el carrito no suma impuestos.
 var TAX         = 0;
 var mercadoPagoInstallments = 12;
-var transferProofFileName = '';
 var TRANSFER_PAYMENT = {
   alias: 'dimension3',
   holder: 'Carlos Priarollo',
@@ -72,16 +71,6 @@ function copyTransferAlias() {
   done();
 }
 
-function handleTransferProof(input) {
-  var file = input && input.files && input.files[0] ? input.files[0] : null;
-  transferProofFileName = file ? file.name : '';
-  var label = document.getElementById('transfer-proof-name');
-  if (!label) return;
-  label.textContent = transferProofFileName
-    ? 'Comprobante seleccionado: ' + transferProofFileName + '. Al abrir WhatsApp, adjuntalo en el chat.'
-    : 'Cuando termines, mandamos el pedido por WhatsApp para adjuntar el comprobante.';
-}
-
 // Los datos de transferencia se muestran al elegir ese medio de pago.
 function focusTransferPanel() {
   var panel = document.querySelector('.transfer-panel');
@@ -95,48 +84,6 @@ function focusTransferPanel() {
   if (panel.scrollIntoView) {
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
-}
-
-async function uploadTransferProof(orderId) {
-  var input = document.getElementById('transfer-proof-input');
-  var file = input && input.files && input.files[0] ? input.files[0] : null;
-  if (!file) {
-    return { ok: false, error: 'Falta cargar el comprobante.' };
-  }
-
-  var token = '';
-  if (window.SupabaseStore && window.SupabaseStore.getAccessToken) {
-    token = await window.SupabaseStore.getAccessToken();
-  }
-  if (!token) {
-    return { ok: false, code: 'session_required', error: 'Inicia sesion para subir el comprobante.' };
-  }
-
-  var form = new FormData();
-  form.append('order_id', orderId);
-  form.append('access_token', token);
-  form.append('proof', file);
-
-  var response = await fetch('api/transfer-proof-upload.php', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + token,
-      'X-Authorization': 'Bearer ' + token
-    },
-    body: form
-  });
-
-  var raw = await response.text();
-  var data = null;
-  try { data = raw ? JSON.parse(raw) : null; } catch (error) {}
-  if (!response.ok || !data || !data.ok) {
-    return {
-      ok: false,
-      code: data && data.code,
-      error: (data && data.error) || raw.slice(0, 180) || ('HTTP ' + response.status)
-    };
-  }
-  return data;
 }
 
 function formatMoney(value) {
@@ -801,13 +748,6 @@ async function checkoutSavedOrder(button, method) {
 
 // Transferencia: guarda el pedido y abre WhatsApp para enviar el comprobante.
 async function checkoutBankTransfer(button) {
-  if (!transferProofFileName) {
-    showCartNotice('Primero cargá el comprobante de transferencia para mandarlo por WhatsApp.');
-    var input = document.getElementById('transfer-proof-input');
-    if (input) input.click();
-    return;
-  }
-
   var originalHtml = setCheckoutButtonLoading(button, 'Guardando transferencia...');
 
   var result = await createSavedOrder(
@@ -832,16 +772,6 @@ async function checkoutBankTransfer(button) {
     return;
   }
 
-  var proofResult = await uploadTransferProof(saved.order.id);
-  if (!proofResult || !proofResult.ok) {
-    if (isPaymentSessionExpiredError(proofResult)) {
-      await resetCheckoutSessionAndRedirect('Tu sesion vencio. Inicia sesion de nuevo para subir el comprobante.');
-      return;
-    }
-    alert((proofResult && proofResult.error) || 'No se pudo guardar el comprobante.');
-    return;
-  }
-
   notifyStoreOrder(saved, 'created');
 
   var items = result.items;
@@ -860,8 +790,7 @@ async function checkoutBankTransfer(button) {
   lines.push('Email: ' + TRANSFER_PAYMENT.email);
   lines.push('*Total a transferir: ' + formatMoney(totals.total) + '*');
   lines.push('');
-  lines.push('Comprobante: ' + (proofResult.proof_name || transferProofFileName));
-  lines.push('Te lo adjunto aca por WhatsApp para revisarlo.');
+  lines.push('Te paso el comprobante por acá 👇');
 
   var text = 'Hola! Hice este pedido por transferencia en DimensionTres:\n\n' + lines.join('\n');
   var phone = CONFIG.CONTACT_PHONE || '5493534019085';

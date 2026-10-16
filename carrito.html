@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="material-symbols-local.css?v=letras-locales-20260929">
 <link rel="stylesheet" href="shared.css?v=minicarrito-lado-20261001">
 <link rel="stylesheet" href="cookie-notice.css?v=vidrio-20260923">
-<link rel="stylesheet" href="carrito.css?v=aviso-demora-20260922">
+<link rel="stylesheet" href="carrito.css?v=transferencia-whatsapp-20261016">
 <link rel="stylesheet" href="tailwind.generated.css?v=20260804">
 </head>
 <body class="bg-background text-on-surface font-body">
@@ -234,12 +234,15 @@
             <div><dt>Titular</dt><dd>Carlos Priarollo</dd></div>
             <div><dt>Email</dt><dd>carlos_p4525@hotmail.com</dd></div>
           </dl>
+          <ol class="transfer-proof-name transfer-pasos">
+            <li>Transferí el total al alias <strong>dimension3</strong>.</li>
+            <li>Tocá el botón de WhatsApp.</li>
+            <li>Mandanos la captura del comprobante en el chat.</li>
+          </ol>
           <div class="transfer-actions">
             <button type="button" onclick="copyTransferAlias()" class="transfer-action"><span class="material-symbols-outlined">content_copy</span> Copiar alias</button>
-            <label class="transfer-action transfer-upload"><span class="material-symbols-outlined">upload</span> Cargar comprobante<input id="transfer-proof-input" type="file" accept="image/*,.pdf" hidden onchange="handleTransferProof(this)"></label>
-            <button type="button" onclick="checkoutBankTransfer(this)" class="transfer-action transfer-confirm"><span class="material-symbols-outlined">chat</span> Confirmar por WhatsApp</button>
+            <button type="button" onclick="checkoutBankTransfer(this)" class="transfer-action transfer-confirm"><span class="material-symbols-outlined">chat</span> Ya transferí: enviar comprobante por WhatsApp</button>
           </div>
-          <p id="transfer-proof-name" class="transfer-proof-name">Cargá el comprobante y confirmá el pedido por WhatsApp.</p>
           <p class="transfer-important">Preparamos el pedido cuando confirmemos el pago. Te avisamos por WhatsApp cuando esté listo para retirar.</p>
         </div>
       </div>
@@ -265,7 +268,7 @@
 <script src="search-ranking.js?v=buscador-20261001"></script>
 <script src="search-global.js?v=buscador-20261001"></script>
 <script src="cart.js?v=cart-gorila-20260922"></script>
-<script src="carrito.js?v=aviso-demora-20260922"></script>
+<script src="carrito.js?v=transferencia-whatsapp-20261016"></script>
 
 </body>
 </html>
