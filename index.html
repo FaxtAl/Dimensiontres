@@ -546,7 +546,8 @@
   margin: 0;
   min-height: 2.5em;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  /* Hay lugar de sobra: el nombre entra entero en 3 líneas. */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-family: 'Space Grotesk', sans-serif;
@@ -578,6 +579,31 @@
   color: #fff;
   white-space: nowrap;
 }
+/* Línea única de estado bajo el precio, con punto de color. */
+.feat-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #adaaaa;
+}
+.feat-state::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8ff5ff;
+}
+.feat-state.is-local::before { background: #4cd964; }
+.feat-state.is-provider::before { background: #ffc600; }
+.feat-state.is-low { color: #ffe38a; }
+.feat-state.is-low::before { background: #ffc600; }
+.feat-state.is-out { color: #8f8c8c; }
+.feat-state.is-out::before { background: #8f8c8c; }
 .feat-low {
   font-family: 'Manrope', sans-serif;
   font-size: 12px;
@@ -1220,8 +1246,8 @@
 <script src="search-global.js?v=buscador-20261001"></script>
   <script src="nav.js?v=mobile-menu-whatsapp-fix-20260623"></script>
 <script src="menu-categorias.js?v=notebooks-setup-20260929"></script>
-  <script src="cart.js?v=cart-gorila-20260922"></script>
-  <script src="index.js?v=cargador-20261022"></script>
+  <script src="cart.js?v=sin-stock-oculto-20261030c"></script>
+  <script src="index.js?v=sin-stock-oculto-20261030"></script>
 
 </body>
 </html>

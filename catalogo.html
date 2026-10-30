@@ -519,7 +519,7 @@
 <script src="img/invid-imagenes-local.js?v=invid-fotos-20260929"></script>
 <script src="supabase-client.js?v=sin-procesadores-20261016"></script>
 <script src="search-ranking.js?v=buscador-20261001"></script>
-<script src="cart.js?v=cart-gorila-20260922"></script>
+<script src="cart.js?v=sin-stock-oculto-20261030c"></script>
 
 <script>
 /* Árbol de categorías y subcategorías */
@@ -3588,6 +3588,8 @@ function renderProductCards(products, options) {
   var grid = document.getElementById('categories-grid');
   options = options || {};
   products = products || [];
+  // Esconde lo que no tiene stock y lo de Invid que ya tenemos en el local.
+  if (typeof dtFiltrarProductosVisibles === 'function') products = dtFiltrarProductosVisibles(products);
   var renderToken = ++productRenderToken;
   // La animación de entrada solo se usa la primera vez.
   grid.classList.toggle('sin-entrada', catalogoYaMostroProductos);

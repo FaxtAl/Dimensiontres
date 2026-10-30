@@ -88,6 +88,96 @@ window.isByOrderProduct = isByOrderProduct;
 window.getProductStockState = getProductStockState;
 window.isOutOfStockProduct = isOutOfStockProduct;
 
+/* Reglas de que se muestra en el catalogo.
+   1) Sin stock no se muestra (vuelve solo cuando Access manda stock otra vez).
+      Las consolas PlayStation son la excepcion: se venden por encargo.
+   2) Si tenemos el producto en el local con stock, se esconde el mismo
+      producto de Invid. Cuando el local se queda sin unidades, el de Invid
+      vuelve a aparecer solo, porque todo se calcula con el stock del momento. */
+
+// Palabras que no distinguen un producto de otro: no sirven para comparar.
+var DT_PALABRAS_COMUNES = [
+  'auricular', 'auriculares', 'gamer', 'gaming', 'teclado', 'mouse', 'monitor',
+  'placa', 'memoria', 'disco', 'fuente', 'gabinete', 'silla', 'joystick',
+  'con', 'sin', 'para', 'de', 'del', 'la', 'el', 'los', 'las', 'y', 'o', 'a',
+  'c', 'mas', 'nuevo', 'nueva', 'original', 'pc', 'notebook'
+];
+
+// "auriculares" y "auricular" tienen que valer lo mismo.
+function dtRaizPalabra(palabra) {
+  if (palabra.length > 4 && /[^s]es$/.test(palabra)) return palabra.slice(0, -2);
+  if (palabra.length > 3 && /s$/.test(palabra)) return palabra.slice(0, -1);
+  return palabra;
+}
+
+var DT_RAICES_COMUNES = DT_PALABRAS_COMUNES.map(dtRaizPalabra);
+
+function dtPalabrasProducto(item) {
+  if (!item) return [];
+  var texto = normalizeProductRuleText([item.name, item.brand].filter(Boolean).join(' '));
+  return texto
+    .replace(/[^a-z0-9.\s]+/g, ' ')
+    .split(/\s+/)
+    .map(dtRaizPalabra)
+    .filter(function(palabra) {
+      if (!palabra || palabra.length < 2) return false;
+      return DT_RAICES_COMUNES.indexOf(palabra) === -1;
+    });
+}
+
+// Solo la consola en si, no los accesorios que nombran "ps4" o "ps5".
+function dtEsPlayStation(item) {
+  if (!item) return false;
+  var rubro = normalizeProductRuleText([item.category, item.sourceLabel, item.subcategory].filter(Boolean).join(' '));
+  if (rubro.indexOf('consola') === -1) return false;
+  var texto = normalizeProductRuleText([item.name, rubro].join(' '));
+  return /playstation|play station|\bps[345]\b/.test(texto);
+}
+
+// Mismo producto: todas las palabras distintivas del local estan en el de Invid.
+function dtEsElMismoProducto(local, proveedor) {
+  var palabrasLocal = dtPalabrasProducto(local);
+  if (palabrasLocal.length < 3) return false;
+  var palabrasProveedor = dtPalabrasProducto(proveedor);
+  if (palabrasProveedor.length < 3) return false;
+  return palabrasLocal.every(function(palabra) {
+    return palabrasProveedor.indexOf(palabra) !== -1;
+  });
+}
+
+function dtEsDeProveedor(item) {
+  return !!item && (item.sourceIntegration === 'invid' || item.source === 'invid' || item.fulfillment === 'provider');
+}
+
+function dtFiltrarProductosVisibles(lista) {
+  lista = (lista || []).filter(Boolean);
+
+  // 1) Fuera lo que no tiene stock, menos las PlayStation.
+  var conStock = lista.filter(function(item) {
+    if (dtEsPlayStation(item)) return true;
+    return getProductStockState(item).status !== 'out';
+  });
+
+  // 2) Lo que tenemos en el local con stock tapa al mismo producto de Invid.
+  var localesConStock = conStock.filter(function(item) {
+    if (dtEsDeProveedor(item)) return false;
+    var estado = getProductStockState(item).status;
+    return estado === 'available' || estado === 'low';
+  });
+  if (!localesConStock.length) return conStock;
+
+  return conStock.filter(function(item) {
+    if (!dtEsDeProveedor(item)) return true;
+    return !localesConStock.some(function(local) {
+      return dtEsElMismoProducto(local, item);
+    });
+  });
+}
+
+window.DimensionTresProductRules.esPlayStation = dtEsPlayStation;
+window.DimensionTresProductRules.filtrarVisibles = dtFiltrarProductosVisibles;
+window.dtFiltrarProductosVisibles = dtFiltrarProductosVisibles;
+
 function mergeCartItemData(target, source) {
   if (!target || !source) return;
   ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'productId', 'source', 'sourceIntegration', 'supplierId', 'sourceLabel', 'description', 'subtitle', 'byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si'].forEach(function(key) {

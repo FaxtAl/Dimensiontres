@@ -859,7 +859,7 @@ body {
 <script src="supabase-client.js?v=sin-procesadores-20261016"></script>
 <script src="search-ranking.js?v=buscador-20261001"></script>
 <script src="search-global.js?v=buscador-20261001"></script>
-<script src="cart.js?v=cart-gorila-20260922"></script>
+<script src="cart.js?v=sin-stock-oculto-20261030c"></script>
 
 <script>
 // Base de productos
@@ -2021,6 +2021,8 @@ async function renderRelated(current) {
   grid.innerHTML = '<div style="grid-column:1/-1;color:#605f5e;font-family:\'Space Grotesk\',sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;">Cargando productos relacionados...</div>';
 
   var related = await getRelatedProducts(current, 5);
+  // Esconde lo que no tiene stock y lo de Invid que ya tenemos en el local.
+  if (typeof dtFiltrarProductosVisibles === 'function') related = dtFiltrarProductosVisibles(related);
   grid.innerHTML = '';
 
   if (!related.length) {

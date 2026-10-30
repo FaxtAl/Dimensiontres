@@ -702,26 +702,12 @@ function createFeaturedProductCard(product) {
   }
   // Tarjeta de producto, igual a la del catálogo.
   var esProveedor = product.fulfillment === 'provider' || product.sourceIntegration === 'invid';
-  var disponibilidad = document.createElement('span');
-  disponibilidad.className = 'feat-availability' + (esProveedor ? ' is-provider' : ' is-local');
-  disponibilidad.textContent = esProveedor ? 'Llega en 48 hs' : 'En local';
-  media.appendChild(disponibilidad);
   card.appendChild(media);
 
   var body = document.createElement('div');
   body.className = 'feat-body';
 
-  // Etiqueta de stock (disponible / pocas unidades / sin stock).
   var stockState = typeof getProductStockState === 'function' ? getProductStockState(product) : null;
-  if (stockState && stockState.status !== 'unknown') {
-    var stockChip = document.createElement('span');
-    stockChip.className = 'feat-stock'
-      + (stockState.status === 'low' ? ' is-low' : '')
-      + (stockState.status === 'out' ? ' is-out' : '');
-    stockChip.textContent = stockState.status === 'low' ? 'Quedan pocas'
-      : (stockState.status === 'out' ? 'Sin stock' : 'Disponible');
-    body.appendChild(stockChip);
-  }
 
   var tag = document.createElement('p');
   tag.className = 'feat-tag';
@@ -744,20 +730,23 @@ function createFeaturedProductCard(product) {
   price.className = 'feat-price';
   price.textContent = formatHomeMoney(product.price);
   priceWrap.appendChild(price);
-  if (typeof getProductStockState === 'function') {
-    var stockStatus = getProductStockState(product).status;
-    if (stockStatus === 'low' || stockStatus === 'available') {
-      var stockLabel = document.createElement('span');
-      stockLabel.className = stockStatus === 'low' ? 'feat-low' : 'feat-available';
-      stockLabel.textContent = stockStatus === 'low' ? 'Quedan pocas' : 'Disponible';
-      priceWrap.appendChild(stockLabel);
-    }
+  // Una sola línea de estado bajo el precio: manda el stock, si no la entrega.
+  var estadoStock = stockState ? stockState.status : 'unknown';
+  var estado = document.createElement('span');
+  if (estadoStock === 'out') {
+    estado.className = 'feat-state is-out';
+    estado.textContent = 'Sin stock';
+  } else if (estadoStock === 'low') {
+    estado.className = 'feat-state is-low';
+    estado.textContent = 'Quedan pocas';
+  } else if (esProveedor) {
+    estado.className = 'feat-state is-provider';
+    estado.textContent = 'Llega en 48 hs';
+  } else {
+    estado.className = 'feat-state is-local';
+    estado.textContent = 'En local';
   }
-  // Aclaración bajo el precio: por transferencia se paga lo mismo.
-  var note = document.createElement('p');
-  note.className = 'feat-note';
-  note.textContent = 'Transferencia: mismo precio';
-  priceWrap.appendChild(note);
+  priceWrap.appendChild(estado);
   foot.appendChild(priceWrap);
 
   var btn = document.createElement('button');
@@ -975,6 +964,10 @@ function renderSetupGroup(gridId, products) {
   var grid = document.getElementById(gridId);
   if (!grid) return;
   var section = grid.closest('.setup-product-group');
+
+  // Esconde lo que no tiene stock y lo de Invid que ya tenemos en el local.
+  if (typeof dtFiltrarProductosVisibles === 'function') products = dtFiltrarProductosVisibles(products);
+  products = products || [];
 
   // Sin productos se oculta la fila.
   if (!products.length) {
