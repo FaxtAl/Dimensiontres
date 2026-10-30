@@ -16,8 +16,9 @@ function handleViewCatalog() {
 // Carrusel de banners de inicio. Los banners incluyen su propio texto.
 // srcSmall: versión de 1000 px; srcMobile: versión vertical para celular.
 var HOME_HERO_IMAGES = [
-  { src: 'img/banners/fc27-disponibles.webp?v=banners-20261001', srcSmall: 'img/banners/fc27-disponibles-1000.webp?v=banners-20261001', srcMobile: 'img/banners/fc27-disponibles-celular.webp?v=banners-vertical-20261001', id: 'fc27', alt: 'EA Sports FC 27, Assassin’s Creed Black Flag Resynced y Wolverine disponibles en el local', banner: true },
-  { src: 'img/banners/gta6-dimension-tres.webp?v=banners-20261001', srcSmall: 'img/banners/gta6-dimension-tres-1000.webp?v=banners-20261001', srcMobile: 'img/banners/gta6-dimension-tres-celular.webp?v=banners-vertical-20261001', id: 'gta6', alt: 'Grand Theft Auto VI digital para PS5 en Dimension Tres', banner: true }
+  { src: 'img/banners/tienda-juegos.webp?v=boton-20261022', srcSmall: 'img/banners/tienda-juegos-1000.webp?v=boton-20261022', srcMobile: 'img/banners/tienda-juegos-celular.webp?v=boton-20261022', id: 'tienda-juegos', alt: 'Grandes juegos, historias épicas. Todo en un solo lugar en DimensionTres', banner: true },
+  { src: 'img/banners/gta6-reserva.webp?v=boton-20261022', srcSmall: 'img/banners/gta6-reserva-1000.webp?v=boton-20261022', srcMobile: 'img/banners/gta6-reserva-celular.webp?v=boton-20261022', id: 'gta6-reserva', alt: 'Reservá GTA VI digital para PS5 en DimensionTres', banner: true },
+  { src: 'img/banners/perifericos.webp?v=fondo-20261022', srcSmall: 'img/banners/perifericos-1000.webp?v=fondo-20261022', srcMobile: 'img/banners/perifericos-celular.webp?v=fondo-20261022', id: 'perifericos', alt: 'Equipá tu setup con periféricos gamer en DimensionTres', banner: true }
 ];
 
 function initHomeHeroCarousel() {
@@ -367,7 +368,7 @@ function homeCategoryMeta(name) {
       title: 'Juegos Físicos',
       subtitle: 'PS5 - PS4 - PS3',
       icon: 'stadia_controller',
-      image: 'img/categorias/juegos-fisicos.png?v=categorias-iguales-20260923'
+      image: 'img/categorias/juegos-fisicos.png?v=fc27-fisico-20261022'
     };
   }
   if (text.indexOf('accesorios consolas') !== -1 || text.indexOf('accesorios para consolas') !== -1) {
@@ -479,7 +480,7 @@ function homeCategoryMeta(name) {
       title: 'Accesorio Celular',
       subtitle: 'Cables - Cargadores - Powerbank',
       icon: 'inventory_2',
-      image: 'img/categorias/accesorio-celular.png?v=categorias-iguales-20260923'
+      image: 'img/categorias/accesorio-celular.png?v=inova-20261022'
     };
   }
   if (text.indexOf('adaptador') !== -1) {

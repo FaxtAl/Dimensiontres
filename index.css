@@ -591,32 +591,6 @@
   display: flex;
   flex-direction: column;
 }
-#servicios .servicio-foto {
-  height: 170px;
-  margin: -1.5rem -1.5rem 0;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  transition: transform 0.5s ease;
-}
-#servicios .servicio-foto::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(21,21,21,0.1) 30%, rgba(21,21,21,0.96) 100%);
-}
-@media (min-width: 768px) {
-  #servicios .servicio-foto { margin: -1.75rem -1.75rem 0; }
-}
-#servicios .servicio-foto + div {
-  position: relative;
-  z-index: 1;
-  margin-top: -1.6rem;
-  margin-bottom: 1.1rem;
-}
-#servicios .servicio-foto + div > div {
-  background: #10191b;
-}
 #servicios .servicio-wa {
   margin-top: auto;
   align-self: flex-start;

@@ -1,9 +1,9 @@
 /**
- * cart.js - Carrito de compras.
- * Se incluye en todas las páginas.
+ * cart.js — Motor del carrito | Dimensión Tres
+ * Incluir en todas las páginas con: <script src="cart.js"></script>
  */
 
-/* Almacenamiento */
+/* ─── STORE ─────────────────────────────────── */
 function normalizeCartStock(value) {
   if (value === null || value === undefined || value === '') return null;
   var parsed = Number(String(value).replace(',', '.'));
@@ -63,7 +63,8 @@ function readByOrderFlag(item) {
 }
 
 function isByOrderProduct(item) {
-  // La disponibilidad y la compra dependen solo del stock real.
+  // La marca historica "A pedido" ya no se usa en la web.
+  // Disponibilidad y compra dependen unicamente del stock real.
   return false;
 }
 
@@ -87,26 +88,9 @@ window.isByOrderProduct = isByOrderProduct;
 window.getProductStockState = getProductStockState;
 window.isOutOfStockProduct = isOutOfStockProduct;
 
-function isDelayedDeliveryProduct(item) {
-  if (!item) return false;
-  var text = normalizeProductRuleText([
-    item.deliveryLabel,
-    item.availabilityLabel,
-    item.fulfillment,
-    item.sourceIntegration,
-    item.source
-  ].filter(Boolean).join(' '));
-  return text.indexOf('48 hs') !== -1 ||
-    text.indexOf('48 horas') !== -1 ||
-    text.indexOf('provider') !== -1 ||
-    text.indexOf('invid') !== -1;
-}
-
-window.isDelayedDeliveryProduct = isDelayedDeliveryProduct;
-
 function mergeCartItemData(target, source) {
   if (!target || !source) return;
-  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'productId', 'source', 'sourceIntegration', 'supplierId', 'sourceLabel', 'description', 'subtitle', 'deliveryLabel', 'availabilityLabel', 'fulfillment', 'byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si'].forEach(function(key) {
+  ['image', 'ref', 'category', 'code', 'codigo', 'accessId', 'productId', 'source', 'sourceIntegration', 'supplierId', 'sourceLabel', 'description', 'subtitle', 'byOrder', 'aPedido', 'pedido', 'producto_sinstock', 'prodcuto_sinstock', 'producto_si'].forEach(function(key) {
     if (source[key] !== undefined && source[key] !== null && source[key] !== '') target[key] = source[key];
   });
   var stock = getCartItemStock(source);
@@ -141,9 +125,6 @@ function compactCartItem(item) {
     'sourceIntegration',
     'supplierId',
     'sourceLabel',
-    'deliveryLabel',
-    'availabilityLabel',
-    'fulfillment',
     'byOrder',
     'aPedido',
     'pedido',
@@ -340,7 +321,7 @@ function ensureUserLoggedIn(action) {
   return false;
 }
 
-/* Contador del ícono */
+/* ─── BADGE ──────────────────────────────────── */
 function updateCartBadge() {
   const count = CartStore.getCount();
   document.querySelectorAll('[data-cart-btn]').forEach(btn => {
@@ -361,7 +342,7 @@ function updateCartBadge() {
 window.addEventListener('cart:updated', updateCartBadge);
 document.addEventListener('DOMContentLoaded', updateCartBadge);
 
-/* Animación al agregar */
+/* ─── FLY ANIMATION ──────────────────────────── */
 function flyToCart(sourceEl, imgSrc) {
   const dest = document.querySelector('[data-cart-btn]');
   if (!dest) return;
@@ -388,25 +369,30 @@ function flyToCart(sourceEl, imgSrc) {
   });
 }
 
-/* Aviso de producto agregado */
+/* ─── TOAST ──────────────────────────────────── */
 function cartToast(name) {
   let wrap = document.getElementById('dt-toast-wrap');
   if (!wrap) { wrap = document.createElement('div'); wrap.id='dt-toast-wrap'; wrap.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none'; document.body.appendChild(wrap); }
   const t = document.createElement('div');
   t.style.cssText = 'background:#1a1919;border-left:2px solid #8ff5ff;border:1px solid rgba(143,245,255,.2);color:#fff;font-family:"Space Grotesk",sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:11px 18px;display:flex;align-items:center;gap:8px;max-width:min(90vw,420px);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s';
   
-  // Se crean los elementos sin usar innerHTML.
+  // Crear elementos seguros en lugar de innerHTML
   const iconSpan = document.createElement('span');
   iconSpan.style.cssText = "color:#8ff5ff;font-family:'Material Symbols Outlined';font-size:15px;vertical-align:middle";
   iconSpan.textContent = 'check_circle';
   
-  // El nombre se corta en una línea con puntos suspensivos
-  // (min-width: 0 permite el recorte dentro del flex).
+  // El nombre del producto puede ser larguisimo ("PROCESADOR INTEL CORE
+  // ULTRA 7 265KF 20 CORES S/VIDEO S/COOLER S1851..."). Con nowrap y sin
+  // ancho maximo el cartel se estiraba mas que la pantalla del celular.
+  // Ahora se corta con puntos suspensivos en una sola linea; el min-width
+  // en 0 es lo que habilita el recorte dentro de un flex.
   const textSpan = document.createElement('span');
   textSpan.style.cssText = 'min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
   textSpan.textContent = ` ${name}`;
 
-  // "agregado" va en un span aparte para que no lo corte el recorte del nombre.
+  // "agregado" va en su propio span que no se encoge: si fuera parte del
+  // mismo texto, los puntos suspensivos se lo comerian y el cartel quedaria
+  // sin decir que paso.
   const accionSpan = document.createElement('span');
   accionSpan.style.cssText = 'flex-shrink:0';
   accionSpan.textContent = 'agregado';
@@ -420,7 +406,7 @@ function cartToast(name) {
   setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(8px)'; setTimeout(()=>t.remove(),300); }, 2600);
 }
 
-/* Agregar al carrito (API pública) */
+/* ─── ADD TO CART (API pública) ──────────────── */
 
 function cartToastMessage(message, tone) {
   let wrap = document.getElementById('dt-toast-wrap');
@@ -462,10 +448,6 @@ function cartOutOfStockToast(name) {
   cartToastMessage((name ? name + ': ' : '') + 'Consultanos por WhatsApp para confirmar disponibilidad.', 'error');
 }
 
-function cartDelayedDeliveryToast(name) {
-  cartToastMessage((name ? name + ': ' : '') + 'Este producto tiene una demora aproximada de 48 hs.', 'info');
-}
-
 function cartBuildProductWhatsAppUrl(product) {
   const phone = String((window.CONFIG && CONFIG.CONTACT_PHONE) || '5493534019085').replace(/\D+/g, '');
   const name = String((product && product.name) || 'producto').trim();
@@ -483,9 +465,9 @@ function cartOpenProductWhatsApp(product) {
 }
 
 /**
- * addToCart - Atajo usado desde los subcatálogos.
+ * addToCart — wrapper llamado desde los sub-catálogos.
  * Firma: addToCart(name, price, img, event)
- * Genera un id estable a partir del nombre.
+ * Genera un id estable desde el nombre del producto.
  */
 function addToCart(name, price, img, event) {
   const product = {
@@ -495,7 +477,7 @@ function addToCart(name, price, img, event) {
     image: img || ''
   };
 
-  // Usa el botón del evento o lo busca en el DOM.
+  // Tomamos el botón del evento si fue pasado, o lo buscamos en el DOM
   const btn = (event && event.currentTarget)
     ? event.currentTarget
     : document.querySelector(`button.btn-add[onclick*="${name.substring(0, 10)}"]`);
@@ -503,7 +485,7 @@ function addToCart(name, price, img, event) {
   if (btn) {
     addToCartUI(btn, product);
   } else {
-    // Sin botón: se agrega sin animación.
+    // Fallback sin animación de botón
     const result = CartStore.add(product);
     if (!result.ok && result.reason === 'pedido') {
       cartOpenProductWhatsApp(product);
@@ -520,8 +502,7 @@ function addToCart(name, price, img, event) {
       return;
     }
     updateCartBadge();
-    if (isDelayedDeliveryProduct(product)) cartDelayedDeliveryToast(product.name);
-    else cartToast(name);
+    cartToast(name);
   }
 }
 
@@ -550,7 +531,7 @@ function addToCartUI(btn, product) {
   flyToCart(btn, card?.querySelector('img')?.src || null);
   const orig = btn.innerHTML;
   
-  // Se crean los elementos sin usar innerHTML.
+  // Crear elementos seguros
   const checkSpan = document.createElement('span');
   checkSpan.style.cssText = "font-family:'Material Symbols Outlined';font-size:14px;vertical-align:middle";
   checkSpan.textContent = 'check';
@@ -565,15 +546,18 @@ function addToCartUI(btn, product) {
   btn.style.background = 'rgba(143,245,255,.1)';
   btn.style.color = '#8ff5ff';
   setTimeout(() => { btn.innerHTML=orig; btn.style.background=''; btn.style.color=''; btn.disabled=false; }, 1800);
-  if (isDelayedDeliveryProduct(product)) cartDelayedDeliveryToast(product.name);
-  else cartToast(product.name);
+  cartToast(product.name);
 }
 
-/* Mini carrito lateral.
-   Se genera por JS para no repetir el markup en cada página.
-   Se abre con el ícono del carrito del nav. */
+/* ═══════════════════════════════════════════════════════════
+   MINI CARRITO LATERAL
+   Se arma por JS y no en el HTML porque el nav esta repetido en
+   cinco paginas: asi hay una sola copia y no se pueden
+   desincronizar. Se abre con el icono del carrito del nav.
+   ═══════════════════════════════════════════════════════════ */
 
-// Formato de moneda propio (carrito.js solo se carga en carrito.html).
+// formatMoney vive en carrito.js, que solo se carga en la pagina del carrito.
+// El mini carrito corre en todas, asi que trae el suyo.
 function dtPlata(valor) {
   return '$' + Math.round(Number(valor) || 0).toLocaleString('es-AR');
 }
@@ -592,84 +576,24 @@ function dtMiniCartHost() {
   host.id = 'dt-minicart';
   host.className = 'dt-minicart';
   host.setAttribute('aria-label', 'Tu carrito');
-  host.setAttribute('role', 'dialog');
-  host.setAttribute('aria-modal', 'true');
   host.innerHTML =
     '<div class="dt-minicart-head">' +
       '<span>Mi carrito</span>' +
       '<button type="button" aria-label="Cerrar carrito"><span class="material-symbols-outlined">close</span></button>' +
     '</div>' +
-    '<div class="dt-minicart-share-wrap">' +
-      '<button type="button" class="dt-minicart-share"><span class="material-symbols-outlined">share</span><span>Compartir mi carrito</span></button>' +
-      '<p class="dt-minicart-share-status" role="status" aria-live="polite"></p>' +
-    '</div>' +
     '<div class="dt-minicart-body" id="dt-minicart-body"></div>' +
     '<div class="dt-minicart-foot">' +
       '<div class="dt-minicart-linea"><span>Subtotal</span><strong id="dt-minicart-sub">$0</strong></div>' +
-      '<div class="dt-minicart-linea"><span>Extras</span><strong>$0</strong></div>' +
       '<div class="dt-minicart-linea dt-minicart-total"><span>Total</span><strong id="dt-minicart-total">$0</strong></div>' +
       '<div class="dt-minicart-botones">' +
         '<a href="carrito.html" class="dt-minicart-ver">Ver carrito</a>' +
-        '<a href="carrito.html#pago" class="dt-minicart-pagar">Continuar con el pago</a>' +
+        '<a href="carrito.html" class="dt-minicart-pagar">Continuar con el pago</a>' +
       '</div>' +
     '</div>';
   host.querySelector('.dt-minicart-head button')
       .addEventListener('click', function() { dtToggleMiniCart(true); });
-  host.querySelector('.dt-minicart-share')
-      .addEventListener('click', dtCopyMiniCartSummary);
   document.body.appendChild(host);
   return host;
-}
-
-function dtMiniCartSummaryText() {
-  var items = CartStore.getAll();
-  if (!items.length) return '';
-  var lines = ['Mi carrito de DimensionTres', ''];
-  items.forEach(function(item) {
-    lines.push('- ' + (item.name || 'Producto') + ' | ' + item.qty + ' x ' + dtPlata(item.price));
-  });
-  lines.push('');
-  lines.push('Total: ' + dtPlata(items.reduce(function(total, item) {
-    return total + item.price * item.qty;
-  }, 0)));
-  return lines.join('\n');
-}
-
-function dtCopyMiniCartSummary() {
-  var host = dtMiniCartHost();
-  var status = host.querySelector('.dt-minicart-share-status');
-  var text = dtMiniCartSummaryText();
-  if (!text) {
-    status.textContent = 'Agregá un producto antes de compartir.';
-    return;
-  }
-
-  function copied() {
-    status.textContent = 'Resumen copiado.';
-    window.setTimeout(function() { status.textContent = ''; }, 3000);
-  }
-  function fallback() {
-    var area = document.createElement('textarea');
-    area.value = text;
-    area.setAttribute('readonly', 'readonly');
-    area.style.position = 'fixed';
-    area.style.left = '-9999px';
-    document.body.appendChild(area);
-    area.select();
-    try {
-      if (!document.execCommand('copy')) throw new Error('copy failed');
-      copied();
-    } catch (error) {
-      status.textContent = 'No se pudo copiar. Probá nuevamente.';
-    }
-    area.remove();
-  }
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(copied).catch(fallback);
-  } else {
-    fallback();
-  }
 }
 
 function dtRenderMiniCart() {
@@ -701,12 +625,6 @@ function dtRenderMiniCart() {
       detalle.textContent = item.qty + ' × ' + dtPlata(item.price);
       info.appendChild(nombre);
       info.appendChild(detalle);
-      if (isDelayedDeliveryProduct(item)) {
-        var demora = document.createElement('small');
-        demora.className = 'dt-minicart-delay';
-        demora.textContent = 'Demora aproximada: 48 hs';
-        info.appendChild(demora);
-      }
 
       var quitar = document.createElement('button');
       quitar.type = 'button';
@@ -741,16 +659,10 @@ function dtToggleMiniCart(forzarCerrado) {
   host.classList.toggle('is-open', abrir);
   if (fondo) fondo.classList.toggle('is-open', abrir);
   document.body.style.overflow = abrir ? 'hidden' : '';
-  if (abrir) {
-    window.setTimeout(function() {
-      var closeButton = host.querySelector('.dt-minicart-head button');
-      if (closeButton) closeButton.focus();
-    }, 30);
-  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // En carrito.html el ícono no abre el panel.
+  // En carrito.html el icono no abre el panel: ya estas viendo el carrito.
   var enCarrito = /carrito\.html$/i.test(window.location.pathname);
 
   document.querySelectorAll('[data-cart-btn]').forEach(function(btn) {

@@ -1,7 +1,9 @@
-/* su-catalogo.css - Estilos de los subcatálogos. */
+/* ─────────────────────────────────────────────────────────
+   catalogo.css — Estilos específicos del Catálogo | Dimensión Tres
+   ───────────────────────────────────────────────────────── */
 
 
-/* Textura de ruido */
+/* ── Noise grain ── */
 body::after {
   content: '';
   position: fixed;
@@ -12,7 +14,7 @@ body::after {
   opacity: 0.6;
 }
 
-/* Tarjeta de categoría */
+/* ── Category card ── */
 .cat-card {
   position: relative;
   background: #131313;
@@ -49,7 +51,7 @@ body::after {
   width: 100%; height: 100%; object-fit: cover;
 }
 
-/* Línea celeste inferior */
+/* ── Bottom cyan line indicator ── */
 .cat-line {
   position: absolute;
   bottom: 0; left: 0;
@@ -66,13 +68,13 @@ body::after {
   transition: opacity 0.25s, transform 0.25s;
 }
 
-/* Animación de entrada */
+/* ── Stagger animation on load ── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Botones de filtro */
+/* ── Filter pill buttons ── */
 .filter-pill {
   padding: 0.45rem 1.1rem;
   font-family: 'Space Grotesk', sans-serif;
@@ -95,16 +97,16 @@ body::after {
   background: rgba(143,245,255,0.06);
 }
 
-/* Brillo del buscador con foco */
+/* ── Search glow on focus ── */
 #search-catalog:focus {
   box-shadow: 0 0 0 1px rgba(143,245,255,0.3), 0 0 20px rgba(143,245,255,0.06);
   border-color: rgba(143,245,255,0.4) !important;
 }
 
-/* Tarjetas ocultas por filtro */
+/* ── Hidden cards for filter ── */
 .cat-card.hidden-filter { display: none; }
 
-/* Flecha de los select */
+/* ── Custom select arrow ── */
 .custom-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23767575' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -112,5 +114,5 @@ body::after {
   background-position: right 12px center;
 }
 
-/* Separador de migas */
+/* ── Breadcrumb separator ── */
 .breadcrumb-sep { color: rgba(72,72,71,0.8); }
